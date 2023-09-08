@@ -1,6 +1,5 @@
 "use client";
 
-import LiveTvIcon from "@mui/icons-material/LiveTv";
 import MenuIcon from "@mui/icons-material/Menu";
 import AppBar from "@mui/material/AppBar";
 import Avatar from "@mui/material/Avatar";
@@ -14,7 +13,6 @@ import Toolbar from "@mui/material/Toolbar";
 import Tooltip from "@mui/material/Tooltip";
 import Typography from "@mui/material/Typography";
 import { MouseEvent, useState } from "react";
-import SkipNextIcon from "@mui/icons-material/SkipNext";
 
 const pages = ["Shows", "Sketches", "Themes", "Actors"];
 const settings = ["Profile", "Account", "Logout"];
@@ -47,22 +45,21 @@ function ResponsiveAppBar() {
   return (
     <AppBar position="static">
       <Container maxWidth="xl">
-        <Toolbar disableGutters>
-          <LiveTvIcon sx={{ display: { xs: "none", md: "flex" }, mr: 1 }} />
+        <Toolbar disableGutters variant="dense">
           <Typography
-            variant="h6"
-            noWrap
             component="a"
             href="/"
+            noWrap
             sx={{
-              mr: 2,
+              color: "inherit",
               display: { xs: "none", md: "flex" },
               fontFamily: "cursive",
               fontWeight: 700,
-              letterSpacing: ".2rem",
-              color: "inherit",
+              letterSpacing: ".1rem",
+              marginRight: 3,
               textDecoration: "none",
             }}
+            variant="h6"
           >
             {appName}
           </Typography>
@@ -102,7 +99,6 @@ function ResponsiveAppBar() {
               ))}
             </Menu>
           </Box>
-          <LiveTvIcon sx={{ display: { xs: "flex", md: "none" }, mr: 1 }} />
           <Typography
             variant="h5"
             noWrap
@@ -126,7 +122,7 @@ function ResponsiveAppBar() {
               <Button
                 key={page}
                 onClick={handleCloseNavMenu}
-                sx={{ my: 2, color: "white", display: "block" }}
+                sx={{ my: 1, color: "white", display: "block" }}
               >
                 {page}
               </Button>
@@ -134,13 +130,12 @@ function ResponsiveAppBar() {
           </Box>
 
           <Box sx={{ flexGrow: 0 }}>
-            <Tooltip title="Skip to another sketch">
-              <IconButton onClick={handleOpenUserMenu} sx={{ mr: 1 }} size="large">
-                <SkipNextIcon />
-              </IconButton>
-            </Tooltip>
             <Tooltip title="Open settings">
-              <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
+              <IconButton
+                onClick={handleOpenUserMenu}
+                sx={{ p: 0 }}
+                size="small"
+              >
                 <Avatar alt="John Marshall" src="/static/images/avatar/2.jpg" />
               </IconButton>
             </Tooltip>
