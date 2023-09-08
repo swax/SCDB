@@ -46,13 +46,13 @@ export default function Home() {
   }
 
   // Rendering
-  const imgWidth = 400;
+  const imgWidth = 350;
   const imgHeight = imgWidth * (9 / 16);
 
   return (
     <>
       <ResponsiveAppBar />
-      <Container sx={{ mt: 1, pb: 4 }}>
+      <Container sx={{ mt: 1, pb: 4 }} maxWidth="md">
         <Typography variant="h4">{SketchData.title}</Typography>
         <Typography variant="subtitle1">
           {SketchData.show.title} ({SketchData.season.year})
@@ -81,7 +81,7 @@ export default function Home() {
           <Typography variant="body1">{SketchData.teaser}</Typography>
         </Box>
         <Box marginTop={1}>
-          <Stack direction="row" spacing={1}>
+          <Stack direction="row" flexWrap="wrap" spacing={1} useFlexGap>
             {SketchData.links.map((link, i) => (
               <Chip
                 clickable
@@ -112,7 +112,7 @@ export default function Home() {
               </Typography>
             </AccordionSummary>
             <AccordionDetails>
-              <Stack direction="row" spacing={1}>
+              <Stack direction="row" flexWrap="wrap" spacing={1} useFlexGap>
                 {SketchData.tags.map((tag, i) => (
                   <Chip
                     clickable
