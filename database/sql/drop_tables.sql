@@ -1,0 +1,19 @@
+DROP TABLE IF EXISTS audit;
+DROP TABLE IF EXISTS ratings;
+DROP TABLE IF EXISTS sketch_tags;
+DROP TABLE IF EXISTS tags;
+DROP TABLE IF EXISTS tag_categories;
+DROP TABLE IF EXISTS sketch_writers;
+DROP TABLE IF EXISTS sketch_character_actors;
+DROP TABLE IF EXISTS sketches;
+DROP TABLE IF EXISTS recurring_sketches;
+DROP TABLE IF EXISTS characters;
+DROP TABLE IF EXISTS persons;
+DROP TABLE IF EXISTS episodes;
+DROP TABLE IF EXISTS seasons;
+DROP TABLE IF EXISTS shows;
+
+DROP TABLE IF EXISTS verification_token;
+DROP TABLE IF EXISTS "user";
+DROP TABLE IF EXISTS session;
+DROP TABLE IF EXISTS account;

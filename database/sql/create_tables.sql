@@ -1,3 +1,9 @@
+-- OBSOLETED BY PRISMA
+
+CREATE TYPE operation_type AS ENUM ('INSERT', 'UPDATE', 'DELETE');
+
+CREATE TYPE gender_type AS ENUM ('Male', 'Female', 'Other');
+
 CREATE TABLE account (
     id TEXT PRIMARY KEY,
     user_id TEXT NOT NULL,
@@ -72,7 +78,7 @@ CREATE TABLE persons (
     slug VARCHAR(100) NOT NULL UNIQUE,
     description TEXT,
     date_of_birth DATE,
-    gender VARCHAR(10) NOT NULL CHECK (gender IN ('Male', 'Female', 'Other'))
+    gender gender_type NOT NULL
 );
 
 CREATE TABLE characters (
@@ -162,7 +168,7 @@ CREATE TABLE audit (
     changed_at TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     changed_by TEXT NOT NULL REFERENCES "user" (id),
     table_name VARCHAR(50) NOT NULL,
-    operation VARCHAR(10) NOT NULL CHECK (operation IN ('INSERT', 'UPDATE', 'DELETE')),
+    operation operation_type NOT NULL,
     row_id INT NOT NULL,
     modified_fields JSONB,
     note TEXT
