@@ -28,11 +28,9 @@ import {
 } from "@mui/material";
 import Image from "next/image";
 import { useState } from "react";
-import ResponsiveAppBar from "./ResponsiveAppBar";
 import SketchData from "./SketchData";
-import style from "./page.module.css";
 
-export default function Home() {
+export default function HomePage() {
   // Hooks
   const [playerOpen, setPlayerOpen] = useState(false);
 
@@ -51,7 +49,6 @@ export default function Home() {
 
   return (
     <>
-      <ResponsiveAppBar />
       <Container sx={{ mt: 1, pb: 4 }} maxWidth="md">
         <Typography variant="h4">{SketchData.title}</Typography>
         <Typography variant="subtitle1">
