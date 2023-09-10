@@ -1,9 +1,10 @@
+import prisma from "@/database/prisma";
 import ProcessEnv from "@/shared/ProcessEnv";
-import { PrismaAdapter } from "@next-auth/prisma-adapter";
+import { PrismaAdapter } from "@auth/prisma-adapter";
 import NextAuth, { NextAuthOptions } from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
 
-export const authOptions: NextAuthOptions = {
+const handler = NextAuth({
   adapter: PrismaAdapter(prisma),
   providers: [
     GoogleProvider({
@@ -49,6 +50,6 @@ export const authOptions: NextAuthOptions = {
             return url.startsWith(baseUrl) ? url : baseUrl
         }*/
   },
-};
+});
 
-export default NextAuth(authOptions);
+export { handler as GET, handler as POST };
