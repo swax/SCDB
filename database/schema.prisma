@@ -45,11 +45,11 @@ model User {
   emailVerified DateTime? @map("email_verified")
   image         String?
 
-  accounts                    Account[]
-  sessions                    Session[]
-  audit          audit[]
-  ratings        ratings[]
-  
+  accounts Account[]
+  sessions Session[]
+  audits   Audit[]
+  ratings  UserRating[]
+
   @@map("user")
 }
 
@@ -62,8 +62,8 @@ model VerificationToken {
   @@map("verification_token")
 }
 
-model audit {
-  audit_id        Int            @id @default(autoincrement())
+model Audit {
+  id              Int            @id @default(autoincrement())
   changed_at      DateTime       @default(now())
   changed_by      String
   table_name      String         @db.VarChar(50)
@@ -72,164 +72,168 @@ model audit {
   modified_fields Json?
   note            String?
   user            User           @relation(fields: [changed_by], references: [id], onDelete: NoAction, onUpdate: NoAction)
+
+  @@map("audit")
 }
 
-model characters {
-  character_id            Int                       @id @default(autoincrement())
-  character_name          String                    @unique @db.VarChar(100)
-  slug                    String                    @unique @db.VarChar(100)
-  description             String?
-  sketch_character_actors sketch_character_actors[]
+model Character {
+  id                  Int                 @id @default(autoincrement())
+  name                String              @unique @db.VarChar(100)
+  slug                String              @unique @db.VarChar(100)
+  description         String?
+  sketch_participants SketchParticipant[]
+
+  @@map("character")
 }
 
-model episodes {
-  episode_id     Int        @id @default(autoincrement())
-  episode_number Int
-  title          String     @db.VarChar(100)
-  slug           String     @unique @db.VarChar(100)
-  description    String?
-  air_date       DateTime?  @db.Date
-  season_id      Int
-  seasons        seasons    @relation(fields: [season_id], references: [season_id], onDelete: NoAction, onUpdate: NoAction)
-  sketches       sketches[]
+model Episode {
+  id          Int       @id @default(autoincrement())
+  number      Int
+  title       String    @db.VarChar(100)
+  slug        String    @unique @db.VarChar(100)
+  description String?
+  air_date    DateTime? @db.Date
+  season_id   Int
+  season      Season    @relation(fields: [season_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  sketches    Sketch[]
 
-  @@unique([season_id, episode_number])
+  @@unique([season_id, number])
+  @@map("episode")
 }
 
-model persons {
-  person_id               Int                       @id @default(autoincrement())
-  person_name             String                    @unique @db.VarChar(100)
-  slug                    String                    @unique @db.VarChar(100)
-  description             String?
-  date_of_birth           DateTime?                 @db.Date
-  gender                  gender_type
-  sketch_character_actors sketch_character_actors[]
-  sketch_writers          sketch_writers[]
+model Person {
+  id                  Int                 @id @default(autoincrement())
+  name                String              @unique @db.VarChar(100)
+  slug                String              @unique @db.VarChar(100)
+  description         String?
+  birth_date          DateTime?           @db.Date
+  gender              gender_type
+  sketch_participants SketchParticipant[]
+
+  @@map("person")
 }
 
-model ratings {
+model UserRating {
   user_id      String
   sketch_id    Int
   rating_value Int?
   created_at   DateTime @default(now())
   updated_at   DateTime @default(now())
-  sketches     sketches @relation(fields: [sketch_id], references: [sketch_id], onDelete: NoAction, onUpdate: NoAction)
+  sketch       Sketch   @relation(fields: [sketch_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
   user         User     @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
 
   @@id([user_id, sketch_id])
+  @@map("user_rating")
 }
 
-model recurring_sketches {
-  recurring_sketch_id   Int        @id @default(autoincrement())
-  recurring_sketch_name String     @db.VarChar(100)
-  slug                  String     @unique @db.VarChar(100)
-  description           String?
-  show_id               Int
-  shows                 shows      @relation(fields: [show_id], references: [show_id], onDelete: NoAction, onUpdate: NoAction)
-  sketches              sketches[]
+model RecurringSketch {
+  id          Int      @id @default(autoincrement())
+  name        String   @db.VarChar(100)
+  slug        String   @unique @db.VarChar(100)
+  description String?
+  show_id     Int
+  show        Show     @relation(fields: [show_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  sketches    Sketch[]
 
-  @@unique([show_id, recurring_sketch_name])
+  @@unique([show_id, name])
+  @@map("recurring_sketch")
 }
 
-model seasons {
-  season_id     Int        @id @default(autoincrement())
-  season_number Int
-  season_year   Int
-  slug          String     @unique @db.VarChar(100)
-  description   String?
-  show_id       Int
-  episodes      episodes[]
-  shows         shows      @relation(fields: [show_id], references: [show_id], onDelete: NoAction, onUpdate: NoAction)
+model Season {
+  id          Int       @id @default(autoincrement())
+  number      Int
+  year        Int
+  slug        String    @unique @db.VarChar(100)
+  description String?
+  show_id     Int
+  episodes    Episode[]
+  show        Show      @relation(fields: [show_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
 
-  @@unique([show_id, season_number])
+  @@unique([show_id, number])
+  @@map("season")
 }
 
-model shows {
-  show_id            Int                  @id @default(autoincrement())
-  show_name          String               @unique @db.VarChar(100)
-  slug               String               @unique @db.VarChar(100)
+model Show {
+  id                 Int               @id @default(autoincrement())
+  name               String            @unique @db.VarChar(100)
+  slug               String            @unique @db.VarChar(100)
   description        String?
-  recurring_sketches recurring_sketches[]
-  seasons            seasons[]
-  sketches           sketches[]
+  recurring_sketches RecurringSketch[]
+  seasons            Season[]
+  sketches           Sketch[]
+
+  @@map("show")
 }
 
-model sketch_character_actors {
+model SketchParticipant {
+  id           Int              @id @default(autoincrement())
   sketch_id    Int
-  character_id Int
+  character_id Int?
   person_id    Int?
   description  String?
-  created_by   Int
-  created_at   DateTime
-  updated_by   Int
-  updated_at   DateTime
-  characters   characters @relation(fields: [character_id], references: [character_id], onDelete: NoAction, onUpdate: NoAction)
-  persons      persons?   @relation(fields: [person_id], references: [person_id], onDelete: NoAction, onUpdate: NoAction)
-  sketches     sketches   @relation(fields: [sketch_id], references: [sketch_id], onDelete: NoAction, onUpdate: NoAction)
+  role         sketch_role_type
+  character    Character?       @relation(fields: [character_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  person       Person?          @relation(fields: [person_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  sketch       Sketch           @relation(fields: [sketch_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
 
-  @@id([sketch_id, character_id])
+  @@map("sketch_participant")
 }
 
-model sketch_tags {
+model SketchTag {
   sketch_id Int
   tag_id    Int
-  sketches  sketches @relation(fields: [sketch_id], references: [sketch_id], onDelete: NoAction, onUpdate: NoAction)
-  tags      tags     @relation(fields: [tag_id], references: [tag_id], onDelete: NoAction, onUpdate: NoAction)
+  sketch    Sketch @relation(fields: [sketch_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  tag       Tag    @relation(fields: [tag_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
 
   @@id([sketch_id, tag_id])
+  @@map("sketch_tag")
 }
 
-model sketch_writers {
-  sketch_id Int
-  person_id Int
-  persons   persons  @relation(fields: [person_id], references: [person_id], onDelete: NoAction, onUpdate: NoAction)
-  sketches  sketches @relation(fields: [sketch_id], references: [sketch_id], onDelete: NoAction, onUpdate: NoAction)
-
-  @@id([sketch_id, person_id])
-}
-
-model sketches {
-  sketch_id               Int                       @id @default(autoincrement())
-  title                   String                    @db.VarChar(100)
-  slug                    String                    @unique @db.VarChar(100)
-  thumbnail_url           String?
-  youbube_embed           String?
-  teaser                  String?
-  description             String?
-  quotes                  String[]
-  notes                   String[]
-  duration                Int?
-  show_id                 Int
-  episode_id              Int?
-  recurring_sketch_id     Int?
-  ratings                 ratings[]
-  sketch_character_actors sketch_character_actors[]
-  sketch_tags             sketch_tags[]
-  sketch_writers          sketch_writers[]
-  episodes                episodes?                 @relation(fields: [episode_id], references: [episode_id], onDelete: NoAction, onUpdate: NoAction)
-  recurring_sketches      recurring_sketches?       @relation(fields: [recurring_sketch_id], references: [recurring_sketch_id], onDelete: NoAction, onUpdate: NoAction)
-  shows                   shows                     @relation(fields: [show_id], references: [show_id], onDelete: NoAction, onUpdate: NoAction)
+model Sketch {
+  id                  Int                 @id @default(autoincrement())
+  title               String              @db.VarChar(100)
+  slug                String              @unique @db.VarChar(100)
+  thumbnail_url       String?
+  youbube_embed       String?
+  teaser              String?
+  description         String?
+  quotes              String[]
+  notes               String[]
+  duration            Int?
+  show_id             Int
+  episode_id          Int?
+  recurring_sketch_id Int?
+  user_ratings        UserRating[]
+  sketch_participants SketchParticipant[]
+  sketch_tags         SketchTag[]
+  episode             Episode?            @relation(fields: [episode_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  recurring_sketch    RecurringSketch?    @relation(fields: [recurring_sketch_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  show                Show                @relation(fields: [show_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
 
   @@unique([show_id, title])
+  @@map("sketch")
 }
 
-model tag_categories {
-  tag_category_id   Int    @id @default(autoincrement())
-  tag_category_name String @unique @db.VarChar(100)
-  slug              String @unique @db.VarChar(100)
-  tags              tags[]
+model TagCategory {
+  id   Int    @id @default(autoincrement())
+  name String @unique @db.VarChar(100)
+  slug String @unique @db.VarChar(100)
+  tags Tag[]
+
+  @@map("tag_category")
 }
 
-model tags {
-  tag_id          Int            @id @default(autoincrement())
-  tag_name        String         @db.VarChar(100)
-  slug            String         @db.VarChar(100)
+model Tag {
+  id              Int         @id @default(autoincrement())
+  name            String      @db.VarChar(100)
+  slug            String      @db.VarChar(100)
   tag_category_id Int
-  sketch_tags     sketch_tags[]
-  tag_categories  tag_categories @relation(fields: [tag_category_id], references: [tag_category_id], onDelete: NoAction, onUpdate: NoAction)
+  sketch_tags     SketchTag[]
+  tag_category    TagCategory @relation(fields: [tag_category_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
 
   @@unique([tag_category_id, slug])
-  @@unique([tag_category_id, tag_name])
+  @@unique([tag_category_id, name])
+  @@map("tag")
 }
 
 enum gender_type {
@@ -242,4 +246,14 @@ enum operation_type {
   INSERT
   UPDATE
   DELETE
+}
+
+enum sketch_role_type {
+  CastMember
+  GuestActor
+  Extra
+  Writer
+  Director
+  Musician
+  Other
 }

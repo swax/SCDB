@@ -1,12 +1,12 @@
 import prisma from "@/database/prisma";
 
 export async function getSketch(id: number) {
-  const result = await prisma.sketches.findUnique({
+  const result = await prisma.sketch.findUnique({
     where: {
-      sketch_id: id,
+      id: id,
     },
     select: {
-      sketch_id: true,
+      id: true,
       title: true,
       teaser: true,
       description: true,

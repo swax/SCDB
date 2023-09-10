@@ -3,11 +3,16 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
-    "build": "next build",
-    "start": "next start",
-    "lint": "next lint",
+    "compile": "tsc",
+    "run:dev": "next dev --turbo",
+    "lint:next": "next lint",
+    "build:release": "next build",
+    "run:release": "next start",
+    "db:push": "npx dotenv -e .env.local -- prisma db push",
     "postinstall": "npx prisma generate"
+  },
+  "prisma": {
+    "schema": "database/schema.prisma"
   },
   "dependencies": {
     "@emotion/react": "11.11.1",
@@ -29,6 +34,7 @@
     "typescript": "5.2.2"
   },
   "devDependencies": {
+    "dotenv-cli": "^7.3.0",
     "prisma": "5.2.0"
   }
 }
