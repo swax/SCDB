@@ -4,6 +4,7 @@ import { Inter } from "next/font/google";
 import ThemeRegistry from "./ThemeRegistry";
 import ResponsiveAppBar from "./ResponsiveAppBar";
 import { NextAuthProvider } from "./NextAuthProvider";
+import { Container } from "@mui/material";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -24,7 +25,9 @@ export default function RootLayout({
         <NextAuthProvider>
           <ThemeRegistry options={{ key: "mui" }}>
             <ResponsiveAppBar />
-            {children}
+            <Container sx={{ marginTop: 1, paddingBottom: 4 }} maxWidth="md">
+              {children}
+            </Container>
           </ThemeRegistry>
         </NextAuthProvider>
       </body>
