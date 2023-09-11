@@ -49,190 +49,188 @@ export default function HomePage() {
 
   return (
     <>
-      <Container sx={{ mt: 1, pb: 4 }} maxWidth="md">
-        <Typography variant="h4">{SketchData.title}</Typography>
-        <Typography variant="subtitle1">
-          {SketchData.show.title} ({SketchData.season.year})
-        </Typography>
-        <Box>
-          <div
-            onClick={handleOpenPlayer}
-            style={{
-              borderRadius: 8,
-              cursor: "pointer",
-              overflow: "hidden",
-              position: "relative",
-              width: imgWidth,
-              height: imgHeight,
-            }}
-          >
-            <Image
-              alt={SketchData.title}
-              fill
-              objectFit="cover"
-              src={SketchData.preview_img.url}
+      <Typography variant="h4">{SketchData.title}</Typography>
+      <Typography variant="subtitle1">
+        {SketchData.show.title} ({SketchData.season.year})
+      </Typography>
+      <Box>
+        <div
+          onClick={handleOpenPlayer}
+          style={{
+            borderRadius: 8,
+            cursor: "pointer",
+            overflow: "hidden",
+            position: "relative",
+            width: imgWidth,
+            height: imgHeight,
+          }}
+        >
+          <Image
+            alt={SketchData.title}
+            fill
+            objectFit="cover"
+            src={SketchData.preview_img.url}
+          />
+        </div>
+      </Box>
+      <Box marginTop={1}>
+        <Typography variant="body1">{SketchData.teaser}</Typography>
+      </Box>
+      <Box marginTop={1}>
+        <Stack direction="row" flexWrap="wrap" spacing={1} useFlexGap>
+          {SketchData.links.map((link, i) => (
+            <Chip
+              clickable
+              component="a"
+              href={link.url}
+              key={i}
+              label={link.text}
+              size="small"
+              target="_blank"
+              variant="outlined"
             />
-          </div>
-        </Box>
-        <Box marginTop={1}>
-          <Typography variant="body1">{SketchData.teaser}</Typography>
-        </Box>
-        <Box marginTop={1}>
-          <Stack direction="row" flexWrap="wrap" spacing={1} useFlexGap>
-            {SketchData.links.map((link, i) => (
-              <Chip
-                clickable
-                component="a"
-                href={link.url}
-                key={i}
-                label={link.text}
-                size="small"
-                target="_blank"
-                variant="outlined"
-              />
-            ))}
-          </Stack>
-        </Box>
-        <Box marginTop={2}>
-          <Rating name="half-rating" defaultValue={2.5} precision={0.5} />
-        </Box>
-        <Box sx={{ marginTop: 2 }}>
-          <Accordion>
-            <AccordionSummary
-              expandIcon={<ExpandMoreIcon />}
-              aria-controls="panel0a-content"
-              id="panel0a-header"
-            >
-              <LocalOfferIcon />
-              <Typography fontWeight="bold" marginLeft={1}>
-                Tags
-              </Typography>
-            </AccordionSummary>
-            <AccordionDetails>
-              <Stack direction="row" flexWrap="wrap" spacing={1} useFlexGap>
-                {SketchData.tags.map((tag, i) => (
-                  <Chip
-                    clickable
-                    key={i}
-                    label={
-                      <span>
-                        {tag.category}&nbsp;/&nbsp;{tag.name}
-                      </span>
-                    }
-                    size="small"
-                    variant="outlined"
-                  />
-                ))}
-              </Stack>
-            </AccordionDetails>
-          </Accordion>
-          <Accordion>
-            <AccordionSummary
-              expandIcon={<ExpandMoreIcon />}
-              aria-controls="panel1a-content"
-              id="panel1a-header"
-            >
-              <GroupsIcon />
-              <Typography fontWeight="bold" marginLeft={1}>
-                Characters
-              </Typography>
-            </AccordionSummary>
-            <AccordionDetails>
-              <TableContainer>
-                <Table aria-label="simple table">
-                  <TableBody>
-                    {SketchData.characters.map((character, i) => (
-                      <TableRow key={i}>
-                        <TableCell>{character.character.name}</TableCell>
-                        <TableCell sx={{ whiteSpace: "nowrap" }}>
-                          ({character.actor.name}{" "}
-                          {character.actor.guestStar && (
-                            <span title="Guest Star">⭐</span>
-                          )}
-                          )
-                        </TableCell>
-                        <TableCell>{character.summary}</TableCell>
-                      </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
-              </TableContainer>
-            </AccordionDetails>
-          </Accordion>
-          <Accordion>
-            <AccordionSummary
-              expandIcon={<ExpandMoreIcon />}
-              aria-controls="panel2a-content"
-              id="panel2a-header"
-            >
-              <NotesIcon />
-              <Typography fontWeight="bold" marginLeft={1}>
-                Detailed Summary
-              </Typography>
-            </AccordionSummary>
-            <AccordionDetails>
-              <Typography variant="body2" sx={{ whiteSpace: "pre-wrap" }}>
-                {SketchData.summary}
-              </Typography>
-            </AccordionDetails>
-          </Accordion>
-          <Accordion>
-            <AccordionSummary
-              expandIcon={<ExpandMoreIcon />}
-              aria-controls="panel3a-content"
-              id="panel3a-header"
-            >
-              <FormatQuoteIcon />
-              <Typography fontWeight="bold" marginLeft={1}>
-                Quotes
-              </Typography>
-            </AccordionSummary>
-            <AccordionDetails>
-              <TableContainer component={Paper}>
-                <Table aria-label="simple table">
-                  <TableBody>
-                    {SketchData.quotes.map((quote, i) => (
-                      <TableRow key={i}>
-                        <TableCell>
-                          <Typography
-                            key={i}
-                            variant="body2"
-                            sx={{ whiteSpace: "pre-wrap" }}
-                          >
-                            {quote.text}
-                          </Typography>
-                        </TableCell>
-                      </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
-              </TableContainer>
-            </AccordionDetails>
-          </Accordion>
-          <Accordion>
-            <AccordionSummary
-              expandIcon={<ExpandMoreIcon />}
-              aria-controls="panel4a-content"
-              id="panel4a-header"
-            >
-              <StickyNote2Icon />
-              <Typography fontWeight="bold" marginLeft={1}>
-                Notes and Trivia
-              </Typography>
-            </AccordionSummary>
-            <AccordionDetails>
-              <Typography variant="body2" sx={{ whiteSpace: "pre-wrap" }}>
-                {SketchData.notesAndTrivia}
-              </Typography>
-            </AccordionDetails>
-          </Accordion>
-        </Box>
-        <Box sx={{ marginTop: 2 }}>
-          <Button variant="outlined" startIcon={<ForumIcon />}>
-            Discuss on Discord
-          </Button>
-        </Box>
-      </Container>
+          ))}
+        </Stack>
+      </Box>
+      <Box marginTop={2}>
+        <Rating name="half-rating" defaultValue={2.5} precision={0.5} />
+      </Box>
+      <Box sx={{ marginTop: 2 }}>
+        <Accordion>
+          <AccordionSummary
+            expandIcon={<ExpandMoreIcon />}
+            aria-controls="panel0a-content"
+            id="panel0a-header"
+          >
+            <LocalOfferIcon />
+            <Typography fontWeight="bold" marginLeft={1}>
+              Tags
+            </Typography>
+          </AccordionSummary>
+          <AccordionDetails>
+            <Stack direction="row" flexWrap="wrap" spacing={1} useFlexGap>
+              {SketchData.tags.map((tag, i) => (
+                <Chip
+                  clickable
+                  key={i}
+                  label={
+                    <span>
+                      {tag.category}&nbsp;/&nbsp;{tag.name}
+                    </span>
+                  }
+                  size="small"
+                  variant="outlined"
+                />
+              ))}
+            </Stack>
+          </AccordionDetails>
+        </Accordion>
+        <Accordion>
+          <AccordionSummary
+            expandIcon={<ExpandMoreIcon />}
+            aria-controls="panel1a-content"
+            id="panel1a-header"
+          >
+            <GroupsIcon />
+            <Typography fontWeight="bold" marginLeft={1}>
+              Characters
+            </Typography>
+          </AccordionSummary>
+          <AccordionDetails>
+            <TableContainer>
+              <Table aria-label="simple table">
+                <TableBody>
+                  {SketchData.characters.map((character, i) => (
+                    <TableRow key={i}>
+                      <TableCell>{character.character.name}</TableCell>
+                      <TableCell sx={{ whiteSpace: "nowrap" }}>
+                        ({character.actor.name}{" "}
+                        {character.actor.guestStar && (
+                          <span title="Guest Star">⭐</span>
+                        )}
+                        )
+                      </TableCell>
+                      <TableCell>{character.summary}</TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </TableContainer>
+          </AccordionDetails>
+        </Accordion>
+        <Accordion>
+          <AccordionSummary
+            expandIcon={<ExpandMoreIcon />}
+            aria-controls="panel2a-content"
+            id="panel2a-header"
+          >
+            <NotesIcon />
+            <Typography fontWeight="bold" marginLeft={1}>
+              Detailed Summary
+            </Typography>
+          </AccordionSummary>
+          <AccordionDetails>
+            <Typography variant="body2" sx={{ whiteSpace: "pre-wrap" }}>
+              {SketchData.summary}
+            </Typography>
+          </AccordionDetails>
+        </Accordion>
+        <Accordion>
+          <AccordionSummary
+            expandIcon={<ExpandMoreIcon />}
+            aria-controls="panel3a-content"
+            id="panel3a-header"
+          >
+            <FormatQuoteIcon />
+            <Typography fontWeight="bold" marginLeft={1}>
+              Quotes
+            </Typography>
+          </AccordionSummary>
+          <AccordionDetails>
+            <TableContainer component={Paper}>
+              <Table aria-label="simple table">
+                <TableBody>
+                  {SketchData.quotes.map((quote, i) => (
+                    <TableRow key={i}>
+                      <TableCell>
+                        <Typography
+                          key={i}
+                          variant="body2"
+                          sx={{ whiteSpace: "pre-wrap" }}
+                        >
+                          {quote.text}
+                        </Typography>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </TableContainer>
+          </AccordionDetails>
+        </Accordion>
+        <Accordion>
+          <AccordionSummary
+            expandIcon={<ExpandMoreIcon />}
+            aria-controls="panel4a-content"
+            id="panel4a-header"
+          >
+            <StickyNote2Icon />
+            <Typography fontWeight="bold" marginLeft={1}>
+              Notes and Trivia
+            </Typography>
+          </AccordionSummary>
+          <AccordionDetails>
+            <Typography variant="body2" sx={{ whiteSpace: "pre-wrap" }}>
+              {SketchData.notesAndTrivia}
+            </Typography>
+          </AccordionDetails>
+        </Accordion>
+      </Box>
+      <Box sx={{ marginTop: 2 }}>
+        <Button variant="outlined" startIcon={<ForumIcon />}>
+          Discuss on Discord
+        </Button>
+      </Box>
       {playerOpen && (
         <Backdrop
           onClick={handleClosePlayer}
