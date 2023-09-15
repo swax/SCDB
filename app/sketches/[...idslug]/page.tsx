@@ -1,4 +1,4 @@
-import { getSketch } from "@/backend/services/sketch";
+import { getSketch } from "@/backend/sketchService";
 import { notFound } from "next/navigation";
 
 export default async function SketchPage({ params }: { params: { idslug: string[] } }) {

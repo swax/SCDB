@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "compile": "tsc",
-    "run:dev": "next dev --turbo",
+    "run:dev": "next dev",
     "lint:next": "next lint",
     "build:release": "next build",
     "run:release": "next start",

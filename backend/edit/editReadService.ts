@@ -1,47 +1,8 @@
 import prisma from "@/database/prisma";
 import { notFound } from "next/navigation";
+import tableEditConfigs, { TableEditConfig } from "./tableEditConfigs";
 
-export interface TableEditField {
-  name: string;
-  column: string;
-  type: string;
-  helperText?: string;
-  originalValue?: unknown;
-  newValue?: unknown;
-}
-
-export interface TableEditConfig {
-  table: string;
-  operation?: "create" | "update";
-  fields: TableEditField[];
-}
-
-interface TableEditConfigs {
-  [key: string]: TableEditConfig;
-}
-
-const tableEditConfigs: TableEditConfigs = {
-  sketch: {
-    table: "sketch",
-    fields: [
-      {
-        name: "Title",
-        column: "title",
-        type: "string",
-      },
-      {
-        name: "Teaser",
-        column: "teaser",
-        type: "string",
-        helperText: "A short one sentence description of the sketch",
-      },
-    ],
-  },
-};
-
-Object.freeze(tableEditConfigs); // Doesn't seem to prevent modification like it should
-
-function findAndBuildConfig(table: string) {
+export function findAndBuildConfig(table: string) {
   const config = tableEditConfigs[table];
 
   if (!config) {
@@ -49,9 +10,7 @@ function findAndBuildConfig(table: string) {
   }
 
   return structuredClone(config);
-} 
-
-Object.freeze(tableEditConfigs);
+}
 
 export async function getTableEditConfig(table: string, id: number) {
   const config = findAndBuildConfig(table);
