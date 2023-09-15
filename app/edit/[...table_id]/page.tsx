@@ -1,6 +1,6 @@
 import {
   getTableEditConfig
-} from "@/backend/services/edit";
+} from "@/backend/edit/editReadService";
 import EditClientPage from "./page.client";
 
 interface EditTablePageProps {
@@ -14,8 +14,10 @@ export default async function EditTablePage({ params }: EditTablePageProps) {
   // Server Data
   const [table, id] = params.table_id;
 
-  const editConfig = await getTableEditConfig(table, parseInt(id));
+  const numId = parseInt(id);
+
+  const editConfig = await getTableEditConfig(table, numId);
 
   // Rendering
-  return <EditClientPage editConfig={editConfig} />;
+  return <EditClientPage editConfig={editConfig} id={numId} />;
 }
