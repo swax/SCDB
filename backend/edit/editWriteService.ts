@@ -37,11 +37,13 @@ export async function writeFieldValues(
   };
 
   updatedFields.forEach((field) => {
-    const dynamicField: any = updateParams.data;
-    dynamicField[field.column] = field.newValue;
+    if (field.column) {
+      const dynamicData: any = updateParams.data;
+      dynamicData[field.column] = field.newValue;
+    }
   });
 
   await prisma.sketch.update(updateParams);
 
-  // Write audit record
+  // TODO: Write audit record
 }

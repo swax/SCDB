@@ -4,16 +4,10 @@ import {
   TableEditConfig,
   TableEditField,
 } from "@/backend/edit/tableEditConfigs";
-import { useForceUpdate } from "@/frontend/hooks/use-force-update";
-import {
-  Box,
-  Button,
-  FormControl,
-  Stack,
-  TextField
-} from "@mui/material";
+import { useForceUpdate } from "@/frontend/hooks/useForceUpdate";
+import { Box, Button, Stack, TextField } from "@mui/material";
 import { useState } from "react";
-import AutocompleteRelation from "./AutocompleteRelation";
+import AutocompleteLookup from "./AutocompleteLookup";
 import editAction from "./editAction";
 
 interface EditClientPageProps {
@@ -42,7 +36,7 @@ export default function EditClientPage({
       setLoading(false);
 
       // redirect back to sketch page when done
-      window.location.href = `/sketches/${id}/placeholder`;
+      // window.location.href = `/sketches/${id}/placeholder`;
     } catch (e) {
       alert(e);
       setLoading(false);
@@ -57,30 +51,30 @@ export default function EditClientPage({
       <Box>{editConfig.operation + " Row"}</Box>
       {editConfig.fields.map((field, i) => (
         <Box key={i}>
-          <FormControl sx={{ marginTop: 2 }}>
+          {field.type !== "lookup" && (
             <TextField
               disabled={loading}
               helperText={field.helperText}
               id={`input-${i}`}
               label={field.name}
               onChange={(e) => handleChange_field(field, e.target.value)}
+              sx={{ marginTop: 2 }}
               value={field.newValue || ""}
               variant="standard"
             />
-          </FormControl>
+          )}
+          {field.type === "lookup" && <AutocompleteLookup field={field} />}
         </Box>
       ))}
 
-      <AutocompleteRelation />
-
-      <Stack direction="row" spacing={2} sx={{ marginTop: 2 }}>
+      <Stack spacing={2} sx={{ marginTop: 2 }}>
         <Button
           color="success"
           disabled={loading}
           onClick={() => handleClick_edit()}
           variant="outlined"
         >
-          Edit
+          Save Changes
         </Button>
         <Button
           color="error"
@@ -88,7 +82,7 @@ export default function EditClientPage({
           onClick={() => handleClick_delete()}
           variant="outlined"
         >
-          Delete
+          Delete Entry
         </Button>
       </Stack>
     </>
