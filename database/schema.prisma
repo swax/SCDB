@@ -47,8 +47,8 @@ model User {
 
   accounts Account[]
   sessions Session[]
-  audits   Audit[]
-  ratings  UserRating[]
+  audits   audit[]
+  ratings  user_rating[]
 
   @@map("user")
 }
@@ -62,7 +62,7 @@ model VerificationToken {
   @@map("verification_token")
 }
 
-model Audit {
+model audit {
   id              Int            @id @default(autoincrement())
   changed_at      DateTime       @default(now())
   changed_by      String
@@ -72,21 +72,17 @@ model Audit {
   modified_fields Json?
   note            String?
   user            User           @relation(fields: [changed_by], references: [id], onDelete: NoAction, onUpdate: NoAction)
-
-  @@map("audit")
 }
 
-model Character {
+model character {
   id                  Int                 @id @default(autoincrement())
   name                String              @unique @db.VarChar(100)
   slug                String              @unique @db.VarChar(100)
   description         String?
-  sketch_participants SketchParticipant[]
-
-  @@map("character")
+  sketch_participants sketch_participant[]
 }
 
-model Episode {
+model episode {
   id          Int       @id @default(autoincrement())
   number      Int
   title       String    @db.VarChar(100)
@@ -94,102 +90,91 @@ model Episode {
   description String?
   air_date    DateTime? @db.Date
   season_id   Int
-  season      Season    @relation(fields: [season_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  sketches    Sketch[]
+  season      season    @relation(fields: [season_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  sketches    sketch[]
 
   @@unique([season_id, number])
-  @@map("episode")
 }
 
-model Person {
+model person {
   id                  Int                 @id @default(autoincrement())
   name                String              @unique @db.VarChar(100)
   slug                String              @unique @db.VarChar(100)
   description         String?
   birth_date          DateTime?           @db.Date
   gender              gender_type
-  sketch_participants SketchParticipant[]
-
-  @@map("person")
+  sketch_participants sketch_participant[]
 }
 
-model UserRating {
+model user_rating {
   user_id      String
   sketch_id    Int
   rating_value Int?
   created_at   DateTime @default(now())
   updated_at   DateTime @default(now())
-  sketch       Sketch   @relation(fields: [sketch_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  sketch       sketch   @relation(fields: [sketch_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
   user         User     @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
 
   @@id([user_id, sketch_id])
-  @@map("user_rating")
 }
 
-model RecurringSketch {
+model recurring_sketch {
   id          Int      @id @default(autoincrement())
   name        String   @db.VarChar(100)
   slug        String   @unique @db.VarChar(100)
   description String?
   show_id     Int
-  show        Show     @relation(fields: [show_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  sketches    Sketch[]
+  show        show     @relation(fields: [show_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  sketches    sketch[]
 
   @@unique([show_id, name])
-  @@map("recurring_sketch")
 }
 
-model Season {
+model season {
   id          Int       @id @default(autoincrement())
   number      Int
   year        Int
   slug        String    @unique @db.VarChar(100)
   description String?
   show_id     Int
-  episodes    Episode[]
-  show        Show      @relation(fields: [show_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  episodes    episode[]
+  show        show      @relation(fields: [show_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
 
   @@unique([show_id, number])
-  @@map("season")
 }
 
-model Show {
+model show {
   id                 Int               @id @default(autoincrement())
   name               String            @unique @db.VarChar(100)
   slug               String            @unique @db.VarChar(100)
   description        String?
-  recurring_sketches RecurringSketch[]
-  seasons            Season[]
-  sketches           Sketch[]
-
-  @@map("show")
+  recurring_sketches recurring_sketch[]
+  seasons            season[]
+  sketches           sketch[]
 }
 
-model SketchParticipant {
+model sketch_participant {
   id           Int              @id @default(autoincrement())
   sketch_id    Int
   character_id Int?
   person_id    Int?
   description  String?
   role         sketch_role_type
-  character    Character?       @relation(fields: [character_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  person       Person?          @relation(fields: [person_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  sketch       Sketch           @relation(fields: [sketch_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
-
-  @@map("sketch_participant")
+  character    character?       @relation(fields: [character_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  person       person?          @relation(fields: [person_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  sketch       sketch           @relation(fields: [sketch_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
 }
 
-model SketchTag {
+model sketch_tag {
   sketch_id Int
   tag_id    Int
-  sketch    Sketch @relation(fields: [sketch_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  tag       Tag    @relation(fields: [tag_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  sketch    sketch @relation(fields: [sketch_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  tag       tag    @relation(fields: [tag_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
 
   @@id([sketch_id, tag_id])
-  @@map("sketch_tag")
 }
 
-model Sketch {
+model sketch {
   id                  Int                 @id @default(autoincrement())
   title               String              @db.VarChar(100)
   slug                String              @unique @db.VarChar(100)
@@ -203,37 +188,33 @@ model Sketch {
   show_id             Int
   episode_id          Int?
   recurring_sketch_id Int?
-  user_ratings        UserRating[]
-  sketch_participants SketchParticipant[]
-  sketch_tags         SketchTag[]
-  episode             Episode?            @relation(fields: [episode_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  recurring_sketch    RecurringSketch?    @relation(fields: [recurring_sketch_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  show                Show                @relation(fields: [show_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  user_ratings        user_rating[]
+  sketch_participants sketch_participant[]
+  sketch_tags         sketch_tag[]
+  episode             episode?            @relation(fields: [episode_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  recurring_sketch    recurring_sketch?    @relation(fields: [recurring_sketch_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  show                show                @relation(fields: [show_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
 
   @@unique([show_id, title])
-  @@map("sketch")
 }
 
-model TagCategory {
+model tag_category {
   id   Int    @id @default(autoincrement())
   name String @unique @db.VarChar(100)
   slug String @unique @db.VarChar(100)
-  tags Tag[]
-
-  @@map("tag_category")
+  tags tag[]
 }
 
-model Tag {
+model tag {
   id              Int         @id @default(autoincrement())
   name            String      @db.VarChar(100)
   slug            String      @db.VarChar(100)
   tag_category_id Int
-  sketch_tags     SketchTag[]
-  tag_category    TagCategory @relation(fields: [tag_category_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  sketch_tags     sketch_tag[]
+  tag_category    tag_category @relation(fields: [tag_category_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
 
   @@unique([tag_category_id, slug])
   @@unique([tag_category_id, name])
-  @@map("tag")
 }
 
 enum gender_type {

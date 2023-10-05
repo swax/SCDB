@@ -37,16 +37,32 @@ export async function setFieldValues(config: TableEditConfig, id: number) {
 
   // Dynamically add fields to the select
   config.fields.forEach((field) => {
-    const dynamicField: any = findUniqueParams.select;
-    dynamicField[field.column] = true;
+    const dynamicSelect: any = findUniqueParams.select;
+
+    if (field.type === "mapping") {
+      // todo
+    } else if (field.type === "lookup" && field.lookup) {
+      dynamicSelect[field.lookup.table] = {
+        select: {
+          [field.lookup.column]: true,
+        },
+      };
+    }
+
+    if (field.column) {
+      dynamicSelect[field.column] = true;
+    }
   });
 
   // Dynamically select the table
-  const dynamicTable = prisma as any;
+  const dynamicPrisma = prisma as any;
+  const dynamicTable = dynamicPrisma[config.table];
 
-  const fieldValues = await dynamicTable[config.table].findUnique(
-    findUniqueParams
-  );
+  if (!dynamicTable) {
+    throw new Error(`Table ${config.table} not found on prisma client`);
+  }
+
+  const fieldValues = await dynamicTable.findUnique(findUniqueParams);
 
   if (!fieldValues) {
     notFound();
@@ -54,10 +70,19 @@ export async function setFieldValues(config: TableEditConfig, id: number) {
 
   // Add fields values to the table config
   Object.entries(fieldValues).forEach(([key, value]) => {
-    const field = config.fields.find((field) => field.column === key);
+    let field = config.fields.find((f) => f.column === key);
+
     if (field) {
       field.originalValue = value;
       field.newValue = value;
+      return;
+    }
+
+    field = config.fields.find((f) => f.lookup?.table === key);
+
+    if (value && field && field.lookup) {
+      const dynamicValue = value as any;
+      field.lookup.value = dynamicValue[field.lookup.column];
     }
   });
 }
