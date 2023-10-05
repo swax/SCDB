@@ -5,9 +5,16 @@ import {
   TableEditField,
 } from "@/backend/edit/tableEditConfigs";
 import { useForceUpdate } from "@/frontend/hooks/use-force-update";
-import { Box, Button, FormControl, Stack, TextField } from "@mui/material";
-import editAction from "./editAction";
+import {
+  Box,
+  Button,
+  FormControl,
+  Stack,
+  TextField
+} from "@mui/material";
 import { useState } from "react";
+import AutocompleteRelation from "./AutocompleteRelation";
+import editAction from "./editAction";
 
 interface EditClientPageProps {
   editConfig: TableEditConfig;
@@ -30,7 +37,6 @@ export default function EditClientPage({
 
   async function handleClick_edit() {
     try {
-      editConfig.table = editConfig.table + 'x'
       setLoading(true);
       await editAction(editConfig, id);
       setLoading(false);
@@ -53,7 +59,6 @@ export default function EditClientPage({
         <Box key={i}>
           <FormControl sx={{ marginTop: 2 }}>
             <TextField
-              aria-describedby={`help-${i}`}
               disabled={loading}
               helperText={field.helperText}
               id={`input-${i}`}
@@ -65,6 +70,9 @@ export default function EditClientPage({
           </FormControl>
         </Box>
       ))}
+
+      <AutocompleteRelation />
+
       <Stack direction="row" spacing={2} sx={{ marginTop: 2 }}>
         <Button
           color="success"
