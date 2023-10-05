@@ -1,9 +1,10 @@
 "use client";
 
 import createCache, { Options } from "@emotion/cache";
+import { CacheProvider, ThemeProvider } from "@emotion/react";
+import CssBaseline from "@mui/material/CssBaseline";
+import { createTheme } from "@mui/material/styles";
 import { useServerInsertedHTML } from "next/navigation";
-import { CacheProvider } from "@emotion/react";
-import { CssBaseline, ThemeProvider, createTheme } from "@mui/material";
 import React from "react";
 
 const theme = createTheme({
