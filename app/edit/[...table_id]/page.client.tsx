@@ -25,7 +25,7 @@ export default function EditClientPage({
 
   // Event Handlers
   function handleChange_field(field: TableEditField, value: string) {
-    field.newValue = value;
+    field.newValues = [value];
     forceUpdate();
   }
 
@@ -59,11 +59,11 @@ export default function EditClientPage({
               label={field.name}
               onChange={(e) => handleChange_field(field, e.target.value)}
               sx={{ marginTop: 2 }}
-              value={field.newValue || ""}
+              value={field.newValues?.[0] || field.values?.[0] || ""}
               variant="standard"
             />
           )}
-          {field.type === "lookup" && <AutocompleteLookup field={field} />}
+          {field.type === "lookup" && <AutocompleteLookup field={field} index={0} />}
         </Box>
       ))}
 

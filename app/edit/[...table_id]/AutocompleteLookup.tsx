@@ -7,13 +7,14 @@ import lookupAction from "./lookupAction";
 
 interface AutocompleteLookupProps {
   field: TableEditField;
+  index: number;
 }
 
-export default function AutocompleteLookup({ field }: AutocompleteLookupProps) {
-  const initialValue: AutocompleteLookupOption | null = field.originalValue
+export default function AutocompleteLookup({ field, index }: AutocompleteLookupProps) {
+  const initialValue: AutocompleteLookupOption | null = field.values
     ? {
-        id: (field.originalValue as number) ?? -1,
-        label: field.lookup?.value ?? "unknown",
+        id: (field.values?.[index] as number) ?? -1,
+        label: field.lookup?.values?.[index] ?? "unknown",
       }
     : null;
 
@@ -57,7 +58,9 @@ export default function AutocompleteLookup({ field }: AutocompleteLookupProps) {
   /** Change of the actual backing value */
   function handleChange(event: any, value: AutocompleteLookupOption | null) {
     setValue(value);
-    field.newValue = value ? value.id : null; // Important to set null as undefined isn't sent over the wire
+
+    field.newValues = field.newValues || [];
+    field.newValues[index] = value ? value.id : null; // Important to set null as undefined isn't sent over the wire
 
     if (value) {
       setOptions([value]);

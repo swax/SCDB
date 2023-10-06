@@ -13,9 +13,7 @@ export async function writeFieldValues(
   }
 
   // Verify columns are allowed to be edited
-  const updatedFields = clientConfig.fields.filter(
-    (cf) => cf.newValue !== cf.originalValue
-  );
+  const updatedFields = clientConfig.fields.filter((cf) => cf.newValues);
 
   const notFoundColumns = updatedFields.filter((cf) => {
     const found = serverConfig.fields.some((sf) => sf.column === cf.column);
@@ -39,7 +37,7 @@ export async function writeFieldValues(
   updatedFields.forEach((field) => {
     if (field.column) {
       const dynamicData: any = updateParams.data;
-      dynamicData[field.column] = field.newValue;
+      dynamicData[field.column] = field.newValues![0];
     }
   });
 

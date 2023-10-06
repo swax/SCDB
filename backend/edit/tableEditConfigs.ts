@@ -9,7 +9,7 @@ type TableEditFieldType =
 export interface TableLookupField {
   table: string;
   column: string;
-  value?: string;
+  values?: string[];
 }
 
 export interface TableEditField {
@@ -17,8 +17,8 @@ export interface TableEditField {
   column?: string;
   type: TableEditFieldType;
   helperText?: string;
-  originalValue?: unknown;
-  newValue?: unknown;
+  values?: unknown[];
+  newValues?: unknown[];
   lookup?: TableLookupField;
   mapping?: {
     table: string;
@@ -73,7 +73,7 @@ const tableEditConfigs: TableEditConfigs = {
         name: "Participants",
         type: "mapping",
         mapping: {
-          table: "sketch_participant",
+          table: "sketch_participants",
           fields: [
             {
               name: "Character",
