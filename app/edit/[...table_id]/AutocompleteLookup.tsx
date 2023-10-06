@@ -16,10 +16,10 @@ export default function AutocompleteLookup({
   index,
   inTable,
 }: AutocompleteLookupProps) {
-  const initialValue: AutocompleteLookupOption | null = field.values
+  const initialValue: AutocompleteLookupOption | null = field.values?.[index]
     ? {
-        id: (field.values?.[index] as number) ?? -1,
-        label: field.lookup?.values?.[index] ?? "unknown",
+        id: field.values[index] as number,
+        label: field.lookup?.values?.[index] ?? "(lookup init error)",
       }
     : null;
 
@@ -48,7 +48,7 @@ export default function AutocompleteLookup({
       }
       setLoading(false);
     },
-    1000,
+    500,
     [inputValue]
   );
 
