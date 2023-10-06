@@ -22,7 +22,7 @@ export interface TableEditField {
   lookup?: TableLookupField;
   mapping?: {
     table: string;
-    count?: number;
+    ids?: number[];
     fields: TableEditField[];
   };
   enum?: string;

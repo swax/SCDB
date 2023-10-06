@@ -8,6 +8,7 @@ import { useForceUpdate } from "@/frontend/hooks/useForceUpdate";
 import {
   Box,
   Button,
+  IconButton,
   MenuItem,
   Select,
   Stack,
@@ -16,12 +17,13 @@ import {
   TableCell,
   TableHead,
   TableRow,
-  TextField
+  TextField,
 } from "@mui/material";
 import { $Enums } from "@prisma/client";
 import { useState } from "react";
 import AutocompleteLookup from "./AutocompleteLookup";
 import editAction from "./editAction";
+import DeleteIcon from "@mui/icons-material/Delete";
 
 interface EditClientPageProps {
   editConfig: TableEditConfig;
@@ -61,14 +63,42 @@ export default function EditClientPage({
     }
   }
 
+  function handleClick_deleteMappingRow(
+    field: TableEditField,
+    mappedIndex: number
+  ) {
+    if (!field.mapping || !field.mapping.ids) return;
+
+    field.mapping.ids.splice(mappedIndex, 1);
+
+    field.mapping.fields.forEach((mappedField) => {
+      mappedField.values?.splice(mappedIndex, 1);
+      mappedField.newValues?.splice(mappedIndex, 1);
+      mappedField.lookup?.values?.splice(mappedIndex, 1);
+    });
+
+    forceUpdate();
+  }
+
+  function handleClick_addMappingRow(field: TableEditField) {
+    if (!field.mapping || !field.mapping.ids) return;
+
+    const minId = Math.min(...field.mapping.ids, 0);
+    field.mapping.ids.push(minId - 1);
+
+    field.mapping.fields.forEach((mappedField) => {
+      mappedField.values?.push(undefined);
+    });
+
+    forceUpdate();
+  }
+
   function handleClick_delete() {}
 
   // Rendering
-  let nextElementId = 1;
-
   function renderField(field: TableEditField, index: number, inTable = false) {
     return (
-      <Box sx={{ marginTop: inTable ? 0 : 2 }}>
+      <Box sx={{ marginTop: inTable ? 0 : 3 }}>
         {["boolean", "string", "number"].includes(field.type) && (
           <TextField
             disabled={loading}
@@ -112,20 +142,40 @@ export default function EditClientPage({
                   {field.mapping?.fields.map((mappedField, fieldIndex) => (
                     <TableCell key={fieldIndex}>{mappedField.name}</TableCell>
                   ))}
+                  <TableCell />
                 </TableRow>
               </TableHead>
               <TableBody>
-                {[...Array(field.mapping?.count)].map((x, mappedIndex) => (
-                  <TableRow key={mappedIndex}>
+                {field.mapping?.ids?.map((mappedId, mappedIndex) => (
+                  <TableRow key={mappedId}>
                     {field.mapping?.fields.map((mappedField, fieldIndex) => (
                       <TableCell key={fieldIndex}>
                         {renderField(mappedField, mappedIndex, true)}
                       </TableCell>
                     ))}
+                    <TableCell>
+                      <IconButton
+                        aria-label="delete"
+                        onClick={() =>
+                          handleClick_deleteMappingRow(field, mappedIndex)
+                        }
+                      >
+                        <DeleteIcon />
+                      </IconButton>
+                    </TableCell>
                   </TableRow>
                 ))}
               </TableBody>
             </Table>
+            <Button
+              color="success"
+              disabled={loading}
+              onClick={() => handleClick_addMappingRow(field)}
+              sx={{ marginLeft: 2, marginTop: 2 }}
+              variant="outlined"
+            >
+              Add {field.name}
+            </Button>
           </>
         )}
       </Box>
@@ -139,7 +189,7 @@ export default function EditClientPage({
         <Box key={i}>{renderField(field, 0)}</Box>
       ))}
 
-      <Stack spacing={2} sx={{ marginTop: 2 }}>
+      <Stack spacing={4} sx={{ marginTop: 4 }}>
         <Button
           color="success"
           disabled={loading}

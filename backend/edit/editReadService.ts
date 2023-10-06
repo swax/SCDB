@@ -97,8 +97,9 @@ function mapResultsToConfig(dbResults: any, fields: TableEditField[]) {
         field.lookup.values.push(lookupValue);
       } else if (field.mapping?.table === key && Array.isArray(value)) {
         const mappingFields = field.mapping.fields;
-        field.mapping.count = value.length;
         value.forEach((v) => {
+          field.mapping!.ids ||= [];
+          field.mapping!.ids.push(v.id);
           mapResultsToConfig(v, mappingFields);
         });
       }
