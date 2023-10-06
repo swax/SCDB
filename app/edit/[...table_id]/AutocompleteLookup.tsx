@@ -8,9 +8,14 @@ import lookupAction from "./lookupAction";
 interface AutocompleteLookupProps {
   field: TableEditField;
   index: number;
+  inTable: boolean;
 }
 
-export default function AutocompleteLookup({ field, index }: AutocompleteLookupProps) {
+export default function AutocompleteLookup({
+  field,
+  index,
+  inTable,
+}: AutocompleteLookupProps) {
   const initialValue: AutocompleteLookupOption | null = field.values
     ? {
         id: (field.values?.[index] as number) ?? -1,
@@ -81,7 +86,9 @@ export default function AutocompleteLookup({ field, index }: AutocompleteLookupP
         onChange={handleChange}
         onInputChange={handleInputChange}
         options={options}
-        renderInput={(params) => <TextField {...params} label={field.name} />}
+        renderInput={(params) => (
+          <TextField {...params} label={inTable ? "" : field.name} />
+        )}
         renderOption={(props, option, state) => {
           return (
             <li {...props} key={state.index}>
@@ -89,7 +96,7 @@ export default function AutocompleteLookup({ field, index }: AutocompleteLookupP
             </li>
           );
         }}
-        sx={{ marginTop: 2, width: 300 }}
+        size="small"
         value={value}
       />
       {error && (

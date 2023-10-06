@@ -133,7 +133,7 @@ export default function HomePage() {
           >
             <GroupsIcon />
             <Typography fontWeight="bold" marginLeft={1}>
-              Characters
+              People
             </Typography>
           </AccordionSummary>
           <AccordionDetails>

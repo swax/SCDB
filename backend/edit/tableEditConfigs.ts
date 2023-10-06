@@ -22,8 +22,10 @@ export interface TableEditField {
   lookup?: TableLookupField;
   mapping?: {
     table: string;
+    count?: number;
     fields: TableEditField[];
   };
+  enum?: string;
 }
 
 export interface TableEditConfig {
@@ -76,15 +78,6 @@ const tableEditConfigs: TableEditConfigs = {
           table: "sketch_participants",
           fields: [
             {
-              name: "Character",
-              column: "character_id",
-              type: "lookup",
-              lookup: {
-                table: "character",
-                column: "name",
-              },
-            },
-            {
               name: "Person",
               column: "person_id",
               type: "lookup",
@@ -94,15 +87,25 @@ const tableEditConfigs: TableEditConfigs = {
               },
             },
             {
+              name: "Character",
+              column: "character_id",
+              type: "lookup",
+              lookup: {
+                table: "character",
+                column: "name",
+              },
+            },
+            {
               name: "Role",
               column: "role",
               type: "enum",
+              enum: "sketch_role_type",
             },
-            {
+            /*{
               name: "Description",
               column: "description",
               type: "string",
-            },
+            },*/
           ],
         },
       },
