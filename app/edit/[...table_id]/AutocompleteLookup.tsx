@@ -64,8 +64,9 @@ export default function AutocompleteLookup({
   function handleChange(event: any, value: AutocompleteLookupOption | null) {
     setValue(value);
 
-    field.newValues = field.newValues || [];
-    field.newValues[index] = value ? value.id : null; // Important to set null as undefined isn't sent over the wire
+    field.values![index] = value ? value.id : null; // Important to set null as undefined isn't sent over the wire
+    field.modified ||= [];
+    field.modified[index] = true;
 
     if (value) {
       setOptions([value]);

@@ -18,11 +18,12 @@ export interface TableEditField {
   type: TableEditFieldType;
   helperText?: string;
   values?: unknown[];
-  newValues?: unknown[];
+  modified?: boolean[];
   lookup?: TableLookupField;
   mapping?: {
     table: string;
     ids?: number[];
+    removeIds?: number[];
     fields: TableEditField[];
   };
   enum?: string;
@@ -75,7 +76,7 @@ const tableEditConfigs: TableEditConfigs = {
         name: "Participants",
         type: "mapping",
         mapping: {
-          table: "sketch_participants",
+          table: "sketch_participant",
           fields: [
             {
               name: "Person",
@@ -101,11 +102,11 @@ const tableEditConfigs: TableEditConfigs = {
               type: "enum",
               enum: "sketch_role_type",
             },
-            /*{
+            {
               name: "Description",
               column: "description",
               type: "string",
-            },*/
+            },
           ],
         },
       },

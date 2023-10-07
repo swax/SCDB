@@ -44,8 +44,9 @@ export default function EditClientPage({
     index: number,
     value: string
   ) {
-    field.newValues ||= [];
-    field.newValues[index] = value;
+    field.values![index] = value;
+    field.modified ||= [];
+    field.modified[index] = true;
     forceUpdate();
   }
 
@@ -55,8 +56,8 @@ export default function EditClientPage({
       await editAction(editConfig, id);
       setLoading(false);
 
-      // redirect back to sketch page when done
-      // window.location.href = `/sketches/${id}/placeholder`;
+      // refresh page
+      window.location.reload();
     } catch (e) {
       alert(e);
       setLoading(false);
@@ -69,11 +70,13 @@ export default function EditClientPage({
   ) {
     if (!field.mapping || !field.mapping.ids) return;
 
-    field.mapping.ids.splice(mappedIndex, 1);
+    const removedId = field.mapping.ids.splice(mappedIndex, 1);
+    field.mapping.removeIds ||= [];
+    field.mapping.removeIds.push(removedId[0]);
 
     field.mapping.fields.forEach((mappedField) => {
       mappedField.values?.splice(mappedIndex, 1);
-      mappedField.newValues?.splice(mappedIndex, 1);
+      mappedField.modified?.splice(mappedIndex, 1);
       mappedField.lookup?.values?.splice(mappedIndex, 1);
     });
 
@@ -105,7 +108,7 @@ export default function EditClientPage({
             helperText={field.helperText}
             label={inTable ? "" : field.name}
             onChange={(e) => handleChange_field(field, index, e.target.value)}
-            value={field.newValues?.[index] || field.values?.[index] || ""}
+            value={field.values?.[index] || ""}
             variant="standard"
           />
         )}
@@ -115,11 +118,7 @@ export default function EditClientPage({
             label={inTable ? "" : field.name}
             onChange={(e) => handleChange_field(field, index, e.target.value)}
             size="small"
-            value={
-              (field.newValues?.[index] ||
-                field.values?.[index] ||
-                "") as string
-            }
+            value={(field.values?.[index] || "") as string}
           >
             <MenuItem value="none">
               <i>Select...</i>

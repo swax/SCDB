@@ -28,26 +28,22 @@ export async function getTableEditConfig(table: string, id: number) {
 }
 
 export async function setFieldValues(config: TableEditConfig, id: number) {
-  // Base prisma select
-  const findUniqueParams = {
+  // Base select
+  const selectParams: any = {
+    id: true,
+  };
+
+  addFieldsToSelect(config, selectParams);
+
+  // Perform the select
+  const dynamicPrisma = prisma as any;
+
+  const dbResults = await dynamicPrisma[config.table].findUnique({
     where: {
       id: id,
     },
-    select: {
-      id: true,
-    },
-  };
-
-  addFieldsToSelect(config, findUniqueParams.select);
-
-  const table = (prisma as any)[config.table];
-
-  if (!table) {
-    throw new Error(`Table ${config.table} not found on prisma client`);
-  }
-
-  // Perform the select
-  const dbResults = await table.findUnique(findUniqueParams);
+    select: selectParams,
+  });
 
   if (!dbResults) {
     notFound();
@@ -57,7 +53,7 @@ export async function setFieldValues(config: TableEditConfig, id: number) {
   mapResultsToConfig(dbResults, config.fields);
 }
 
-function addFieldsToSelect(config: TableEditConfig, select: any) {
+function addFieldsToSelect(config: TableEditConfig, selectParams: any) {
   // Add fields to the select
   config.fields.forEach((field) => {
     if (field.type === "mapping" && field.mapping) {
@@ -69,18 +65,18 @@ function addFieldsToSelect(config: TableEditConfig, select: any) {
 
       addFieldsToSelect(field.mapping, selectMany.select);
 
-      select[field.mapping.table] = selectMany;
+      selectParams[field.mapping.table + "s"] = selectMany;
     } else if (field.type === "lookup" && field.lookup) {
       const selectOne = {
         select: {
           [field.lookup.column]: true,
         },
       };
-      select[field.lookup.table] = selectOne;
+      selectParams[field.lookup.table] = selectOne;
     }
 
     if (field.column) {
-      select[field.column] = true;
+      selectParams[field.column] = true;
     }
   });
 }
@@ -91,11 +87,15 @@ function mapResultsToConfig(dbResults: any, fields: TableEditField[]) {
       if (field.column == key) {
         field.values ||= [];
         field.values.push(value);
-      } else if (field.lookup?.table === key && value) {
+      } else if (field.lookup && field.lookup.table === key && value) {
         const lookupValue = (value as any)[field.lookup.column];
         field.lookup.values ||= [];
         field.lookup.values.push(lookupValue);
-      } else if (field.mapping?.table === key && Array.isArray(value)) {
+      } else if (
+        field.mapping &&
+        field.mapping?.table + "s" === key &&
+        Array.isArray(value)
+      ) {
         const mappingFields = field.mapping.fields;
         value.forEach((v) => {
           field.mapping!.ids ||= [];
