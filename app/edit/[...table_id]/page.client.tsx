@@ -44,9 +44,12 @@ export default function EditClientPage({
     index: number,
     value: string
   ) {
-    field.values![index] = value;
+    field.values ||= [];
+    field.values[index] = value;
+
     field.modified ||= [];
     field.modified[index] = true;
+
     forceUpdate();
   }
 
@@ -84,8 +87,9 @@ export default function EditClientPage({
   }
 
   function handleClick_addMappingRow(field: TableEditField) {
-    if (!field.mapping || !field.mapping.ids) return;
+    if (!field.mapping) return;
 
+    field.mapping.ids ||= [];
     const minId = Math.min(...field.mapping.ids, 0);
     field.mapping.ids.push(minId - 1);
 

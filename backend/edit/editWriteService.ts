@@ -28,7 +28,7 @@ export async function writeFieldValues(config: TableEditConfig, id: number) {
     throw new Error(`Table ${config.table} not allowed`);
   }
 
-  await writeFieldChanges(config.table, id, config.fields, 0);
+  await writeFieldChanges(config.table, id, config.fields, 0, {});
 
   await writeMappingChanges(config.table, id, config.fields);
 
@@ -39,7 +39,8 @@ async function writeFieldChanges(
   table: string,
   id: number,
   fields: TableEditField[],
-  index: number
+  index: number,
+  tableRelation: object
 ) {
   const dataParams: any = {};
 
@@ -58,6 +59,7 @@ async function writeFieldChanges(
   await dynamicPrisma[table].update({
     where: {
       id,
+      ...tableRelation
     },
     data: dataParams,
   });
@@ -69,6 +71,11 @@ async function writeMappingChanges(
   fields: TableEditField[]
 ) {
   const dynamicPrisma = prisma as any;
+
+  /** Protects from CRUD'ing rows not mapped to the row ID that the API call is updating */
+  const tableRelation = {
+    [table + "_id"]: id,
+  };
 
   for (let field of fields) {
     const mapping = field.mapping;
@@ -83,6 +90,7 @@ async function writeMappingChanges(
       await dynamicPrisma[mapping.table].delete({
         where: {
           id: removedId,
+          ...tableRelation,
         },
       });
     }
@@ -92,7 +100,7 @@ async function writeMappingChanges(
       if (mappingId < 0) {
         // Create
         const dataParams: any = {
-          [table + "_id"]: id,
+          ...tableRelation,
         };
 
         mapping.fields
@@ -106,7 +114,13 @@ async function writeMappingChanges(
         });
       } else if (mapping.fields.some((field) => field.modified?.[index])) {
         // Update
-        writeFieldChanges(mapping.table, mappingId, mapping.fields, index);
+        writeFieldChanges(
+          mapping.table,
+          mappingId,
+          mapping.fields,
+          index,
+          tableRelation
+        );
       }
       index++;
     }
