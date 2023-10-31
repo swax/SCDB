@@ -73,6 +73,24 @@ const tableEditConfigs: TableEditConfigs = {
         },
       },
       {
+        name: "Tags",
+        type: "mapping",
+        mapping: {
+          table: "sketch_tag",
+          fields: [
+            {
+              name: "Tag",
+              column: "tag_id",
+              type: "lookup",
+              lookup: {
+                table: "tag",
+                column: "name",
+              },
+            },
+          ],
+        },
+      },
+      {
         name: "Participants",
         type: "mapping",
         mapping: {

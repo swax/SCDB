@@ -75,9 +75,9 @@ model audit {
 }
 
 model character {
-  id                  Int                 @id @default(autoincrement())
-  name                String              @unique @db.VarChar(100)
-  slug                String              @unique @db.VarChar(100)
+  id                  Int                  @id @default(autoincrement())
+  name                String               @unique @db.VarChar(100)
+  slug                String               @unique @db.VarChar(100)
   description         String?
   sketch_participants sketch_participant[]
 }
@@ -97,11 +97,11 @@ model episode {
 }
 
 model person {
-  id                  Int                 @id @default(autoincrement())
-  name                String              @unique @db.VarChar(100)
-  slug                String              @unique @db.VarChar(100)
+  id                  Int                  @id @default(autoincrement())
+  name                String               @unique @db.VarChar(100)
+  slug                String               @unique @db.VarChar(100)
   description         String?
-  birth_date          DateTime?           @db.Date
+  birth_date          DateTime?            @db.Date
   gender              gender_type
   sketch_participants sketch_participant[]
 }
@@ -144,9 +144,9 @@ model season {
 }
 
 model show {
-  id                 Int               @id @default(autoincrement())
-  name               String            @unique @db.VarChar(100)
-  slug               String            @unique @db.VarChar(100)
+  id                 Int                @id @default(autoincrement())
+  name               String             @unique @db.VarChar(100)
+  slug               String             @unique @db.VarChar(100)
   description        String?
   recurring_sketches recurring_sketch[]
   seasons            season[]
@@ -166,18 +166,19 @@ model sketch_participant {
 }
 
 model sketch_tag {
+  id        Int    @id @default(autoincrement())
   sketch_id Int
   tag_id    Int
   sketch    sketch @relation(fields: [sketch_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
   tag       tag    @relation(fields: [tag_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
 
-  @@id([sketch_id, tag_id])
+  @@unique([sketch_id, tag_id])
 }
 
 model sketch {
-  id                  Int                 @id @default(autoincrement())
-  title               String              @db.VarChar(100)
-  slug                String              @unique @db.VarChar(100)
+  id                  Int                  @id @default(autoincrement())
+  title               String               @db.VarChar(100)
+  slug                String               @unique @db.VarChar(100)
   thumbnail_url       String?
   youbube_embed       String?
   teaser              String?
@@ -191,9 +192,9 @@ model sketch {
   user_ratings        user_rating[]
   sketch_participants sketch_participant[]
   sketch_tags         sketch_tag[]
-  episode             episode?            @relation(fields: [episode_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  episode             episode?             @relation(fields: [episode_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
   recurring_sketch    recurring_sketch?    @relation(fields: [recurring_sketch_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  show                show                @relation(fields: [show_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  show                show                 @relation(fields: [show_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
 
   @@unique([show_id, title])
 }
@@ -206,9 +207,9 @@ model tag_category {
 }
 
 model tag {
-  id              Int         @id @default(autoincrement())
-  name            String      @db.VarChar(100)
-  slug            String      @db.VarChar(100)
+  id              Int          @id @default(autoincrement())
+  name            String       @db.VarChar(100)
+  slug            String       @db.VarChar(100)
   tag_category_id Int
   sketch_tags     sketch_tag[]
   tag_category    tag_category @relation(fields: [tag_category_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
