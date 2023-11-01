@@ -40,6 +40,21 @@ interface TableEditConfigs {
 }
 
 const tableEditConfigs: TableEditConfigs = {
+  show: {
+    table: "show",
+    fields: [
+      {
+        name: "Name",
+        column: "name",
+        type: "string",
+      },
+      {
+        name: "Description",
+        column: "description",
+        type: "string",
+      },
+    ],
+  },
   sketch: {
     table: "sketch",
     fields: [

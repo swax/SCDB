@@ -7,6 +7,8 @@ import tableEditConfigs, {
 export interface AutocompleteLookupOption {
   id: number;
   label: string;
+  createNew?: boolean;
+  noMatches?: boolean;
 }
 
 function validateFieldWithLookup(

@@ -1,8 +1,15 @@
 import { AutocompleteLookupOption } from "@/backend/edit/lookupService";
 import { TableEditField } from "@/backend/edit/tableEditConfigs";
 import useDebounce2 from "@/frontend/hooks/useDebounce2";
-import { Autocomplete, Box, TextField, Typography } from "@mui/material";
-import { useId, useState } from "react";
+import OpenInNewIcon from "@mui/icons-material/OpenInNew";
+import {
+  Autocomplete,
+  Box,
+  IconButton,
+  TextField,
+  Typography,
+} from "@mui/material";
+import { SyntheticEvent, useId, useState } from "react";
 import lookupAction from "./lookupAction";
 
 interface AutocompleteLookupProps {
@@ -28,7 +35,9 @@ export default function AutocompleteLookup({
   const [inputValue, setInputValue] = useState(initialValue?.label ?? "");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
-  const [options, setOptions] = useState(initialValue ? [initialValue] : []);
+  const [options, setOptions] = useState(
+    buildOptions(initialValue ? [initialValue] : [])
+  );
 
   const comboBoxId = "combo-box-" + useId();
 
@@ -37,12 +46,20 @@ export default function AutocompleteLookup({
       try {
         const results = await lookupAction(inputValue, field.lookup!);
 
+        if (results.length === 0) {
+          results.push({
+            id: 0,
+            label: "No matches",
+            noMatches: true,
+          });
+        }
+
         // Push the existing value to the results to avoid a warning that the current option does not exist in the list
         if (value && !results.some((r) => r.id === value.id)) {
           results.push(value);
         }
 
-        setOptions(results);
+        setOptions(buildOptions(results));
       } catch (e) {
         setError(`${e}`);
       }
@@ -61,26 +78,66 @@ export default function AutocompleteLookup({
   }
 
   /** Change of the actual backing value */
-  function handleChange(event: any, value: AutocompleteLookupOption | null) {
+  function handleChange(
+    event: SyntheticEvent<Element, Event>,
+    value: AutocompleteLookupOption | null
+  ) {
+    if (value?.noMatches) {
+      return;
+    }
+
+    if (value?.createNew) {
+      const url = "/edit/" + field.lookup?.table;
+      window.open(url, "_blank");
+      return;
+    }
+
     setValue(value);
 
     field.values ||= [];
     field.values[index] = value ? value.id : null; // Important to set null as undefined isn't sent over the wire
-    
+
     field.modified ||= [];
     field.modified[index] = true;
 
+    const options: AutocompleteLookupOption[] = [];
+
     if (value) {
-      setOptions([value]);
+      options.push(value);
     }
+
+    setOptions(buildOptions(options));
+  }
+
+  function handleClick_openMappingRow(option: AutocompleteLookupOption) {
+    const url = "/edit/" + field.lookup?.table + "/" + option.id;
+    window.open(url, "_blank");
+  }
+
+  // Helpers
+  function buildOptions(options: AutocompleteLookupOption[]) {
+    options.push({
+      id: 0,
+      label: "Create...",
+      createNew: true,
+    });
+
+    return options;
   }
 
   // Rendering
   return (
     <Box>
       <Autocomplete
+        componentsProps={{
+          popper: {
+            style: { width: "fit-content" },
+            placement: "bottom-start",
+          },
+        }}
         disablePortal
         filterOptions={(x) => x}
+        getOptionDisabled={(option) => Boolean(option.noMatches)}
         id={comboBoxId}
         inputValue={inputValue}
         isOptionEqualToValue={(option, value) => option.id === value.id}
@@ -95,7 +152,28 @@ export default function AutocompleteLookup({
         renderOption={(props, option, state) => {
           return (
             <li {...props} key={state.index}>
-              {option.label}
+              <Box
+                sx={{
+                  alignItems: "center",
+                  display: "flex",
+                  width: "100%",
+                  fontStyle: option.noMatches ? "italic" : "normal",
+                }}
+              >
+                <Box sx={{ flex: 1 }}>{option.label}</Box>
+                {!option.createNew && !option.noMatches && (
+                  <>
+                    <Box sx={{ width: 16 }}></Box>
+                    <IconButton
+                      aria-label="open"
+                      onClick={() => handleClick_openMappingRow(option)}
+                      size="small"
+                    >
+                      <OpenInNewIcon />
+                    </IconButton>
+                  </>
+                )}
+              </Box>
             </li>
           );
         }}
