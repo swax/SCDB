@@ -3,14 +3,12 @@
 import {
   TableEditConfig,
   TableEditField,
-} from "@/backend/edit/tableEditConfigs";
+} from "@/backend/edit/tableConfigs/tableEditTypes";
 import { useForceUpdate } from "@/frontend/hooks/useForceUpdate";
-import DeleteIcon from "@mui/icons-material/Delete";
 import ClearIcon from "@mui/icons-material/Clear";
 import {
   Box,
   Button,
-  Grid,
   IconButton,
   MenuItem,
   Select,
@@ -70,18 +68,18 @@ export default function EditClientPage({
     field: TableEditField,
     mappedIndex: number
   ) {
-    if (field.type != 'mapping' || !field.details.ids) return;
+    if (field.type != "mapping" || !field.mapping.ids) return;
 
-    const removedId = field.details.ids.splice(mappedIndex, 1);
-    field.details.removeIds ||= [];
-    field.details.removeIds.push(removedId[0]);
+    const removedId = field.mapping.ids.splice(mappedIndex, 1);
+    field.mapping.removeIds ||= [];
+    field.mapping.removeIds.push(removedId[0]);
 
-    field.details.fields.forEach((mappedField) => {
+    field.mapping.fields.forEach((mappedField) => {
       mappedField.values?.splice(mappedIndex, 1);
       mappedField.modified?.splice(mappedIndex, 1);
 
       if (mappedField.type === "lookup") {
-        mappedField.details.values?.splice(mappedIndex, 1);
+        mappedField.lookup.values?.splice(mappedIndex, 1);
       }
     });
 
@@ -89,13 +87,13 @@ export default function EditClientPage({
   }
 
   function handleClick_addMappingRow(field: TableEditField) {
-    if (field.type != 'mapping') return;
+    if (field.type != "mapping") return;
 
-    field.details.ids ||= [];
-    const minId = Math.min(...field.details.ids, 0);
-    field.details.ids.push(minId - 1);
+    field.mapping.ids ||= [];
+    const minId = Math.min(...field.mapping.ids, 0);
+    field.mapping.ids.push(minId - 1);
 
-    field.details.fields.forEach((mappedField) => {
+    field.mapping.fields.forEach((mappedField) => {
       mappedField.values?.push(undefined);
     });
 
@@ -121,7 +119,7 @@ export default function EditClientPage({
   function renderField(field: TableEditField, index: number, inTable = false) {
     return (
       <Box sx={{ marginTop: inTable ? 0 : 3 }}>
-        {["boolean", "string", "number"].includes(field.type) && (
+        {field.type == "string" && (
           <StringField
             field={field}
             index={index}
@@ -158,16 +156,16 @@ export default function EditClientPage({
             <Table>
               <TableHead>
                 <TableRow>
-                  {field.details?.fields.map((mappedField, fieldIndex) => (
+                  {field.mapping?.fields.map((mappedField, fieldIndex) => (
                     <TableCell key={fieldIndex}>{mappedField.name}</TableCell>
                   ))}
                   <TableCell />
                 </TableRow>
               </TableHead>
               <TableBody>
-                {field.details?.ids?.map((mappedId, mappedIndex) => (
+                {field.mapping?.ids?.map((mappedId, mappedIndex) => (
                   <TableRow key={mappedId}>
-                    {field.details?.fields.map((mappedField, fieldIndex) => (
+                    {field.mapping?.fields.map((mappedField, fieldIndex) => (
                       <TableCell key={fieldIndex}>
                         {renderField(mappedField, mappedIndex, true)}
                       </TableCell>

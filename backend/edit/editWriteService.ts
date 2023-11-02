@@ -1,10 +1,11 @@
 import prisma from "@/database/prisma";
-import tableEditConfigs, {
+import { slugifyForUrl } from "@/shared/string";
+import tableEditConfigs from "./tableConfigs/tableEditConfigs";
+import {
+  MappingEditField,
   TableEditConfig,
   TableEditField,
-  MappingEditField,
-} from "./tableEditConfigs";
-import { slugifyForUrl } from "@/shared/string";
+} from "./tableConfigs/tableEditTypes";
 
 const allowedColumnsByTable: { [key: string]: string[] } = {};
 const allowedMappingsByTable: { [key: string]: string[] } = {};
@@ -20,7 +21,7 @@ Object.keys(tableEditConfigs).forEach((table) => {
 
   allowedMappingsByTable[table] = tableEditConfigs[table].fields
     .filter(isMappingField)
-    .map((field) => field.details.table);
+    .map((field) => field.mapping.table);
 });
 
 /** Write field values to the database
@@ -61,7 +62,7 @@ async function writeFieldChanges(
         throw new Error(`Column ${field.column} not allowed`);
       }*/
       if (field.type == "slug") {
-        const columnValueToSlugify = dataParams[field.details.derivedFrom];
+        const columnValueToSlugify = dataParams[field.derivedFrom];
         if (!columnValueToSlugify) {
           return; // throw new Error(`Column ${field.details.derivedFrom} not found`);
         }
@@ -108,7 +109,7 @@ async function writeMappingChanges(
 
   for (let field of fields) {
     if (field.type != "mapping") continue;
-    const mapping = field.details;
+    const mapping = field.mapping;
 
     if (!allowedMappingsByTable[table].includes(mapping.table)) {
       throw new Error(`Edit mapping on ${mapping?.table} not allowed`);

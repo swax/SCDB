@@ -1,5 +1,5 @@
 import { AutocompleteLookupOption } from "@/backend/edit/lookupService";
-import { TableEditField, LookupEditField } from "@/backend/edit/tableEditConfigs";
+import { LookupEditField } from "@/backend/edit/tableConfigs/tableEditTypes";
 import useDebounce2 from "@/frontend/hooks/useDebounce2";
 import OpenInNewIcon from "@mui/icons-material/OpenInNew";
 import {
@@ -26,7 +26,7 @@ export default function AutocompleteLookup({
   const initialValue: AutocompleteLookupOption | null = field.values?.[index]
     ? {
         id: field.values[index] as number,
-        label: field.details?.values?.[index] ?? "(lookup init error)",
+        label: field.lookup?.values?.[index] ?? "(lookup init error)",
       }
     : null;
 
@@ -44,7 +44,7 @@ export default function AutocompleteLookup({
   useDebounce2(
     async () => {
       try {
-        const results = await lookupAction(inputValue, field.details);
+        const results = await lookupAction(inputValue, field.lookup);
 
         if (results.length === 0) {
           results.push({
@@ -87,7 +87,7 @@ export default function AutocompleteLookup({
     }
 
     if (value?.createNew) {
-      const url = "/edit/" + field.details?.table;
+      const url = "/edit/" + field.lookup?.table;
       window.open(url, "_blank");
       return;
     }
@@ -110,7 +110,7 @@ export default function AutocompleteLookup({
   }
 
   function handleClick_openMappingRow(option: AutocompleteLookupOption) {
-    const url = "/edit/" + field.details?.table + "/" + option.id;
+    const url = "/edit/" + field.lookup?.table + "/" + option.id;
     window.open(url, "_blank");
   }
 
