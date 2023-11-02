@@ -1,7 +1,7 @@
 import prisma from "@/database/prisma";
 import tableEditConfigs, {
   TableEditField,
-  TableLookupField,
+  LookupEditField,
 } from "./tableEditConfigs";
 
 export interface AutocompleteLookupOption {
@@ -13,21 +13,21 @@ export interface AutocompleteLookupOption {
 
 function validateFieldWithLookup(
   fields: TableEditField[],
-  lookupField: TableLookupField
+  lookupField: LookupEditField['details']
 ): boolean {
   return fields.some(
     (field) =>
-      (field.lookup &&
-        field.lookup.table === lookupField.table &&
-        field.lookup.column === lookupField.column) ||
-      (field.mapping &&
-        validateFieldWithLookup(field.mapping.fields, lookupField))
+      (field.type == "lookup" &&
+        field.details.table === lookupField.table &&
+        field.details.column === lookupField.column) ||
+      (field.type == 'mapping' &&
+        validateFieldWithLookup(field.details.fields, lookupField))
   );
 }
 
 export default async function lookupTermsInTable(
   terms: string,
-  lookupField: TableLookupField
+  lookupField: LookupEditField['details']
 ): Promise<AutocompleteLookupOption[]> {
   const allowedLookup = Object.keys(tableEditConfigs).some((key) =>
     validateFieldWithLookup(tableEditConfigs[key].fields, lookupField)

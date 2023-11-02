@@ -56,23 +56,23 @@ export async function setFieldValues(config: TableEditConfig, id: number) {
 function addFieldsToSelect(config: TableEditConfig, selectParams: any) {
   // Add fields to the select
   config.fields.forEach((field) => {
-    if (field.type === "mapping" && field.mapping) {
+    if (field.type === "mapping" && field.details) {
       const selectMany = {
         select: {
           id: true,
         },
       };
 
-      addFieldsToSelect(field.mapping, selectMany.select);
+      addFieldsToSelect(field.details, selectMany.select);
 
-      selectParams[field.mapping.table + "s"] = selectMany;
-    } else if (field.type === "lookup" && field.lookup) {
+      selectParams[field.details.table + "s"] = selectMany;
+    } else if (field.type === "lookup" && field.details) {
       const selectOne = {
         select: {
-          [field.lookup.column]: true,
+          [field.details.column]: true,
         },
       };
-      selectParams[field.lookup.table] = selectOne;
+      selectParams[field.details.table] = selectOne;
     }
 
     if (field.column) {
@@ -87,19 +87,19 @@ function mapResultsToConfig(dbResults: any, fields: TableEditField[]) {
       if (field.column == key) {
         field.values ||= [];
         field.values.push(value);
-      } else if (field.lookup && field.lookup.table === key && value) {
-        const lookupValue = (value as any)[field.lookup.column];
-        field.lookup.values ||= [];
-        field.lookup.values.push(lookupValue);
+      } else if (field.type == 'lookup' && field.details.table === key && value) {
+        const lookupValue = (value as any)[field.details.column];
+        field.details.values ||= [];
+        field.details.values.push(lookupValue);
       } else if (
-        field.mapping &&
-        field.mapping?.table + "s" === key &&
+        field.type == 'mapping' &&
+        field.details?.table + "s" === key &&
         Array.isArray(value)
       ) {
-        const mappingFields = field.mapping.fields;
+        const mappingFields = field.details.fields;
         value.forEach((v) => {
-          field.mapping!.ids ||= [];
-          field.mapping!.ids.push(v.id);
+          field.details!.ids ||= [];
+          field.details!.ids.push(v.id);
           mapResultsToConfig(v, mappingFields);
         });
       }
