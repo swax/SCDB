@@ -2,22 +2,23 @@ export type BaseEditField = {
   name: string;
   column?: string;
   helperText?: string;
-  values?: unknown[];
   modified?: boolean[];
+};
+
+export type DateEditField = BaseEditField & {
+  type: "date";
+  values?: Nullable<Date>[];
 };
 
 export type EnumEditField = BaseEditField & {
   type: "enum";
   enum: string;
-};
-
-export type StringEditField = BaseEditField & {
-  type: "string";
-  multiline?: boolean;
+  values?: Nullable<string>[];
 };
 
 export type LookupEditField = BaseEditField & {
   type: "lookup";
+  values?: Nullable<number>[];
   lookup: {
     table: string;
     column: string;
@@ -27,6 +28,7 @@ export type LookupEditField = BaseEditField & {
 
 export type MappingEditField = BaseEditField & {
   type: "mapping";
+  values?: Nullable<number>[];
   mapping: {
     table: string;
     ids?: number[];
@@ -38,9 +40,17 @@ export type MappingEditField = BaseEditField & {
 export type SlugEditField = BaseEditField & {
   type: "slug";
   derivedFrom: string;
+  values?: Nullable<number>[];
+};
+
+export type StringEditField = BaseEditField & {
+  type: "string";
+  multiline?: boolean;
+  values?: Nullable<string>[];
 };
 
 export type TableEditField =
+  | DateEditField
   | EnumEditField
   | LookupEditField
   | MappingEditField

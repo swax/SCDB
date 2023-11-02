@@ -84,7 +84,7 @@ function mapResultsToConfig(dbResults: any, fields: TableEditField[]) {
     fields.forEach((field) => {
       if (field.column == key) {
         field.values ||= [];
-        field.values.push(value);
+        field.values.push(value as any);
       } else if (
         field.type == "lookup" &&
         field.lookup.table === key &&
