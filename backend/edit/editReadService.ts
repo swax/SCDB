@@ -1,9 +1,10 @@
 import prisma from "@/database/prisma";
 import { notFound } from "next/navigation";
-import tableEditConfigs, {
+import tableEditConfigs from "./tableConfigs/tableEditConfigs";
+import {
   TableEditConfig,
   TableEditField,
-} from "./tableEditConfigs";
+} from "./tableConfigs/tableEditTypes";
 
 export function findAndBuildConfig(table: string) {
   const config = tableEditConfigs[table];
@@ -56,23 +57,23 @@ export async function setFieldValues(config: TableEditConfig, id: number) {
 function addFieldsToSelect(config: TableEditConfig, selectParams: any) {
   // Add fields to the select
   config.fields.forEach((field) => {
-    if (field.type === "mapping" && field.details) {
+    if (field.type === "mapping" && field.mapping) {
       const selectMany = {
         select: {
           id: true,
         },
       };
 
-      addFieldsToSelect(field.details, selectMany.select);
+      addFieldsToSelect(field.mapping, selectMany.select);
 
-      selectParams[field.details.table + "s"] = selectMany;
-    } else if (field.type === "lookup" && field.details) {
+      selectParams[field.mapping.table + "s"] = selectMany;
+    } else if (field.type === "lookup" && field.lookup) {
       const selectOne = {
         select: {
-          [field.details.column]: true,
+          [field.lookup.column]: true,
         },
       };
-      selectParams[field.details.table] = selectOne;
+      selectParams[field.lookup.table] = selectOne;
     }
 
     if (field.column) {
@@ -87,19 +88,19 @@ function mapResultsToConfig(dbResults: any, fields: TableEditField[]) {
       if (field.column == key) {
         field.values ||= [];
         field.values.push(value);
-      } else if (field.type == 'lookup' && field.details.table === key && value) {
-        const lookupValue = (value as any)[field.details.column];
-        field.details.values ||= [];
-        field.details.values.push(lookupValue);
+      } else if (field.type == 'lookup' && field.lookup.table === key && value) {
+        const lookupValue = (value as any)[field.lookup.column];
+        field.lookup.values ||= [];
+        field.lookup.values.push(lookupValue);
       } else if (
         field.type == 'mapping' &&
-        field.details?.table + "s" === key &&
+        field.mapping?.table + "s" === key &&
         Array.isArray(value)
       ) {
-        const mappingFields = field.details.fields;
+        const mappingFields = field.mapping.fields;
         value.forEach((v) => {
-          field.details!.ids ||= [];
-          field.details!.ids.push(v.id);
+          field.mapping!.ids ||= [];
+          field.mapping!.ids.push(v.id);
           mapResultsToConfig(v, mappingFields);
         });
       }
