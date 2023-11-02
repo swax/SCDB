@@ -1,5 +1,5 @@
-import { useReducer } from 'react';
+import { useReducer } from "react";
 
 export function useForceUpdate() {
-    return useReducer((x: number) => x + 1, 0)[1];
+  return useReducer((x: number) => x + 1, 0)[1];
 }

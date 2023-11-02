@@ -6,6 +6,7 @@
     "compile": "tsc",
     "run:dev": "next dev",
     "lint:next": "next lint",
+    "prettier:write": "npx prettier --write .",
     "build:release": "next build",
     "run:release": "next start",
     "db:push": "npx dotenv -e .env.local -- prisma db push",
@@ -37,6 +38,7 @@
   },
   "devDependencies": {
     "dotenv-cli": "7.3.0",
+    "prettier": "3.0.3",
     "prisma": "5.5.2"
   }
 }

@@ -36,7 +36,7 @@ export default function AutocompleteLookup({
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [options, setOptions] = useState(
-    buildOptions(initialValue ? [initialValue] : [])
+    buildOptions(initialValue ? [initialValue] : []),
   );
 
   const comboBoxId = "combo-box-" + useId();
@@ -66,7 +66,7 @@ export default function AutocompleteLookup({
       setLoading(false);
     },
     500,
-    [inputValue]
+    [inputValue],
   );
 
   // Event Handlers
@@ -80,7 +80,7 @@ export default function AutocompleteLookup({
   /** Change of the actual backing value */
   function handleChange(
     event: SyntheticEvent<Element, Event>,
-    value: AutocompleteLookupOption | null
+    value: AutocompleteLookupOption | null,
   ) {
     if (value?.noMatches) {
       return;

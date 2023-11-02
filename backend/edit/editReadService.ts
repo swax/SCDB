@@ -1,10 +1,7 @@
 import prisma from "@/database/prisma";
 import { notFound } from "next/navigation";
 import tableEditConfigs from "./tableConfigs/tableEditConfigs";
-import {
-  TableEditConfig,
-  TableEditField,
-} from "./tableConfigs/tableEditTypes";
+import { TableEditConfig, TableEditField } from "./tableConfigs/tableEditTypes";
 
 export function findAndBuildConfig(table: string) {
   const config = tableEditConfigs[table];
@@ -88,12 +85,16 @@ function mapResultsToConfig(dbResults: any, fields: TableEditField[]) {
       if (field.column == key) {
         field.values ||= [];
         field.values.push(value);
-      } else if (field.type == 'lookup' && field.lookup.table === key && value) {
+      } else if (
+        field.type == "lookup" &&
+        field.lookup.table === key &&
+        value
+      ) {
         const lookupValue = (value as any)[field.lookup.column];
         field.lookup.values ||= [];
         field.lookup.values.push(lookupValue);
       } else if (
-        field.type == 'mapping' &&
+        field.type == "mapping" &&
         field.mapping?.table + "s" === key &&
         Array.isArray(value)
       ) {

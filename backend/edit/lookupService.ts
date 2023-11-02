@@ -1,9 +1,6 @@
 import prisma from "@/database/prisma";
 import tableEditConfigs from "./tableConfigs/tableEditConfigs";
-import {
-  LookupEditField,
-  TableEditField,
-} from "./tableConfigs/tableEditTypes";
+import { LookupEditField, TableEditField } from "./tableConfigs/tableEditTypes";
 
 export interface AutocompleteLookupOption {
   id: number;
@@ -14,29 +11,29 @@ export interface AutocompleteLookupOption {
 
 function validateFieldWithLookup(
   fields: TableEditField[],
-  lookupField: LookupEditField['lookup']
+  lookupField: LookupEditField["lookup"],
 ): boolean {
   return fields.some(
     (field) =>
       (field.type == "lookup" &&
         field.lookup.table === lookupField.table &&
         field.lookup.column === lookupField.column) ||
-      (field.type == 'mapping' &&
-        validateFieldWithLookup(field.mapping.fields, lookupField))
+      (field.type == "mapping" &&
+        validateFieldWithLookup(field.mapping.fields, lookupField)),
   );
 }
 
 export default async function lookupTermsInTable(
   terms: string,
-  lookupField: LookupEditField['lookup']
+  lookupField: LookupEditField["lookup"],
 ): Promise<AutocompleteLookupOption[]> {
   const allowedLookup = Object.keys(tableEditConfigs).some((key) =>
-    validateFieldWithLookup(tableEditConfigs[key].fields, lookupField)
+    validateFieldWithLookup(tableEditConfigs[key].fields, lookupField),
   );
 
   if (!allowedLookup) {
     throw new Error(
-      `Lookup on ${lookupField.table}/${lookupField.column} not allowed`
+      `Lookup on ${lookupField.table}/${lookupField.column} not allowed`,
     );
   }
 
