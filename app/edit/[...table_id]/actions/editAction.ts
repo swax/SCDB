@@ -7,5 +7,5 @@ export default async function editAction(
   editConfig: TableEditConfig,
   id: number,
 ) {
-  await writeFieldValues(editConfig, id);
+  return await writeFieldValues(editConfig, id);
 }

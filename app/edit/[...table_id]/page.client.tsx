@@ -24,6 +24,7 @@ import { $Enums } from "@prisma/client";
 import { useState } from "react";
 import editAction from "./actions/editAction";
 import AutocompleteLookup from "./components/AutocompleteLookup";
+import DateField2 from "./components/DateField2";
 import StringField from "./components/StringField";
 
 interface EditClientPageProps {
@@ -43,7 +44,7 @@ export default function EditClientPage({
   function handleChange_enumField(
     field: TableEditField,
     index: number,
-    value: string,
+    value: Nullable<string>,
   ) {
     setFieldValue(field, index, value);
 
@@ -53,13 +54,20 @@ export default function EditClientPage({
   async function handleClick_edit() {
     try {
       setLoading(true);
-      await editAction(editConfig, id);
-      setLoading(false);
+      const rowId = await editAction(editConfig, id);
 
-      // refresh page
-      window.location.reload();
+      // If update refresh
+      if (id) {
+        window.location.reload();
+      }
+      // Else navigate to created row
+      else {
+        const url = `/edit/${editConfig.table}/${rowId}`;
+        window.location.href = url;
+      }
     } catch (e) {
       alert(e);
+    } finally {
       setLoading(false);
     }
   }
@@ -94,7 +102,7 @@ export default function EditClientPage({
     field.mapping.ids.push(minId - 1);
 
     field.mapping.fields.forEach((mappedField) => {
-      mappedField.values?.push(undefined);
+      mappedField.values?.push(null);
     });
 
     forceUpdate();
@@ -121,6 +129,15 @@ export default function EditClientPage({
       <Box sx={{ marginTop: inTable ? 0 : 3 }}>
         {field.type == "string" && (
           <StringField
+            field={field}
+            index={index}
+            inTable={inTable}
+            loading={loading}
+            setFieldValue={setFieldValue}
+          />
+        )}
+        {field.type == "date" && (
+          <DateField2
             field={field}
             index={index}
             inTable={inTable}

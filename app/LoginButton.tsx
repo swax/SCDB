@@ -15,7 +15,7 @@ import { useState } from "react";
 export default function LoginButton() {
   // Hooks
   const { data: session, status } = useSession();
-  const [anchorEl, setAnchorEl] = useState<Element | null>(null);
+  const [anchorEl, setAnchorEl] = useState<Nullable<Element>>(null);
 
   // Event Handlers
   function handleClick_accountMenu(event: React.MouseEvent) {

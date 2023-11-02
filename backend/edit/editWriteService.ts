@@ -40,6 +40,8 @@ export async function writeFieldValues(config: TableEditConfig, id: number) {
   await writeMappingChanges(config.table, rowId, config.fields);
 
   // TODO: Write audit record
+
+  return rowId;
 }
 
 async function writeFieldChanges(
@@ -91,7 +93,7 @@ async function writeFieldChanges(
       data: dataParams,
     });
 
-    return createdRow.id;
+    return createdRow.id as number;
   }
 }
 

@@ -1,10 +1,10 @@
-import "./globals.css";
+import { Container } from "@mui/material";
 import type { Metadata, Viewport } from "next";
 import { Inter } from "next/font/google";
-import ThemeRegistry from "./ThemeRegistry";
-import ResponsiveAppBar from "./ResponsiveAppBar";
 import { NextAuthProvider } from "./NextAuthProvider";
-import { Container } from "@mui/material";
+import ResponsiveAppBar from "./ResponsiveAppBar";
+import ThemeRegistry from "./ThemeRegistry";
+import "./globals.css";
 
 const inter = Inter({ subsets: ["latin"] });
 

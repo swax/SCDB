@@ -23,7 +23,7 @@ export default function AutocompleteLookup({
   index,
   inTable,
 }: AutocompleteLookupProps) {
-  const initialValue: AutocompleteLookupOption | null = field.values?.[index]
+  const initialValue: Nullable<AutocompleteLookupOption> = field.values?.[index]
     ? {
         id: field.values[index] as number,
         label: field.lookup?.values?.[index] ?? "(lookup init error)",
@@ -80,7 +80,7 @@ export default function AutocompleteLookup({
   /** Change of the actual backing value */
   function handleChange(
     event: SyntheticEvent<Element, Event>,
-    value: AutocompleteLookupOption | null,
+    value: Nullable<AutocompleteLookupOption>,
   ) {
     if (value?.noMatches) {
       return;
