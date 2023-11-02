@@ -43,7 +43,7 @@ export default function EditClientPage({
   function handleChange_enumField(
     field: TableEditField,
     index: number,
-    value: string
+    value: string,
   ) {
     setFieldValue(field, index, value);
 
@@ -66,7 +66,7 @@ export default function EditClientPage({
 
   function handleClick_deleteMappingRow(
     field: TableEditField,
-    mappedIndex: number
+    mappedIndex: number,
   ) {
     if (field.type != "mapping" || !field.mapping.ids) return;
 

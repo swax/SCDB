@@ -6,7 +6,7 @@ import { UseDebounceReturn } from "react-use/lib/useDebounce";
 export default function useDebounce2(
   fn: Function,
   ms?: number,
-  deps?: DependencyList
+  deps?: DependencyList,
 ): UseDebounceReturn {
   const firstRun = useRef(true);
 
@@ -19,6 +19,6 @@ export default function useDebounce2(
       fn();
     },
     ms,
-    deps
+    deps,
   );
 }

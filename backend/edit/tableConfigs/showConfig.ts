@@ -1,3 +1,4 @@
+
 import { TableEditConfig } from "./tableEditTypes";
 
 const showConfig: TableEditConfig = {

@@ -1,7 +1,7 @@
 interface ProcessEnv extends NodeJS.ProcessEnv {
-    readonly GOOGLE_CLIENT_ID: string;
-    readonly GOOGLE_CLIENT_SECRET: string;
-    readonly NEXTAUTH_SECRET: string;
+  readonly GOOGLE_CLIENT_ID: string;
+  readonly GOOGLE_CLIENT_SECRET: string;
+  readonly NEXTAUTH_SECRET: string;
 }
 
 // todo easier way to force cast?

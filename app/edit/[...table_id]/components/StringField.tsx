@@ -1,4 +1,7 @@
-import { StringEditField, TableEditField } from "@/backend/edit/tableConfigs/tableEditTypes";
+import {
+  StringEditField,
+  TableEditField,
+} from "@/backend/edit/tableConfigs/tableEditTypes";
 import { useForceUpdate } from "@/frontend/hooks/useForceUpdate";
 import { TextField } from "@mui/material";
 
@@ -24,7 +27,7 @@ export default function StringField({
   function handleChange_field(
     field: StringEditField,
     index: number,
-    value: string
+    value: string,
   ) {
     setFieldValue(field, index, value);
 

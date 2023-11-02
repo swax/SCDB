@@ -1,6 +1,4 @@
-import {
-  getTableEditConfig
-} from "@/backend/edit/editReadService";
+import { getTableEditConfig } from "@/backend/edit/editReadService";
 import EditClientPage from "./page.client";
 
 interface EditTablePageProps {

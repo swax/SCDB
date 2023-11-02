@@ -47,14 +47,14 @@ async function writeFieldChanges(
   id: number,
   fields: TableEditField[],
   index: number,
-  tableRelation: object
+  tableRelation: object,
 ) {
   const dataParams: any = {};
 
   fields
     .filter(
       (field) =>
-        field.column && (field.modified?.[index] || field.type == "slug")
+        field.column && (field.modified?.[index] || field.type == "slug"),
     )
     .forEach((field) => {
       // TODO: Validate columns are in master config for fields and lookups
@@ -98,7 +98,7 @@ async function writeFieldChanges(
 async function writeMappingChanges(
   table: string,
   id: number,
-  fields: TableEditField[]
+  fields: TableEditField[],
 ) {
   const dynamicPrisma = prisma as any;
 
@@ -149,7 +149,7 @@ async function writeMappingChanges(
           mappingId,
           mapping.fields,
           index,
-          tableRelation
+          tableRelation,
         );
       }
       index++;

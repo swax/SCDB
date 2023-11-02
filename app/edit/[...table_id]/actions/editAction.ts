@@ -5,7 +5,7 @@ import { TableEditConfig } from "@/backend/edit/tableConfigs/tableEditTypes";
 
 export default async function editAction(
   editConfig: TableEditConfig,
-  id: number
+  id: number,
 ) {
   await writeFieldValues(editConfig, id);
 }
