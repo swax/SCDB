@@ -2,10 +2,16 @@ import prisma from "@/database/prisma";
 import tableEditConfigs, {
   TableEditConfig,
   TableEditField,
+  MappingEditField,
 } from "./tableEditConfigs";
+import { slugifyForUrl } from "@/shared/string";
 
 const allowedColumnsByTable: { [key: string]: string[] } = {};
 const allowedMappingsByTable: { [key: string]: string[] } = {};
+
+function isMappingField(e: TableEditField): e is MappingEditField {
+  return e.type === "mapping";
+}
 
 Object.keys(tableEditConfigs).forEach((table) => {
   allowedColumnsByTable[table] = tableEditConfigs[table].fields
@@ -13,8 +19,8 @@ Object.keys(tableEditConfigs).forEach((table) => {
     .map((field) => field.column!);
 
   allowedMappingsByTable[table] = tableEditConfigs[table].fields
-    .filter((field) => field.mapping)
-    .map((field) => field.mapping!.table);
+    .filter(isMappingField)
+    .map((field) => field.details.table);
 });
 
 /** Write field values to the database
@@ -28,9 +34,9 @@ export async function writeFieldValues(config: TableEditConfig, id: number) {
     throw new Error(`Table ${config.table} not allowed`);
   }
 
-  await writeFieldChanges(config.table, id, config.fields, 0, {});
+  const rowId = await writeFieldChanges(config.table, id, config.fields, 0, {});
 
-  await writeMappingChanges(config.table, id, config.fields);
+  await writeMappingChanges(config.table, rowId, config.fields);
 
   // TODO: Write audit record
 }
@@ -45,24 +51,47 @@ async function writeFieldChanges(
   const dataParams: any = {};
 
   fields
-    .filter((field) => field.column && field.modified?.[index])
+    .filter(
+      (field) =>
+        field.column && (field.modified?.[index] || field.type == "slug")
+    )
     .forEach((field) => {
       // TODO: Validate columns are in master config for fields and lookups
       /* if (!allowedColumns.includes(field.column!)) {
         throw new Error(`Column ${field.column} not allowed`);
       }*/
-      dataParams[field.column!] = field.values![index];
+      if (field.type == "slug") {
+        const columnValueToSlugify = dataParams[field.details.derivedFrom];
+        if (!columnValueToSlugify) {
+          return; // throw new Error(`Column ${field.details.derivedFrom} not found`);
+        }
+        dataParams[field.column!] = slugifyForUrl(columnValueToSlugify);
+      } else {
+        dataParams[field.column!] = field.values![index];
+      }
     });
 
   const dynamicPrisma = prisma as any;
 
-  await dynamicPrisma[table].update({
-    where: {
-      id,
-      ...tableRelation
-    },
-    data: dataParams,
-  });
+  // Update row
+  if (id) {
+    await dynamicPrisma[table].update({
+      where: {
+        id,
+        ...tableRelation,
+      },
+      data: dataParams,
+    });
+    return id;
+  }
+  // Create row
+  else {
+    const createdRow = await dynamicPrisma[table].create({
+      data: dataParams,
+    });
+
+    return createdRow.id;
+  }
 }
 
 async function writeMappingChanges(
@@ -78,8 +107,8 @@ async function writeMappingChanges(
   };
 
   for (let field of fields) {
-    const mapping = field.mapping;
-    if (!mapping) continue;
+    if (field.type != "mapping") continue;
+    const mapping = field.details;
 
     if (!allowedMappingsByTable[table].includes(mapping.table)) {
       throw new Error(`Edit mapping on ${mapping?.table} not allowed`);

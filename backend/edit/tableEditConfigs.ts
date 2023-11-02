@@ -1,33 +1,49 @@
-type TableEditFieldType =
-  | "boolean"
-  | "enum"
-  | "lookup"
-  | "mapping"
-  | "number"
-  | "string";
-
-export interface TableLookupField {
-  table: string;
-  column: string;
-  values?: string[];
-}
-
-export interface TableEditField {
+export type BaseEditField = {
   name: string;
   column?: string;
-  type: TableEditFieldType;
   helperText?: string;
   values?: unknown[];
   modified?: boolean[];
-  lookup?: TableLookupField;
-  mapping?: {
+
+  multiline?: boolean;
+  enum?: string;
+};
+
+export type LookupEditField = BaseEditField & {
+  type: "lookup";
+  details: {
+    table: string;
+    column: string;
+    values?: string[];
+  };
+};
+
+export type MappingEditField = BaseEditField & {
+  type: "mapping";
+  details: {
     table: string;
     ids?: number[];
     removeIds?: number[];
     fields: TableEditField[];
   };
-  enum?: string;
-}
+};
+
+export type SlugEditField = BaseEditField & {
+  type: "slug";
+  details: {
+    derivedFrom: string;
+  };
+};
+
+export type SimpleEditField = BaseEditField & {
+  type: "boolean" | "enum" | "number" | "string";
+};
+
+export type TableEditField =
+  | SimpleEditField
+  | LookupEditField
+  | MappingEditField
+  | SlugEditField;
 
 export interface TableEditConfig {
   table: string;
@@ -53,6 +69,14 @@ const tableEditConfigs: TableEditConfigs = {
         column: "description",
         type: "string",
       },
+      {
+        name: "Slug",
+        column: "slug",
+        type: "slug",
+        details: {
+          derivedFrom: "name",
+        },
+      },
     ],
   },
   sketch: {
@@ -64,6 +88,14 @@ const tableEditConfigs: TableEditConfigs = {
         type: "string",
       },
       {
+        name: "Slug",
+        column: "slug",
+        type: "slug",
+        details: {
+          derivedFrom: "title",
+        },
+      },
+      {
         name: "Teaser",
         column: "teaser",
         type: "string",
@@ -73,59 +105,38 @@ const tableEditConfigs: TableEditConfigs = {
         name: "Show",
         column: "show_id",
         type: "lookup",
-        lookup: {
+        details: {
           table: "show",
           column: "name",
         },
       },
       {
-        name: "Recurring Sketch",
-        column: "recurring_sketch_id",
-        type: "lookup",
-        lookup: {
-          table: "recurring_sketch",
-          column: "name",
-        },
+        name: "Description",
+        column: "description",
+        type: "string",
+        multiline: true,
       },
       {
-        name: "Tags",
+        name: "Characters",
         type: "mapping",
-        mapping: {
-          table: "sketch_tag",
-          fields: [
-            {
-              name: "Tag",
-              column: "tag_id",
-              type: "lookup",
-              lookup: {
-                table: "tag",
-                column: "name",
-              },
-            },
-          ],
-        },
-      },
-      {
-        name: "Participants",
-        type: "mapping",
-        mapping: {
+        details: {
           table: "sketch_participant",
           fields: [
-            {
-              name: "Person",
-              column: "person_id",
-              type: "lookup",
-              lookup: {
-                table: "person",
-                column: "name",
-              },
-            },
             {
               name: "Character",
               column: "character_id",
               type: "lookup",
-              lookup: {
+              details: {
                 table: "character",
+                column: "name",
+              },
+            },
+            {
+              name: "Actor",
+              column: "person_id",
+              type: "lookup",
+              details: {
+                table: "person",
                 column: "name",
               },
             },
@@ -139,8 +150,36 @@ const tableEditConfigs: TableEditConfigs = {
               name: "Description",
               column: "description",
               type: "string",
+              multiline: true,
             },
           ],
+        },
+      },
+      {
+        name: "Tags",
+        type: "mapping",
+        details: {
+          table: "sketch_tag",
+          fields: [
+            {
+              name: "Tag",
+              column: "tag_id",
+              type: "lookup",
+              details: {
+                table: "tag",
+                column: "name",
+              },
+            },
+          ],
+        },
+      },
+      {
+        name: "Recurring Sketch",
+        column: "recurring_sketch_id",
+        type: "lookup",
+        details: {
+          table: "recurring_sketch",
+          column: "name",
         },
       },
     ],

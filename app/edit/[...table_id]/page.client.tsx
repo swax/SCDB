@@ -5,9 +5,12 @@ import {
   TableEditField,
 } from "@/backend/edit/tableEditConfigs";
 import { useForceUpdate } from "@/frontend/hooks/useForceUpdate";
+import DeleteIcon from "@mui/icons-material/Delete";
+import ClearIcon from "@mui/icons-material/Clear";
 import {
   Box,
   Button,
+  Grid,
   IconButton,
   MenuItem,
   Select,
@@ -17,13 +20,13 @@ import {
   TableCell,
   TableHead,
   TableRow,
-  TextField,
+  Typography,
 } from "@mui/material";
 import { $Enums } from "@prisma/client";
 import { useState } from "react";
-import AutocompleteLookup from "./AutocompleteLookup";
-import editAction from "./editAction";
-import DeleteIcon from "@mui/icons-material/Delete";
+import editAction from "./actions/editAction";
+import AutocompleteLookup from "./components/AutocompleteLookup";
+import StringField from "./components/StringField";
 
 interface EditClientPageProps {
   editConfig: TableEditConfig;
@@ -39,16 +42,12 @@ export default function EditClientPage({
   const [loading, setLoading] = useState(false);
 
   // Event Handlers
-  function handleChange_field(
+  function handleChange_enumField(
     field: TableEditField,
     index: number,
     value: string
   ) {
-    field.values ||= [];
-    field.values[index] = value;
-
-    field.modified ||= [];
-    field.modified[index] = true;
+    setFieldValue(field, index, value);
 
     forceUpdate();
   }
@@ -71,29 +70,32 @@ export default function EditClientPage({
     field: TableEditField,
     mappedIndex: number
   ) {
-    if (!field.mapping || !field.mapping.ids) return;
+    if (field.type != 'mapping' || !field.details.ids) return;
 
-    const removedId = field.mapping.ids.splice(mappedIndex, 1);
-    field.mapping.removeIds ||= [];
-    field.mapping.removeIds.push(removedId[0]);
+    const removedId = field.details.ids.splice(mappedIndex, 1);
+    field.details.removeIds ||= [];
+    field.details.removeIds.push(removedId[0]);
 
-    field.mapping.fields.forEach((mappedField) => {
+    field.details.fields.forEach((mappedField) => {
       mappedField.values?.splice(mappedIndex, 1);
       mappedField.modified?.splice(mappedIndex, 1);
-      mappedField.lookup?.values?.splice(mappedIndex, 1);
+
+      if (mappedField.type === "lookup") {
+        mappedField.details.values?.splice(mappedIndex, 1);
+      }
     });
 
     forceUpdate();
   }
 
   function handleClick_addMappingRow(field: TableEditField) {
-    if (!field.mapping) return;
+    if (field.type != 'mapping') return;
 
-    field.mapping.ids ||= [];
-    const minId = Math.min(...field.mapping.ids, 0);
-    field.mapping.ids.push(minId - 1);
+    field.details.ids ||= [];
+    const minId = Math.min(...field.details.ids, 0);
+    field.details.ids.push(minId - 1);
 
-    field.mapping.fields.forEach((mappedField) => {
+    field.details.fields.forEach((mappedField) => {
       mappedField.values?.push(undefined);
     });
 
@@ -102,25 +104,39 @@ export default function EditClientPage({
 
   function handleClick_delete() {}
 
+  // Helpers
+  function setFieldValue(field: TableEditField, index: number, value: any) {
+    field.values ||= [];
+    field.values[index] = value;
+
+    field.modified ||= [];
+    field.modified[index] = true;
+  }
+
+  function capitalizeFirstLetter(string: string) {
+    return string.charAt(0).toUpperCase() + string.slice(1);
+  }
+
   // Rendering
   function renderField(field: TableEditField, index: number, inTable = false) {
     return (
       <Box sx={{ marginTop: inTable ? 0 : 3 }}>
         {["boolean", "string", "number"].includes(field.type) && (
-          <TextField
-            disabled={loading}
-            helperText={field.helperText}
-            label={inTable ? "" : field.name}
-            onChange={(e) => handleChange_field(field, index, e.target.value)}
-            value={field.values?.[index] || ""}
-            variant="standard"
+          <StringField
+            field={field}
+            index={index}
+            inTable={inTable}
+            loading={loading}
+            setFieldValue={setFieldValue}
           />
         )}
         {field.type === "enum" && (
           <Select
             fullWidth
             label={inTable ? "" : field.name}
-            onChange={(e) => handleChange_field(field, index, e.target.value)}
+            onChange={(e) =>
+              handleChange_enumField(field, index, e.target.value)
+            }
             size="small"
             value={(field.values?.[index] || "") as string}
           >
@@ -142,16 +158,16 @@ export default function EditClientPage({
             <Table>
               <TableHead>
                 <TableRow>
-                  {field.mapping?.fields.map((mappedField, fieldIndex) => (
+                  {field.details?.fields.map((mappedField, fieldIndex) => (
                     <TableCell key={fieldIndex}>{mappedField.name}</TableCell>
                   ))}
                   <TableCell />
                 </TableRow>
               </TableHead>
               <TableBody>
-                {field.mapping?.ids?.map((mappedId, mappedIndex) => (
+                {field.details?.ids?.map((mappedId, mappedIndex) => (
                   <TableRow key={mappedId}>
-                    {field.mapping?.fields.map((mappedField, fieldIndex) => (
+                    {field.details?.fields.map((mappedField, fieldIndex) => (
                       <TableCell key={fieldIndex}>
                         {renderField(mappedField, mappedIndex, true)}
                       </TableCell>
@@ -163,7 +179,7 @@ export default function EditClientPage({
                           handleClick_deleteMappingRow(field, mappedIndex)
                         }
                       >
-                        <DeleteIcon />
+                        <ClearIcon />
                       </IconButton>
                     </TableCell>
                   </TableRow>
@@ -171,7 +187,6 @@ export default function EditClientPage({
               </TableBody>
             </Table>
             <Button
-              color="success"
               disabled={loading}
               onClick={() => handleClick_addMappingRow(field)}
               sx={{ marginLeft: 2, marginTop: 2 }}
@@ -187,12 +202,19 @@ export default function EditClientPage({
 
   return (
     <>
-      <Box>{editConfig.operation + " " + editConfig.table}</Box>
+      <Typography variant="h5">
+        {capitalizeFirstLetter(editConfig.operation || "") +
+          " " +
+          capitalizeFirstLetter(editConfig.table)}
+      </Typography>
       {editConfig.fields.map((field, i) => (
         <Box key={i}>{renderField(field, 0)}</Box>
       ))}
-
-      <Stack spacing={4} sx={{ marginTop: 4 }}>
+      <Stack
+        direction="row"
+        spacing={2}
+        sx={{ alignItems: "start", marginTop: 4 }}
+      >
         <Button
           color="success"
           disabled={loading}
