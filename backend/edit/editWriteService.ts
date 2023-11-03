@@ -158,3 +158,13 @@ async function writeMappingChanges(
     }
   }
 }
+
+export async function deleteRow(config: TableEditConfig, id: number) {
+  const dynamicPrisma = prisma as any;
+
+  await dynamicPrisma[config.table].delete({
+    where: {
+      id,
+    },
+  });
+}

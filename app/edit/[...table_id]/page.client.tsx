@@ -26,6 +26,7 @@ import editAction from "./actions/editAction";
 import AutocompleteLookup from "./components/AutocompleteLookup";
 import DateField2 from "./components/DateField2";
 import StringField from "./components/StringField";
+import deleteAction from "./actions/deleteAction";
 
 interface EditClientPageProps {
   editConfig: TableEditConfig;
@@ -72,6 +73,22 @@ export default function EditClientPage({
     }
   }
 
+  async function handleClick_delete() {
+    try {
+      if (!confirm("Are you sure you want to delete this entry?")) return;
+
+      setLoading(true);
+      await deleteAction(editConfig, id);
+
+      const url = `/edit/${editConfig.table}`;
+      window.location.href = url;
+    } catch (e) {
+      alert(e);
+    } finally {
+      setLoading(false);
+    }
+  }
+
   function handleClick_deleteMappingRow(
     field: TableEditField,
     mappedIndex: number,
@@ -107,8 +124,6 @@ export default function EditClientPage({
 
     forceUpdate();
   }
-
-  function handleClick_delete() {}
 
   // Helpers
   function setFieldValue(field: TableEditField, index: number, value: any) {
@@ -236,16 +251,22 @@ export default function EditClientPage({
           onClick={() => handleClick_edit()}
           variant="outlined"
         >
-          Save Changes
+          {editConfig.operation == "update"
+            ? "Save Changes"
+            : editConfig.operation == "create"
+            ? "Create"
+            : "unknown"}
         </Button>
-        <Button
-          color="error"
-          disabled={loading}
-          onClick={() => handleClick_delete()}
-          variant="outlined"
-        >
-          Delete Entry
-        </Button>
+        {editConfig.operation == "update" && (
+          <Button
+            color="error"
+            disabled={loading}
+            onClick={() => handleClick_delete()}
+            variant="outlined"
+          >
+            Delete Entry
+          </Button>
+        )}
       </Stack>
     </>
   );
