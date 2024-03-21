@@ -5,6 +5,7 @@ import NextAuth from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
 
 const handler = NextAuth({
+  // @ts-expect-error - https://github.com/nextauthjs/next-auth/issues/9493
   adapter: PrismaAdapter(prisma),
   providers: [
     GoogleProvider({
