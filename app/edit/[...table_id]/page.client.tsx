@@ -5,7 +5,7 @@ import {
   TableEditField,
 } from "@/backend/edit/tableConfigs/tableEditTypes";
 import { useForceUpdate } from "@/frontend/hooks/useForceUpdate";
-import ClearIcon from "@mui/icons-material/Clear";
+import DeleteIcon from "@mui/icons-material/Delete";
 import {
   Box,
   Button,
@@ -209,7 +209,7 @@ export default function EditClientPage({
                           handleClick_deleteMappingRow(field, mappedIndex)
                         }
                       >
-                        <ClearIcon />
+                        <DeleteIcon />
                       </IconButton>
                     </TableCell>
                   </TableRow>
@@ -235,7 +235,7 @@ export default function EditClientPage({
       <Typography variant="h5">
         {capitalizeFirstLetter(editConfig.operation || "") +
           " " +
-          capitalizeFirstLetter(editConfig.table)}
+          capitalizeFirstLetter(editConfig.name)}
       </Typography>
       {editConfig.fields.map((field, i) => (
         <Box key={i}>{renderField(field, 0)}</Box>

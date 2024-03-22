@@ -31,6 +31,7 @@ export type MappingEditField = BaseEditField & {
   values?: Nullable<number>[];
   mapping: {
     table: string;
+    name: string;
     ids?: number[];
     removeIds?: number[];
     fields: TableEditField[];
@@ -59,6 +60,7 @@ export type TableEditField =
 
 export type TableEditConfig = {
   table: string;
+  name: string;
   operation?: "create" | "update";
   fields: TableEditField[];
 };
