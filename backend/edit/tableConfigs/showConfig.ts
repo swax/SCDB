@@ -2,6 +2,7 @@ import { TableEditConfig } from "./tableEditTypes";
 
 const showConfig: TableEditConfig = {
   table: "show",
+  name: "Show",
   fields: [
     {
       name: "Name",

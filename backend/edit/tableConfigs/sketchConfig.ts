@@ -2,6 +2,7 @@ import { TableEditConfig } from "./tableEditTypes";
 
 const sketchConfig: TableEditConfig = {
   table: "sketch",
+  name: "Sketch",
   fields: [
     {
       name: "Title",
@@ -40,6 +41,7 @@ const sketchConfig: TableEditConfig = {
       type: "mapping",
       mapping: {
         table: "sketch_participant",
+        name: "Sketch Participant",
         fields: [
           {
             name: "Character",
@@ -79,6 +81,7 @@ const sketchConfig: TableEditConfig = {
       type: "mapping",
       mapping: {
         table: "sketch_tag",
+        name: "Sketch Tag",
         fields: [
           {
             name: "Tag",

@@ -2,6 +2,7 @@ import { TableEditConfig } from "./tableEditTypes";
 
 const personConfig: TableEditConfig = {
   table: "person",
+  name: "Person",
   fields: [
     {
       name: "Name",
