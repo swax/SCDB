@@ -5,6 +5,7 @@ import {
   TableEditField,
 } from "@/backend/edit/tableConfigs/tableEditTypes";
 import { useForceUpdate } from "@/frontend/hooks/useForceUpdate";
+import { resolveTemplateVars } from "@/shared/string";
 import DeleteIcon from "@mui/icons-material/Delete";
 import {
   Box,
@@ -22,11 +23,12 @@ import {
 } from "@mui/material";
 import { $Enums } from "@prisma/client";
 import { useState } from "react";
+import deleteAction from "./actions/deleteAction";
 import editAction from "./actions/editAction";
 import AutocompleteLookup from "./components/AutocompleteLookup";
 import DateField2 from "./components/DateField2";
+import NumberField from "./components/NumberField";
 import StringField from "./components/StringField";
-import deleteAction from "./actions/deleteAction";
 
 interface EditClientPageProps {
   editConfig: TableEditConfig;
@@ -52,7 +54,7 @@ export default function EditClientPage({
     forceUpdate();
   }
 
-  async function handleClick_edit() {
+  async function handleClick_save() {
     try {
       setLoading(true);
       const rowId = await editAction(editConfig, id);
@@ -127,11 +129,63 @@ export default function EditClientPage({
 
   // Helpers
   function setFieldValue(field: TableEditField, index: number, value: any) {
+    // Assert templates aren't being updated directly
+    if (field.template) {
+      throw `'${field.name} is a template field. It cannot be updated directly.`;
+    }
+
     field.values ||= [];
     field.values[index] = value;
 
     field.modified ||= [];
     field.modified[index] = true;
+
+    // Update template values
+    editConfig.fields.forEach((f) => {
+      if (!f.template) {
+        return;
+      }
+
+      const originalValue = f.values?.[index] || "";
+      let newValue = "";
+
+      try {
+        newValue = resolveTemplateVars(
+          f.template,
+          editConfig.table,
+          getFieldForIndex(index),
+        );
+      } catch {}
+
+      if (originalValue == newValue) {
+        return;
+      }
+
+      f.values ||= [];
+      f.values[index] = newValue;
+      f.modified ||= [];
+      f.modified[index] = true;
+
+      forceUpdate();
+    });
+  }
+
+  function getFieldForIndex(index: number) {
+    const field: any = {};
+
+    editConfig.fields.forEach((f) => {
+      if (f.column) {
+        field[f.column] = f.values?.[index];
+      }
+      if (f.type == "lookup") {
+        if (!field[f.lookup.table]) {
+          field[f.lookup.table] = {};
+        }
+        field[f.lookup.table][f.lookup.column] = f.lookup.values?.[index];
+      }
+    });
+
+    return field;
   }
 
   function capitalizeFirstLetter(string: string) {
@@ -144,6 +198,15 @@ export default function EditClientPage({
       <Box sx={{ marginTop: inTable ? 0 : 3 }}>
         {field.type == "string" && (
           <StringField
+            field={field}
+            index={index}
+            inTable={inTable}
+            loading={loading}
+            setFieldValue={setFieldValue}
+          />
+        )}
+        {field.type == "number" && (
+          <NumberField
             field={field}
             index={index}
             inTable={inTable}
@@ -181,7 +244,12 @@ export default function EditClientPage({
           </Select>
         )}
         {field.type === "lookup" && (
-          <AutocompleteLookup field={field} index={index} inTable={inTable} />
+          <AutocompleteLookup
+            field={field}
+            index={index}
+            inTable={inTable}
+            setFieldValue={setFieldValue}
+          />
         )}
         {field.type === "mapping" && (
           <>
@@ -248,14 +316,14 @@ export default function EditClientPage({
         <Button
           color="success"
           disabled={loading}
-          onClick={() => handleClick_edit()}
+          onClick={() => handleClick_save()}
           variant="outlined"
         >
           {editConfig.operation == "update"
             ? "Save Changes"
             : editConfig.operation == "create"
-            ? "Create"
-            : "unknown"}
+              ? "Create"
+              : "unknown"}
         </Button>
         {editConfig.operation == "update" && (
           <Button

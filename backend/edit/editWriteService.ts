@@ -68,7 +68,9 @@ async function writeFieldChanges(
         if (!columnValueToSlugify) {
           return; // throw new Error(`Column ${field.details.derivedFrom} not found`);
         }
-        dataParams[field.column!] = slugifyForUrl(columnValueToSlugify);
+        dataParams[field.column!] = slugifyForUrl(
+          columnValueToSlugify.toString(),
+        );
       } else {
         dataParams[field.column!] = field.values![index];
       }

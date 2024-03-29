@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "compile": "tsc",
-    "run:dev": "next dev",
+    "dev": "next dev --turbo",
     "lint:next": "next lint",
     "prettier:write": "npx prettier --write .",
     "build:release": "next build",

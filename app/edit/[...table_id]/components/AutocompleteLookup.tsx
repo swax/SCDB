@@ -16,12 +16,18 @@ interface AutocompleteLookupProps {
   field: LookupEditField;
   index: number;
   inTable: boolean;
+  setFieldValue: (
+    field: LookupEditField,
+    index: number,
+    value: number | null,
+  ) => void;
 }
 
 export default function AutocompleteLookup({
   field,
   index,
   inTable,
+  setFieldValue,
 }: AutocompleteLookupProps) {
   const initialValue: Nullable<AutocompleteLookupOption> = field.values?.[index]
     ? {
@@ -94,11 +100,11 @@ export default function AutocompleteLookup({
 
     setValue(value);
 
-    field.values ||= [];
-    field.values[index] = value ? value.id : null; // Important to set null as undefined isn't sent over the wire
+    field.lookup.values ||= [];
+    field.lookup.values[index] = value ? value.label : null;
 
-    field.modified ||= [];
-    field.modified[index] = true;
+    // Important to set null as undefined isn't sent over the wire
+    setFieldValue(field, index, value ? value.id : null);
 
     const options: AutocompleteLookupOption[] = [];
 

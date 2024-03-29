@@ -10,3 +10,40 @@ export function slugifyForUrl(str: string) {
     trim: true, // trim leading and trailing replacement chars, defaults to `true`
   });
 }
+
+export function resolveTemplateVars(
+  templateString: string,
+  allowedVarString: string,
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  mappedVar: any,
+) {
+  const pattern = new RegExp(`\\$\\{${allowedVarString}\\.([^}]+)\\}`, "g");
+
+  return templateString.replace(pattern, (match, key) => {
+    const value = valueFromString(mappedVar, key);
+    if (value === undefined) {
+      throw `resolveTemplateVars: Error, ${key} is not defined`;
+    }
+    return value;
+  });
+}
+
+function valueFromString(
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  obj: any,
+  path: string,
+  defaultValue?: string,
+) {
+  if (!path) {
+    return obj;
+  }
+  const keys = path.split(".");
+  let result = obj;
+  for (const key of keys) {
+    result = result?.[key];
+    if (result === undefined) {
+      return defaultValue;
+    }
+  }
+  return result;
+}

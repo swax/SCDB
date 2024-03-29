@@ -79,30 +79,30 @@ function addFieldsToSelect(config: TableEditConfig, selectParams: any) {
   });
 }
 
-function mapResultsToConfig(dbResults: any, fields: TableEditField[]) {
-  Object.entries(dbResults).forEach(([key, value]) => {
+function mapResultsToConfig(dbResult: any, fields: TableEditField[]) {
+  Object.entries(dbResult).forEach(([dbKey, dbValue]) => {
     fields.forEach((field) => {
-      if (field.column == key) {
+      if (field.column == dbKey) {
         field.values ||= [];
-        field.values.push(value as any);
+        field.values.push(dbValue as any);
       } else if (
         field.type == "lookup" &&
-        field.lookup.table === key &&
-        value
+        field.lookup.table === dbKey &&
+        dbValue
       ) {
-        const lookupValue = (value as any)[field.lookup.column];
+        const lookupValue = (dbValue as any)[field.lookup.column];
         field.lookup.values ||= [];
         field.lookup.values.push(lookupValue);
       } else if (
         field.type == "mapping" &&
-        field.mapping?.table + "s" === key &&
-        Array.isArray(value)
+        field.mapping?.table + "s" === dbKey &&
+        Array.isArray(dbValue)
       ) {
         const mappingFields = field.mapping.fields;
-        value.forEach((v) => {
+        dbValue.forEach((subResult) => {
           field.mapping!.ids ||= [];
-          field.mapping!.ids.push(v.id);
-          mapResultsToConfig(v, mappingFields);
+          field.mapping!.ids.push(subResult.id);
+          mapResultsToConfig(subResult, mappingFields);
         });
       }
     });
