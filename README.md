@@ -1,2 +1,1 @@
-
 Sketch Comedy Database

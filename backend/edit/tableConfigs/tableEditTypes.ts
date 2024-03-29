@@ -2,6 +2,8 @@ export type BaseEditField = {
   name: string;
   column?: string;
   helperText?: string;
+  required?: boolean;
+  template?: string;
   modified?: boolean[];
 };
 
@@ -20,9 +22,10 @@ export type LookupEditField = BaseEditField & {
   type: "lookup";
   values?: Nullable<number>[];
   lookup: {
+    // TODO change to display Column/Value
     table: string;
     column: string;
-    values?: string[];
+    values?: Nullable<string>[];
   };
 };
 
@@ -50,13 +53,20 @@ export type StringEditField = BaseEditField & {
   values?: Nullable<string>[];
 };
 
+export type NumberEditField = BaseEditField & {
+  type: "number";
+  // Maybe do int vs float here
+  values?: Nullable<number>[];
+};
+
 export type TableEditField =
   | DateEditField
   | EnumEditField
   | LookupEditField
   | MappingEditField
   | SlugEditField
-  | StringEditField;
+  | StringEditField
+  | NumberEditField;
 
 export type TableEditConfig = {
   table: string;

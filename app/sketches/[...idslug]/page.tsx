@@ -1,5 +1,6 @@
 import { getSketch } from "@/backend/sketchService";
 import { notFound } from "next/navigation";
+import { SketchClientPage } from "./page.client";
 
 export default async function SketchPage({
   params,
@@ -17,5 +18,5 @@ export default async function SketchPage({
   }
 
   // Rendering
-  return <>Hello {sketch.title}</>;
+  return <SketchClientPage sketch={sketch} />;
 }

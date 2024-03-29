@@ -31,6 +31,15 @@ const sketchConfig: TableEditConfig = {
       },
     },
     {
+      name: "Episode",
+      column: "episode_id",
+      type: "lookup",
+      lookup: {
+        table: "episode",
+        column: "description",
+      },
+    },
+    {
       name: "Description",
       column: "description",
       type: "string",
