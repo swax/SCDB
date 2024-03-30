@@ -1,6 +1,6 @@
 import prisma from "@/database/prisma";
-import scdbOrms from "./orm/scdbOrms";
-import { FieldOrm, LookupFieldOrm } from "./orm/tableOrmTypes";
+import sketchDatabaseOrm from "../../database/orm/sketchDatabaseOrm";
+import { FieldOrm, LookupFieldOrm } from "../../database/orm/ormTypes";
 
 export interface AutocompleteLookupOption {
   id: number;
@@ -19,7 +19,7 @@ function validateFieldWithLookup(
         field.lookup.table === lookupField.table &&
         field.lookup.labelColumn === lookupField.labelColumn) ||
       (field.type == "mapping" &&
-        validateFieldWithLookup(field.mapping.fields, lookupField)),
+        validateFieldWithLookup(field.mappingTable.fields, lookupField)),
   );
 }
 
@@ -27,8 +27,8 @@ export default async function lookupTermsInTable(
   terms: string,
   lookupField: LookupFieldOrm["lookup"],
 ): Promise<AutocompleteLookupOption[]> {
-  const allowedLookup = Object.keys(scdbOrms).some((key) =>
-    validateFieldWithLookup(scdbOrms[key].fields, lookupField),
+  const allowedLookup = Object.keys(sketchDatabaseOrm).some((table) =>
+    validateFieldWithLookup(sketchDatabaseOrm[table].fields, lookupField),
   );
 
   if (!allowedLookup) {

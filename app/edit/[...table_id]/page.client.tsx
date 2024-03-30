@@ -1,6 +1,6 @@
 "use client";
 
-import { FieldOrm, TableOrm } from "@/backend/edit/orm/tableOrmTypes";
+import { FieldOrm, TableOrm } from "@/database/orm/ormTypes";
 import { useForceUpdate } from "@/frontend/hooks/useForceUpdate";
 import { resolveTemplateVars } from "@/shared/string";
 import DeleteIcon from "@mui/icons-material/Delete";
@@ -86,13 +86,13 @@ export default function EditClientPage({ table, id }: EditClientPageProps) {
   }
 
   function handleClick_deleteMappingRow(field: FieldOrm, mappedIndex: number) {
-    if (field.type != "mapping" || !field.mapping.ids) return;
+    if (field.type != "mapping" || !field.mappingTable.ids) return;
 
-    const removedId = field.mapping.ids.splice(mappedIndex, 1);
-    field.mapping.removeIds ||= [];
-    field.mapping.removeIds.push(removedId[0]);
+    const removedId = field.mappingTable.ids.splice(mappedIndex, 1);
+    field.mappingTable.removeIds ||= [];
+    field.mappingTable.removeIds.push(removedId[0]);
 
-    field.mapping.fields.forEach((mappedField) => {
+    field.mappingTable.fields.forEach((mappedField) => {
       mappedField.values?.splice(mappedIndex, 1);
       mappedField.modified?.splice(mappedIndex, 1);
 
@@ -107,11 +107,11 @@ export default function EditClientPage({ table, id }: EditClientPageProps) {
   function handleClick_addMappingRow(field: FieldOrm) {
     if (field.type != "mapping") return;
 
-    field.mapping.ids ||= [];
-    const minId = Math.min(...field.mapping.ids, 0);
-    field.mapping.ids.push(minId - 1);
+    field.mappingTable.ids ||= [];
+    const minId = Math.min(...field.mappingTable.ids, 0);
+    field.mappingTable.ids.push(minId - 1);
 
-    field.mapping.fields.forEach((mappedField) => {
+    field.mappingTable.fields.forEach((mappedField) => {
       mappedField.values?.push(null);
     });
 
@@ -248,20 +248,22 @@ export default function EditClientPage({ table, id }: EditClientPageProps) {
             <Table>
               <TableHead>
                 <TableRow>
-                  {field.mapping?.fields.map((mappedField, fieldIndex) => (
+                  {field.mappingTable?.fields.map((mappedField, fieldIndex) => (
                     <TableCell key={fieldIndex}>{mappedField.label}</TableCell>
                   ))}
                   <TableCell />
                 </TableRow>
               </TableHead>
               <TableBody>
-                {field.mapping?.ids?.map((mappedId, mappedIndex) => (
+                {field.mappingTable?.ids?.map((mappedId, mappedIndex) => (
                   <TableRow key={mappedId}>
-                    {field.mapping?.fields.map((mappedField, fieldIndex) => (
-                      <TableCell key={fieldIndex}>
-                        {renderField(mappedField, mappedIndex, true)}
-                      </TableCell>
-                    ))}
+                    {field.mappingTable?.fields.map(
+                      (mappedField, fieldIndex) => (
+                        <TableCell key={fieldIndex}>
+                          {renderField(mappedField, mappedIndex, true)}
+                        </TableCell>
+                      ),
+                    )}
                     <TableCell>
                       <IconButton
                         aria-label="delete"

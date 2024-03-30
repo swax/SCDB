@@ -1,4 +1,4 @@
-import { FieldOrm, StringFieldOrm } from "@/backend/edit/orm/tableOrmTypes";
+import { FieldOrm, StringFieldOrm } from "@/database/orm/ormTypes";
 import { useForceUpdate } from "@/frontend/hooks/useForceUpdate";
 import { TextField } from "@mui/material";
 

@@ -1,4 +1,4 @@
-import { DateFieldOrm, FieldOrm } from "@/backend/edit/orm/tableOrmTypes";
+import { DateFieldOrm, FieldOrm } from "@/database/orm/ormTypes";
 import { DateField, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterLuxon } from "@mui/x-date-pickers/AdapterLuxon";
 import { DateTime } from "luxon";

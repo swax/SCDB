@@ -1,4 +1,4 @@
-import { TableOrm } from "../tableOrmTypes";
+import { TableOrm } from "../ormTypes";
 
 const sketchOrm: TableOrm = {
   name: "sketch",
@@ -48,7 +48,7 @@ const sketchOrm: TableOrm = {
     {
       label: "Characters",
       type: "mapping",
-      mapping: {
+      mappingTable: {
         name: "sketch_participant",
         label: "Sketch Participant",
         fields: [
@@ -88,7 +88,7 @@ const sketchOrm: TableOrm = {
     {
       label: "Tags",
       type: "mapping",
-      mapping: {
+      mappingTable: {
         name: "sketch_tag",
         label: "Sketch Tag",
         fields: [

@@ -1,4 +1,4 @@
-import { TableOrm } from "../tableOrmTypes";
+import { TableOrm } from "../ormTypes";
 
 const characterOrm: TableOrm = {
   name: "character",
