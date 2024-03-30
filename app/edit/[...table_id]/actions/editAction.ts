@@ -1,11 +1,8 @@
 "use server";
 
 import { writeFieldValues } from "@/backend/edit/editWriteService";
-import { TableEditConfig } from "@/backend/edit/tableConfigs/tableEditTypes";
+import { TableOrm } from "@/backend/edit/orm/tableOrmTypes";
 
-export default async function editAction(
-  editConfig: TableEditConfig,
-  id: number,
-) {
-  return await writeFieldValues(editConfig, id);
+export default async function editAction(table: TableOrm, id: number) {
+  return await writeFieldValues(table, id);
 }

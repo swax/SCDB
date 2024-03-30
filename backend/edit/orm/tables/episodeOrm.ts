@@ -1,47 +1,47 @@
-import { TableEditConfig } from "./tableEditTypes";
+import { TableOrm } from "../tableOrmTypes";
 
-const episodeConfig: TableEditConfig = {
-  table: "episode",
-  name: "Episode",
+const episodeOrm: TableOrm = {
+  name: "episode",
+  label: "Episode",
   fields: [
     {
-      name: "Title",
+      label: "Title",
       column: "title",
       type: "string",
     },
     {
-      name: "Description",
+      label: "Description",
       column: "description",
       type: "string",
       template:
         "${episode.season.description}: Episode ${episode.number}: ${episode.title}",
     },
     {
-      name: "Slug",
+      label: "Slug",
       column: "slug",
       type: "slug",
       derivedFrom: "description",
     },
     {
-      name: "Episode Number",
+      label: "Episode Number",
       column: "number",
       type: "number",
     },
     {
-      name: "Air Date",
+      label: "Air Date",
       column: "air_date",
       type: "date",
     },
     {
-      name: "Season",
+      label: "Season",
       column: "season_id",
       type: "lookup",
       lookup: {
         table: "season",
-        column: "description",
+        labelColumn: "description",
       },
     },
   ],
 };
 
-export default episodeConfig;
+export default episodeOrm;

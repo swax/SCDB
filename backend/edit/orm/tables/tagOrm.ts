@@ -1,30 +1,30 @@
-import { TableEditConfig } from "./tableEditTypes";
+import { TableOrm } from "../tableOrmTypes";
 
-const tagConfig: TableEditConfig = {
-  table: "tag",
-  name: "Tag",
+const tagOrm: TableOrm = {
+  name: "tag",
+  label: "Tag",
   fields: [
     {
-      name: "Name",
+      label: "Name",
       column: "name",
       type: "string",
     },
     {
-      name: "Slug",
+      label: "Slug",
       column: "slug",
       type: "slug",
       derivedFrom: "name",
     },
     {
-      name: "Category",
+      label: "Category",
       column: "tag_category_id",
       type: "lookup",
       lookup: {
         table: "tag_category",
-        column: "name",
+        labelColumn: "name",
       },
     },
   ],
 };
 
-export default tagConfig;
+export default tagOrm;

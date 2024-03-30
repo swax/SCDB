@@ -1,6 +1,6 @@
 import prisma from "@/database/prisma";
-import tableEditConfigs from "./tableConfigs/tableEditConfigs";
-import { LookupEditField, TableEditField } from "./tableConfigs/tableEditTypes";
+import scdbOrms from "./orm/scdbOrms";
+import { FieldOrm, LookupFieldOrm } from "./orm/tableOrmTypes";
 
 export interface AutocompleteLookupOption {
   id: number;
@@ -10,14 +10,14 @@ export interface AutocompleteLookupOption {
 }
 
 function validateFieldWithLookup(
-  fields: TableEditField[],
-  lookupField: LookupEditField["lookup"],
+  fields: FieldOrm[],
+  lookupField: LookupFieldOrm["lookup"],
 ): boolean {
   return fields.some(
     (field) =>
       (field.type == "lookup" &&
         field.lookup.table === lookupField.table &&
-        field.lookup.column === lookupField.column) ||
+        field.lookup.labelColumn === lookupField.labelColumn) ||
       (field.type == "mapping" &&
         validateFieldWithLookup(field.mapping.fields, lookupField)),
   );
@@ -25,15 +25,15 @@ function validateFieldWithLookup(
 
 export default async function lookupTermsInTable(
   terms: string,
-  lookupField: LookupEditField["lookup"],
+  lookupField: LookupFieldOrm["lookup"],
 ): Promise<AutocompleteLookupOption[]> {
-  const allowedLookup = Object.keys(tableEditConfigs).some((key) =>
-    validateFieldWithLookup(tableEditConfigs[key].fields, lookupField),
+  const allowedLookup = Object.keys(scdbOrms).some((key) =>
+    validateFieldWithLookup(scdbOrms[key].fields, lookupField),
   );
 
   if (!allowedLookup) {
     throw new Error(
-      `Lookup on ${lookupField.table}/${lookupField.column} not allowed`,
+      `Lookup on ${lookupField.table}/${lookupField.labelColumn} not allowed`,
     );
   }
 
@@ -41,14 +41,14 @@ export default async function lookupTermsInTable(
 
   const results = await dynamicPrisma[lookupField.table].findMany({
     where: {
-      [lookupField.column]: {
+      [lookupField.labelColumn]: {
         contains: terms,
         mode: "insensitive",
       },
     },
     select: {
       id: true,
-      [lookupField.column]: true,
+      [lookupField.labelColumn]: true,
     },
   });
 
@@ -59,6 +59,6 @@ export default async function lookupTermsInTable(
 
   return results.map((result: any) => ({
     id: result.id,
-    label: result[lookupField.column],
+    label: result[lookupField.labelColumn],
   }));
 }

@@ -1,83 +1,83 @@
-import { TableEditConfig } from "./tableEditTypes";
+import { TableOrm } from "../tableOrmTypes";
 
-const sketchConfig: TableEditConfig = {
-  table: "sketch",
-  name: "Sketch",
+const sketchOrm: TableOrm = {
+  name: "sketch",
+  label: "Sketch",
   fields: [
     {
-      name: "Title",
+      label: "Title",
       column: "title",
       type: "string",
     },
     {
-      name: "Slug",
+      label: "Slug",
       column: "slug",
       type: "slug",
       derivedFrom: "title",
     },
     {
-      name: "Teaser",
+      label: "Teaser",
       column: "teaser",
       type: "string",
       helperText: "A short one sentence description of the sketch",
     },
     {
-      name: "Show",
+      label: "Show",
       column: "show_id",
       type: "lookup",
       lookup: {
         table: "show",
-        column: "name",
+        labelColumn: "name",
       },
     },
     {
-      name: "Episode",
+      label: "Episode",
       column: "episode_id",
       type: "lookup",
       lookup: {
         table: "episode",
-        column: "description",
+        labelColumn: "description",
       },
     },
     {
-      name: "Description",
+      label: "Description",
       column: "description",
       type: "string",
       multiline: true,
     },
     {
-      name: "Characters",
+      label: "Characters",
       type: "mapping",
       mapping: {
-        table: "sketch_participant",
-        name: "Sketch Participant",
+        name: "sketch_participant",
+        label: "Sketch Participant",
         fields: [
           {
-            name: "Character",
+            label: "Character",
             column: "character_id",
             type: "lookup",
             lookup: {
               table: "character",
-              column: "name",
+              labelColumn: "name",
             },
           },
           {
-            name: "Actor",
+            label: "Actor",
             column: "person_id",
             type: "lookup",
             lookup: {
               table: "person",
-              column: "name",
+              labelColumn: "name",
             },
           },
           {
-            name: "Role",
+            label: "Role",
             column: "role",
             type: "enum",
             enum: "sketch_role_type",
           },
           {
-            name: "Description",
+            label: "Description",
             column: "description",
             type: "string",
             multiline: true,
@@ -86,34 +86,34 @@ const sketchConfig: TableEditConfig = {
       },
     },
     {
-      name: "Tags",
+      label: "Tags",
       type: "mapping",
       mapping: {
-        table: "sketch_tag",
-        name: "Sketch Tag",
+        name: "sketch_tag",
+        label: "Sketch Tag",
         fields: [
           {
-            name: "Tag",
+            label: "Tag",
             column: "tag_id",
             type: "lookup",
             lookup: {
               table: "tag",
-              column: "name",
+              labelColumn: "name",
             },
           },
         ],
       },
     },
     {
-      name: "Recurring Sketch",
+      label: "Recurring Sketch",
       column: "recurring_sketch_id",
       type: "lookup",
       lookup: {
         table: "recurring_sketch",
-        column: "name",
+        labelColumn: "name",
       },
     },
   ],
 };
 
-export default sketchConfig;
+export default sketchOrm;

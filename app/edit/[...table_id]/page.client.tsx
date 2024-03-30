@@ -1,9 +1,6 @@
 "use client";
 
-import {
-  TableEditConfig,
-  TableEditField,
-} from "@/backend/edit/tableConfigs/tableEditTypes";
+import { FieldOrm, TableOrm } from "@/backend/edit/orm/tableOrmTypes";
 import { useForceUpdate } from "@/frontend/hooks/useForceUpdate";
 import { resolveTemplateVars } from "@/shared/string";
 import DeleteIcon from "@mui/icons-material/Delete";
@@ -31,21 +28,18 @@ import NumberField from "./components/NumberField";
 import StringField from "./components/StringField";
 
 interface EditClientPageProps {
-  editConfig: TableEditConfig;
+  table: TableOrm;
   id: number;
 }
 
-export default function EditClientPage({
-  editConfig,
-  id,
-}: EditClientPageProps) {
+export default function EditClientPage({ table, id }: EditClientPageProps) {
   // Hooks
   const forceUpdate = useForceUpdate();
   const [loading, setLoading] = useState(false);
 
   // Event Handlers
   function handleChange_enumField(
-    field: TableEditField,
+    field: FieldOrm,
     index: number,
     value: Nullable<string>,
   ) {
@@ -57,7 +51,7 @@ export default function EditClientPage({
   async function handleClick_save() {
     try {
       setLoading(true);
-      const rowId = await editAction(editConfig, id);
+      const rowId = await editAction(table, id);
 
       // If update refresh
       if (id) {
@@ -65,7 +59,7 @@ export default function EditClientPage({
       }
       // Else navigate to created row
       else {
-        const url = `/edit/${editConfig.table}/${rowId}`;
+        const url = `/edit/${table.name}/${rowId}`;
         window.location.href = url;
       }
     } catch (e) {
@@ -80,9 +74,9 @@ export default function EditClientPage({
       if (!confirm("Are you sure you want to delete this entry?")) return;
 
       setLoading(true);
-      await deleteAction(editConfig, id);
+      await deleteAction(table, id);
 
-      const url = `/edit/${editConfig.table}`;
+      const url = `/edit/${table.name}`;
       window.location.href = url;
     } catch (e) {
       alert(e);
@@ -91,10 +85,7 @@ export default function EditClientPage({
     }
   }
 
-  function handleClick_deleteMappingRow(
-    field: TableEditField,
-    mappedIndex: number,
-  ) {
+  function handleClick_deleteMappingRow(field: FieldOrm, mappedIndex: number) {
     if (field.type != "mapping" || !field.mapping.ids) return;
 
     const removedId = field.mapping.ids.splice(mappedIndex, 1);
@@ -106,14 +97,14 @@ export default function EditClientPage({
       mappedField.modified?.splice(mappedIndex, 1);
 
       if (mappedField.type === "lookup") {
-        mappedField.lookup.values?.splice(mappedIndex, 1);
+        mappedField.lookup.labelValues?.splice(mappedIndex, 1);
       }
     });
 
     forceUpdate();
   }
 
-  function handleClick_addMappingRow(field: TableEditField) {
+  function handleClick_addMappingRow(field: FieldOrm) {
     if (field.type != "mapping") return;
 
     field.mapping.ids ||= [];
@@ -128,10 +119,10 @@ export default function EditClientPage({
   }
 
   // Helpers
-  function setFieldValue(field: TableEditField, index: number, value: any) {
+  function setFieldValue(field: FieldOrm, index: number, value: any) {
     // Assert templates aren't being updated directly
     if (field.template) {
-      throw `'${field.name} is a template field. It cannot be updated directly.`;
+      throw `'${field.label} is a template field. It cannot be updated directly.`;
     }
 
     field.values ||= [];
@@ -141,7 +132,7 @@ export default function EditClientPage({
     field.modified[index] = true;
 
     // Update template values
-    editConfig.fields.forEach((f) => {
+    table.fields.forEach((f) => {
       if (!f.template) {
         return;
       }
@@ -152,7 +143,7 @@ export default function EditClientPage({
       try {
         newValue = resolveTemplateVars(
           f.template,
-          editConfig.table,
+          table.name,
           getFieldForIndex(index),
         );
       } catch {}
@@ -173,7 +164,7 @@ export default function EditClientPage({
   function getFieldForIndex(index: number) {
     const field: any = {};
 
-    editConfig.fields.forEach((f) => {
+    table.fields.forEach((f) => {
       if (f.column) {
         field[f.column] = f.values?.[index];
       }
@@ -181,7 +172,8 @@ export default function EditClientPage({
         if (!field[f.lookup.table]) {
           field[f.lookup.table] = {};
         }
-        field[f.lookup.table][f.lookup.column] = f.lookup.values?.[index];
+        field[f.lookup.table][f.lookup.labelColumn] =
+          f.lookup.labelValues?.[index];
       }
     });
 
@@ -193,7 +185,7 @@ export default function EditClientPage({
   }
 
   // Rendering
-  function renderField(field: TableEditField, index: number, inTable = false) {
+  function renderField(field: FieldOrm, index: number, inTable = false) {
     return (
       <Box sx={{ marginTop: inTable ? 0 : 3 }}>
         {field.type == "string" && (
@@ -226,7 +218,7 @@ export default function EditClientPage({
         {field.type === "enum" && (
           <Select
             fullWidth
-            label={inTable ? "" : field.name}
+            label={inTable ? "" : field.label}
             onChange={(e) =>
               handleChange_enumField(field, index, e.target.value)
             }
@@ -257,7 +249,7 @@ export default function EditClientPage({
               <TableHead>
                 <TableRow>
                   {field.mapping?.fields.map((mappedField, fieldIndex) => (
-                    <TableCell key={fieldIndex}>{mappedField.name}</TableCell>
+                    <TableCell key={fieldIndex}>{mappedField.label}</TableCell>
                   ))}
                   <TableCell />
                 </TableRow>
@@ -290,7 +282,7 @@ export default function EditClientPage({
               sx={{ marginLeft: 2, marginTop: 2 }}
               variant="outlined"
             >
-              Add {field.name}
+              Add {field.label}
             </Button>
           </>
         )}
@@ -301,11 +293,11 @@ export default function EditClientPage({
   return (
     <>
       <Typography variant="h5">
-        {capitalizeFirstLetter(editConfig.operation || "") +
+        {capitalizeFirstLetter(table.operation || "") +
           " " +
-          capitalizeFirstLetter(editConfig.name)}
+          capitalizeFirstLetter(table.label)}
       </Typography>
-      {editConfig.fields.map((field, i) => (
+      {table.fields.map((field, i) => (
         <Box key={i}>{renderField(field, 0)}</Box>
       ))}
       <Stack
@@ -319,13 +311,13 @@ export default function EditClientPage({
           onClick={() => handleClick_save()}
           variant="outlined"
         >
-          {editConfig.operation == "update"
+          {table.operation == "update"
             ? "Save Changes"
-            : editConfig.operation == "create"
+            : table.operation == "create"
               ? "Create"
               : "unknown"}
         </Button>
-        {editConfig.operation == "update" && (
+        {table.operation == "update" && (
           <Button
             color="error"
             disabled={loading}

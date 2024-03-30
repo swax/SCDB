@@ -1,37 +1,37 @@
-import { TableEditConfig } from "./tableEditTypes";
+import { TableOrm } from "../tableOrmTypes";
 
-const personConfig: TableEditConfig = {
-  table: "person",
-  name: "Person",
+const personOrm: TableOrm = {
+  name: "person",
+  label: "Person",
   fields: [
     {
-      name: "Name",
+      label: "Name",
       column: "name",
       type: "string",
     },
     {
-      name: "Slug",
+      label: "Slug",
       column: "slug",
       type: "slug",
       derivedFrom: "name",
     },
     {
-      name: "Description",
+      label: "Description",
       column: "description",
       type: "string",
     },
     {
-      name: "Gender",
+      label: "Gender",
       column: "gender",
       type: "enum",
       enum: "gender_type",
     },
     {
-      name: "Birthday",
+      label: "Birthday",
       column: "birth_date",
       type: "date",
     },
   ],
 };
 
-export default personConfig;
+export default personOrm;
