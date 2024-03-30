@@ -1,17 +1,14 @@
-import {
-  NumberEditField,
-  TableEditField,
-} from "@/backend/edit/tableConfigs/tableEditTypes";
+import { FieldOrm, NumberFieldOrm } from "@/backend/edit/orm/tableOrmTypes";
 import { useForceUpdate } from "@/frontend/hooks/useForceUpdate";
 import { TextField } from "@mui/material";
 import { useState } from "react";
 
 interface NumberFieldProps {
-  field: NumberEditField;
+  field: NumberFieldOrm;
   index: number;
   inTable: boolean;
   loading: boolean;
-  setFieldValue: (field: TableEditField, index: number, value: number) => void;
+  setFieldValue: (field: FieldOrm, index: number, value: number) => void;
 }
 
 export default function NumberField({
@@ -29,7 +26,7 @@ export default function NumberField({
 
   // Event Handlers
   function handleChange_field(
-    field: NumberEditField,
+    field: NumberFieldOrm,
     index: number,
     value: string,
   ) {
@@ -48,7 +45,7 @@ export default function NumberField({
       {...(error ? { error: true } : {})}
       disabled={loading}
       helperText={field.helperText}
-      label={inTable ? "" : field.name}
+      label={inTable ? "" : field.label}
       onChange={(e) => handleChange_field(field, index, e.target.value)}
       value={field.values?.[index] || ""}
       variant="standard"

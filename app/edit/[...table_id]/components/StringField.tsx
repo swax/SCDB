@@ -1,16 +1,13 @@
-import {
-  StringEditField,
-  TableEditField,
-} from "@/backend/edit/tableConfigs/tableEditTypes";
+import { FieldOrm, StringFieldOrm } from "@/backend/edit/orm/tableOrmTypes";
 import { useForceUpdate } from "@/frontend/hooks/useForceUpdate";
 import { TextField } from "@mui/material";
 
 interface StringFieldProps {
-  field: StringEditField;
+  field: StringFieldOrm;
   index: number;
   inTable: boolean;
   loading: boolean;
-  setFieldValue: (field: TableEditField, index: number, value: string) => void;
+  setFieldValue: (field: FieldOrm, index: number, value: string) => void;
 }
 
 export default function StringField({
@@ -25,7 +22,7 @@ export default function StringField({
 
   // Event Handlers
   function handleChange_field(
-    field: StringEditField,
+    field: StringFieldOrm,
     index: number,
     value: string,
   ) {
@@ -40,7 +37,7 @@ export default function StringField({
       disabled={loading}
       fullWidth
       helperText={field.helperText}
-      label={inTable ? "" : field.name}
+      label={inTable ? "" : field.label}
       multiline={Boolean(field.multiline)}
       onChange={(e) => handleChange_field(field, index, e.target.value)}
       value={field.values?.[index] || ""}

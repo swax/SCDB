@@ -1,5 +1,5 @@
 import { AutocompleteLookupOption } from "@/backend/edit/lookupService";
-import { LookupEditField } from "@/backend/edit/tableConfigs/tableEditTypes";
+import { LookupFieldOrm } from "@/backend/edit/orm/tableOrmTypes";
 import useDebounce2 from "@/frontend/hooks/useDebounce2";
 import OpenInNewIcon from "@mui/icons-material/OpenInNew";
 import {
@@ -13,11 +13,11 @@ import { SyntheticEvent, useId, useState } from "react";
 import lookupAction from "../actions/lookupAction";
 
 interface AutocompleteLookupProps {
-  field: LookupEditField;
+  field: LookupFieldOrm;
   index: number;
   inTable: boolean;
   setFieldValue: (
-    field: LookupEditField,
+    field: LookupFieldOrm,
     index: number,
     value: number | null,
   ) => void;
@@ -32,7 +32,7 @@ export default function AutocompleteLookup({
   const initialValue: Nullable<AutocompleteLookupOption> = field.values?.[index]
     ? {
         id: field.values[index] as number,
-        label: field.lookup?.values?.[index] ?? "(lookup init error)",
+        label: field.lookup?.labelValues?.[index] ?? "(lookup init error)",
       }
     : null;
 
@@ -100,8 +100,8 @@ export default function AutocompleteLookup({
 
     setValue(value);
 
-    field.lookup.values ||= [];
-    field.lookup.values[index] = value ? value.label : null;
+    field.lookup.labelValues ||= [];
+    field.lookup.labelValues[index] = value ? value.label : null;
 
     // Important to set null as undefined isn't sent over the wire
     setFieldValue(field, index, value ? value.id : null);
@@ -153,7 +153,7 @@ export default function AutocompleteLookup({
         onInputChange={handleInputChange}
         options={options}
         renderInput={(params) => (
-          <TextField {...params} label={inTable ? "" : field.name} />
+          <TextField {...params} label={inTable ? "" : field.label} />
         )}
         renderOption={(props, option, state) => {
           return (

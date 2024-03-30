@@ -1,21 +1,21 @@
-import { TableEditConfig } from "./tableEditTypes";
+import { TableOrm } from "../tableOrmTypes";
 
-const showConfig: TableEditConfig = {
-  table: "show",
-  name: "Show",
+const showOrm: TableOrm = {
+  name: "show",
+  label: "Show",
   fields: [
     {
-      name: "Name",
+      label: "Name",
       column: "name",
       type: "string",
     },
     {
-      name: "Description",
+      label: "Description",
       column: "description",
       type: "string",
     },
     {
-      name: "Slug",
+      label: "Slug",
       column: "slug",
       type: "slug",
       derivedFrom: "name",
@@ -23,4 +23,4 @@ const showConfig: TableEditConfig = {
   ],
 };
 
-export default showConfig;
+export default showOrm;

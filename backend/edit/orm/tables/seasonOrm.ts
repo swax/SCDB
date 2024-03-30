@@ -1,42 +1,42 @@
-import { TableEditConfig } from "./tableEditTypes";
+import { TableOrm } from "../tableOrmTypes";
 
-const seasonConfig: TableEditConfig = {
-  table: "season",
-  name: "Season",
+const seasonOrm: TableOrm = {
+  name: "season",
+  label: "Season",
   fields: [
     {
-      name: "Season Number",
+      label: "Season Number",
       column: "number",
       type: "number",
     },
     {
-      name: "Year",
+      label: "Year",
       column: "year",
       type: "number",
     },
     {
-      name: "Description",
+      label: "Description",
       column: "description",
       type: "string",
       template:
         "${season.show.name} - Season ${season.number} (${season.year})",
     },
     {
-      name: "Slug",
+      label: "Slug",
       column: "slug",
       type: "slug",
       derivedFrom: "description",
     },
     {
-      name: "Show",
+      label: "Show",
       column: "show_id",
       type: "lookup",
       lookup: {
         table: "show",
-        column: "name",
+        labelColumn: "name",
       },
     },
   ],
 };
 
-export default seasonConfig;
+export default seasonOrm;

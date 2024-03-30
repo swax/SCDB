@@ -1,11 +1,8 @@
 "use server";
 
 import { deleteRow } from "@/backend/edit/editWriteService";
-import { TableEditConfig } from "@/backend/edit/tableConfigs/tableEditTypes";
+import { TableOrm } from "@/backend/edit/orm/tableOrmTypes";
 
-export default async function deleteAction(
-  editConfig: TableEditConfig,
-  id: number,
-) {
-  return await deleteRow(editConfig, id);
+export default async function deleteAction(table: TableOrm, id: number) {
+  return await deleteRow(table, id);
 }

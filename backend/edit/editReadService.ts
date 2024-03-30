@@ -1,42 +1,42 @@
 import prisma from "@/database/prisma";
 import { notFound } from "next/navigation";
-import tableEditConfigs from "./tableConfigs/tableEditConfigs";
-import { TableEditConfig, TableEditField } from "./tableConfigs/tableEditTypes";
+import scdbOrms from "./orm/scdbOrms";
+import { FieldOrm, TableOrm } from "./orm/tableOrmTypes";
 
-export function findAndBuildConfig(table: string) {
-  const config = tableEditConfigs[table];
+export function findAndBuildTableOrm(table: string) {
+  const tableOrm = scdbOrms[table];
 
-  if (!config) {
+  if (!tableOrm) {
     notFound();
   }
 
-  return structuredClone(config);
+  return structuredClone(tableOrm);
 }
 
-export async function getTableEditConfig(table: string, id: number) {
-  const config = findAndBuildConfig(table);
+export async function getTableOrm(table: string, id: number) {
+  const tableOrm = findAndBuildTableOrm(table);
 
-  config.operation = id ? "update" : "create";
+  tableOrm.operation = id ? "update" : "create";
 
   if (id) {
-    await setFieldValues(config, id);
+    await setFieldValues(tableOrm, id);
   }
 
-  return config;
+  return tableOrm;
 }
 
-export async function setFieldValues(config: TableEditConfig, id: number) {
+export async function setFieldValues(table: TableOrm, id: number) {
   // Base select
   const selectParams: any = {
     id: true,
   };
 
-  addFieldsToSelect(config, selectParams);
+  addFieldsToSelect(table, selectParams);
 
   // Perform the select
   const dynamicPrisma = prisma as any;
 
-  const dbResults = await dynamicPrisma[config.table].findUnique({
+  const dbResults = await dynamicPrisma[table.name].findUnique({
     where: {
       id: id,
     },
@@ -47,13 +47,13 @@ export async function setFieldValues(config: TableEditConfig, id: number) {
     notFound();
   }
 
-  // Map values from the db to the config
-  mapResultsToConfig(dbResults, config.fields);
+  // Map values from the db to the orm
+  mapDatabaseToOrm(dbResults, table.fields);
 }
 
-function addFieldsToSelect(config: TableEditConfig, selectParams: any) {
+function addFieldsToSelect(table: TableOrm, selectParams: any) {
   // Add fields to the select
-  config.fields.forEach((field) => {
+  table.fields.forEach((field) => {
     if (field.type === "mapping" && field.mapping) {
       const selectMany = {
         select: {
@@ -63,11 +63,11 @@ function addFieldsToSelect(config: TableEditConfig, selectParams: any) {
 
       addFieldsToSelect(field.mapping, selectMany.select);
 
-      selectParams[field.mapping.table + "s"] = selectMany;
+      selectParams[field.mapping.name + "s"] = selectMany;
     } else if (field.type === "lookup" && field.lookup) {
       const selectOne = {
         select: {
-          [field.lookup.column]: true,
+          [field.lookup.labelColumn]: true,
         },
       };
       selectParams[field.lookup.table] = selectOne;
@@ -79,7 +79,7 @@ function addFieldsToSelect(config: TableEditConfig, selectParams: any) {
   });
 }
 
-function mapResultsToConfig(dbResult: any, fields: TableEditField[]) {
+function mapDatabaseToOrm(dbResult: any, fields: FieldOrm[]) {
   Object.entries(dbResult).forEach(([dbKey, dbValue]) => {
     fields.forEach((field) => {
       if (field.column == dbKey) {
@@ -90,19 +90,19 @@ function mapResultsToConfig(dbResult: any, fields: TableEditField[]) {
         field.lookup.table === dbKey &&
         dbValue
       ) {
-        const lookupValue = (dbValue as any)[field.lookup.column];
-        field.lookup.values ||= [];
-        field.lookup.values.push(lookupValue);
+        const lookupValue = (dbValue as any)[field.lookup.labelColumn];
+        field.lookup.labelValues ||= [];
+        field.lookup.labelValues.push(lookupValue);
       } else if (
         field.type == "mapping" &&
-        field.mapping?.table + "s" === dbKey &&
+        field.mapping?.name + "s" === dbKey &&
         Array.isArray(dbValue)
       ) {
         const mappingFields = field.mapping.fields;
         dbValue.forEach((subResult) => {
           field.mapping!.ids ||= [];
           field.mapping!.ids.push(subResult.id);
-          mapResultsToConfig(subResult, mappingFields);
+          mapDatabaseToOrm(subResult, mappingFields);
         });
       }
     });

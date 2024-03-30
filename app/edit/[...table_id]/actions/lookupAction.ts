@@ -1,11 +1,11 @@
 "use server";
 
 import lookupTermsInTable from "@/backend/edit/lookupService";
-import { LookupEditField } from "@/backend/edit/tableConfigs/tableEditTypes";
+import { LookupFieldOrm } from "@/backend/edit/orm/tableOrmTypes";
 
 export default async function lookupAction(
   terms: string,
-  lookupField: LookupEditField["lookup"],
+  lookupField: LookupFieldOrm["lookup"],
 ) {
   if (!terms) return [];
 

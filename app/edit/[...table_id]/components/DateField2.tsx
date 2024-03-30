@@ -1,22 +1,15 @@
-import {
-  DateEditField,
-  TableEditField,
-} from "@/backend/edit/tableConfigs/tableEditTypes";
+import { DateFieldOrm, FieldOrm } from "@/backend/edit/orm/tableOrmTypes";
 import { DateField, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterLuxon } from "@mui/x-date-pickers/AdapterLuxon";
 import { DateTime } from "luxon";
 import { useState } from "react";
 
 interface DateField2Props {
-  field: DateEditField;
+  field: DateFieldOrm;
   index: number;
   inTable: boolean;
   loading: boolean;
-  setFieldValue: (
-    field: TableEditField,
-    index: number,
-    value: Date | null,
-  ) => void;
+  setFieldValue: (field: FieldOrm, index: number, value: Date | null) => void;
 }
 
 /** '2' because DateField is used by MUI already */
@@ -63,7 +56,7 @@ export default function DateField2({
     <LocalizationProvider dateAdapter={AdapterLuxon}>
       <DateField
         disabled={loading}
-        label={inTable ? "" : field.name}
+        label={inTable ? "" : field.label}
         onChange={handleChange}
         value={localValue}
       />
