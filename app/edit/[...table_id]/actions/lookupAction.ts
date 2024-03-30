@@ -1,7 +1,7 @@
 "use server";
 
 import lookupTermsInTable from "@/backend/edit/lookupService";
-import { LookupFieldOrm } from "@/backend/edit/orm/tableOrmTypes";
+import { LookupFieldOrm } from "@/database/orm/ormTypes";
 
 export default async function lookupAction(
   terms: string,

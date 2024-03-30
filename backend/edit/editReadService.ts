@@ -1,10 +1,10 @@
 import prisma from "@/database/prisma";
 import { notFound } from "next/navigation";
-import scdbOrms from "./orm/scdbOrms";
-import { FieldOrm, TableOrm } from "./orm/tableOrmTypes";
+import sketchDatabaseOrm from "../../database/orm/sketchDatabaseOrm";
+import { FieldOrm, TableOrm } from "../../database/orm/ormTypes";
 
 export function findAndBuildTableOrm(table: string) {
-  const tableOrm = scdbOrms[table];
+  const tableOrm = sketchDatabaseOrm[table];
 
   if (!tableOrm) {
     notFound();
@@ -54,16 +54,16 @@ export async function setFieldValues(table: TableOrm, id: number) {
 function addFieldsToSelect(table: TableOrm, selectParams: any) {
   // Add fields to the select
   table.fields.forEach((field) => {
-    if (field.type === "mapping" && field.mapping) {
+    if (field.type === "mapping" && field.mappingTable) {
       const selectMany = {
         select: {
           id: true,
         },
       };
 
-      addFieldsToSelect(field.mapping, selectMany.select);
+      addFieldsToSelect(field.mappingTable, selectMany.select);
 
-      selectParams[field.mapping.name + "s"] = selectMany;
+      selectParams[field.mappingTable.name + "s"] = selectMany;
     } else if (field.type === "lookup" && field.lookup) {
       const selectOne = {
         select: {
@@ -95,13 +95,13 @@ function mapDatabaseToOrm(dbResult: any, fields: FieldOrm[]) {
         field.lookup.labelValues.push(lookupValue);
       } else if (
         field.type == "mapping" &&
-        field.mapping?.name + "s" === dbKey &&
+        field.mappingTable?.name + "s" === dbKey &&
         Array.isArray(dbValue)
       ) {
-        const mappingFields = field.mapping.fields;
+        const mappingFields = field.mappingTable.fields;
         dbValue.forEach((subResult) => {
-          field.mapping!.ids ||= [];
-          field.mapping!.ids.push(subResult.id);
+          field.mappingTable!.ids ||= [];
+          field.mappingTable!.ids.push(subResult.id);
           mapDatabaseToOrm(subResult, mappingFields);
         });
       }

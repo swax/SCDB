@@ -1,7 +1,11 @@
 import prisma from "@/database/prisma";
 import { slugifyForUrl } from "@/shared/string";
-import scdbOrms from "./orm/scdbOrms";
-import { FieldOrm, MappingEditField, TableOrm } from "./orm/tableOrmTypes";
+import sketchDatabaseOrm from "../../database/orm/sketchDatabaseOrm";
+import {
+  FieldOrm,
+  MappingEditField,
+  TableOrm,
+} from "../../database/orm/ormTypes";
 
 const allowedColumnsByTable: { [key: string]: string[] } = {};
 const allowedMappingsByTable: { [key: string]: string[] } = {};
@@ -10,14 +14,14 @@ function isMappingField(e: FieldOrm): e is MappingEditField {
   return e.type === "mapping";
 }
 
-Object.keys(scdbOrms).forEach((table) => {
-  allowedColumnsByTable[table] = scdbOrms[table].fields
+Object.keys(sketchDatabaseOrm).forEach((table) => {
+  allowedColumnsByTable[table] = sketchDatabaseOrm[table].fields
     .filter((field) => field.column)
     .map((field) => field.column!);
 
-  allowedMappingsByTable[table] = scdbOrms[table].fields
+  allowedMappingsByTable[table] = sketchDatabaseOrm[table].fields
     .filter(isMappingField)
-    .map((field) => field.mapping.name);
+    .map((field) => field.mappingTable.name);
 });
 
 /** Write field values to the database
@@ -109,15 +113,15 @@ async function writeMappingChanges(
 
   for (let field of fields) {
     if (field.type != "mapping") continue;
-    const mapping = field.mapping;
+    const mappingTable = field.mappingTable;
 
-    if (!allowedMappingsByTable[table].includes(mapping.name)) {
-      throw new Error(`Edit mapping on ${mapping?.name} not allowed`);
+    if (!allowedMappingsByTable[table].includes(mappingTable.name)) {
+      throw new Error(`Edit mapping on ${mappingTable?.name} not allowed`);
     }
 
-    for (let removedId of mapping.removeIds || []) {
+    for (let removedId of mappingTable.removeIds || []) {
       // Delete
-      await dynamicPrisma[mapping.name].delete({
+      await dynamicPrisma[mappingTable.name].delete({
         where: {
           id: removedId,
           ...tableRelation,
@@ -126,28 +130,28 @@ async function writeMappingChanges(
     }
 
     let index = 0;
-    for (let mappingId of mapping.ids || []) {
+    for (let mappingId of mappingTable.ids || []) {
       if (mappingId < 0) {
         // Create
         const dataParams: any = {
           ...tableRelation,
         };
 
-        mapping.fields
+        mappingTable.fields
           .filter((field) => field.column)
           .forEach((field) => {
             dataParams[field.column!] = field.values![index];
           });
 
-        await dynamicPrisma[mapping.name].create({
+        await dynamicPrisma[mappingTable.name].create({
           data: dataParams,
         });
-      } else if (mapping.fields.some((field) => field.modified?.[index])) {
+      } else if (mappingTable.fields.some((field) => field.modified?.[index])) {
         // Update
         writeFieldChanges(
-          mapping.name,
+          mappingTable.name,
           mappingId,
-          mapping.fields,
+          mappingTable.fields,
           index,
           tableRelation,
         );

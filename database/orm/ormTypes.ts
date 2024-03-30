@@ -31,7 +31,7 @@ export type LookupFieldOrm = BaseFieldOrm & {
 export type MappingEditField = BaseFieldOrm & {
   type: "mapping";
   values?: Nullable<number>[];
-  mapping: {
+  mappingTable: {
     name: string;
     label: string;
     ids?: number[];
@@ -74,6 +74,6 @@ export type TableOrm = {
   fields: FieldOrm[];
 };
 
-export type DatabaseOrms = {
+export type DatabaseOrm = {
   [key: string]: TableOrm;
 };

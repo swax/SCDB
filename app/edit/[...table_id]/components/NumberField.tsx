@@ -1,4 +1,4 @@
-import { FieldOrm, NumberFieldOrm } from "@/backend/edit/orm/tableOrmTypes";
+import { FieldOrm, NumberFieldOrm } from "@/database/orm/ormTypes";
 import { useForceUpdate } from "@/frontend/hooks/useForceUpdate";
 import { TextField } from "@mui/material";
 import { useState } from "react";
