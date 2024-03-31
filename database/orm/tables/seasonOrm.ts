@@ -18,8 +18,7 @@ const seasonOrm: TableOrm = {
       label: "Description",
       column: "description",
       type: "string",
-      template:
-        "${season.show.name} - Season ${season.number} (${season.year})",
+      template: "${season.show.name} ${season.year}: S${season.number}",
     },
     {
       label: "Slug",

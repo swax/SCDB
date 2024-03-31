@@ -2,7 +2,7 @@
 
 import { FieldOrm, TableOrm } from "@/database/orm/ormTypes";
 import { useForceUpdate } from "@/frontend/hooks/useForceUpdate";
-import { resolveTemplateVars } from "@/shared/string";
+import { resolveTemplateVars, slugifyForUrl } from "@/shared/string";
 import DeleteIcon from "@mui/icons-material/Delete";
 import {
   Box,
@@ -16,6 +16,7 @@ import {
   TableCell,
   TableHead,
   TableRow,
+  TextField,
   Typography,
 } from "@mui/material";
 import { $Enums } from "@prisma/client";
@@ -120,48 +121,65 @@ export default function EditClientPage({ table, id }: EditClientPageProps) {
 
   // Helpers
   function setFieldValue(field: FieldOrm, index: number, value: any) {
-    // Assert templates aren't being updated directly
-    if (field.template) {
-      throw `'${field.label} is a template field. It cannot be updated directly.`;
-    }
-
     field.values ||= [];
     field.values[index] = value;
 
     field.modified ||= [];
     field.modified[index] = true;
 
+    forceUpdate();
+
     // Update template values
-    table.fields.forEach((f) => {
-      if (!f.template) {
-        return;
-      }
+    if (!field.template) {
+      table.fields.forEach((templateField) => {
+        if (!templateField.template) return;
 
-      const originalValue = f.values?.[index] || "";
-      let newValue = "";
+        const originalValue = templateField.values?.[index] || "";
+        let newValue = "";
 
-      try {
-        newValue = resolveTemplateVars(
-          f.template,
-          table.name,
-          getFieldForIndex(index),
+        try {
+          newValue = resolveTemplateVars(
+            templateField.template,
+            table.name,
+            getFieldForTemplate(index),
+          );
+        } catch {}
+
+        if (originalValue == newValue) {
+          return;
+        }
+
+        setFieldValue(templateField, index, newValue);
+      });
+    }
+
+    // Update slug values
+    if (field.type != "slug") {
+      table.fields.forEach((slugField) => {
+        if (slugField.type != "slug") return;
+        
+        slugField.values ||= [];
+
+        const originalValue = slugField.values[index] || "";
+
+        const derivedField = table.fields.find(
+          (f) => f.column == slugField.derivedFrom,
         );
-      } catch {}
 
-      if (originalValue == newValue) {
-        return;
-      }
+        const newValue = slugifyForUrl(
+          (derivedField?.values?.[index] || "").toString(),
+        );
 
-      f.values ||= [];
-      f.values[index] = newValue;
-      f.modified ||= [];
-      f.modified[index] = true;
+        if (originalValue == newValue) {
+          return;
+        }
 
-      forceUpdate();
-    });
+        setFieldValue(slugField, index, newValue);
+      });
+    }
   }
 
-  function getFieldForIndex(index: number) {
+  function getFieldForTemplate(index: number) {
     const field: any = {};
 
     table.fields.forEach((f) => {
@@ -234,6 +252,16 @@ export default function EditClientPage({ table, id }: EditClientPageProps) {
               </MenuItem>
             ))}
           </Select>
+        )}
+        {field.type == "slug" && (
+          <TextField
+            disabled={true}
+            fullWidth
+            helperText={field.helperText}
+            label="URL Slug"
+            value={field.values?.[index] || ""}
+            variant="standard"
+          />
         )}
         {field.type === "lookup" && (
           <AutocompleteLookup

@@ -14,7 +14,7 @@ const episodeOrm: TableOrm = {
       column: "description",
       type: "string",
       template:
-        "${episode.season.description}: Episode ${episode.number}: ${episode.title}",
+        "${episode.season.description} E${episode.number}",
     },
     {
       label: "Slug",

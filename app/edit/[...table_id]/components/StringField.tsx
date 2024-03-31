@@ -34,7 +34,7 @@ export default function StringField({
   // Rendering
   return (
     <TextField
-      disabled={loading}
+      disabled={loading || Boolean(field.template)}
       fullWidth
       helperText={field.helperText}
       label={inTable ? "" : field.label}
