@@ -24,7 +24,7 @@ function validateFieldWithLookup(
 }
 
 export default async function lookupTermsInTable(
-  terms: string,
+  searchString: string,
   lookupField: LookupFieldOrm["lookup"],
 ): Promise<AutocompleteLookupOption[]> {
   const allowedLookup = Object.keys(sketchDatabaseOrm).some((table) =>
@@ -39,12 +39,16 @@ export default async function lookupTermsInTable(
 
   const dynamicPrisma = prisma as any;
 
+  const whereClauses = searchString.split(" ").map((term) => ({
+    [lookupField.labelColumn]: {
+      contains: term,
+      mode: "insensitive",
+    },
+  }));
+
   const results = await dynamicPrisma[lookupField.table].findMany({
     where: {
-      [lookupField.labelColumn]: {
-        contains: terms,
-        mode: "insensitive",
-      },
+      AND: whereClauses,
     },
     select: {
       id: true,

@@ -10,12 +10,6 @@ const sketchOrm: TableOrm = {
       type: "string",
     },
     {
-      label: "Slug",
-      column: "slug",
-      type: "slug",
-      derivedFrom: "title",
-    },
-    {
       label: "Teaser",
       column: "teaser",
       type: "string",
@@ -44,6 +38,13 @@ const sketchOrm: TableOrm = {
       column: "description",
       type: "string",
       multiline: true,
+      template: "${sketch.episode.description}: ${sketch.title}",
+    },
+    {
+      label: "Slug",
+      column: "slug",
+      type: "slug",
+      derivedFrom: "description",
     },
     {
       label: "Characters",

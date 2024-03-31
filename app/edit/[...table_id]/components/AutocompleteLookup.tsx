@@ -148,12 +148,16 @@ export default function AutocompleteLookup({
         inputValue={inputValue}
         isOptionEqualToValue={(option, value) => option.id === value.id}
         loading={loading}
-        noOptionsText="No Matches"
+        noOptionsText="No Options"
         onChange={handleChange}
         onInputChange={handleInputChange}
         options={options}
         renderInput={(params) => (
-          <TextField {...params} label={inTable ? "" : field.label} />
+          <TextField
+            {...params}
+            label={inTable ? "" : field.label}
+            placeholder="Type to search..."
+          />
         )}
         renderOption={(props, option, state) => {
           return (

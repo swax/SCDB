@@ -21,7 +21,7 @@ export function resolveTemplateVars(
 
   return templateString.replace(pattern, (match, key) => {
     const value = valueFromString(mappedVar, key);
-    if (value === undefined) {
+    if (!value) {
       throw `resolveTemplateVars: Error, ${key} is not defined`;
     }
     return value;
