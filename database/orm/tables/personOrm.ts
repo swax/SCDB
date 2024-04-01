@@ -10,8 +10,8 @@ const personOrm: TableOrm = {
       type: "string",
     },
     {
-      label: "Slug",
-      column: "slug",
+      label: "URL Slug",
+      column: "url_slug",
       type: "slug",
       derivedFrom: "name",
     },
@@ -19,6 +19,7 @@ const personOrm: TableOrm = {
       label: "Description",
       column: "description",
       type: "string",
+      optional: true,
     },
     {
       label: "Gender",
@@ -30,6 +31,7 @@ const personOrm: TableOrm = {
       label: "Birthday",
       column: "birth_date",
       type: "date",
+      optional: true,
     },
   ],
 };

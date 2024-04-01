@@ -17,6 +17,9 @@ export default function StringField({
   loading,
   setFieldValue,
 }: StringFieldProps) {
+  // Constants
+  const hasError = !field.optional && !field.values?.[index] && !field.template;
+
   // Hooks
   const forceUpdate = useForceUpdate();
 
@@ -35,6 +38,7 @@ export default function StringField({
   return (
     <TextField
       disabled={loading || Boolean(field.template)}
+      error={hasError}
       fullWidth
       helperText={field.helperText}
       label={inTable ? "" : field.label}

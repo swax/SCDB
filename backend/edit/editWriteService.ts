@@ -35,6 +35,8 @@ export async function writeFieldValues(table: TableOrm, id: number) {
     throw new Error(`Table ${table.name} not allowed`);
   }
 
+  validateRequiredFields(table.fields);
+
   const rowId = await writeFieldChanges(table.name, id, table.fields, 0, {});
 
   await writeMappingChanges(table.name, rowId, table.fields);
@@ -42,6 +44,14 @@ export async function writeFieldValues(table: TableOrm, id: number) {
   // TODO: Write audit record
 
   return rowId;
+}
+
+function validateRequiredFields(fields: FieldOrm[]) {
+  fields
+    .filter((field) => !field.optional && !field.values?.[0])
+    .forEach((field) => {
+      throw new Error(`Field '${field.column}' is required`);
+    });
 }
 
 async function writeFieldChanges(

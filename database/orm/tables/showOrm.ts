@@ -5,20 +5,21 @@ const showOrm: TableOrm = {
   label: "Show",
   fields: [
     {
-      label: "Name",
-      column: "name",
+      label: "Title",
+      column: "title",
       type: "string",
     },
     {
       label: "Description",
       column: "description",
       type: "string",
+      optional: true,
     },
     {
-      label: "Slug",
-      column: "slug",
+      label: "URL Slug",
+      column: "url_slug",
       type: "slug",
-      derivedFrom: "name",
+      derivedFrom: "title",
     },
   ],
 };

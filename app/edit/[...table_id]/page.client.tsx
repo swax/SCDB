@@ -157,7 +157,7 @@ export default function EditClientPage({ table, id }: EditClientPageProps) {
     if (field.type != "slug") {
       table.fields.forEach((slugField) => {
         if (slugField.type != "slug") return;
-        
+
         slugField.values ||= [];
 
         const originalValue = slugField.values[index] || "";
@@ -235,6 +235,7 @@ export default function EditClientPage({ table, id }: EditClientPageProps) {
         )}
         {field.type === "enum" && (
           <Select
+            error={!field.optional && !field.values?.[index]}
             fullWidth
             label={inTable ? "" : field.label}
             onChange={(e) =>
@@ -273,39 +274,45 @@ export default function EditClientPage({ table, id }: EditClientPageProps) {
         )}
         {field.type === "mapping" && (
           <>
-            <Table>
-              <TableHead>
-                <TableRow>
-                  {field.mappingTable?.fields.map((mappedField, fieldIndex) => (
-                    <TableCell key={fieldIndex}>{mappedField.label}</TableCell>
-                  ))}
-                  <TableCell />
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {field.mappingTable?.ids?.map((mappedId, mappedIndex) => (
-                  <TableRow key={mappedId}>
+            {field.mappingTable?.ids?.length && (
+              <Table>
+                <TableHead>
+                  <TableRow>
                     {field.mappingTable?.fields.map(
                       (mappedField, fieldIndex) => (
                         <TableCell key={fieldIndex}>
-                          {renderField(mappedField, mappedIndex, true)}
+                          {mappedField.label}
                         </TableCell>
                       ),
                     )}
-                    <TableCell>
-                      <IconButton
-                        aria-label="delete"
-                        onClick={() =>
-                          handleClick_deleteMappingRow(field, mappedIndex)
-                        }
-                      >
-                        <DeleteIcon />
-                      </IconButton>
-                    </TableCell>
+                    <TableCell />
                   </TableRow>
-                ))}
-              </TableBody>
-            </Table>
+                </TableHead>
+                <TableBody>
+                  {field.mappingTable?.ids?.map((mappedId, mappedIndex) => (
+                    <TableRow key={mappedId}>
+                      {field.mappingTable?.fields.map(
+                        (mappedField, fieldIndex) => (
+                          <TableCell key={fieldIndex}>
+                            {renderField(mappedField, mappedIndex, true)}
+                          </TableCell>
+                        ),
+                      )}
+                      <TableCell>
+                        <IconButton
+                          aria-label="delete"
+                          onClick={() =>
+                            handleClick_deleteMappingRow(field, mappedIndex)
+                          }
+                        >
+                          <DeleteIcon />
+                        </IconButton>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            )}
             <Button
               disabled={loading}
               onClick={() => handleClick_addMappingRow(field)}

@@ -76,19 +76,20 @@ model audit {
 
 model character {
   id                  Int                  @id @default(autoincrement())
+  url_slug            String               @unique @db.VarChar(100)
   name                String               @unique @db.VarChar(100)
-  slug                String               @unique @db.VarChar(100)
   description         String?
   sketch_participants sketch_participant[]
 }
 
 model episode {
   id          Int       @id @default(autoincrement())
+  url_slug    String    @unique @db.VarChar(100)
+  lookup_slug String    @unique @db.VarChar(100)
   number      Int
-  title       String    @db.VarChar(100)
-  slug        String    @unique @db.VarChar(100)
-  description String?
   air_date    DateTime? @db.Date
+  title       String?   @db.VarChar(100)
+  description String?
   season_id   Int
   season      season    @relation(fields: [season_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
   sketches    sketch[]
@@ -98,8 +99,8 @@ model episode {
 
 model person {
   id                  Int                  @id @default(autoincrement())
+  url_slug            String               @unique @db.VarChar(100)
   name                String               @unique @db.VarChar(100)
-  slug                String               @unique @db.VarChar(100)
   description         String?
   birth_date          DateTime?            @db.Date
   gender              gender_type
@@ -120,8 +121,8 @@ model user_rating {
 
 model recurring_sketch {
   id          Int      @id @default(autoincrement())
+  url_slug    String   @unique @db.VarChar(100)
   name        String   @db.VarChar(100)
-  slug        String   @unique @db.VarChar(100)
   description String?
   show_id     Int
   show        show     @relation(fields: [show_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
@@ -132,9 +133,10 @@ model recurring_sketch {
 
 model season {
   id          Int       @id @default(autoincrement())
+  url_slug    String    @unique @db.VarChar(100)
+  lookup_slug String    @unique @default("") @db.VarChar(100)
   number      Int
   year        Int
-  slug        String    @unique @db.VarChar(100)
   description String?
   show_id     Int
   episodes    episode[]
@@ -145,12 +147,11 @@ model season {
 
 model show {
   id                 Int                @id @default(autoincrement())
-  name               String             @unique @db.VarChar(100)
-  slug               String             @unique @db.VarChar(100)
+  title              String             @unique @db.VarChar(100)
+  url_slug           String             @unique @db.VarChar(100)
   description        String?
   recurring_sketches recurring_sketch[]
   seasons            season[]
-  sketches           sketch[]
 }
 
 model sketch_participant {
@@ -178,43 +179,37 @@ model sketch_tag {
 model sketch {
   id                  Int                  @id @default(autoincrement())
   title               String               @db.VarChar(100)
-  slug                String               @unique @db.VarChar(100)
-  thumbnail_url       String?
-  youbube_embed       String?
-  teaser              String?
+  url_slug            String               @unique @db.VarChar(100)
+  lookup_slug         String               @unique @db.VarChar(100)
+  video_urls          String[]
+  tagline             String?
   description         String?
-  quotes              String[]
-  notes               String[]
   duration            Int?
-  show_id             Int
-  episode_id          Int?
+  episode_id          Int
   recurring_sketch_id Int?
   user_ratings        user_rating[]
   sketch_participants sketch_participant[]
   sketch_tags         sketch_tag[]
-  episode             episode?             @relation(fields: [episode_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  episode             episode              @relation(fields: [episode_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
   recurring_sketch    recurring_sketch?    @relation(fields: [recurring_sketch_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  show                show                 @relation(fields: [show_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
-
-  @@unique([show_id, title])
 }
 
 model tag_category {
-  id   Int    @id @default(autoincrement())
-  name String @unique @db.VarChar(100)
-  slug String @unique @db.VarChar(100)
-  tags tag[]
+  id       Int    @id @default(autoincrement())
+  name     String @unique @db.VarChar(100)
+  url_slug String @unique @db.VarChar(100)
+  tags     tag[]
 }
 
 model tag {
   id              Int          @id @default(autoincrement())
   name            String       @db.VarChar(100)
-  slug            String       @db.VarChar(100)
+  url_slug        String       @db.VarChar(100)
   tag_category_id Int
   sketch_tags     sketch_tag[]
   tag_category    tag_category @relation(fields: [tag_category_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
 
-  @@unique([tag_category_id, slug])
+  @@unique([tag_category_id, url_slug])
   @@unique([tag_category_id, name])
 }
 

@@ -10,7 +10,7 @@ export function SketchClientPage({ sketch }: SketchClientPageProps) {
     <>
       <Typography variant="h4">{sketch.title}</Typography>
       <Typography variant="subtitle1">
-        {sketch.show.name}{" "}
+        {sketch.episode.season.show.title}{" "}
         {sketch.episode && <span>({sketch.episode.season.year})</span>}
       </Typography>
     </>

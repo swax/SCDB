@@ -2,7 +2,7 @@ export type BaseFieldOrm = {
   label: string;
   column?: string;
   helperText?: string;
-  required?: boolean;
+  optional?: boolean;
   template?: string;
   modified?: boolean[];
 };

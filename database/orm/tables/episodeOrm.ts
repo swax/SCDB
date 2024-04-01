@@ -5,22 +5,13 @@ const episodeOrm: TableOrm = {
   label: "Episode",
   fields: [
     {
-      label: "Title",
-      column: "title",
-      type: "string",
-    },
-    {
-      label: "Description",
-      column: "description",
-      type: "string",
-      template:
-        "${episode.season.description} E${episode.number}",
-    },
-    {
-      label: "Slug",
-      column: "slug",
-      type: "slug",
-      derivedFrom: "description",
+      label: "Season",
+      column: "season_id",
+      type: "lookup",
+      lookup: {
+        table: "season",
+        labelColumn: "lookup_slug",
+      },
     },
     {
       label: "Episode Number",
@@ -33,13 +24,28 @@ const episodeOrm: TableOrm = {
       type: "date",
     },
     {
-      label: "Season",
-      column: "season_id",
-      type: "lookup",
-      lookup: {
-        table: "season",
-        labelColumn: "description",
-      },
+      label: "Title",
+      column: "title",
+      type: "string",
+      optional: true,
+    },
+    {
+      label: "Description",
+      column: "description",
+      type: "string",
+      optional: true,
+    },
+    {
+      label: "Lookup Slug",
+      column: "lookup_slug",
+      type: "string",
+      template: "${episode.season.lookup_slug} E${episode.number}",
+    },
+    {
+      label: "URL Slug",
+      column: "url_slug",
+      type: "slug",
+      derivedFrom: "lookup_slug",
     },
   ],
 };
