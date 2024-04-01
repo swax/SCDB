@@ -25,6 +25,9 @@ export default function DateField2({
     getInitialFieldValue(),
   );
 
+  // Test if localValue is a valid date
+  const hasError = !field.optional && !localValue?.isValid;
+
   // Event Handlers
   function handleChange(newValue: DateTime | null) {
     setLocalValue(newValue);

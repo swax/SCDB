@@ -10,8 +10,8 @@ const tagCategoryOrm: TableOrm = {
       type: "string",
     },
     {
-      label: "Slug",
-      column: "slug",
+      label: "URL Slug",
+      column: "url_slug",
       type: "slug",
       derivedFrom: "name",
     },

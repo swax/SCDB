@@ -18,11 +18,12 @@ export default function NumberField({
   loading,
   setFieldValue,
 }: NumberFieldProps) {
+  // Constants
+  const hasError =
+    !field.optional && isNaN(parseInt(`${field.values?.[index]}`));
+
   // Hooks
   const forceUpdate = useForceUpdate();
-
-  // error state
-  const [error, setError] = useState(false);
 
   // Event Handlers
   function handleChange_field(
@@ -31,9 +32,7 @@ export default function NumberField({
     value: string,
   ) {
     const numberValue = parseInt(value);
-    const hasError = isNaN(numberValue);
 
-    setError(hasError);
     setFieldValue(field, index, numberValue);
 
     forceUpdate();
@@ -42,8 +41,8 @@ export default function NumberField({
   // Rendering
   return (
     <TextField
-      {...(error ? { error: true } : {})}
       disabled={loading}
+      error={hasError}
       helperText={field.helperText}
       label={inTable ? "" : field.label}
       onChange={(e) => handleChange_field(field, index, e.target.value)}

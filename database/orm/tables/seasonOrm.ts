@@ -5,9 +5,13 @@ const seasonOrm: TableOrm = {
   label: "Season",
   fields: [
     {
-      label: "Season Number",
-      column: "number",
-      type: "number",
+      label: "Show",
+      column: "show_id",
+      type: "lookup",
+      lookup: {
+        table: "show",
+        labelColumn: "title",
+      },
     },
     {
       label: "Year",
@@ -15,25 +19,27 @@ const seasonOrm: TableOrm = {
       type: "number",
     },
     {
+      label: "Season Number",
+      column: "number",
+      type: "number",
+    },
+    {
       label: "Description",
       column: "description",
       type: "string",
-      template: "${season.show.name} ${season.year}: S${season.number}",
+      optional: true,
     },
     {
-      label: "Slug",
-      column: "slug",
+      label: "Lookup Slug",
+      column: "lookup_slug",
+      type: "string",
+      template: "${season.show.title} ${season.year}: S${season.number}",
+    },
+    {
+      label: "URL Slug",
+      column: "url_slug",
       type: "slug",
-      derivedFrom: "description",
-    },
-    {
-      label: "Show",
-      column: "show_id",
-      type: "lookup",
-      lookup: {
-        table: "show",
-        labelColumn: "name",
-      },
+      derivedFrom: "lookup_slug",
     },
   ],
 };

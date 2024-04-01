@@ -5,46 +5,41 @@ const sketchOrm: TableOrm = {
   label: "Sketch",
   fields: [
     {
-      label: "Title",
-      column: "title",
-      type: "string",
-    },
-    {
-      label: "Teaser",
-      column: "teaser",
-      type: "string",
-      helperText: "A short one sentence description of the sketch",
-    },
-    {
-      label: "Show",
-      column: "show_id",
-      type: "lookup",
-      lookup: {
-        table: "show",
-        labelColumn: "name",
-      },
-    },
-    {
       label: "Episode",
       column: "episode_id",
       type: "lookup",
       lookup: {
         table: "episode",
-        labelColumn: "description",
+        labelColumn: "lookup_slug",
       },
+    },
+    {
+      label: "Title",
+      column: "title",
+      type: "string",
+    },
+    {
+      label: "Tagline",
+      column: "tagline",
+      type: "string",
+      optional: true,
     },
     {
       label: "Description",
       column: "description",
       type: "string",
       multiline: true,
-      template: "${sketch.episode.description}: ${sketch.title}",
+      optional: true,
     },
     {
-      label: "Slug",
-      column: "slug",
-      type: "slug",
-      derivedFrom: "description",
+      label: "Recurring Sketch",
+      column: "recurring_sketch_id",
+      type: "lookup",
+      optional: true,
+      lookup: {
+        table: "recurring_sketch",
+        labelColumn: "name",
+      },
     },
     {
       label: "Characters",
@@ -106,13 +101,16 @@ const sketchOrm: TableOrm = {
       },
     },
     {
-      label: "Recurring Sketch",
-      column: "recurring_sketch_id",
-      type: "lookup",
-      lookup: {
-        table: "recurring_sketch",
-        labelColumn: "name",
-      },
+      label: "Lookup Slug",
+      column: "lookup_slug",
+      type: "string",
+      template: "${sketch.episode.lookup_slug}: ${sketch.title}",
+    },
+    {
+      label: "URL Slug",
+      column: "url_slug",
+      type: "slug",
+      derivedFrom: "lookup_slug",
     },
   ],
 };

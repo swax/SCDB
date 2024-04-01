@@ -10,8 +10,8 @@ const characterOrm: TableOrm = {
       type: "string",
     },
     {
-      label: "Slug",
-      column: "slug",
+      label: "URL Slug",
+      column: "url_slug",
       type: "slug",
       derivedFrom: "name",
     },
@@ -19,6 +19,7 @@ const characterOrm: TableOrm = {
       label: "Description",
       column: "description",
       type: "string",
+      optional: true,
     },
   ],
 };

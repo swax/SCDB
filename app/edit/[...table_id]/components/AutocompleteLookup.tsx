@@ -29,12 +29,15 @@ export default function AutocompleteLookup({
   inTable,
   setFieldValue,
 }: AutocompleteLookupProps) {
+  // Constants
   const initialValue: Nullable<AutocompleteLookupOption> = field.values?.[index]
     ? {
         id: field.values[index] as number,
         label: field.lookup?.labelValues?.[index] ?? "(lookup init error)",
       }
     : null;
+
+  const hasError = !field.optional && !field.values?.[index];
 
   // Hooks
   const [value, setValue] = useState(initialValue);
@@ -155,6 +158,7 @@ export default function AutocompleteLookup({
         renderInput={(params) => (
           <TextField
             {...params}
+            error={hasError}
             label={inTable ? "" : field.label}
             placeholder="Type to search..."
           />
