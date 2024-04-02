@@ -3,6 +3,7 @@ import { TableOrm } from "../ormTypes";
 const episodeOrm: TableOrm = {
   name: "episode",
   label: "Episode",
+  title: "Episode ${episode.number} - ${episode.season.lookup_slug}",
   fields: [
     {
       label: "Season",

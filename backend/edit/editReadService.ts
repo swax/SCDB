@@ -51,7 +51,7 @@ export async function setFieldValues(table: TableOrm, id: number) {
   mapDatabaseToOrm(dbResults, table.fields);
 }
 
-function addFieldsToSelect(table: TableOrm, selectParams: any) {
+function addFieldsToSelect(table: Omit<TableOrm, 'title'>, selectParams: any) {
   // Add fields to the select
   table.fields.forEach((field) => {
     if (field.type === "mapping" && field.mappingTable) {

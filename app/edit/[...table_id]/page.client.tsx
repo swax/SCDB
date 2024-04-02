@@ -1,12 +1,17 @@
 "use client";
 
-import { FieldOrm, TableOrm } from "@/database/orm/ormTypes";
+import { FieldOrm, MappingEditField, TableOrm } from "@/database/orm/ormTypes";
 import { useForceUpdate } from "@/frontend/hooks/useForceUpdate";
 import { resolveTemplateVars, slugifyForUrl } from "@/shared/string";
 import DeleteIcon from "@mui/icons-material/Delete";
+import EditIcon from "@mui/icons-material/Edit";
 import {
   Box,
   Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
   IconButton,
   MenuItem,
   Select,
@@ -34,9 +39,16 @@ interface EditClientPageProps {
 }
 
 export default function EditClientPage({ table, id }: EditClientPageProps) {
+  const pageTitle =
+    resolveTemplateVars(table.title, table.name, getFieldForTemplate(0)) +
+    " - SketchTV.lol";
+
   // Hooks
   const forceUpdate = useForceUpdate();
   const [loading, setLoading] = useState(false);
+
+  const [editMappingField, setEditMappingField] = useState<MappingEditField>();
+  const [editMappingRowIndex, setEditMappingRowIndex] = useState<number>();
 
   // Event Handlers
   function handleChange_enumField(
@@ -84,6 +96,14 @@ export default function EditClientPage({ table, id }: EditClientPageProps) {
     } finally {
       setLoading(false);
     }
+  }
+
+  function handleClick_editMappingRow(
+    mappingField: MappingEditField,
+    mappingRowIndex: number,
+  ) {
+    setEditMappingField(mappingField);
+    setEditMappingRowIndex(mappingRowIndex);
   }
 
   function handleClick_deleteMappingRow(field: FieldOrm, mappedIndex: number) {
@@ -137,13 +157,11 @@ export default function EditClientPage({ table, id }: EditClientPageProps) {
         const originalValue = templateField.values?.[index] || "";
         let newValue = "";
 
-        try {
-          newValue = resolveTemplateVars(
-            templateField.template,
-            table.name,
-            getFieldForTemplate(index),
-          );
-        } catch {}
+        newValue = resolveTemplateVars(
+          templateField.template,
+          table.name,
+          getFieldForTemplate(index),
+        );
 
         if (originalValue == newValue) {
           return;
@@ -203,7 +221,7 @@ export default function EditClientPage({ table, id }: EditClientPageProps) {
   }
 
   // Rendering
-  function renderField(field: FieldOrm, index: number, inTable = false) {
+  function renderEditField(field: FieldOrm, index: number, inTable = false) {
     return (
       <Box sx={{ marginTop: inTable ? 0 : 3 }}>
         {field.type == "string" && (
@@ -294,11 +312,19 @@ export default function EditClientPage({ table, id }: EditClientPageProps) {
                       {field.mappingTable?.fields.map(
                         (mappedField, fieldIndex) => (
                           <TableCell key={fieldIndex}>
-                            {renderField(mappedField, mappedIndex, true)}
+                            {renderEditField(mappedField, mappedIndex, true)}
                           </TableCell>
                         ),
                       )}
                       <TableCell>
+                        <IconButton
+                          aria-label="edit"
+                          onClick={() =>
+                            handleClick_editMappingRow(field, mappedIndex)
+                          }
+                        >
+                          <EditIcon />
+                        </IconButton>
                         <IconButton
                           aria-label="delete"
                           onClick={() =>
@@ -329,13 +355,14 @@ export default function EditClientPage({ table, id }: EditClientPageProps) {
 
   return (
     <>
+      <title>{pageTitle}</title>
       <Typography variant="h5">
         {capitalizeFirstLetter(table.operation || "") +
           " " +
           capitalizeFirstLetter(table.label)}
       </Typography>
       {table.fields.map((field, i) => (
-        <Box key={i}>{renderField(field, 0)}</Box>
+        <Box key={i}>{renderEditField(field, 0)}</Box>
       ))}
       <Stack
         direction="row"
@@ -365,6 +392,26 @@ export default function EditClientPage({ table, id }: EditClientPageProps) {
           </Button>
         )}
       </Stack>
+      <Dialog
+        open={!!editMappingField}
+        onClose={() => setEditMappingField(undefined)}
+      >
+        <DialogTitle>Edit {editMappingField?.label}</DialogTitle>
+        <DialogContent>
+          {editMappingField?.mappingTable.fields.map((field, i) => (
+            <Box key={i}>{renderEditField(field, editMappingRowIndex!)}</Box>
+          ))}
+        </DialogContent>
+        <DialogActions>
+          <Button
+            disabled={loading}
+            onClick={() => setEditMappingField(undefined)}
+            variant="outlined"
+          >
+            Close
+          </Button>
+        </DialogActions>
+      </Dialog>
     </>
   );
 }

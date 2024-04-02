@@ -3,6 +3,7 @@ import { TableOrm } from "../ormTypes";
 const tagOrm: TableOrm = {
   name: "tag",
   label: "Tag",
+  title: "${tag.name}",
   fields: [
     {
       label: "Name",
