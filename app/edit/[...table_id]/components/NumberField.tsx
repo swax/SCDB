@@ -1,7 +1,6 @@
 import { FieldOrm, NumberFieldOrm } from "@/database/orm/ormTypes";
 import { useForceUpdate } from "@/frontend/hooks/useForceUpdate";
 import { TextField } from "@mui/material";
-import { useState } from "react";
 
 interface NumberFieldProps {
   field: NumberFieldOrm;
