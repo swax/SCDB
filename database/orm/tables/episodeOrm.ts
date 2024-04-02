@@ -23,6 +23,7 @@ const episodeOrm: TableOrm = {
       label: "Air Date",
       column: "air_date",
       type: "date",
+      optional: true,
     },
     {
       label: "Title",

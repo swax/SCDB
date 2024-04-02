@@ -53,6 +53,7 @@ const sketchOrm: TableOrm = {
             label: "Character",
             column: "character_id",
             type: "lookup",
+            optional: true,
             lookup: {
               table: "character",
               labelColumn: "name",
@@ -62,6 +63,7 @@ const sketchOrm: TableOrm = {
             label: "Actor",
             column: "person_id",
             type: "lookup",
+            optional: true,
             lookup: {
               table: "person",
               labelColumn: "name",
@@ -89,6 +91,7 @@ const sketchOrm: TableOrm = {
       mappingTable: {
         name: "sketch_tag",
         label: "Sketch Tag",
+        inline: true,
         fields: [
           {
             label: "Tag",
@@ -96,7 +99,7 @@ const sketchOrm: TableOrm = {
             type: "lookup",
             lookup: {
               table: "tag",
-              labelColumn: "name",
+              labelColumn: "lookup_slug",
             },
           },
         ],

@@ -47,11 +47,34 @@ export async function writeFieldValues(table: TableOrm, id: number) {
 }
 
 function validateRequiredFields(fields: FieldOrm[]) {
-  fields
-    .filter((field) => !field.optional && !field.values?.[0])
-    .forEach((field) => {
-      throw new Error(`Field '${field.column}' is required`);
-    });
+  const errors: string[] = [];
+
+  for (const field of fields) {
+    if (field.column) {
+      if (!field.optional && !field.values?.[0]) {
+        errors.push(`Field '${field.column}' is required`);
+      }
+    }
+    if (field.type == "mapping") {
+      const rowCount = field.mappingTable.ids?.length || 0;
+
+      for (const mappedField of field.mappingTable.fields) {
+        for (let i = 0; i < rowCount; i++) {
+          if (!mappedField.values || mappedField.values.length < rowCount) {
+            errors.push(`${field.label}: Row ${i + 1}: No data`);
+          } else if (!mappedField.optional && !mappedField.values[i]) {
+            errors.push(
+              `${field.label}: Row ${i + 1}: Field '${mappedField.column}' is required`,
+            );
+          }
+        }
+      }
+    }
+  }
+
+  if (errors.length) {
+    throw new Error(errors.join("\n"));
+  }
 }
 
 async function writeFieldChanges(

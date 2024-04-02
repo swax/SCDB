@@ -11,12 +11,6 @@ const tagOrm: TableOrm = {
       type: "string",
     },
     {
-      label: "URL Slug",
-      column: "url_slug",
-      type: "slug",
-      derivedFrom: "name",
-    },
-    {
       label: "Category",
       column: "tag_category_id",
       type: "lookup",
@@ -24,6 +18,18 @@ const tagOrm: TableOrm = {
         table: "tag_category",
         labelColumn: "name",
       },
+    },
+    {
+      label: "Lookup Slug",
+      column: "lookup_slug",
+      type: "string",
+      template: "${tag.tag_category.name} / ${tag.name}",
+    },
+    {
+      label: "URL Slug",
+      column: "url_slug",
+      type: "slug",
+      derivedFrom: "lookup_slug",
     },
   ],
 };

@@ -205,6 +205,7 @@ model tag {
   id              Int          @id @default(autoincrement())
   name            String       @db.VarChar(100)
   url_slug        String       @db.VarChar(100)
+  lookup_slug     String       @unique @db.VarChar(100)
   tag_category_id Int
   sketch_tags     sketch_tag[]
   tag_category    tag_category @relation(fields: [tag_category_id], references: [id], onDelete: NoAction, onUpdate: NoAction)

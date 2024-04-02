@@ -34,6 +34,8 @@ export type MappingEditField = BaseFieldOrm & {
   mappingTable: {
     name: string;
     label: string;
+    /** Undefined or false if a separate dialog is used to edit the mapped fields. Useful for with many fields. */
+    inline?: boolean;
     ids?: number[];
     removeIds?: number[];
     fields: FieldOrm[];

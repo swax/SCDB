@@ -5,6 +5,7 @@ import { useForceUpdate } from "@/frontend/hooks/useForceUpdate";
 import { resolveTemplateVars, slugifyForUrl } from "@/shared/string";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
+import SaveIcon from "@mui/icons-material/Save";
 import {
   Box,
   Button,
@@ -12,10 +13,10 @@ import {
   DialogActions,
   DialogContent,
   DialogTitle,
+  Fab,
   IconButton,
   MenuItem,
   Select,
-  Stack,
   Table,
   TableBody,
   TableCell,
@@ -47,8 +48,10 @@ export default function EditClientPage({ table, id }: EditClientPageProps) {
   const forceUpdate = useForceUpdate();
   const [loading, setLoading] = useState(false);
 
-  const [editMappingField, setEditMappingField] = useState<MappingEditField>();
-  const [editMappingRowIndex, setEditMappingRowIndex] = useState<number>();
+  const [editMappingField, setEditDialogMappingField] =
+    useState<MappingEditField>();
+  const [editMappingRowIndex, setEditDialogMappingRowIndex] =
+    useState<number>();
 
   // Event Handlers
   function handleChange_enumField(
@@ -84,7 +87,8 @@ export default function EditClientPage({ table, id }: EditClientPageProps) {
 
   async function handleClick_delete() {
     try {
-      if (!confirm("Are you sure you want to delete this entry?")) return;
+      if (!confirm(`Are you sure you want to delete this ${table.label}?`))
+        return;
 
       setLoading(true);
       await deleteAction(table, id);
@@ -98,20 +102,23 @@ export default function EditClientPage({ table, id }: EditClientPageProps) {
     }
   }
 
-  function handleClick_editMappingRow(
+  function handleClick_openEditMappingDialog(
     mappingField: MappingEditField,
     mappingRowIndex: number,
   ) {
-    setEditMappingField(mappingField);
-    setEditMappingRowIndex(mappingRowIndex);
+    setEditDialogMappingField(mappingField);
+    setEditDialogMappingRowIndex(mappingRowIndex);
   }
 
   function handleClick_deleteMappingRow(field: FieldOrm, mappedIndex: number) {
     if (field.type != "mapping" || !field.mappingTable.ids) return;
 
-    const removedId = field.mappingTable.ids.splice(mappedIndex, 1);
+    const removedId = field.mappingTable.ids.splice(mappedIndex, 1)[0];
     field.mappingTable.removeIds ||= [];
-    field.mappingTable.removeIds.push(removedId[0]);
+
+    if (removedId >= 0) {
+      field.mappingTable.removeIds.push(removedId);
+    }
 
     field.mappingTable.fields.forEach((mappedField) => {
       mappedField.values?.splice(mappedIndex, 1);
@@ -135,6 +142,11 @@ export default function EditClientPage({ table, id }: EditClientPageProps) {
     field.mappingTable.fields.forEach((mappedField) => {
       mappedField.values?.push(null);
     });
+
+    if (!field.mappingTable.inline) {
+      setEditDialogMappingField(field);
+      setEditDialogMappingRowIndex(field.mappingTable.ids.length - 1);
+    }
 
     forceUpdate();
   }
@@ -221,6 +233,31 @@ export default function EditClientPage({ table, id }: EditClientPageProps) {
   }
 
   // Rendering
+  function renderViewField(field: FieldOrm, index: number, inTable = false) {
+    let color: string | undefined;
+    let value = field.values?.[index];
+
+    if (field.type == "lookup") {
+      value = field.lookup.labelValues?.[index];
+    }
+
+    if (!field.optional && !value) {
+      color = "red";
+      value =
+        value === ""
+          ? "<empty>"
+          : value === null
+            ? "<null>"
+            : value === undefined
+              ? "<undefined>"
+              : "<unknown>";
+    }
+
+    return (
+      <Box sx={{ marginTop: inTable ? 0 : 3, color }}>{`${value || ""}`}</Box>
+    );
+  }
+
   function renderEditField(field: FieldOrm, index: number, inTable = false) {
     return (
       <Box sx={{ marginTop: inTable ? 0 : 3 }}>
@@ -292,11 +329,11 @@ export default function EditClientPage({ table, id }: EditClientPageProps) {
         )}
         {field.type === "mapping" && (
           <>
-            {field.mappingTable?.ids?.length && (
+            {Boolean(field.mappingTable.ids?.length) && (
               <Table>
                 <TableHead>
                   <TableRow>
-                    {field.mappingTable?.fields.map(
+                    {field.mappingTable.fields.map(
                       (mappedField, fieldIndex) => (
                         <TableCell key={fieldIndex}>
                           {mappedField.label}
@@ -307,24 +344,31 @@ export default function EditClientPage({ table, id }: EditClientPageProps) {
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {field.mappingTable?.ids?.map((mappedId, mappedIndex) => (
+                  {field.mappingTable.ids?.map((mappedId, mappedIndex) => (
                     <TableRow key={mappedId}>
                       {field.mappingTable?.fields.map(
                         (mappedField, fieldIndex) => (
                           <TableCell key={fieldIndex}>
-                            {renderEditField(mappedField, mappedIndex, true)}
+                            {field.mappingTable.inline
+                              ? renderEditField(mappedField, mappedIndex, true)
+                              : renderViewField(mappedField, mappedIndex, true)}
                           </TableCell>
                         ),
                       )}
                       <TableCell>
-                        <IconButton
-                          aria-label="edit"
-                          onClick={() =>
-                            handleClick_editMappingRow(field, mappedIndex)
-                          }
-                        >
-                          <EditIcon />
-                        </IconButton>
+                        {!field.mappingTable.inline && (
+                          <IconButton
+                            aria-label="edit"
+                            onClick={() =>
+                              handleClick_openEditMappingDialog(
+                                field,
+                                mappedIndex,
+                              )
+                            }
+                          >
+                            <EditIcon />
+                          </IconButton>
+                        )}
                         <IconButton
                           aria-label="delete"
                           onClick={() =>
@@ -361,40 +405,52 @@ export default function EditClientPage({ table, id }: EditClientPageProps) {
           " " +
           capitalizeFirstLetter(table.label)}
       </Typography>
+
+      {/* Render fields */}
       {table.fields.map((field, i) => (
         <Box key={i}>{renderEditField(field, 0)}</Box>
       ))}
-      <Stack
-        direction="row"
-        spacing={2}
-        sx={{ alignItems: "start", marginTop: 4 }}
+
+      {/* Create, update, delete */}
+      <Box
+        sx={{
+          bottom: 8,
+          position: "fixed",
+          right: 8,
+        }}
       >
-        <Button
+        <Fab
           color="success"
           disabled={loading}
           onClick={() => handleClick_save()}
-          variant="outlined"
+          sx={{ mr: 1 }}
+          variant="extended"
         >
+          <SaveIcon />
           {table.operation == "update"
-            ? "Save Changes"
+            ? "Save"
             : table.operation == "create"
               ? "Create"
               : "unknown"}
-        </Button>
+        </Fab>
         {table.operation == "update" && (
-          <Button
+          <Fab
             color="error"
             disabled={loading}
             onClick={() => handleClick_delete()}
-            variant="outlined"
+            variant="extended"
           >
-            Delete Entry
-          </Button>
+            <DeleteIcon />
+            Delete
+          </Fab>
         )}
-      </Stack>
+      </Box>
+
+      {/* Edit mappped field dialog */}
       <Dialog
+        fullWidth
         open={!!editMappingField}
-        onClose={() => setEditMappingField(undefined)}
+        onClose={() => setEditDialogMappingField(undefined)}
       >
         <DialogTitle>Edit {editMappingField?.label}</DialogTitle>
         <DialogContent>
@@ -405,7 +461,7 @@ export default function EditClientPage({ table, id }: EditClientPageProps) {
         <DialogActions>
           <Button
             disabled={loading}
-            onClick={() => setEditMappingField(undefined)}
+            onClick={() => setEditDialogMappingField(undefined)}
             variant="outlined"
           >
             Close
