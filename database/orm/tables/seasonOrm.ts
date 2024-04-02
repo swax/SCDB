@@ -3,6 +3,7 @@ import { TableOrm } from "../ormTypes";
 const seasonOrm: TableOrm = {
   name: "season",
   label: "Season",
+  title: "Season ${season.number} - ${season.show.title} ${season.year}",
   fields: [
     {
       label: "Show",

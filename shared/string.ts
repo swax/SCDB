@@ -1,6 +1,9 @@
 import slugify from "slugify";
 
 export function slugifyForUrl(str: string) {
+  // Remove < > characters from the string
+  str = str.replace(/[<>]/g, "");
+
   return slugify(str, {
     replacement: "-", // replace spaces with replacement character, defaults to `-`
     remove: undefined, // remove characters that match regex, defaults to `undefined`
@@ -20,9 +23,9 @@ export function resolveTemplateVars(
   const pattern = new RegExp(`\\$\\{${allowedVarString}\\.([^}]+)\\}`, "g");
 
   return templateString.replace(pattern, (match, key) => {
-    const value = valueFromString(mappedVar, key);
+    let value = valueFromString(mappedVar, key);
     if (!value) {
-      throw `resolveTemplateVars: Error, ${key} is not defined`;
+      value = `<${key}>`;
     }
     return value;
   });
