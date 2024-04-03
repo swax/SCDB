@@ -75,11 +75,11 @@ model audit {
 }
 
 model character {
-  id                  Int                  @id @default(autoincrement())
-  url_slug            String               @unique @db.VarChar(100)
-  name                String               @unique @db.VarChar(100)
-  description         String?
-  sketch_participants sketch_participant[]
+  id           Int           @id @default(autoincrement())
+  url_slug     String        @unique @db.VarChar(100)
+  name         String        @unique @db.VarChar(100)
+  description  String?
+  sketch_casts sketch_cast[]
 }
 
 model episode {
@@ -98,13 +98,14 @@ model episode {
 }
 
 model person {
-  id                  Int                  @id @default(autoincrement())
-  url_slug            String               @unique @db.VarChar(100)
-  name                String               @unique @db.VarChar(100)
-  description         String?
-  birth_date          DateTime?            @db.Date
-  gender              gender_type
-  sketch_participants sketch_participant[]
+  id             Int             @id @default(autoincrement())
+  url_slug       String          @unique @db.VarChar(100)
+  name           String          @unique @db.VarChar(100)
+  description    String?
+  birth_date     DateTime?       @db.Date
+  gender         gender_type
+  sketch_casts   sketch_cast[]
+  sketch_credits sketch_credit[]
 }
 
 model user_rating {
@@ -154,16 +155,26 @@ model show {
   seasons            season[]
 }
 
-model sketch_participant {
-  id           Int              @id @default(autoincrement())
+model sketch_cast {
+  id           Int            @id @default(autoincrement())
   sketch_id    Int
-  character_id Int?
+  character_id Int
   person_id    Int?
   description  String?
-  role         sketch_role_type
-  character    character?       @relation(fields: [character_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  person       person?          @relation(fields: [person_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  sketch       sketch           @relation(fields: [sketch_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  role         cast_role_type
+  character    character      @relation(fields: [character_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  person       person?        @relation(fields: [person_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  sketch       sketch         @relation(fields: [sketch_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+}
+
+model sketch_credit {
+  id          Int              @id @default(autoincrement())
+  sketch_id   Int
+  person_id   Int
+  description String?
+  role        credit_role_type
+  person      person           @relation(fields: [person_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  sketch      sketch           @relation(fields: [sketch_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
 }
 
 model sketch_tag {
@@ -177,10 +188,10 @@ model sketch_tag {
 }
 
 model sketch {
-  id                  Int                  @id @default(autoincrement())
-  title               String               @db.VarChar(100)
-  url_slug            String               @unique @db.VarChar(100)
-  lookup_slug         String               @unique @db.VarChar(100)
+  id                  Int               @id @default(autoincrement())
+  title               String            @db.VarChar(100)
+  url_slug            String            @unique @db.VarChar(100)
+  lookup_slug         String            @unique @db.VarChar(100)
   video_urls          String[]
   tagline             String?
   description         String?
@@ -188,10 +199,11 @@ model sketch {
   episode_id          Int
   recurring_sketch_id Int?
   user_ratings        user_rating[]
-  sketch_participants sketch_participant[]
+  sketch_casts        sketch_cast[]
+  sketch_credits      sketch_credit[]
   sketch_tags         sketch_tag[]
-  episode             episode              @relation(fields: [episode_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  recurring_sketch    recurring_sketch?    @relation(fields: [recurring_sketch_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  episode             episode           @relation(fields: [episode_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  recurring_sketch    recurring_sketch? @relation(fields: [recurring_sketch_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
 }
 
 model tag_category {
@@ -226,10 +238,14 @@ enum operation_type {
   DELETE
 }
 
-enum sketch_role_type {
-  CastMember
-  GuestActor
-  Extra
+enum cast_role_type {
+  Cast_Member
+  Guest
+  Host
+  Uncredited
+}
+
+enum credit_role_type {
   Writer
   Director
   Musician

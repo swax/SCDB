@@ -26,6 +26,48 @@ const sketchOrm: TableOrm = {
       optional: true,
     },
     {
+      label: "Cast",
+      type: "mapping",
+      mappingTable: {
+        name: "sketch_cast",
+        label: "Cast",
+        fields: [
+          {
+            label: "Character",
+            column: "character_id",
+            type: "lookup",
+            lookup: {
+              table: "character",
+              labelColumn: "name",
+            },
+          },
+          {
+            label: "Played By",
+            column: "person_id",
+            type: "lookup",
+            optional: true,
+            lookup: {
+              table: "person",
+              labelColumn: "name",
+            },
+          },
+          {
+            label: "Role",
+            column: "role",
+            type: "enum",
+            enum: "cast_role_type",
+          },
+          {
+            label: "Description",
+            column: "description",
+            type: "string",
+            multiline: true,
+            optional: true,
+          },
+        ],
+      },
+    },
+    {
       label: "Description",
       column: "description",
       type: "string",
@@ -43,27 +85,16 @@ const sketchOrm: TableOrm = {
       },
     },
     {
-      label: "Characters",
+      label: "Credits",
       type: "mapping",
       mappingTable: {
-        name: "sketch_participant",
-        label: "Sketch Participant",
+        name: "sketch_credit",
+        label: "Credits",
         fields: [
           {
-            label: "Character",
-            column: "character_id",
-            type: "lookup",
-            optional: true,
-            lookup: {
-              table: "character",
-              labelColumn: "name",
-            },
-          },
-          {
-            label: "Actor",
+            label: "Person",
             column: "person_id",
             type: "lookup",
-            optional: true,
             lookup: {
               table: "person",
               labelColumn: "name",
@@ -73,7 +104,7 @@ const sketchOrm: TableOrm = {
             label: "Role",
             column: "role",
             type: "enum",
-            enum: "sketch_role_type",
+            enum: "credit_role_type",
           },
           {
             label: "Description",
@@ -90,7 +121,7 @@ const sketchOrm: TableOrm = {
       type: "mapping",
       mappingTable: {
         name: "sketch_tag",
-        label: "Sketch Tag",
+        label: "Tags",
         inline: true,
         fields: [
           {

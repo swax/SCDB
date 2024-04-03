@@ -140,7 +140,8 @@ export default function EditClientPage({ table, id }: EditClientPageProps) {
     field.mappingTable.ids.push(minId - 1);
 
     field.mappingTable.fields.forEach((mappedField) => {
-      mappedField.values?.push(null);
+      mappedField.values ||= [];
+      mappedField.values.push(null);
     });
 
     if (!field.mappingTable.inline) {
