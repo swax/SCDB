@@ -44,8 +44,10 @@ export default function StringField({
       label={inTable ? "" : field.label}
       multiline={Boolean(field.multiline)}
       onChange={(e) => handleChange_field(field, index, e.target.value)}
+      rows={field.multiline ? 4 : 1}
+      size="small"
       value={field.values?.[index] || ""}
-      variant="standard"
+      variant="outlined"
     />
   );
 }

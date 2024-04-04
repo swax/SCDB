@@ -61,6 +61,7 @@ export default function DateField2({
         disabled={loading}
         label={inTable ? "" : field.label}
         onChange={handleChange}
+        size="small"
         value={localValue}
       />
     </LocalizationProvider>

@@ -316,8 +316,9 @@ export default function EditClientPage({ table, id }: EditClientPageProps) {
             fullWidth
             helperText={field.helperText}
             label="URL Slug"
+            size="small"
             value={field.values?.[index] || ""}
-            variant="standard"
+            variant="outlined"
           />
         )}
         {field.type === "lookup" && (
@@ -330,14 +331,15 @@ export default function EditClientPage({ table, id }: EditClientPageProps) {
         )}
         {field.type === "mapping" && (
           <>
+            <Typography variant="h6">{field.label}</Typography>
             {Boolean(field.mappingTable.ids?.length) && (
-              <Table>
+              <Table size="small">
                 <TableHead>
                   <TableRow>
                     {field.mappingTable.fields.map(
                       (mappedField, fieldIndex) => (
                         <TableCell key={fieldIndex}>
-                          {mappedField.label}
+                          <Box sx={{ color: "grey" }}>{mappedField.label}</Box>
                         </TableCell>
                       ),
                     )}
@@ -349,14 +351,25 @@ export default function EditClientPage({ table, id }: EditClientPageProps) {
                     <TableRow key={mappedId}>
                       {field.mappingTable?.fields.map(
                         (mappedField, fieldIndex) => (
-                          <TableCell key={fieldIndex}>
+                          <TableCell
+                            key={fieldIndex}
+                            sx={{
+                              ...(mappedField.fillWidth
+                                ? {
+                                    width: "100%",
+                                  }
+                                : {
+                                    whiteSpace: "nowrap",
+                                  }),
+                            }}
+                          >
                             {field.mappingTable.inline
                               ? renderEditField(mappedField, mappedIndex, true)
                               : renderViewField(mappedField, mappedIndex, true)}
                           </TableCell>
                         ),
                       )}
-                      <TableCell>
+                      <TableCell sx={{ whiteSpace: "nowrap" }}>
                         {!field.mappingTable.inline && (
                           <IconButton
                             aria-label="edit"
@@ -366,6 +379,7 @@ export default function EditClientPage({ table, id }: EditClientPageProps) {
                                 mappedIndex,
                               )
                             }
+                            size="small"
                           >
                             <EditIcon />
                           </IconButton>
@@ -375,6 +389,7 @@ export default function EditClientPage({ table, id }: EditClientPageProps) {
                           onClick={() =>
                             handleClick_deleteMappingRow(field, mappedIndex)
                           }
+                          size="small"
                         >
                           <DeleteIcon />
                         </IconButton>
@@ -387,10 +402,11 @@ export default function EditClientPage({ table, id }: EditClientPageProps) {
             <Button
               disabled={loading}
               onClick={() => handleClick_addMappingRow(field)}
+              size="small"
               sx={{ marginLeft: 2, marginTop: 2 }}
               variant="outlined"
             >
-              Add {field.label}
+              Add
             </Button>
           </>
         )}
@@ -421,7 +437,7 @@ export default function EditClientPage({ table, id }: EditClientPageProps) {
         }}
       >
         <Fab
-          color="success"
+          color="primary"
           disabled={loading}
           onClick={() => handleClick_save()}
           sx={{ mr: 1 }}
@@ -436,7 +452,6 @@ export default function EditClientPage({ table, id }: EditClientPageProps) {
         </Fab>
         {table.operation == "update" && (
           <Fab
-            color="error"
             disabled={loading}
             onClick={() => handleClick_delete()}
             variant="extended"
