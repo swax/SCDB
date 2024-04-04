@@ -5,6 +5,9 @@ export type BaseFieldOrm = {
   optional?: boolean;
   template?: string;
   modified?: boolean[];
+  /** In a mapping table, this is the field you want to take the max width, 
+   * which pushes the edit/delete buttons over to the far right */
+  fillWidth?: boolean;
 };
 
 export type DateFieldOrm = BaseFieldOrm & {

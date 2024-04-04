@@ -45,8 +45,9 @@ export default function NumberField({
       helperText={field.helperText}
       label={inTable ? "" : field.label}
       onChange={(e) => handleChange_field(field, index, e.target.value)}
+      size="small"
       value={field.values?.[index] || ""}
-      variant="standard"
+      variant="outlined"
     />
   );
 }

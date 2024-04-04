@@ -26,6 +26,23 @@ const sketchOrm: TableOrm = {
       optional: true,
     },
     {
+      label: "Description",
+      column: "description",
+      type: "string",
+      multiline: true,
+      optional: true,
+    },
+    {
+      label: "Recurring Sketch",
+      column: "recurring_sketch_id",
+      type: "lookup",
+      optional: true,
+      lookup: {
+        table: "recurring_sketch",
+        labelColumn: "name",
+      },
+    },
+    {
       label: "Cast",
       type: "mapping",
       mappingTable: {
@@ -42,7 +59,7 @@ const sketchOrm: TableOrm = {
             },
           },
           {
-            label: "Played By",
+            label: "Actor",
             column: "person_id",
             type: "lookup",
             optional: true,
@@ -63,25 +80,9 @@ const sketchOrm: TableOrm = {
             type: "string",
             multiline: true,
             optional: true,
+            fillWidth: true,
           },
         ],
-      },
-    },
-    {
-      label: "Description",
-      column: "description",
-      type: "string",
-      multiline: true,
-      optional: true,
-    },
-    {
-      label: "Recurring Sketch",
-      column: "recurring_sketch_id",
-      type: "lookup",
-      optional: true,
-      lookup: {
-        table: "recurring_sketch",
-        labelColumn: "name",
       },
     },
     {
@@ -92,7 +93,7 @@ const sketchOrm: TableOrm = {
         label: "Credits",
         fields: [
           {
-            label: "Person",
+            label: "Name",
             column: "person_id",
             type: "lookup",
             lookup: {
@@ -112,6 +113,7 @@ const sketchOrm: TableOrm = {
             type: "string",
             multiline: true,
             optional: true,
+            fillWidth: true,
           },
         ],
       },
@@ -125,9 +127,10 @@ const sketchOrm: TableOrm = {
         inline: true,
         fields: [
           {
-            label: "Tag",
+            label: "Name",
             column: "tag_id",
             type: "lookup",
+            fillWidth: true,
             lookup: {
               table: "tag",
               labelColumn: "lookup_slug",
