@@ -20,6 +20,11 @@ const sketchOrm: TableOrm = {
       type: "string",
     },
     {
+      label: "Video URLs",
+      column: "video_urls",
+      type: "list",
+    },
+    {
       label: "Tagline",
       column: "tagline",
       type: "string",

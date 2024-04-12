@@ -57,6 +57,11 @@ export type StringFieldOrm = BaseFieldOrm & {
   values?: Nullable<string>[];
 };
 
+export type ListFieldOrm = BaseFieldOrm & {
+  type: "list";
+  values?: Nullable<string[]>[];
+};
+
 export type NumberFieldOrm = BaseFieldOrm & {
   type: "number";
   // Maybe do int vs float here
@@ -70,7 +75,8 @@ export type FieldOrm =
   | MappingEditField
   | SlugFieldOrm
   | StringFieldOrm
-  | NumberFieldOrm;
+  | NumberFieldOrm
+  | ListFieldOrm;
 
 export type TableOrm = {
   /** Name of the table in Postgres */
