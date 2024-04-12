@@ -33,6 +33,7 @@ import AutocompleteLookup from "./components/AutocompleteLookup";
 import DateField2 from "./components/DateField2";
 import NumberField from "./components/NumberField";
 import StringField from "./components/StringField";
+import ListField from "./components/ListField";
 
 interface EditClientPageProps {
   table: TableOrm;
@@ -264,6 +265,15 @@ export default function EditClientPage({ table, id }: EditClientPageProps) {
       <Box sx={{ marginTop: inTable ? 0 : 3 }}>
         {field.type == "string" && (
           <StringField
+            field={field}
+            index={index}
+            inTable={inTable}
+            loading={loading}
+            setFieldValue={setFieldValue}
+          />
+        )}
+        {field.type == "list" && (
+          <ListField
             field={field}
             index={index}
             inTable={inTable}
