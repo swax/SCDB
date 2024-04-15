@@ -25,12 +25,6 @@ const sketchOrm: TableOrm = {
       type: "list",
     },
     {
-      label: "Tagline",
-      column: "tagline",
-      type: "string",
-      optional: true,
-    },
-    {
       label: "Description",
       column: "description",
       type: "string",
@@ -54,6 +48,13 @@ const sketchOrm: TableOrm = {
         name: "sketch_cast",
         label: "Cast",
         fields: [
+          {
+            label: "Image",
+            column: "image_id",
+            type: "image",
+            navProp: "image",
+            optional: true,
+          },
           {
             label: "Character",
             column: "character_id",

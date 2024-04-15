@@ -96,7 +96,20 @@ async function writeFieldChanges(
       /* if (!allowedColumns.includes(field.column!)) {
         throw new Error(`Column ${field.column} not allowed`);
       }*/
-      if (field.type == "slug") {
+      if (field.type == "image") {
+        if (!field.column || !field.navProp) {
+          throw new Error("Image field missing column or navProp");
+        }
+        if (field.values && field.values[index]) {
+          dataParams[field.navProp] = {
+            create: {
+              url: field.values[index],
+            },
+          };
+        } else {
+          dataParams[field.column] = null;
+        }
+      } else if (field.type == "slug") {
         const columnValueToSlugify = dataParams[field.derivedFrom];
         if (!columnValueToSlugify) {
           return; // throw new Error(`Column ${field.details.derivedFrom} not found`);

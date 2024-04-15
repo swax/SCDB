@@ -106,6 +106,15 @@ model person {
   gender         gender_type
   sketch_casts   sketch_cast[]
   sketch_credits sketch_credit[]
+  person_images  person_image[]
+}
+
+model person_image {
+  id        Int    @id @default(autoincrement())
+  person_id Int
+  image_id  Int
+  person    person @relation(fields: [person_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  image     image  @relation(fields: [image_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
 }
 
 model user_rating {
@@ -148,11 +157,20 @@ model season {
 
 model show {
   id                 Int                @id @default(autoincrement())
-  title              String             @unique @db.VarChar(100)
   url_slug           String             @unique @db.VarChar(100)
+  title              String             @unique @db.VarChar(100)
   description        String?
   recurring_sketches recurring_sketch[]
   seasons            season[]
+  show_images        show_image[]
+}
+
+model show_image {
+  id       Int   @id @default(autoincrement())
+  show_id  Int
+  image_id Int
+  show     show  @relation(fields: [show_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  image    image @relation(fields: [image_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
 }
 
 model sketch_cast {
@@ -160,8 +178,10 @@ model sketch_cast {
   sketch_id    Int
   character_id Int
   person_id    Int?
+  image_id     Int?
   description  String?
   role         cast_role_type
+  image        image?         @relation(fields: [image_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
   character    character      @relation(fields: [character_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
   person       person?        @relation(fields: [person_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
   sketch       sketch         @relation(fields: [sketch_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
@@ -193,7 +213,6 @@ model sketch {
   url_slug            String            @unique @db.VarChar(100)
   lookup_slug         String            @unique @db.VarChar(100)
   video_urls          String[]
-  tagline             String?
   description         String?
   duration            Int?
   episode_id          Int
@@ -204,6 +223,15 @@ model sketch {
   sketch_tags         sketch_tag[]
   episode             episode           @relation(fields: [episode_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
   recurring_sketch    recurring_sketch? @relation(fields: [recurring_sketch_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  sketch_images       sketch_image[]
+}
+
+model sketch_image {
+  id        Int    @id @default(autoincrement())
+  sketch_id Int
+  image_id  Int
+  sketch    sketch @relation(fields: [sketch_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  image     image  @relation(fields: [image_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
 }
 
 model tag_category {
@@ -224,6 +252,15 @@ model tag {
 
   @@unique([tag_category_id, url_slug])
   @@unique([tag_category_id, name])
+}
+
+model image {
+  id            Int            @id @default(autoincrement())
+  url           String         @unique
+  person_images person_image[]
+  show_images   show_image[]
+  sketch_casts  sketch_cast[]
+  sketch_images sketch_image[]
 }
 
 enum gender_type {

@@ -3,7 +3,6 @@ import prisma from "@/database/prisma";
 export interface ISketch {
   id: number;
   title: string;
-  tagline: Nullable<string>;
   description: Nullable<string>;
   episode: {
     season: {
@@ -22,7 +21,6 @@ export async function getSketch(id: number) {
     select: {
       id: true,
       title: true,
-      tagline: true,
       description: true,
       episode: {
         select: {

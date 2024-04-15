@@ -34,6 +34,7 @@ import DateField2 from "./components/DateField2";
 import NumberField from "./components/NumberField";
 import StringField from "./components/StringField";
 import ListField from "./components/ListField";
+import ImageField from "./components/ImageField";
 
 interface EditClientPageProps {
   table: TableOrm;
@@ -274,6 +275,15 @@ export default function EditClientPage({ table, id }: EditClientPageProps) {
         )}
         {field.type == "list" && (
           <ListField
+            field={field}
+            index={index}
+            inTable={inTable}
+            loading={loading}
+            setFieldValue={setFieldValue}
+          />
+        )}
+        {field.type == "image" && (
+          <ImageField
             field={field}
             index={index}
             inTable={inTable}
