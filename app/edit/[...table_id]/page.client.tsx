@@ -29,7 +29,7 @@ import { $Enums } from "@prisma/client";
 import { useState } from "react";
 import deleteAction from "./actions/deleteAction";
 import editAction from "./actions/editAction";
-import AutocompleteLookup from "./components/AutocompleteLookup";
+import LookupField from "./components/LookupField";
 import DateField2 from "./components/DateField2";
 import NumberField from "./components/NumberField";
 import StringField from "./components/StringField";
@@ -342,7 +342,7 @@ export default function EditClientPage({ table, id }: EditClientPageProps) {
           />
         )}
         {field.type === "lookup" && (
-          <AutocompleteLookup
+          <LookupField
             field={field}
             index={index}
             inTable={inTable}

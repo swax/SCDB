@@ -2,7 +2,7 @@ import prisma from "@/database/prisma";
 import sketchDatabaseOrm from "../../database/orm/sketchDatabaseOrm";
 import { FieldOrm, LookupFieldOrm } from "../../database/orm/ormTypes";
 
-export interface AutocompleteLookupOption {
+export interface LookupFieldOption {
   id: number;
   label: string;
   createNew?: boolean;
@@ -26,7 +26,7 @@ function validateFieldWithLookup(
 export default async function lookupTermsInTable(
   searchString: string,
   lookupField: LookupFieldOrm["lookup"],
-): Promise<AutocompleteLookupOption[]> {
+): Promise<LookupFieldOption[]> {
   const allowedLookup = Object.keys(sketchDatabaseOrm).some((table) =>
     validateFieldWithLookup(sketchDatabaseOrm[table].fields, lookupField),
   );
@@ -56,7 +56,7 @@ export default async function lookupTermsInTable(
     },
   });
 
-  // Map results to AutocompleteLookupOption
+  // Map results to LookupFieldOption
   if (!results) {
     return [];
   }

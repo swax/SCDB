@@ -1,4 +1,4 @@
-import { AutocompleteLookupOption } from "@/backend/edit/lookupService";
+import { LookupFieldOption } from "@/backend/edit/lookupService";
 import { LookupFieldOrm } from "@/database/orm/ormTypes";
 import useDebounce2 from "@/frontend/hooks/useDebounce2";
 import OpenInNewIcon from "@mui/icons-material/OpenInNew";
@@ -12,7 +12,7 @@ import {
 import { SyntheticEvent, useId, useState } from "react";
 import lookupAction from "../actions/lookupAction";
 
-interface AutocompleteLookupProps {
+interface LookupFieldProps {
   field: LookupFieldOrm;
   index: number;
   inTable: boolean;
@@ -23,14 +23,14 @@ interface AutocompleteLookupProps {
   ) => void;
 }
 
-export default function AutocompleteLookup({
+export default function LookupField({
   field,
   index,
   inTable,
   setFieldValue,
-}: AutocompleteLookupProps) {
+}: LookupFieldProps) {
   // Constants
-  const initialValue: Nullable<AutocompleteLookupOption> = field.values?.[index]
+  const initialValue: Nullable<LookupFieldOption> = field.values?.[index]
     ? {
         id: field.values[index] as number,
         label: field.lookup?.labelValues?.[index] ?? "(lookup init error)",
@@ -89,7 +89,7 @@ export default function AutocompleteLookup({
   /** Change of the actual backing value */
   function handleChange(
     event: SyntheticEvent<Element, Event>,
-    value: Nullable<AutocompleteLookupOption>,
+    value: Nullable<LookupFieldOption>,
   ) {
     if (value?.noMatches) {
       return;
@@ -109,7 +109,7 @@ export default function AutocompleteLookup({
     // Important to set null as undefined isn't sent over the wire
     setFieldValue(field, index, value ? value.id : null);
 
-    const options: AutocompleteLookupOption[] = [];
+    const options: LookupFieldOption[] = [];
 
     if (value) {
       options.push(value);
@@ -118,13 +118,13 @@ export default function AutocompleteLookup({
     setOptions(buildOptions(options));
   }
 
-  function handleClick_openMappingRow(option: AutocompleteLookupOption) {
+  function handleClick_openMappingRow(option: LookupFieldOption) {
     const url = "/edit/" + field.lookup?.table + "/" + option.id;
     window.open(url, "_blank");
   }
 
   // Helpers
-  function buildOptions(options: AutocompleteLookupOption[]) {
+  function buildOptions(options: LookupFieldOption[]) {
     options.push({
       id: 0,
       label: "Create...",

@@ -46,6 +46,7 @@ const sketchOrm: TableOrm = {
       type: "mapping",
       mappingTable: {
         name: "sketch_cast",
+        navProp: "sketch_casts",
         label: "Cast",
         fields: [
           {
@@ -96,6 +97,7 @@ const sketchOrm: TableOrm = {
       type: "mapping",
       mappingTable: {
         name: "sketch_credit",
+        navProp: "sketch_credits",
         label: "Credits",
         fields: [
           {
@@ -129,6 +131,7 @@ const sketchOrm: TableOrm = {
       type: "mapping",
       mappingTable: {
         name: "sketch_tag",
+        navProp: "sketch_tags",
         label: "Tags",
         inline: true,
         fields: [
