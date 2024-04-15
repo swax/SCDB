@@ -31,6 +31,13 @@ export type LookupFieldOrm = BaseFieldOrm & {
   };
 };
 
+/** The column should be set to the id of the image field */
+export type ImageFieldOrm = BaseFieldOrm & {
+  type: "image";
+  navProp: string;
+  values?: Nullable<string>[];
+};
+
 export type MappingEditField = BaseFieldOrm & {
   type: "mapping";
   values?: Nullable<number>[];
@@ -76,7 +83,8 @@ export type FieldOrm =
   | SlugFieldOrm
   | StringFieldOrm
   | NumberFieldOrm
-  | ListFieldOrm;
+  | ListFieldOrm
+  | ImageFieldOrm;
 
 export type TableOrm = {
   /** Name of the table in Postgres */

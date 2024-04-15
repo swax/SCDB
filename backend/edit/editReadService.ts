@@ -71,6 +71,13 @@ function addFieldsToSelect(table: Omit<TableOrm, "title">, selectParams: any) {
         },
       };
       selectParams[field.lookup.table] = selectOne;
+    } else if (field.type === "image") {
+      const selectOne = {
+        select: {
+          url: true,
+        },
+      };
+      selectParams[field.navProp] = selectOne;
     }
 
     if (field.column) {
@@ -82,7 +89,12 @@ function addFieldsToSelect(table: Omit<TableOrm, "title">, selectParams: any) {
 function mapDatabaseToOrm(dbResult: any, fields: FieldOrm[]) {
   Object.entries(dbResult).forEach(([dbKey, dbValue]) => {
     fields.forEach((field) => {
-      if (field.column == dbKey) {
+      if (field.type == "image") {
+        if (field.navProp == dbKey) {
+          field.values ||= [];
+          field.values.push((dbValue as any)?.url);
+        }
+      } else if (field.column == dbKey) {
         field.values ||= [];
         field.values.push(dbValue as any);
       } else if (

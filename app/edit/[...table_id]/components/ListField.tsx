@@ -11,7 +11,7 @@ interface ListFieldProps {
   setFieldValue: (field: FieldOrm, index: number, value: string[]) => void;
 }
 
-export default function StringField({
+export default function ListField({
   field,
   index,
   inTable,
