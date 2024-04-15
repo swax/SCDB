@@ -54,7 +54,7 @@ export async function setFieldValues(table: TableOrm, id: number) {
 function addFieldsToSelect(table: Omit<TableOrm, "title">, selectParams: any) {
   // Add fields to the select
   table.fields.forEach((field) => {
-    if (field.type === "mapping" && field.mappingTable) {
+    if (field.type === "mapping") {
       const selectMany = {
         select: {
           id: true,
@@ -63,8 +63,8 @@ function addFieldsToSelect(table: Omit<TableOrm, "title">, selectParams: any) {
 
       addFieldsToSelect(field.mappingTable, selectMany.select);
 
-      selectParams[field.mappingTable.name + "s"] = selectMany;
-    } else if (field.type === "lookup" && field.lookup) {
+      selectParams[field.mappingTable.navProp] = selectMany;
+    } else if (field.type === "lookup") {
       const selectOne = {
         select: {
           [field.lookup.labelColumn]: true,
@@ -97,25 +97,21 @@ function mapDatabaseToOrm(dbResult: any, fields: FieldOrm[]) {
       } else if (field.column == dbKey) {
         field.values ||= [];
         field.values.push(dbValue as any);
-      } else if (
-        field.type == "lookup" &&
-        field.lookup.table === dbKey &&
-        dbValue
-      ) {
-        const lookupValue = (dbValue as any)[field.lookup.labelColumn];
-        field.lookup.labelValues ||= [];
-        field.lookup.labelValues.push(lookupValue);
-      } else if (
-        field.type == "mapping" &&
-        field.mappingTable?.name + "s" === dbKey &&
-        Array.isArray(dbValue)
-      ) {
-        const mappingFields = field.mappingTable.fields;
-        dbValue.forEach((subResult) => {
-          field.mappingTable!.ids ||= [];
-          field.mappingTable!.ids.push(subResult.id);
-          mapDatabaseToOrm(subResult, mappingFields);
-        });
+      } else if (field.type == "lookup") {
+        if (field.lookup.table === dbKey && dbValue) {
+          const lookupValue = (dbValue as any)[field.lookup.labelColumn];
+          field.lookup.labelValues ||= [];
+          field.lookup.labelValues.push(lookupValue);
+        }
+      } else if (field.type == "mapping") {
+        if (field.mappingTable?.navProp === dbKey && Array.isArray(dbValue)) {
+          const mappingFields = field.mappingTable.fields;
+          dbValue.forEach((subResult) => {
+            field.mappingTable!.ids ||= [];
+            field.mappingTable!.ids.push(subResult.id);
+            mapDatabaseToOrm(subResult, mappingFields);
+          });
+        }
       }
     });
   });
