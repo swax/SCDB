@@ -2,6 +2,7 @@
 
 import { FieldOrm, MappingEditField, TableOrm } from "@/database/orm/ormTypes";
 import { useForceUpdate } from "@/frontend/hooks/useForceUpdate";
+import s3url from "@/shared/cdnHost";
 import { resolveTemplateVars, slugifyForUrl } from "@/shared/string";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
@@ -26,15 +27,16 @@ import {
   Typography,
 } from "@mui/material";
 import { $Enums } from "@prisma/client";
+import Image from "next/image";
 import { useState } from "react";
 import deleteAction from "./actions/deleteAction";
 import editAction from "./actions/editAction";
-import LookupField from "./components/LookupField";
 import DateField2 from "./components/DateField2";
+import ImageField from "./components/ImageField";
+import ListField from "./components/ListField";
+import LookupField from "./components/LookupField";
 import NumberField from "./components/NumberField";
 import StringField from "./components/StringField";
-import ListField from "./components/ListField";
-import ImageField from "./components/ImageField";
 
 interface EditClientPageProps {
   table: TableOrm;
@@ -256,12 +258,32 @@ export default function EditClientPage({ table, id }: EditClientPageProps) {
               : "<unknown>";
     }
 
+    if (field.type == "image") {
+      const cdnKey = field.values?.[index] || "";
+
+      return (
+        <Image
+          alt="Alt text generated dynamically on view page"
+          height={50}
+          src={`${s3url}/${cdnKey}`}
+          style={{ objectFit: "cover" }}
+          unoptimized={true /* Not optimized in edit mode */}
+          width={50}
+        />
+      );
+    }
+
     return (
       <Box sx={{ marginTop: inTable ? 0 : 3, color }}>{`${value || ""}`}</Box>
     );
   }
 
-  function renderEditField(field: FieldOrm, index: number, inTable = false) {
+  function renderEditField(
+    tableName: string,
+    field: FieldOrm,
+    index: number,
+    inTable = false,
+  ) {
     return (
       <Box sx={{ marginTop: inTable ? 0 : 3 }}>
         {field.type == "string" && (
@@ -289,6 +311,7 @@ export default function EditClientPage({ table, id }: EditClientPageProps) {
             inTable={inTable}
             loading={loading}
             setFieldValue={setFieldValue}
+            tableName={tableName}
           />
         )}
         {field.type == "number" && (
@@ -384,7 +407,12 @@ export default function EditClientPage({ table, id }: EditClientPageProps) {
                             }}
                           >
                             {field.mappingTable.inline
-                              ? renderEditField(mappedField, mappedIndex, true)
+                              ? renderEditField(
+                                  field.mappingTable.name,
+                                  mappedField,
+                                  mappedIndex,
+                                  true,
+                                )
                               : renderViewField(mappedField, mappedIndex, true)}
                           </TableCell>
                         ),
@@ -445,7 +473,7 @@ export default function EditClientPage({ table, id }: EditClientPageProps) {
 
       {/* Render fields */}
       {table.fields.map((field, i) => (
-        <Box key={i}>{renderEditField(field, 0)}</Box>
+        <Box key={i}>{renderEditField(table.name, field, 0)}</Box>
       ))}
 
       {/* Create, update, delete */}
@@ -491,7 +519,13 @@ export default function EditClientPage({ table, id }: EditClientPageProps) {
         <DialogTitle>Edit {editMappingField?.label}</DialogTitle>
         <DialogContent>
           {editMappingField?.mappingTable.fields.map((field, i) => (
-            <Box key={i}>{renderEditField(field, editMappingRowIndex!)}</Box>
+            <Box key={i}>
+              {renderEditField(
+                editMappingField.mappingTable.name,
+                field,
+                editMappingRowIndex!,
+              )}
+            </Box>
           ))}
         </DialogContent>
         <DialogActions>

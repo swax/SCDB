@@ -1,11 +1,11 @@
 import prisma from "@/database/prisma";
 import { slugifyForUrl } from "@/shared/string";
-import sketchDatabaseOrm from "../../database/orm/sketchDatabaseOrm";
 import {
   FieldOrm,
   MappingEditField,
   TableOrm,
 } from "../../database/orm/ormTypes";
+import sketchDatabaseOrm from "../../database/orm/sketchDatabaseOrm";
 
 const allowedColumnsByTable: { [key: string]: string[] } = {};
 const allowedMappingsByTable: { [key: string]: string[] } = {};
@@ -103,7 +103,7 @@ async function writeFieldChanges(
         if (field.values && field.values[index]) {
           dataParams[field.navProp] = {
             create: {
-              url: field.values[index],
+              cdn_key: field.values[index],
             },
           };
         } else {

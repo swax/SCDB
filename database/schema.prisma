@@ -256,7 +256,7 @@ model tag {
 
 model image {
   id            Int            @id @default(autoincrement())
-  url           String         @unique
+  cdn_key       String         @unique
   person_images person_image[]
   show_images   show_image[]
   sketch_casts  sketch_cast[]
