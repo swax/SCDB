@@ -23,6 +23,7 @@ const sketchOrm: TableOrm = {
       label: "Video URLs",
       column: "video_urls",
       type: "list",
+      optional: true,
     },
     {
       label: "Description",

@@ -5,7 +5,7 @@ export type BaseFieldOrm = {
   optional?: boolean;
   template?: string;
   modified?: boolean[];
-  /** In a mapping table, this is the field you want to take the max width, 
+  /** In a mapping table, this is the field you want to take the max width,
    * which pushes the edit/delete buttons over to the far right */
   fillWidth?: boolean;
 };
@@ -25,6 +25,7 @@ export type LookupFieldOrm = BaseFieldOrm & {
   type: "lookup";
   values?: Nullable<number>[];
   lookup: {
+    /* todo: may want to separate this from the nav prop */
     table: string;
     labelColumn: string;
     labelValues?: Nullable<string>[];

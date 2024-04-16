@@ -1,6 +1,6 @@
 import prisma from "@/database/prisma";
-import sketchDatabaseOrm from "../../database/orm/sketchDatabaseOrm";
 import { FieldOrm, LookupFieldOrm } from "../../database/orm/ormTypes";
+import sketchDatabaseOrm from "../../database/orm/sketchDatabaseOrm";
 
 export interface LookupFieldOption {
   id: number;

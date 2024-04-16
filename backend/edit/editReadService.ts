@@ -1,7 +1,7 @@
 import prisma from "@/database/prisma";
 import { notFound } from "next/navigation";
-import sketchDatabaseOrm from "../../database/orm/sketchDatabaseOrm";
 import { FieldOrm, TableOrm } from "../../database/orm/ormTypes";
+import sketchDatabaseOrm from "../../database/orm/sketchDatabaseOrm";
 
 export function findAndBuildTableOrm(table: string) {
   const tableOrm = sketchDatabaseOrm[table];
@@ -74,7 +74,7 @@ function addFieldsToSelect(table: Omit<TableOrm, "title">, selectParams: any) {
     } else if (field.type === "image") {
       const selectOne = {
         select: {
-          url: true,
+          cdn_key: true,
         },
       };
       selectParams[field.navProp] = selectOne;
@@ -92,7 +92,7 @@ function mapDatabaseToOrm(dbResult: any, fields: FieldOrm[]) {
       if (field.type == "image") {
         if (field.navProp == dbKey) {
           field.values ||= [];
-          field.values.push((dbValue as any)?.url);
+          field.values.push((dbValue as any)?.cdn_key);
         }
       } else if (field.column == dbKey) {
         field.values ||= [];
