@@ -27,7 +27,11 @@ Object.keys(sketchDatabaseOrm).forEach((table) => {
 /** Write field values to the database
  * @param table The orm from the client, don't trust it
  */
-export async function writeFieldValues(table: TableOrm, id: number) {
+export async function writeFieldValues(
+  userid: string,
+  table: TableOrm,
+  id: number,
+) {
   // Verify table is allowed to be edited
   const allowedColumns = allowedColumnsByTable[table.name];
 
@@ -37,9 +41,16 @@ export async function writeFieldValues(table: TableOrm, id: number) {
 
   validateRequiredFields(table.fields);
 
-  const rowId = await writeFieldChanges(table.name, id, table.fields, 0, {});
+  const rowId = await writeFieldChanges(
+    userid,
+    table.name,
+    id,
+    table.fields,
+    0,
+    {},
+  );
 
-  await writeMappingChanges(table.name, rowId, table.fields);
+  await writeMappingChanges(userid, table.name, rowId, table.fields);
 
   // TODO: Write audit record
 
@@ -78,6 +89,7 @@ function validateRequiredFields(fields: FieldOrm[]) {
 }
 
 async function writeFieldChanges(
+  userid: string,
   table: string,
   id: number,
   fields: FieldOrm[],
@@ -124,6 +136,9 @@ async function writeFieldChanges(
 
   const dynamicPrisma = prisma as any;
 
+  dataParams["modified_by_id"] = userid;
+  dataParams["modified_at"] = new Date();
+
   // Update row
   if (id) {
     await dynamicPrisma[table].update({
@@ -137,6 +152,9 @@ async function writeFieldChanges(
   }
   // Create row
   else {
+    dataParams["created_by_id"] = userid;
+    dataParams["created_at"] = new Date();
+
     const createdRow = await dynamicPrisma[table].create({
       data: dataParams,
     });
@@ -146,6 +164,7 @@ async function writeFieldChanges(
 }
 
 async function writeMappingChanges(
+  userid: string,
   table: string,
   id: number,
   fields: FieldOrm[],
@@ -195,6 +214,7 @@ async function writeMappingChanges(
       } else if (mappingTable.fields.some((field) => field.modified?.[index])) {
         // Update
         writeFieldChanges(
+          userid,
           mappingTable.name,
           mappingId,
           mappingTable.fields,
