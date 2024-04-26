@@ -8,6 +8,9 @@ export type BaseFieldOrm = {
   /** In a mapping table, this is the field you want to take the max width,
    * which pushes the edit/delete buttons over to the far right */
   fillWidth?: boolean;
+
+  // virtual values - each type defines its own values
+  // For mapping table types there can be more than one value
 };
 
 export type DateFieldOrm = BaseFieldOrm & {
@@ -57,7 +60,7 @@ export type MappingEditField = BaseFieldOrm & {
 export type SlugFieldOrm = BaseFieldOrm & {
   type: "slug";
   derivedFrom: string;
-  values?: Nullable<number>[];
+  values?: Nullable<string>[];
 };
 
 export type StringFieldOrm = BaseFieldOrm & {

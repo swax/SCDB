@@ -106,9 +106,9 @@ function mapDatabaseToOrm(dbResult: any, fields: FieldOrm[]) {
       } else if (field.type == "mapping") {
         if (field.mappingTable?.navProp === dbKey && Array.isArray(dbValue)) {
           const mappingFields = field.mappingTable.fields;
+          field.mappingTable.ids ||= [];
           dbValue.forEach((subResult) => {
-            field.mappingTable!.ids ||= [];
-            field.mappingTable!.ids.push(subResult.id);
+            field.mappingTable.ids?.push(subResult.id);
             mapDatabaseToOrm(subResult, mappingFields);
           });
         }

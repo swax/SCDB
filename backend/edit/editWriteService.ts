@@ -3,13 +3,16 @@ import { slugifyForUrl } from "@/shared/string";
 import {
   FieldOrm,
   MappingEditField,
+  SlugFieldOrm,
   TableOrm,
 } from "../../database/orm/ormTypes";
 import sketchDatabaseOrm from "../../database/orm/sketchDatabaseOrm";
+import { operation_type } from "@prisma/client";
 
 const allowedColumnsByTable: { [key: string]: string[] } = {};
 const allowedMappingsByTable: { [key: string]: string[] } = {};
 
+/** Perserves type information in the result */
 function isMappingField(e: FieldOrm): e is MappingEditField {
   return e.type === "mapping";
 }
@@ -39,6 +42,9 @@ export async function writeFieldValues(
     throw new Error(`Table ${table.name} not allowed`);
   }
 
+  updateSlugs(table);
+  removeUnmodifiedFields(table);
+
   validateRequiredFields(table.fields);
 
   const rowId = await writeFieldChanges(
@@ -50,9 +56,17 @@ export async function writeFieldValues(
     {},
   );
 
-  await writeMappingChanges(userid, table.name, rowId, table.fields);
+  await writeMappingChanges(userid, table, rowId);
 
-  // TODO: Write audit record
+  await prisma.audit.create({
+    data: {
+      changed_by_id: userid,
+      operation: id ? operation_type.UPDATE : operation_type.INSERT,
+      table_name: table.name,
+      row_id: rowId,
+      modified_fields: table.fields,
+    },
+  });
 
   return rowId;
 }
@@ -88,21 +102,74 @@ function validateRequiredFields(fields: FieldOrm[]) {
   }
 }
 
+/**
+ * Filter unmodified fields because we're going to save this object to the database
+ * as an audit of what changed, as well as use it to 'replay' changes from db checkpoints if needed
+ */
+function removeUnmodifiedFields(table: TableOrm) {
+  table.fields = table.fields.filter(
+    (field) => field.modified?.[0] || field.type == "mapping",
+  );
+
+  const mappingFields = table.fields.filter(isMappingField);
+
+  for (const field of mappingFields) {
+    const mappingTable = field.mappingTable;
+    const mappingTableIds = mappingTable.ids || [];
+
+    // Filter any mapping fields that have no modifications
+    mappingTable.fields = mappingTable.fields.filter((f) =>
+      f.modified?.some((modified, i) => modified || mappingTableIds[i] < 0),
+    );
+
+    // Null out unmodified fields
+    mappingTable.fields.forEach((f) => {
+      f.values = <any>(
+        f.values?.map((value, i) =>
+          f.modified?.[i] || mappingTableIds[i] < 0 ? value : null,
+        )
+      );
+    });
+
+    if (!mappingTable.fields.length && !mappingTable.removeIds?.length) {
+      table.fields = table.fields.filter((f) => f !== field);
+    }
+  }
+}
+
+function updateSlugs(table: TableOrm) {
+  const slugField = table.fields.find((f) => f.type == "slug") as SlugFieldOrm;
+  if (!slugField) {
+    return;
+  }
+
+  const derivedFromField = table.fields.find(
+    (f) => f.column == slugField.derivedFrom,
+  );
+
+  // If derivedFromField is not found or no change, then don't update the slug
+  if (!derivedFromField?.values?.[0] || !derivedFromField?.modified?.[0]) {
+    slugField.modified = [false];
+    return;
+  }
+
+  slugField.values = [];
+  slugField.values[0] = slugifyForUrl(derivedFromField.values[0].toString());
+  slugField.modified = [true];
+}
+
 async function writeFieldChanges(
   userid: string,
   table: string,
   id: number,
   fields: FieldOrm[],
   index: number,
-  tableRelation: object,
+  mappingTableRelation: object,
 ) {
   const dataParams: any = {};
 
   fields
-    .filter(
-      (field) =>
-        field.column && (field.modified?.[index] || field.type == "slug"),
-    )
+    .filter((field) => field.column)
     .forEach((field) => {
       // TODO: Validate columns are in master config for fields and lookups
       /* if (!allowedColumns.includes(field.column!)) {
@@ -121,14 +188,6 @@ async function writeFieldChanges(
         } else {
           dataParams[field.column] = null;
         }
-      } else if (field.type == "slug") {
-        const columnValueToSlugify = dataParams[field.derivedFrom];
-        if (!columnValueToSlugify) {
-          return; // throw new Error(`Column ${field.details.derivedFrom} not found`);
-        }
-        dataParams[field.column!] = slugifyForUrl(
-          columnValueToSlugify.toString(),
-        );
       } else {
         dataParams[field.column!] = field.values![index];
       }
@@ -140,11 +199,11 @@ async function writeFieldChanges(
   dataParams["modified_at"] = new Date();
 
   // Update row
-  if (id) {
+  if (id && id >= 0) {
     await dynamicPrisma[table].update({
       where: {
         id,
-        ...tableRelation,
+        ...mappingTableRelation,
       },
       data: dataParams,
     });
@@ -152,6 +211,9 @@ async function writeFieldChanges(
   }
   // Create row
   else {
+    // add table relation to data params
+    Object.assign(dataParams, mappingTableRelation);
+
     dataParams["created_by_id"] = userid;
     dataParams["created_at"] = new Date();
 
@@ -165,22 +227,24 @@ async function writeFieldChanges(
 
 async function writeMappingChanges(
   userid: string,
-  table: string,
+  table: TableOrm,
   id: number,
-  fields: FieldOrm[],
 ) {
   const dynamicPrisma = prisma as any;
 
   /** Protects from CRUD'ing rows not mapped to the row ID that the API call is updating */
   const tableRelation = {
-    [table + "_id"]: id,
+    [table.name + "_id"]: id,
   };
 
-  for (let field of fields) {
-    if (field.type != "mapping") continue;
+  for (let field of table.fields) {
+    if (field.type != "mapping") {
+      continue;
+    }
+
     const mappingTable = field.mappingTable;
 
-    if (!allowedMappingsByTable[table].includes(mappingTable.name)) {
+    if (!allowedMappingsByTable[table.name].includes(mappingTable.name)) {
       throw new Error(`Edit mapping on ${mappingTable?.name} not allowed`);
     }
 
@@ -196,24 +260,11 @@ async function writeMappingChanges(
 
     let index = 0;
     for (let mappingId of mappingTable.ids || []) {
-      if (mappingId < 0) {
-        // Create
-        const dataParams: any = {
-          ...tableRelation,
-        };
-
-        mappingTable.fields
-          .filter((field) => field.column)
-          .forEach((field) => {
-            dataParams[field.column!] = field.values![index];
-          });
-
-        await dynamicPrisma[mappingTable.name].create({
-          data: dataParams,
-        });
-      } else if (mappingTable.fields.some((field) => field.modified?.[index])) {
-        // Update
-        writeFieldChanges(
+      if (
+        mappingId < 0 ||
+        mappingTable.fields.some((field) => field.modified?.[index])
+      ) {
+        await writeFieldChanges(
           userid,
           mappingTable.name,
           mappingId,

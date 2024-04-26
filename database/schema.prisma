@@ -100,13 +100,12 @@ model VerificationToken {
 model audit {
   id              Int            @id @default(autoincrement())
   changed_at      DateTime       @default(now())
-  changed_by      String
+  changed_by_id   String
   table_name      String         @db.VarChar(50)
   operation       operation_type
   row_id          Int
-  modified_fields Json?
-  note            String?
-  user            User           @relation(fields: [changed_by], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  modified_fields Json
+  changed_by      User           @relation(fields: [changed_by_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
 }
 
 model character {
