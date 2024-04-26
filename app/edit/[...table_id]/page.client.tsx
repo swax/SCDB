@@ -137,9 +137,8 @@ export default function EditClientPage({ table, id }: EditClientPageProps) {
   }
 
   function handleClick_addMappingRow(field: FieldOrm) {
-    if (field.type != "mapping") return;
+    if (field.type != "mapping" || !field.mappingTable.ids) return;
 
-    field.mappingTable.ids ||= [];
     const minId = Math.min(...field.mappingTable.ids, 0);
     field.mappingTable.ids.push(minId - 1);
 
