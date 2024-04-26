@@ -50,6 +50,41 @@ model User {
   audits   audit[]
   ratings  user_rating[]
 
+  characters_created          character[]        @relation("CharactersCreated")
+  characters_modified         character[]        @relation("CharactersModified")
+  episodes_created            episode[]          @relation("EpisodesCreated")
+  episodes_modified           episode[]          @relation("EpisodesModified")
+  images_created              image[]            @relation("ImagesCreated")
+  images_modified             image[]            @relation("ImagesModified")
+  people_created              person[]           @relation("PeopleCreated")
+  people_modified             person[]           @relation("PeopleModified")
+  person_images_created       person_image[]     @relation("PersonImagesCreated")
+  person_images_modified      person_image[]     @relation("PersonImagesModified")
+  recurring_sketches_created  recurring_sketch[] @relation("RecurringSketchesCreated")
+  recurring_sketches_modified recurring_sketch[] @relation("RecurringSketchesModified")
+  seasons_created             season[]           @relation("SeasonsCreated")
+  seasons_modified            season[]           @relation("SeasonsModified")
+  shows_created               show[]             @relation("ShowsCreated")
+  shows_modified              show[]             @relation("ShowsModified")
+  show_images_created         show_image[]       @relation("ShowImagesCreated")
+  show_images_modified        show_image[]       @relation("ShowImagesModified")
+  sketches_created            sketch[]           @relation("SketchesCreated")
+  sketches_modified           sketch[]           @relation("SketchesModified")
+  sketch_cast_created         sketch_cast[]      @relation("SketchCastCreated")
+  sketch_cast_modified        sketch_cast[]      @relation("SketchCastModified")
+  sketch_credits_created      sketch_credit[]    @relation("SketchCreditsCreated")
+  sketch_credits_modified     sketch_credit[]    @relation("SketchCreditsModified")
+  sketch_images_created       sketch_image[]     @relation("SketchImagesCreated")
+  sketch_images_modified      sketch_image[]     @relation("SketchImagesModified")
+  sketch_tags_created         sketch_tag[]       @relation("SketchTagsCreated")
+  sketch_tags_modified        sketch_tag[]       @relation("SketchTagsModified")
+  tag_categories_created      tag_category[]     @relation("TagCategoriesCreated")
+  tag_categories_modified     tag_category[]     @relation("TagCategoriesModified")
+  tags_created                tag[]              @relation("TagsCreated")
+  tags_modified               tag[]              @relation("TagsModified")
+  user_ratings_created        user_rating[]      @relation("UserRatingsCreated")
+  user_ratings_modified       user_rating[]      @relation("UserRatingsModified")
+
   @@map("user")
 }
 
@@ -75,66 +110,106 @@ model audit {
 }
 
 model character {
-  id           Int           @id @default(autoincrement())
-  url_slug     String        @unique @db.VarChar(100)
-  name         String        @unique @db.VarChar(100)
-  description  String?
+  id             Int      @id @default(autoincrement())
+  url_slug       String   @unique @db.VarChar(100)
+  name           String   @unique @db.VarChar(100)
+  description    String?
+  created_by_id  String
+  created_at     DateTime @default(now())
+  modified_by_id String
+  modified_at    DateTime @default(now())
+
+  created_by   User          @relation("CharactersCreated", fields: [created_by_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  modified_by  User          @relation("CharactersModified", fields: [modified_by_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
   sketch_casts sketch_cast[]
 }
 
 model episode {
-  id          Int       @id @default(autoincrement())
-  url_slug    String    @unique @db.VarChar(100)
-  lookup_slug String    @unique @db.VarChar(100)
-  number      Int
-  air_date    DateTime? @db.Date
-  title       String?   @db.VarChar(100)
-  description String?
-  season_id   Int
-  season      season    @relation(fields: [season_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  id             Int       @id @default(autoincrement())
+  url_slug       String    @unique @db.VarChar(100)
+  lookup_slug    String    @unique @db.VarChar(100)
+  number         Int
+  air_date       DateTime? @db.Date
+  title          String?   @db.VarChar(100)
+  description    String?
+  season_id      Int
+  created_by_id  String
+  created_at     DateTime  @default(now())
+  modified_by_id String
+  modified_at    DateTime  @default(now())
+
+  created_by  User     @relation("EpisodesCreated", fields: [created_by_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  modified_by User     @relation("EpisodesModified", fields: [modified_by_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  season      season   @relation(fields: [season_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
   sketches    sketch[]
 
   @@unique([season_id, number])
 }
 
 model person {
-  id             Int             @id @default(autoincrement())
-  url_slug       String          @unique @db.VarChar(100)
-  name           String          @unique @db.VarChar(100)
+  id             Int         @id @default(autoincrement())
+  url_slug       String      @unique @db.VarChar(100)
+  name           String      @unique @db.VarChar(100)
   description    String?
-  birth_date     DateTime?       @db.Date
+  birth_date     DateTime?   @db.Date
   gender         gender_type
+  created_by_id  String
+  created_at     DateTime    @default(now())
+  modified_by_id String
+  modified_at    DateTime    @default(now())
+
+  created_by     User            @relation("PeopleCreated", fields: [created_by_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  modified_by    User            @relation("PeopleModified", fields: [modified_by_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
   sketch_casts   sketch_cast[]
   sketch_credits sketch_credit[]
   person_images  person_image[]
 }
 
 model person_image {
-  id        Int    @id @default(autoincrement())
-  person_id Int
-  image_id  Int
-  person    person @relation(fields: [person_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  image     image  @relation(fields: [image_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  id             Int      @id @default(autoincrement())
+  person_id      Int
+  image_id       Int
+  created_by_id  String
+  created_at     DateTime @default(now())
+  modified_by_id String
+  modified_at    DateTime @default(now())
+
+  created_by  User   @relation("PersonImagesCreated", fields: [created_by_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  modified_by User   @relation("PersonImagesModified", fields: [modified_by_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  person      person @relation(fields: [person_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  image       image  @relation(fields: [image_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
 }
 
 model user_rating {
-  user_id      String
-  sketch_id    Int
-  rating_value Int?
-  created_at   DateTime @default(now())
-  updated_at   DateTime @default(now())
-  sketch       sketch   @relation(fields: [sketch_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  user         User     @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  user_id        String
+  sketch_id      Int
+  rating_value   Int?
+  created_by_id  String
+  created_at     DateTime @default(now())
+  modified_by_id String
+  modified_at    DateTime @default(now())
+
+  created_by  User   @relation("UserRatingsCreated", fields: [created_by_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  modified_by User   @relation("UserRatingsModified", fields: [modified_by_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  sketch      sketch @relation(fields: [sketch_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  user        User   @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
 
   @@id([user_id, sketch_id])
 }
 
 model recurring_sketch {
-  id          Int      @id @default(autoincrement())
-  url_slug    String   @unique @db.VarChar(100)
-  name        String   @db.VarChar(100)
-  description String?
-  show_id     Int
+  id             Int      @id @default(autoincrement())
+  url_slug       String   @unique @db.VarChar(100)
+  name           String   @db.VarChar(100)
+  description    String?
+  show_id        Int
+  created_by_id  String
+  created_at     DateTime @default(now())
+  modified_by_id String
+  modified_at    DateTime @default(now())
+
+  created_by  User     @relation("RecurringSketchesCreated", fields: [created_by_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  modified_by User     @relation("RecurringSketchesModified", fields: [modified_by_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
   show        show     @relation(fields: [show_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
   sketches    sketch[]
 
@@ -142,13 +217,20 @@ model recurring_sketch {
 }
 
 model season {
-  id          Int       @id @default(autoincrement())
-  url_slug    String    @unique @db.VarChar(100)
-  lookup_slug String    @unique @default("") @db.VarChar(100)
-  number      Int
-  year        Int
-  description String?
-  show_id     Int
+  id             Int      @id @default(autoincrement())
+  url_slug       String   @unique @db.VarChar(100)
+  lookup_slug    String   @unique @default("") @db.VarChar(100)
+  number         Int
+  year           Int
+  description    String?
+  show_id        Int
+  created_by_id  String
+  created_at     DateTime @default(now())
+  modified_by_id String
+  modified_at    DateTime @default(now())
+
+  created_by  User      @relation("SeasonsCreated", fields: [created_by_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  modified_by User      @relation("SeasonsModified", fields: [modified_by_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
   episodes    episode[]
   show        show      @relation(fields: [show_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
 
@@ -156,107 +238,177 @@ model season {
 }
 
 model show {
-  id                 Int                @id @default(autoincrement())
-  url_slug           String             @unique @db.VarChar(100)
-  title              String             @unique @db.VarChar(100)
-  description        String?
+  id             Int      @id @default(autoincrement())
+  url_slug       String   @unique @db.VarChar(100)
+  title          String   @unique @db.VarChar(100)
+  description    String?
+  created_by_id  String
+  created_at     DateTime @default(now())
+  modified_by_id String
+  modified_at    DateTime @default(now())
+
+  created_by         User               @relation("ShowsCreated", fields: [created_by_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  modified_by        User               @relation("ShowsModified", fields: [modified_by_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
   recurring_sketches recurring_sketch[]
   seasons            season[]
   show_images        show_image[]
 }
 
 model show_image {
-  id       Int   @id @default(autoincrement())
-  show_id  Int
-  image_id Int
-  show     show  @relation(fields: [show_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  image    image @relation(fields: [image_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  id             Int      @id @default(autoincrement())
+  show_id        Int
+  image_id       Int
+  created_by_id  String
+  created_at     DateTime @default(now())
+  modified_by_id String
+  modified_at    DateTime @default(now())
+
+  created_by  User  @relation("ShowImagesCreated", fields: [created_by_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  modified_by User  @relation("ShowImagesModified", fields: [modified_by_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  show        show  @relation(fields: [show_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  image       image @relation(fields: [image_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
 }
 
 model sketch_cast {
-  id           Int            @id @default(autoincrement())
-  sketch_id    Int
-  character_id Int
-  person_id    Int?
-  image_id     Int?
-  description  String?
-  role         cast_role_type
-  image        image?         @relation(fields: [image_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  character    character      @relation(fields: [character_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  person       person?        @relation(fields: [person_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  sketch       sketch         @relation(fields: [sketch_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  id             Int            @id @default(autoincrement())
+  sketch_id      Int
+  character_id   Int
+  person_id      Int?
+  image_id       Int?
+  description    String?
+  role           cast_role_type
+  created_by_id  String
+  created_at     DateTime       @default(now())
+  modified_by_id String
+  modified_at    DateTime       @default(now())
+
+  created_by  User      @relation("SketchCastCreated", fields: [created_by_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  modified_by User      @relation("SketchCastModified", fields: [modified_by_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  image       image?    @relation(fields: [image_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  character   character @relation(fields: [character_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  person      person?   @relation(fields: [person_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  sketch      sketch    @relation(fields: [sketch_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
 }
 
 model sketch_credit {
-  id          Int              @id @default(autoincrement())
-  sketch_id   Int
-  person_id   Int
-  description String?
+  id             Int      @id @default(autoincrement())
+  sketch_id      Int
+  person_id      Int
+  description    String?
+  created_by_id  String
+  created_at     DateTime @default(now())
+  modified_by_id String
+  modified_at    DateTime @default(now())
+
+  created_by  User             @relation("SketchCreditsCreated", fields: [created_by_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  modified_by User             @relation("SketchCreditsModified", fields: [modified_by_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
   role        credit_role_type
   person      person           @relation(fields: [person_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
   sketch      sketch           @relation(fields: [sketch_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
 }
 
 model sketch_tag {
-  id        Int    @id @default(autoincrement())
-  sketch_id Int
-  tag_id    Int
-  sketch    sketch @relation(fields: [sketch_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  tag       tag    @relation(fields: [tag_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  id             Int      @id @default(autoincrement())
+  sketch_id      Int
+  tag_id         Int
+  created_by_id  String
+  created_at     DateTime @default(now())
+  modified_by_id String
+  modified_at    DateTime @default(now())
+
+  created_by  User   @relation("SketchTagsCreated", fields: [created_by_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  modified_by User   @relation("SketchTagsModified", fields: [modified_by_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  sketch      sketch @relation(fields: [sketch_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  tag         tag    @relation(fields: [tag_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
 
   @@unique([sketch_id, tag_id])
 }
 
 model sketch {
-  id                  Int               @id @default(autoincrement())
-  title               String            @db.VarChar(100)
-  url_slug            String            @unique @db.VarChar(100)
-  lookup_slug         String            @unique @db.VarChar(100)
+  id                  Int      @id @default(autoincrement())
+  title               String   @db.VarChar(100)
+  url_slug            String   @unique @db.VarChar(100)
+  lookup_slug         String   @unique @db.VarChar(100)
   video_urls          String[]
   description         String?
   duration            Int?
   episode_id          Int
   recurring_sketch_id Int?
-  user_ratings        user_rating[]
-  sketch_casts        sketch_cast[]
-  sketch_credits      sketch_credit[]
-  sketch_tags         sketch_tag[]
-  episode             episode           @relation(fields: [episode_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  recurring_sketch    recurring_sketch? @relation(fields: [recurring_sketch_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  sketch_images       sketch_image[]
+  created_by_id       String
+  created_at          DateTime @default(now())
+  modified_by_id      String
+  modified_at         DateTime @default(now())
+
+  created_by       User              @relation("SketchesCreated", fields: [created_by_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  modified_by      User              @relation("SketchesModified", fields: [modified_by_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  user_ratings     user_rating[]
+  sketch_casts     sketch_cast[]
+  sketch_credits   sketch_credit[]
+  sketch_tags      sketch_tag[]
+  episode          episode           @relation(fields: [episode_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  recurring_sketch recurring_sketch? @relation(fields: [recurring_sketch_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  sketch_images    sketch_image[]
 }
 
 model sketch_image {
-  id        Int    @id @default(autoincrement())
-  sketch_id Int
-  image_id  Int
-  sketch    sketch @relation(fields: [sketch_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  image     image  @relation(fields: [image_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  id             Int      @id @default(autoincrement())
+  sketch_id      Int
+  image_id       Int
+  created_by_id  String
+  created_at     DateTime @default(now())
+  modified_by_id String
+  modified_at    DateTime @default(now())
+
+  created_by  User   @relation("SketchImagesCreated", fields: [created_by_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  modified_by User   @relation("SketchImagesModified", fields: [modified_by_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  sketch      sketch @relation(fields: [sketch_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  image       image  @relation(fields: [image_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
 }
 
 model tag_category {
-  id       Int    @id @default(autoincrement())
-  name     String @unique @db.VarChar(100)
-  url_slug String @unique @db.VarChar(100)
-  tags     tag[]
+  id             Int      @id @default(autoincrement())
+  name           String   @unique @db.VarChar(100)
+  url_slug       String   @unique @db.VarChar(100)
+  created_by_id  String
+  created_at     DateTime @default(now())
+  modified_by_id String
+  modified_at    DateTime @default(now())
+
+  created_by  User  @relation("TagCategoriesCreated", fields: [created_by_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  modified_by User  @relation("TagCategoriesModified", fields: [modified_by_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  tags        tag[]
 }
 
 model tag {
-  id              Int          @id @default(autoincrement())
-  name            String       @db.VarChar(100)
-  url_slug        String       @db.VarChar(100)
-  lookup_slug     String       @unique @db.VarChar(100)
+  id              Int      @id @default(autoincrement())
+  name            String   @db.VarChar(100)
+  url_slug        String   @db.VarChar(100)
+  lookup_slug     String   @unique @db.VarChar(100)
   tag_category_id Int
-  sketch_tags     sketch_tag[]
-  tag_category    tag_category @relation(fields: [tag_category_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  created_by_id   String
+  created_at      DateTime @default(now())
+  modified_by_id  String
+  modified_at     DateTime @default(now())
+
+  created_by   User         @relation("TagsCreated", fields: [created_by_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  modified_by  User         @relation("TagsModified", fields: [modified_by_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  sketch_tags  sketch_tag[]
+  tag_category tag_category @relation(fields: [tag_category_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
 
   @@unique([tag_category_id, url_slug])
   @@unique([tag_category_id, name])
 }
 
 model image {
-  id            Int            @id @default(autoincrement())
-  cdn_key       String         @unique
+  id             Int      @id @default(autoincrement())
+  cdn_key        String   @unique
+  created_by_id  String
+  created_at     DateTime @default(now())
+  modified_by_id String
+  modified_at    DateTime @default(now())
+
+  created_by    User           @relation("ImagesCreated", fields: [created_by_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  modified_by   User           @relation("ImagesModified", fields: [modified_by_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
   person_images person_image[]
   show_images   show_image[]
   sketch_casts  sketch_cast[]

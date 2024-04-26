@@ -1,12 +1,13 @@
 import prisma from "@/database/prisma";
 import ProcessEnv from "@/shared/ProcessEnv";
 import { PrismaAdapter } from "@auth/prisma-adapter";
-import NextAuth from "next-auth";
+import NextAuth, { AuthOptions } from "next-auth";
+import { Adapter } from "next-auth/adapters";
 import GoogleProvider from "next-auth/providers/google";
 
-const handler = NextAuth({
-  // @ts-expect-error - https://github.com/nextauthjs/next-auth/issues/9493
-  adapter: PrismaAdapter(prisma),
+const authOptions = {
+  // x@ts-expect-errorx - https://github.com/nextauthjs/next-auth/issues/9493
+  adapter: PrismaAdapter(prisma) as Adapter, // Force cast due to small type mismatch
   providers: [
     GoogleProvider({
       clientId: ProcessEnv.GOOGLE_CLIENT_ID,
@@ -51,6 +52,8 @@ const handler = NextAuth({
             return url.startsWith(baseUrl) ? url : baseUrl
         }*/
   },
-});
+} satisfies AuthOptions;
 
-export { handler as GET, handler as POST };
+const handler = NextAuth(authOptions);
+
+export { handler as GET, handler as POST, authOptions };
