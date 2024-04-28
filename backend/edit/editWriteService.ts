@@ -1,13 +1,14 @@
 import prisma from "@/database/prisma";
 import { slugifyForUrl } from "@/shared/string";
+import { operation_type } from "@prisma/client";
 import {
   FieldOrm,
+  ImageFieldOrm,
   MappingEditField,
   SlugFieldOrm,
   TableOrm,
 } from "../../database/orm/ormTypes";
 import sketchDatabaseOrm from "../../database/orm/sketchDatabaseOrm";
-import { operation_type } from "@prisma/client";
 
 const allowedColumnsByTable: { [key: string]: string[] } = {};
 const allowedMappingsByTable: { [key: string]: string[] } = {};
@@ -160,38 +161,27 @@ function updateSlugs(table: TableOrm) {
 
 async function writeFieldChanges(
   userid: string,
-  table: string,
-  id: number,
+  tableName: string,
+  rowId: number,
   fields: FieldOrm[],
   index: number,
   mappingTableRelation: object,
 ) {
   const dataParams: any = {};
 
-  fields
-    .filter((field) => field.column)
-    .forEach((field) => {
-      // TODO: Validate columns are in master config for fields and lookups
-      /* if (!allowedColumns.includes(field.column!)) {
+  const columnFields = fields.filter((field) => field.column);
+
+  for (let field of columnFields) {
+    // TODO: Validate columns are in master config for fields and lookups
+    /* if (!allowedColumns.includes(field.column!)) {
         throw new Error(`Column ${field.column} not allowed`);
       }*/
-      if (field.type == "image") {
-        if (!field.column || !field.navProp) {
-          throw new Error("Image field missing column or navProp");
-        }
-        if (field.values && field.values[index]) {
-          dataParams[field.navProp] = {
-            create: {
-              cdn_key: field.values[index],
-            },
-          };
-        } else {
-          dataParams[field.column] = null;
-        }
-      } else {
-        dataParams[field.column!] = field.values![index];
-      }
-    });
+    if (field.type == "image") {
+      await writeImageField(field, index, userid, dataParams);
+    } else {
+      dataParams[field.column!] = field.values![index];
+    }
+  }
 
   const dynamicPrisma = prisma as any;
 
@@ -199,15 +189,15 @@ async function writeFieldChanges(
   dataParams["modified_at"] = new Date();
 
   // Update row
-  if (id && id >= 0) {
-    await dynamicPrisma[table].update({
+  if (rowId && rowId >= 0) {
+    await dynamicPrisma[tableName].update({
       where: {
-        id,
+        id: rowId,
         ...mappingTableRelation,
       },
       data: dataParams,
     });
-    return id;
+    return rowId;
   }
   // Create row
   else {
@@ -217,11 +207,43 @@ async function writeFieldChanges(
     dataParams["created_by_id"] = userid;
     dataParams["created_at"] = new Date();
 
-    const createdRow = await dynamicPrisma[table].create({
+    const createdRow = await dynamicPrisma[tableName].create({
       data: dataParams,
     });
 
     return createdRow.id as number;
+  }
+}
+
+async function writeImageField(
+  field: ImageFieldOrm,
+  index: number,
+  userid: string,
+  dataParams: any,
+) {
+  if (!field.column || !field.navProp) {
+    throw new Error("Image field missing column or navProp");
+  }
+
+  // Create and attach the image
+  const imageCdnkey = field.values?.[index];
+
+  if (imageCdnkey) {
+    // Prisma updates either need to be all id based or navigation property based, can't mix
+    // modified_by_id is id based, so we need to set the image by id as well, so create and get the id
+
+    const imageRecord = await prisma.image.create({
+      data: {
+        cdn_key: imageCdnkey,
+        created_by_id: userid,
+      },
+    });
+
+    dataParams[field.column] = imageRecord.id;
+  }
+  // Else remove the image association, mark the image as inactive
+  else {
+    dataParams[field.column] = null;
   }
 }
 
@@ -278,12 +300,25 @@ async function writeMappingChanges(
   }
 }
 
-export async function deleteRow(table: TableOrm, id: number) {
+export async function deleteRow(
+  userid: string,
+  table: TableOrm,
+  rowId: number,
+) {
   const dynamicPrisma = prisma as any;
 
   await dynamicPrisma[table.name].delete({
     where: {
-      id,
+      id: rowId,
+    },
+  });
+
+  await prisma.audit.create({
+    data: {
+      changed_by_id: userid,
+      operation: operation_type.DELETE,
+      table_name: table.name,
+      row_id: rowId,
     },
   });
 }

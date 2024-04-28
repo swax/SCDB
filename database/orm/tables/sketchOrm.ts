@@ -51,7 +51,7 @@ const sketchOrm: TableOrm = {
         label: "Cast",
         fields: [
           {
-            label: "Image",
+            label: "",
             column: "image_id",
             type: "image",
             navProp: "image",

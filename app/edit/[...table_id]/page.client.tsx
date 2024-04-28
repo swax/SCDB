@@ -261,14 +261,20 @@ export default function EditClientPage({ table, id }: EditClientPageProps) {
       const cdnKey = field.values?.[index] || "";
 
       return (
-        <Image
-          alt="Alt text generated dynamically on view page"
-          height={50}
-          src={`${s3url}/${cdnKey}`}
-          style={{ objectFit: "cover" }}
-          unoptimized={true /* Not optimized in edit mode */}
-          width={50}
-        />
+        <>
+          {cdnKey ? (
+            <Image
+              alt="Alt text generated dynamically on view page"
+              height={50}
+              src={`${s3url}/${cdnKey}`}
+              style={{ objectFit: "cover" }}
+              unoptimized={true /* Not optimized in edit mode */}
+              width={50}
+            />
+          ) : (
+            <></>
+          )}
+        </>
       );
     }
 
