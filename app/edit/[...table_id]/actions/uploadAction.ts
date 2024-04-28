@@ -1,8 +1,10 @@
 "use server";
 
+import authOptions from "@/app/api/auth/[...nextauth]/authOptions";
 import ProcessEnv from "@/shared/ProcessEnv";
 import { S3Client } from "@aws-sdk/client-s3";
 import { createPresignedPost } from "@aws-sdk/s3-presigned-post";
+import { getServerSession } from "next-auth";
 import slugify from "slugify";
 import { v4 as uuidv4 } from "uuid";
 
@@ -15,12 +17,19 @@ export async function getPresignedUploadUrl(
   fileType: string,
   fileSize: number,
 ) {
+  const session = await getServerSession(authOptions);
+
+  if (!session || !session.user) {
+    throw "You must login to save changes";
+  }
+
   _validateFile(fileType, fileSize);
 
   // Build aws key
-  const guid = uuidv4().substring(0, 8);
+  const miniUserId = session.user.id.substring(0, 6);
+  const guid = uuidv4().substring(0, 4);
   const slugName = slugify(fileName, { lower: true });
-  const uploadFileName = `${guid}_${slugName}`;
+  const uploadFileName = `${miniUserId}_${guid}_${slugName}`;
 
   const awsKey = `${uploadType}/${tableName}/${uploadFileName}`;
 
@@ -33,13 +42,12 @@ function _validateFile(fileType: string, fileSize: number) {
     throw "File must be an image";
   }
 
-  const mbLimit = 5;
   if (
     !isFinite(fileSize) ||
     isNaN(fileSize) ||
-    fileSize > mbLimit * 1_000_000
+    fileSize > _fileSizeLimitMb * 1_000_000
   ) {
-    throw `File size must be a less than ${mbLimit}MB`;
+    throw `File size must be a less than ${_fileSizeLimitMb}MB`;
   }
 }
 

@@ -55,7 +55,6 @@ model User {
   episodes_created            episode[]          @relation("EpisodesCreated")
   episodes_modified           episode[]          @relation("EpisodesModified")
   images_created              image[]            @relation("ImagesCreated")
-  images_modified             image[]            @relation("ImagesModified")
   people_created              person[]           @relation("PeopleCreated")
   people_modified             person[]           @relation("PeopleModified")
   person_images_created       person_image[]     @relation("PersonImagesCreated")
@@ -104,7 +103,7 @@ model audit {
   table_name      String         @db.VarChar(50)
   operation       operation_type
   row_id          Int
-  modified_fields Json
+  modified_fields Json?
   changed_by      User           @relation(fields: [changed_by_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
 }
 
@@ -399,15 +398,12 @@ model tag {
 }
 
 model image {
-  id             Int      @id @default(autoincrement())
-  cdn_key        String   @unique
-  created_by_id  String
-  created_at     DateTime @default(now())
-  modified_by_id String
-  modified_at    DateTime @default(now())
+  id            Int      @id @default(autoincrement())
+  cdn_key       String   @unique
+  created_by_id String
+  created_at    DateTime @default(now())
 
   created_by    User           @relation("ImagesCreated", fields: [created_by_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  modified_by   User           @relation("ImagesModified", fields: [modified_by_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
   person_images person_image[]
   show_images   show_image[]
   sketch_casts  sketch_cast[]
