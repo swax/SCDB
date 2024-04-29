@@ -8,7 +8,6 @@ interface EditTablePageProps {
 }
 
 export default async function EditTablePage({ params }: EditTablePageProps) {
-  console.log(params);
   // Server Data
   const [tableName, id] = params.table_id;
 

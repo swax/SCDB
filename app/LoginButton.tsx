@@ -56,6 +56,11 @@ export default function LoginButton() {
         open={Boolean(anchorEl)}
       >
         <MenuItem>
+          <Link color="inherit" href="/account" underline="none">
+            My Account
+          </Link>
+        </MenuItem>
+        <MenuItem>
           <Link color="inherit" href="/profile" underline="none">
             My Profile
           </Link>
