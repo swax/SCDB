@@ -2,6 +2,7 @@
  * This was made it's own file so that it can be imported into server actions for authentication
  */
 
+import { getAccount } from "@/backend/accountService";
 import prisma from "@/database/prisma";
 import ProcessEnv from "@/shared/ProcessEnv";
 import { PrismaAdapter } from "@auth/prisma-adapter";
@@ -23,12 +24,16 @@ const authOptions = {
   secret: ProcessEnv.NEXTAUTH_SECRET,
   debug: ProcessEnv.NODE_ENV !== "production",
   callbacks: {
-    jwt({ token /*, account*/ }) {
-      // Persist the OAuth access_token to the token right after signin
-      /*if (account) {
-                  console.log('jwt callback', account.access_token);
-                  token.accessToken = account.access_token
-              }*/
+    async jwt({ token, trigger }) {
+      // Triggered from the client side useSession().update()
+      if (trigger == "update" && token.sub) {
+        const account = await getAccount(token.sub);
+
+        if (account?.username) {
+          token.username = account?.username;
+        }
+      }
+
       return token;
     },
     session({ session, user, token }) {
@@ -42,10 +47,12 @@ const authOptions = {
         // If session is pulled from database
         if (user) {
           session.user.id = user.id;
+          console.log("SESSION PULLED FROM DATABASE", user);
         }
         // If session is pulled from JWT
         else if (token && token.sub) {
           session.user.id = token.sub;
+          session.user.username = token.username as string;
         }
       }
       return session;

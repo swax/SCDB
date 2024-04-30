@@ -3,6 +3,7 @@ import {
   Box,
   Button,
   CircularProgress,
+  Divider,
   IconButton,
   Link,
   Menu,
@@ -61,10 +62,20 @@ export default function LoginButton() {
           </Link>
         </MenuItem>
         <MenuItem>
-          <Link color="inherit" href="/profile" underline="none">
+          <Link
+            color="inherit"
+            href={`/profile/${session.user.username}`}
+            underline="none"
+          >
             My Profile
           </Link>
         </MenuItem>
+        <MenuItem>
+          <Link color="inherit" href="/changelog" underline="none">
+            Changelog
+          </Link>
+        </MenuItem>
+        <Divider />
         <MenuItem onClick={() => void signOut()}>Logout</MenuItem>
       </Menu>
     </Box>

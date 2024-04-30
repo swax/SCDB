@@ -492,7 +492,7 @@ export default function EditClientPage({ table, id }: EditClientPageProps) {
         <Fab
           color="primary"
           disabled={loading}
-          onClick={() => handleClick_save()}
+          onClick={() => void handleClick_save()}
           sx={{ mr: 1 }}
           variant="extended"
         >
@@ -506,7 +506,7 @@ export default function EditClientPage({ table, id }: EditClientPageProps) {
         {table.operation == "update" && (
           <Fab
             disabled={loading}
-            onClick={() => handleClick_delete()}
+            onClick={() => void handleClick_delete()}
             variant="extended"
           >
             <DeleteIcon />
