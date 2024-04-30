@@ -14,7 +14,14 @@ export default async function ProfilePage({
     notFound();
   }
 
-  const changelog = await getChangelog(profile.id);
+  const page = 1;
+  const rowsPerPage = 10;
+
+  const changelog = await getChangelog({
+    userid: profile.id,
+    page,
+    rowsPerPage,
+  });
 
   // TODO: Show change log only if logged in
 
@@ -22,7 +29,11 @@ export default async function ProfilePage({
   return (
     <div>
       <h1>{params.username}</h1>
-      <ChangeLogTable changelog={changelog} />;
+      <ChangeLogTable
+        changelog={changelog}
+        page={page}
+        rowsPerPage={rowsPerPage}
+      />
     </div>
   );
 }

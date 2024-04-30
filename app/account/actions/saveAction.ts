@@ -11,5 +11,5 @@ export default async function saveUsername(username: string) {
     throw "You must login to save changes";
   }
 
-  return await accountService.saveUsername(session.user.id, username);
+  await accountService.saveUsername(session.user.id, username);
 }

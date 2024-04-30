@@ -14,7 +14,7 @@ export async function getAccount(id: string) {
 }
 
 export async function saveUsername(id: string, username: string) {
-  return await prisma.user.update({
+  await prisma.user.update({
     where: {
       id,
     },

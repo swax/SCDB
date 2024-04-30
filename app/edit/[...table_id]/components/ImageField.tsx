@@ -27,9 +27,6 @@ export default function ImageField({
   setFieldValue,
   tableName,
 }: ImageFieldProps) {
-  // Constants
-  const hasError = !field.optional && !field.values?.[index] && !field.template;
-
   // Hooks
   const forceUpdate = useForceUpdate();
   const [uploading, setUploading] = useState(false);
