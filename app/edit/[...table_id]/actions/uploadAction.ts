@@ -3,6 +3,7 @@
 import authOptions from "@/app/api/auth/[...nextauth]/authOptions";
 import ProcessEnv from "@/shared/ProcessEnv";
 import { canEdit } from "@/shared/roleUtils";
+import { contentResponse, errorResponse } from "@/shared/serviceResponse";
 import { S3Client } from "@aws-sdk/client-s3";
 import { createPresignedPost } from "@aws-sdk/s3-presigned-post";
 import { getServerSession } from "next-auth";
@@ -21,14 +22,17 @@ export async function getPresignedUploadUrl(
   const session = await getServerSession(authOptions);
 
   if (!session?.user) {
-    throw "You must login to save changes";
+    return errorResponse("You must login to save changes");
   }
 
   if (!canEdit(session.user.role)) {
-    throw "You do not have permission to edit";
+    return errorResponse("You do not have permission to edit");
   }
 
-  _validateFile(fileType, fileSize);
+  const validationError = _validateFile(fileType, fileSize);
+  if (validationError) {
+    return validationError;
+  }
 
   // Build aws key
   const miniUserId = session.user.id.substring(0, 6);
@@ -39,12 +43,14 @@ export async function getPresignedUploadUrl(
   const awsKey = `${uploadType}/${tableName}/${uploadFileName}`;
 
   // Get the pre-signed url
-  return await _getSignedPost(awsKey, fileSize);
+  const signedPost = await _getSignedPost(awsKey, fileSize);
+
+  return contentResponse(signedPost);
 }
 
 function _validateFile(fileType: string, fileSize: number) {
   if (!fileType.startsWith("image/")) {
-    throw "File must be an image";
+    return errorResponse("File must be an image");
   }
 
   if (
@@ -52,7 +58,7 @@ function _validateFile(fileType: string, fileSize: number) {
     isNaN(fileSize) ||
     fileSize > _fileSizeLimitMb * 1_000_000
   ) {
-    throw `File size must be a less than ${_fileSizeLimitMb}MB`;
+    return errorResponse(`File size must be a less than ${_fileSizeLimitMb}MB`);
   }
 }
 
@@ -61,11 +67,13 @@ async function _getSignedPost(key: string, fileSize: number) {
     region: ProcessEnv.NEXT_PUBLIC_AWS_REGION,
   });
 
-  return await createPresignedPost(client, {
+  const presignedPost = await createPresignedPost(client, {
     Bucket: ProcessEnv.NEXT_PUBLIC_AWS_BUCKET,
     Key: key,
     Conditions: [["content-length-range", fileSize, fileSize]],
     Fields: {},
     Expires: 60, // Seconds
   });
+
+  return presignedPost;
 }

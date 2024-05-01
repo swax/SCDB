@@ -1,6 +1,7 @@
 import { StringFieldOrm } from "@/database/orm/ormTypes";
 import prisma from "@/database/prisma";
 import { allowedToChangeRole, roleRank } from "@/shared/roleUtils";
+import { emptyResponse, errorResponse } from "@/shared/serviceResponse";
 import { $Enums, operation_type } from "@prisma/client";
 import { getAccount } from "./accountService";
 
@@ -10,28 +11,32 @@ export async function saveRole(
   newRole: $Enums.user_role_type,
 ) {
   if (sessionUserId === userId) {
-    throw "Cannot change your own role";
+    return errorResponse("Cannot change your own role");
   }
 
   const sessionAccount = await getAccount(sessionUserId);
   if (!sessionAccount) {
-    throw "Session user account not found";
+    return errorResponse("Session user account not found");
   }
 
   const userAccount = await getAccount(userId);
   if (!userAccount) {
-    throw "User account not found";
+    return errorResponse("User account not found");
   }
 
   const currentUserRole = userAccount.role;
 
   if (!allowedToChangeRole(currentUserRole, sessionAccount.role)) {
-    throw `Unable to change a ${currentUserRole}'s role when your role is ${sessionAccount.role}`;
+    return errorResponse(
+      `Unable to change a ${currentUserRole}'s role when your role is ${sessionAccount.role}`,
+    );
   }
 
   // New role must be less than your role
   if (roleRank(newRole) >= roleRank(sessionAccount.role)) {
-    throw "You cannot change a user's role to a role equal to or higher than your own";
+    return errorResponse(
+      "You cannot change a user's role to a role equal to or higher than your own",
+    );
   }
 
   await prisma.user.update({
@@ -59,4 +64,6 @@ export async function saveRole(
       ] satisfies StringFieldOrm[],
     },
   });
+
+  return emptyResponse();
 }

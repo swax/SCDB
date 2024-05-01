@@ -42,17 +42,20 @@ export default function ProfileClientPage({
   async function saveRoleButton_click() {
     setSaving(true);
 
-    await saveRole(profile.id, newRole);
+    const response = await saveRole(profile.id, newRole);
 
-    window.location.reload();
+    if (response.error) {
+      alert(response.error);
+      setSaving(false);
+    } else {
+      window.location.reload();
+    }
   }
 
   // Rendering
   return (
     <Box>
       <h1>{profile.username}</h1>
-
-      {`sessionRole: ${sessionRole}, sessionUsername: ${sessionUsername}, profile.role: ${profile.role}`}
 
       <Box mt={2}>
         {editRole ? (
