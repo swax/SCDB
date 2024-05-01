@@ -56,6 +56,8 @@ export default function LoginButton() {
         onClose={handleClick_closeMenu}
         open={Boolean(anchorEl)}
       >
+        <MenuItem>{session.user.username}</MenuItem>
+        <Divider />
         <MenuItem>
           <Link color="inherit" href="/account" underline="none">
             My Account

@@ -64,7 +64,7 @@ export async function writeFieldValues(
       changed_by_id: userid,
       operation: id ? operation_type.UPDATE : operation_type.INSERT,
       table_name: table.name,
-      row_id: rowId,
+      row_id: rowId.toString(),
       modified_fields: table.fields,
     },
   });
@@ -318,7 +318,7 @@ export async function deleteRow(
       changed_by_id: userid,
       operation: operation_type.DELETE,
       table_name: table.name,
-      row_id: rowId,
+      row_id: rowId.toString(),
     },
   });
 }
