@@ -1,7 +1,9 @@
-import { getProfile } from "@/backend/profileService";
-import ChangeLogTable from "@/frontend/hooks/ChangeLogTable";
-import { notFound } from "next/navigation";
+import authOptions from "@/app/api/auth/[...nextauth]/authOptions";
 import { getChangelog } from "@/backend/changelogService";
+import { getProfile } from "@/backend/profileService";
+import { getServerSession } from "next-auth";
+import { notFound } from "next/navigation";
+import ProfileClientPage from "./page.client";
 
 export default async function ProfilePage({
   params,
@@ -14,26 +16,26 @@ export default async function ProfilePage({
     notFound();
   }
 
+  const session = await getServerSession(authOptions);
+
   const page = 1;
-  const rowsPerPage = 10;
+  const rowsPerPage = 5;
 
   const changelog = await getChangelog({
-    userid: profile.id,
+    username: params.username,
     page,
     rowsPerPage,
   });
 
-  // TODO: Show change log only if logged in
-
   // Rendering
   return (
-    <div>
-      <h1>{params.username}</h1>
-      <ChangeLogTable
-        changelog={changelog}
-        page={page}
-        rowsPerPage={rowsPerPage}
-      />
-    </div>
+    <ProfileClientPage
+      profile={profile}
+      sessionRole={session?.user.role}
+      sessionUsername={session?.user.username}
+      changelog={changelog}
+      page={page}
+      rowsPerPage={rowsPerPage}
+    />
   );
 }

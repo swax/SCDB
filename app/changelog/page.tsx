@@ -5,8 +5,9 @@ export default async function Changelog({
   searchParams,
 }: {
   searchParams: {
-    page: string | undefined;
-    rowsPerPage: string | undefined;
+    page?: string;
+    rowsPerPage?: string;
+    username?: string;
   };
 }) {
   // URL parmam
@@ -15,6 +16,7 @@ export default async function Changelog({
 
   // Server Data
   const changelog = await getChangelog({
+    username: searchParams.username,
     page,
     rowsPerPage,
   });
@@ -27,6 +29,7 @@ export default async function Changelog({
         changelog={changelog}
         page={page}
         rowsPerPage={rowsPerPage}
+        username={searchParams.username}
       />
     </>
   );

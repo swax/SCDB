@@ -39,12 +39,17 @@ model Session {
 }
 
 model User {
-  id            String    @id @default(cuid())
-  name          String?
-  email         String?   @unique
-  emailVerified DateTime? @map("email_verified")
-  image         String?
-  username      String?   @unique
+  id             String         @id @default(cuid())
+  name           String?
+  email          String?        @unique
+  emailVerified  DateTime?      @map("email_verified")
+  image          String?
+  username       String         @unique @default(nanoid(6))
+  role           user_role_type @default(Editor)
+  modified_by_id String?
+  modified_at    DateTime       @default(now())
+
+  modified_by User? @relation("UsersModified", fields: [modified_by_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
 
   accounts Account[]
   sessions Session[]
@@ -84,6 +89,7 @@ model User {
   tags_modified               tag[]              @relation("TagsModified")
   user_ratings_created        user_rating[]      @relation("UserRatingsCreated")
   user_ratings_modified       user_rating[]      @relation("UserRatingsModified")
+  user_modified               User[]             @relation("UsersModified")
 
   @@map("user")
 }
@@ -103,7 +109,7 @@ model audit {
   changed_by_id   String
   table_name      String         @db.VarChar(50)
   operation       operation_type
-  row_id          Int
+  row_id          String
   modified_fields Json?
   changed_by      User           @relation(fields: [changed_by_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
 }
@@ -435,4 +441,12 @@ enum credit_role_type {
   Director
   Musician
   Other
+}
+
+enum user_role_type {
+  None
+  Editor
+  Moderator
+  SuperMod
+  Admin
 }

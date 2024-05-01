@@ -2,6 +2,7 @@
 
 import authOptions from "@/app/api/auth/[...nextauth]/authOptions";
 import ProcessEnv from "@/shared/ProcessEnv";
+import { canEdit } from "@/shared/roleUtils";
 import { S3Client } from "@aws-sdk/client-s3";
 import { createPresignedPost } from "@aws-sdk/s3-presigned-post";
 import { getServerSession } from "next-auth";
@@ -19,8 +20,12 @@ export async function getPresignedUploadUrl(
 ) {
   const session = await getServerSession(authOptions);
 
-  if (!session || !session.user) {
+  if (!session?.user) {
     throw "You must login to save changes";
+  }
+
+  if (!canEdit(session.user.role)) {
+    throw "You do not have permission to edit";
   }
 
   _validateFile(fileType, fileSize);

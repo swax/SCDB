@@ -6,6 +6,7 @@ import { getAccount } from "@/backend/accountService";
 import prisma from "@/database/prisma";
 import ProcessEnv from "@/shared/ProcessEnv";
 import { PrismaAdapter } from "@auth/prisma-adapter";
+import { $Enums } from "@prisma/client";
 import { AuthOptions } from "next-auth";
 import { Adapter } from "next-auth/adapters";
 import GoogleProvider from "next-auth/providers/google";
@@ -26,17 +27,17 @@ const authOptions = {
   callbacks: {
     async jwt({ token, trigger }) {
       // Triggered from the client side useSession().update()
-      if (trigger == "update" && token.sub) {
+      if ((trigger == "update" || trigger == "signIn") && token.sub) {
         const account = await getAccount(token.sub);
 
-        if (account?.username) {
-          token.username = account?.username;
-        }
+        // Since username is only changed by the user itself, the user can invalidate its own token on using update()
+        // For the role, which can be changed by others, we can't really put it on the token as it can be outdated
+        token.username = account?.username;
       }
 
       return token;
     },
-    session({ session, user, token }) {
+    async session({ session, user, token }) {
       // Make user id available from useSession
       if (session.user) {
         // Avoid sendng personal info to the client unless we have to
@@ -53,6 +54,15 @@ const authOptions = {
         else if (token && token.sub) {
           session.user.id = token.sub;
           session.user.username = token.username as string;
+          session.user.role = token.role as $Enums.user_role_type;
+        }
+
+        if (session.user.id) {
+          const account = await getAccount(session.user.id);
+          if (account) {
+            session.user.username = account.username;
+            session.user.role = account.role;
+          }
         }
       }
       return session;

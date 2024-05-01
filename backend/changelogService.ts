@@ -6,7 +6,7 @@ interface ChangelogEntry {
   changed_at: Date;
   modified_fields: FieldOrm[];
   table_name: string;
-  row_id: number;
+  row_id: string;
   operation: string;
   changed_by: {
     username: string;
@@ -15,7 +15,7 @@ interface ChangelogEntry {
 }
 
 interface GetChangelogRequest {
-  userid?: string;
+  username?: string;
   page: number;
   rowsPerPage: number;
 }
@@ -26,14 +26,16 @@ export interface GetChangelogResponse {
 }
 
 export async function getChangelog({
-  userid,
+  username,
   page,
   rowsPerPage,
 }: GetChangelogRequest) {
   const whereFilter = {
-    where: userid
+    where: username
       ? {
-          changed_by_id: userid,
+          changed_by: {
+            username,
+          },
         }
       : {},
   };

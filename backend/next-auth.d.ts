@@ -1,3 +1,4 @@
+import { $Enums } from "@prisma/client";
 import { DefaultUser } from "next-auth";
 
 declare module "next-auth" {
@@ -7,7 +8,8 @@ declare module "next-auth" {
   interface Session {
     user: DefaultUser & {
       id: string;
-      username?: string;
+      username: string;
+      role: $Enums.user_role_type;
     };
   }
 }
