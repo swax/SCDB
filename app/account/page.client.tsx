@@ -28,7 +28,13 @@ export default function AccountClientPage(account: AccountClientPageProps) {
 
     setSaving(true);
 
-    await saveUsername(username);
+    const response = await saveUsername(username);
+
+    if (response.error) {
+      alert(response.error);
+      setSaving(false);
+      return;
+    }
 
     // Triggers authOptions.ts jwt callback which updates the jwt/session with the new username
     await session.update();

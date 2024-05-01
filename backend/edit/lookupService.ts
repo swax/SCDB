@@ -1,4 +1,5 @@
 import prisma from "@/database/prisma";
+import { contentResponse, errorResponse } from "@/shared/serviceResponse";
 import { FieldOrm, LookupFieldOrm } from "../../database/orm/ormTypes";
 import sketchDatabaseOrm from "../../database/orm/sketchDatabaseOrm";
 
@@ -26,13 +27,13 @@ function validateFieldWithLookup(
 export default async function lookupTermsInTable(
   searchString: string,
   lookupField: LookupFieldOrm["lookup"],
-): Promise<LookupFieldOption[]> {
+) {
   const allowedLookup = Object.keys(sketchDatabaseOrm).some((table) =>
     validateFieldWithLookup(sketchDatabaseOrm[table].fields, lookupField),
   );
 
   if (!allowedLookup) {
-    throw new Error(
+    return errorResponse(
       `Lookup on ${lookupField.table}/${lookupField.labelColumn} not allowed`,
     );
   }
@@ -57,12 +58,12 @@ export default async function lookupTermsInTable(
   });
 
   // Map results to LookupFieldOption
-  if (!results) {
-    return [];
-  }
+  const lookupResults: LookupFieldOption[] = (results || []).map(
+    (result: any) => ({
+      id: result.id,
+      label: result[lookupField.labelColumn],
+    }),
+  );
 
-  return results.map((result: any) => ({
-    id: result.id,
-    label: result[lookupField.labelColumn],
-  }));
+  return contentResponse(lookupResults);
 }

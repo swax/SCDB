@@ -69,40 +69,42 @@ export default function EditClientPage({ table, id }: EditClientPageProps) {
   }
 
   async function handleClick_save() {
-    try {
-      setLoading(true);
-      const rowId = await editAction(table, id);
+    setLoading(true);
 
-      // If update refresh
-      if (id) {
-        window.location.reload();
-      }
-      // Else navigate to created row
-      else {
-        const url = `/edit/${table.name}/${rowId}`;
-        window.location.href = url;
-      }
-    } catch (e) {
-      alert(e);
-    } finally {
+    const response = await editAction(table, id);
+
+    if (response.error || !response.content) {
+      alert(response.error || "Unknown error");
       setLoading(false);
+      return;
+    }
+
+    const rowId = response.content;
+
+    // If update refresh
+    if (id) {
+      window.location.reload();
+    }
+    // Else navigate to created row
+    else {
+      const url = `/edit/${table.name}/${rowId}`;
+      window.location.href = url;
     }
   }
 
   async function handleClick_delete() {
-    try {
-      if (!confirm(`Are you sure you want to delete this ${table.label}?`))
-        return;
+    if (!confirm(`Are you sure you want to delete this ${table.label}?`))
+      return;
 
-      setLoading(true);
-      await deleteAction(table, id);
+    setLoading(true);
 
-      const url = `/edit/${table.name}`;
-      window.location.href = url;
-    } catch (e) {
-      alert(e);
-    } finally {
+    const response = await deleteAction(table, id);
+
+    if (response.error) {
+      alert(response.error);
       setLoading(false);
+    } else {
+      window.location.href = `/edit/${table.name}`;
     }
   }
 

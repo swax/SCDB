@@ -52,26 +52,31 @@ export default function LookupField({
 
   useDebounce2(
     async () => {
-      try {
-        const results = await lookupAction(inputValue, field.lookup);
+      const response = await lookupAction(inputValue, field.lookup);
 
-        if (results.length === 0) {
-          results.push({
-            id: 0,
-            label: "No matches",
-            noMatches: true,
-          });
-        }
-
-        // Push the existing value to the results to avoid a warning that the current option does not exist in the list
-        if (value && !results.some((r) => r.id === value.id)) {
-          results.push(value);
-        }
-
-        setOptions(buildOptions(results));
-      } catch (e) {
-        setError(`${e}`);
+      if (response.error || !response.content) {
+        setError(response.error || "Unknown error");
+        setLoading(false);
+        return;
       }
+
+      const results = response.content;
+
+      if (results.length === 0) {
+        results.push({
+          id: 0,
+          label: "No matches",
+          noMatches: true,
+        });
+      }
+
+      // Push the existing value to the results to avoid a warning that the current option does not exist in the list
+      if (value && !results.some((r) => r.id === value.id)) {
+        results.push(value);
+      }
+
+      setOptions(buildOptions(results));
+
       setLoading(false);
     },
     500,

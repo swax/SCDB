@@ -43,45 +43,53 @@ export default function ImageField({
   ) {
     setUploading(true);
 
-    try {
-      for (const file of Array.from(e.target.files || [])) {
-        // Get presigned URL so client can upload directly to S3
-        const presignedPost = await getPresignedUploadUrl(
-          "images",
-          tableName,
-          file.name,
-          file.type,
-          file.size,
-        );
+    for (const file of Array.from(e.target.files || [])) {
+      // Get presigned URL so client can upload directly to S3
+      const reponse = await getPresignedUploadUrl(
+        "images",
+        tableName,
+        file.name,
+        file.type,
+        file.size,
+      );
 
-        // Upload
-        const formData = new FormData();
-
-        Object.entries({
-          ...presignedPost.fields,
-          file,
-        }).forEach(([key, value]) => {
-          formData.append(key, value);
-        });
-
-        // Upload to S3
-        const uploadResponse = await fetch(presignedPost.url, {
-          method: "POST",
-          body: formData,
-        });
-
-        if (!uploadResponse.ok) {
-          throw `Upload failed: ${uploadResponse.status} ${uploadResponse.statusText}`;
-        }
-
-        // Update field value
-        handleChange_field(presignedPost.fields.key);
-
-        // Only support uploading a single file right now
-        break;
+      if (reponse.error || !reponse.content) {
+        alert(reponse.error || "Unknown error");
+        setUploading(false);
+        return;
       }
-    } catch (error) {
-      alert(`Error uploading image: ${error}`);
+
+      const presignedPost = reponse.content;
+
+      // Upload
+      const formData = new FormData();
+
+      Object.entries({
+        ...presignedPost.fields,
+        file,
+      }).forEach(([key, value]) => {
+        formData.append(key, value);
+      });
+
+      // Upload to S3
+      const uploadResponse = await fetch(presignedPost.url, {
+        method: "POST",
+        body: formData,
+      });
+
+      if (!uploadResponse.ok) {
+        alert(
+          `Upload failed: ${uploadResponse.status} ${uploadResponse.statusText}`,
+        );
+        setUploading(false);
+        return;
+      }
+
+      // Update field value
+      handleChange_field(presignedPost.fields.key);
+
+      // Only support uploading a single file right now
+      break;
     }
 
     setUploading(false);
