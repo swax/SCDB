@@ -6,7 +6,7 @@ import { getAccount } from "@/backend/accountService";
 import prisma from "@/database/prisma";
 import ProcessEnv from "@/shared/ProcessEnv";
 import { PrismaAdapter } from "@auth/prisma-adapter";
-import { $Enums } from "@prisma/client";
+import { user_role_type } from "@prisma/client";
 import { AuthOptions } from "next-auth";
 import { Adapter } from "next-auth/adapters";
 import GoogleProvider from "next-auth/providers/google";
@@ -54,7 +54,7 @@ const authOptions = {
         else if (token && token.sub) {
           session.user.id = token.sub;
           session.user.username = token.username as string;
-          session.user.role = token.role as $Enums.user_role_type;
+          session.user.role = token.role as user_role_type;
         }
 
         if (session.user.id) {

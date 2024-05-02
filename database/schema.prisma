@@ -46,6 +46,7 @@ model User {
   image          String?
   username       String         @unique @default(nanoid(6))
   role           user_role_type @default(Editor)
+  mod_note       String?
   modified_by_id String?
   modified_at    DateTime       @default(now())
 

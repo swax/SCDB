@@ -1,22 +1,19 @@
 "use server";
 
-import authOptions from "@/app/api/auth/[...nextauth]/authOptions";
+import {
+  catchServiceErrors,
+  validateCanEdit,
+  validateLoggedIn,
+} from "@/backend/actionHelper";
 import { writeFieldValues } from "@/backend/edit/editWriteService";
 import { TableOrm } from "@/database/orm/ormTypes";
-import { canEdit } from "@/shared/roleUtils";
-import { errorResponse } from "@/shared/serviceResponse";
-import { getServerSession } from "next-auth";
 
 export default async function editAction(table: TableOrm, id: number) {
-  const session = await getServerSession(authOptions);
+  return await catchServiceErrors(async () => {
+    const session = await validateLoggedIn();
 
-  if (!session?.user) {
-    return errorResponse("You must login to save changes");
-  }
+    validateCanEdit(session.user.role);
 
-  if (!canEdit(session.user.role)) {
-    return errorResponse("You do not have permission to edit");
-  }
-
-  return await writeFieldValues(session.user.id, table, id);
+    return await writeFieldValues(session.user.id, table, id);
+  });
 }

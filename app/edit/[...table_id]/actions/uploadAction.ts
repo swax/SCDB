@@ -1,12 +1,14 @@
 "use server";
 
-import authOptions from "@/app/api/auth/[...nextauth]/authOptions";
+import {
+  catchServiceErrors,
+  validateCanEdit,
+  validateLoggedIn,
+} from "@/backend/actionHelper";
 import ProcessEnv from "@/shared/ProcessEnv";
-import { canEdit } from "@/shared/roleUtils";
-import { contentResponse, errorResponse } from "@/shared/serviceResponse";
+import { contentResponse } from "@/shared/serviceResponse";
 import { S3Client } from "@aws-sdk/client-s3";
 import { createPresignedPost } from "@aws-sdk/s3-presigned-post";
-import { getServerSession } from "next-auth";
 import slugify from "slugify";
 import { v4 as uuidv4 } from "uuid";
 
@@ -19,38 +21,31 @@ export async function getPresignedUploadUrl(
   fileType: string,
   fileSize: number,
 ) {
-  const session = await getServerSession(authOptions);
+  return await catchServiceErrors(async () => {
+    const session = await validateLoggedIn();
 
-  if (!session?.user) {
-    return errorResponse("You must login to save changes");
-  }
+    validateCanEdit(session.user.role);
 
-  if (!canEdit(session.user.role)) {
-    return errorResponse("You do not have permission to edit");
-  }
+    _validateFile(fileType, fileSize);
 
-  const validationError = _validateFile(fileType, fileSize);
-  if (validationError) {
-    return validationError;
-  }
+    // Build aws key
+    const miniUserId = session.user.id.substring(0, 6);
+    const guid = uuidv4().substring(0, 4);
+    const slugName = slugify(fileName, { lower: true });
+    const uploadFileName = `${miniUserId}_${guid}_${slugName}`;
 
-  // Build aws key
-  const miniUserId = session.user.id.substring(0, 6);
-  const guid = uuidv4().substring(0, 4);
-  const slugName = slugify(fileName, { lower: true });
-  const uploadFileName = `${miniUserId}_${guid}_${slugName}`;
+    const awsKey = `${uploadType}/${tableName}/${uploadFileName}`;
 
-  const awsKey = `${uploadType}/${tableName}/${uploadFileName}`;
+    // Get the pre-signed url
+    const signedPost = await _getSignedPost(awsKey, fileSize);
 
-  // Get the pre-signed url
-  const signedPost = await _getSignedPost(awsKey, fileSize);
-
-  return contentResponse(signedPost);
+    return contentResponse(signedPost);
+  });
 }
 
 function _validateFile(fileType: string, fileSize: number) {
   if (!fileType.startsWith("image/")) {
-    return errorResponse("File must be an image");
+    throw "File must be an image";
   }
 
   if (
@@ -58,7 +53,7 @@ function _validateFile(fileType: string, fileSize: number) {
     isNaN(fileSize) ||
     fileSize > _fileSizeLimitMb * 1_000_000
   ) {
-    return errorResponse(`File size must be a less than ${_fileSizeLimitMb}MB`);
+    throw `File size must be a less than ${_fileSizeLimitMb}MB`;
   }
 }
 

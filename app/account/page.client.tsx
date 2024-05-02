@@ -1,7 +1,7 @@
 "use client";
 
 import { Box, Button, Container, TextField, Typography } from "@mui/material";
-import { $Enums } from "@prisma/client";
+import { user_role_type } from "@prisma/client";
 import { useSession } from "next-auth/react";
 import { useState } from "react";
 import saveUsername from "./actions/saveAction";
@@ -10,7 +10,7 @@ interface AccountClientPageProps {
   id: string;
   email: string | null;
   username: string | null;
-  role: $Enums.user_role_type;
+  role: user_role_type;
 }
 
 export default function AccountClientPage(account: AccountClientPageProps) {

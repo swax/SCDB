@@ -1,13 +1,18 @@
 import prisma from "@/database/prisma";
-import { $Enums } from "@prisma/client";
+import { roleRank } from "@/shared/roleUtils";
+import { user_role_type } from "@prisma/client";
 
 export interface GetProfileResponse {
   id: string;
   username: string;
-  role: $Enums.user_role_type;
+  role: user_role_type;
+  mod_note: string | null;
 }
 
-export async function getProfile(username: string) {
+export async function getProfile(
+  username: string,
+  sessionRole?: user_role_type,
+) {
   return (await prisma.user.findUnique({
     where: {
       username,
@@ -16,6 +21,9 @@ export async function getProfile(username: string) {
       id: true,
       username: true,
       role: true,
+      mod_note:
+        sessionRole &&
+        roleRank(sessionRole) >= roleRank(user_role_type.Moderator),
     },
   })) satisfies GetProfileResponse | null;
 }

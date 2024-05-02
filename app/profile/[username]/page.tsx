@@ -10,13 +10,13 @@ export default async function ProfilePage({
 }: {
   params: { username: string };
 }) {
-  const profile = await getProfile(params.username);
+  const session = await getServerSession(authOptions);
+
+  const profile = await getProfile(params.username, session?.user.role);
 
   if (!profile) {
     notFound();
   }
-
-  const session = await getServerSession(authOptions);
 
   const page = 1;
   const rowsPerPage = 5;

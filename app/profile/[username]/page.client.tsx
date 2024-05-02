@@ -4,15 +4,24 @@ import { GetChangelogResponse } from "@/backend/changelogService";
 import { GetProfileResponse } from "@/backend/profileService";
 import ChangeLogTable from "@/frontend/hooks/ChangeLogTable";
 import { allowedToChangeRole } from "@/shared/roleUtils";
-import { Box, Button, Link, MenuItem, Select, Typography } from "@mui/material";
-import { $Enums } from "@prisma/client";
+import { ServiceResponse } from "@/shared/serviceResponse";
+import {
+  Box,
+  Button,
+  Link,
+  MenuItem,
+  Select,
+  TextField,
+  Typography,
+} from "@mui/material";
+import { user_role_type } from "@prisma/client";
 import { useState } from "react";
-import { saveRole } from "./actions/saveRoleAction";
+import { saveModNote, saveRole } from "./actions/saveActions";
 
 interface ProfileClientPageProps {
   profile: GetProfileResponse;
   sessionUsername?: string;
-  sessionRole?: $Enums.user_role_type;
+  sessionRole?: user_role_type;
   changelog: GetChangelogResponse;
   page: number;
   rowsPerPage: number;
@@ -27,7 +36,7 @@ export default function ProfileClientPage({
   rowsPerPage,
 }: ProfileClientPageProps) {
   // Constants
-  const showEditRoleButton =
+  const showModOptions =
     sessionRole &&
     sessionUsername &&
     sessionUsername !== profile.username &&
@@ -37,12 +46,24 @@ export default function ProfileClientPage({
   const [editRole, setEditRole] = useState(false);
   const [saving, setSaving] = useState(false);
   const [newRole, setNewRole] = useState(profile.role);
+  const [modNote, setModNote] = useState(profile.mod_note || "");
 
   // Event Handlers
   async function saveRoleButton_click() {
+    await saveChanges(() => saveRole(profile.id, newRole));
+  }
+
+  async function setModNote_click() {
+    await saveChanges(() => saveModNote(profile.id, modNote));
+  }
+
+  // Helpers
+  async function saveChanges<T>(
+    serverAction: () => Promise<ServiceResponse<T>>,
+  ) {
     setSaving(true);
 
-    const response = await saveRole(profile.id, newRole);
+    const response = await serverAction();
 
     if (response.error) {
       alert(response.error);
@@ -63,21 +84,15 @@ export default function ProfileClientPage({
             <Box>
               <Select
                 disabled={saving}
-                onChange={(e) =>
-                  setNewRole(e.target.value as $Enums.user_role_type)
-                }
+                onChange={(e) => setNewRole(e.target.value as user_role_type)}
                 size="small"
                 value={newRole}
               >
-                <MenuItem value={$Enums.user_role_type.None}>None</MenuItem>
-                <MenuItem value={$Enums.user_role_type.Editor}>Editor</MenuItem>
-                <MenuItem value={$Enums.user_role_type.Moderator}>
-                  Moderator
-                </MenuItem>
-                <MenuItem value={$Enums.user_role_type.SuperMod}>
-                  SuperMod
-                </MenuItem>
-                <MenuItem value={$Enums.user_role_type.Admin}>Admin</MenuItem>
+                <MenuItem value={user_role_type.None}>None</MenuItem>
+                <MenuItem value={user_role_type.Editor}>Editor</MenuItem>
+                <MenuItem value={user_role_type.Moderator}>Moderator</MenuItem>
+                <MenuItem value={user_role_type.SuperMod}>SuperMod</MenuItem>
+                <MenuItem value={user_role_type.Admin}>Admin</MenuItem>
               </Select>
               <Button
                 color="primary"
@@ -103,7 +118,7 @@ export default function ProfileClientPage({
             <Typography variant="body1" sx={{ display: "inline" }}>
               Role: {profile.role}
             </Typography>
-            {showEditRoleButton && (
+            {showModOptions && (
               <Button
                 sx={{ display: "inline", ml: 2 }}
                 variant="outlined"
@@ -116,6 +131,29 @@ export default function ProfileClientPage({
           </>
         )}
       </Box>
+
+      {showModOptions && (
+        <Box sx={{ display: "flex", mt: 2 }}>
+          <TextField
+            disabled={saving}
+            label="Mod Note"
+            multiline
+            onChange={(e) => setModNote(e.target.value)}
+            size="small"
+            sx={{ flex: 1 }}
+            value={modNote}
+          />
+          <Button
+            disabled={saving}
+            onClick={() => void setModNote_click()}
+            size="small"
+            sx={{ ml: 1 }}
+            variant="outlined"
+          >
+            Set
+          </Button>
+        </Box>
+      )}
 
       <h2>Favorite Sketches</h2>
       <p>....</p>
