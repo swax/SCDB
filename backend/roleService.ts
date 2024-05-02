@@ -1,42 +1,37 @@
 import { StringFieldOrm } from "@/database/orm/ormTypes";
 import prisma from "@/database/prisma";
 import { allowedToChangeRole, roleRank } from "@/shared/roleUtils";
-import { emptyResponse, errorResponse } from "@/shared/serviceResponse";
-import { $Enums, operation_type } from "@prisma/client";
+import { operation_type, user_role_type } from "@prisma/client";
 import { getAccount } from "./accountService";
 
 export async function saveRole(
   sessionUserId: string,
   userId: string,
-  newRole: $Enums.user_role_type,
+  newRole: user_role_type,
 ) {
   if (sessionUserId === userId) {
-    return errorResponse("Cannot change your own role");
+    throw "Cannot change your own role";
   }
 
   const sessionAccount = await getAccount(sessionUserId);
   if (!sessionAccount) {
-    return errorResponse("Session user account not found");
+    throw "Session user account not found";
   }
 
   const userAccount = await getAccount(userId);
   if (!userAccount) {
-    return errorResponse("User account not found");
+    throw "User account not found";
   }
 
   const currentUserRole = userAccount.role;
 
   if (!allowedToChangeRole(currentUserRole, sessionAccount.role)) {
-    return errorResponse(
-      `Unable to change a ${currentUserRole}'s role when your role is ${sessionAccount.role}`,
-    );
+    throw `Unable to change a ${currentUserRole}'s role when your role is ${sessionAccount.role}`;
   }
 
   // New role must be less than your role
   if (roleRank(newRole) >= roleRank(sessionAccount.role)) {
-    return errorResponse(
-      "You cannot change a user's role to a role equal to or higher than your own",
-    );
+    throw "You cannot change a user's role to a role equal to or higher than your own";
   }
 
   await prisma.user.update({
@@ -54,7 +49,7 @@ export async function saveRole(
       changed_by_id: sessionUserId,
       operation: operation_type.UPDATE,
       table_name: "user",
-      row_id: sessionUserId.substring(0, 8),
+      row_id: userId.substring(0, 8),
       modified_fields: [
         {
           type: "string",
@@ -64,6 +59,52 @@ export async function saveRole(
       ] satisfies StringFieldOrm[],
     },
   });
+}
 
-  return emptyResponse();
+export async function saveModNote(
+  sessionUserId: string,
+  userId: string,
+  modNote: string,
+) {
+  const sessionAccount = await getAccount(sessionUserId);
+  if (!sessionAccount) {
+    throw "Session user account not found";
+  }
+
+  const userAccount = await getAccount(userId);
+  if (!userAccount) {
+    throw "User account not found";
+  }
+
+  const currentUserRole = userAccount.role;
+
+  if (!allowedToChangeRole(currentUserRole, sessionAccount.role)) {
+    throw `Unable to change a ${currentUserRole}'s mod note when your role is ${sessionAccount.role}`;
+  }
+
+  await prisma.user.update({
+    where: { id: userId },
+    data: {
+      mod_note: modNote,
+      modified_by_id: sessionUserId,
+      modified_at: new Date(),
+    },
+  });
+
+  // Create audit entry
+  await prisma.audit.create({
+    data: {
+      changed_by_id: sessionUserId,
+      operation: operation_type.UPDATE,
+      table_name: "user",
+      row_id: userId.substring(0, 8),
+      modified_fields: [
+        {
+          type: "string",
+          label: "mod_note",
+          values: [modNote],
+        },
+      ] satisfies StringFieldOrm[],
+    },
+  });
 }

@@ -1,8 +1,5 @@
 import prisma from "@/database/prisma";
-import {
-  contentResponse,
-  unknownErrorResponse,
-} from "@/shared/serviceResponse";
+import { contentResponse } from "@/shared/serviceResponse";
 import { slugifyForUrl } from "@/shared/string";
 import { operation_type } from "@prisma/client";
 import {
@@ -40,44 +37,40 @@ export async function writeFieldValues(
   table: TableOrm,
   id: number,
 ) {
-  try {
-    // Verify table is allowed to be edited
-    const allowedColumns = allowedColumnsByTable[table.name];
+  // Verify table is allowed to be edited
+  const allowedColumns = allowedColumnsByTable[table.name];
 
-    if (!allowedColumns) {
-      throw `Table ${table.name} not allowed`;
-    }
-
-    updateSlugs(table);
-    removeUnmodifiedFields(table);
-
-    validateRequiredFields(table.fields);
-
-    const rowId = await writeFieldChanges(
-      userid,
-      table.name,
-      id,
-      table.fields,
-      0,
-      {},
-    );
-
-    await writeMappingChanges(userid, table, rowId);
-
-    await prisma.audit.create({
-      data: {
-        changed_by_id: userid,
-        operation: id ? operation_type.UPDATE : operation_type.INSERT,
-        table_name: table.name,
-        row_id: rowId.toString(),
-        modified_fields: table.fields,
-      },
-    });
-
-    return contentResponse(rowId);
-  } catch (error) {
-    return unknownErrorResponse(error);
+  if (!allowedColumns) {
+    throw `Table ${table.name} not allowed`;
   }
+
+  updateSlugs(table);
+  removeUnmodifiedFields(table);
+
+  validateRequiredFields(table.fields);
+
+  const rowId = await writeFieldChanges(
+    userid,
+    table.name,
+    id,
+    table.fields,
+    0,
+    {},
+  );
+
+  await writeMappingChanges(userid, table, rowId);
+
+  await prisma.audit.create({
+    data: {
+      changed_by_id: userid,
+      operation: id ? operation_type.UPDATE : operation_type.INSERT,
+      table_name: table.name,
+      row_id: rowId.toString(),
+      modified_fields: table.fields,
+    },
+  });
+
+  return contentResponse(rowId);
 }
 
 function validateRequiredFields(fields: FieldOrm[]) {
