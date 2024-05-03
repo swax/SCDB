@@ -2,13 +2,14 @@
 
 import {
   catchServiceErrors,
-  validateCanEdit,
   validateLoggedIn,
+  validateRoleAtLeast,
 } from "@/backend/actionHelper";
 import ProcessEnv from "@/shared/ProcessEnv";
 import { contentResponse } from "@/shared/serviceResponse";
 import { S3Client } from "@aws-sdk/client-s3";
 import { createPresignedPost } from "@aws-sdk/s3-presigned-post";
+import { user_role_type } from "@prisma/client";
 import slugify from "slugify";
 import { v4 as uuidv4 } from "uuid";
 
@@ -24,7 +25,7 @@ export async function getPresignedUploadUrl(
   return await catchServiceErrors(async () => {
     const session = await validateLoggedIn();
 
-    validateCanEdit(session.user.role);
+    validateRoleAtLeast(session.user.role, user_role_type.Editor);
 
     _validateFile(fileType, fileSize);
 

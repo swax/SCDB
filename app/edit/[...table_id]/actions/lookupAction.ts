@@ -1,5 +1,6 @@
 "use server";
 
+import { catchServiceErrors } from "@/backend/actionHelper";
 import lookupTermsInTable from "@/backend/edit/lookupService";
 import { LookupFieldOrm } from "@/database/orm/ormTypes";
 import { contentResponse } from "@/shared/serviceResponse";
@@ -12,5 +13,5 @@ export default async function lookupAction(
     return contentResponse([]);
   }
 
-  return await lookupTermsInTable(terms, lookupField);
+  return await catchServiceErrors(() => lookupTermsInTable(terms, lookupField));
 }

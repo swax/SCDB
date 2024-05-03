@@ -7,10 +7,6 @@ export function errorResponse(error: string): ServiceResponse<void> {
   return { error };
 }
 
-export function unknownErrorResponse(error: unknown): ServiceResponse<void> {
-  return errorResponse(`${error}`);
-}
-
 export function emptyResponse(): ServiceResponse<void> {
   return {};
 }

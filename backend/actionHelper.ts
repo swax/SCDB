@@ -1,12 +1,13 @@
 import authOptions from "@/app/api/auth/[...nextauth]/authOptions";
-import { canEdit } from "@/shared/roleUtils";
+import { roleRank } from "@/shared/roleUtils";
 import {
-    ServiceResponse,
-    emptyResponse,
-    errorResponse,
+  ServiceResponse,
+  emptyResponse,
+  errorResponse,
 } from "@/shared/serviceResponse";
 import { user_role_type } from "@prisma/client";
 import { getServerSession } from "next-auth";
+import "server-only"; // Helps prevent forgetting to mark files as "use server"
 
 export async function validateLoggedIn() {
   const session = await getServerSession(authOptions);
@@ -18,9 +19,12 @@ export async function validateLoggedIn() {
   return session;
 }
 
-export function validateCanEdit(role: user_role_type) {
-  if (!canEdit(role)) {
-    throw "You do not have permission to edit";
+export function validateRoleAtLeast(
+  role: user_role_type,
+  minRole: user_role_type,
+) {
+  if (roleRank(role) < roleRank(minRole)) {
+    throw `You must have at least ${minRole} permission`;
   }
 }
 

@@ -1,5 +1,5 @@
 import prisma from "@/database/prisma";
-import { contentResponse, errorResponse } from "@/shared/serviceResponse";
+import { contentResponse } from "@/shared/serviceResponse";
 import { FieldOrm, LookupFieldOrm } from "../../database/orm/ormTypes";
 import sketchDatabaseOrm from "../../database/orm/sketchDatabaseOrm";
 
@@ -33,9 +33,7 @@ export default async function lookupTermsInTable(
   );
 
   if (!allowedLookup) {
-    return errorResponse(
-      `Lookup on ${lookupField.table}/${lookupField.labelColumn} not allowed`,
-    );
+    throw `Lookup on ${lookupField.table}/${lookupField.labelColumn} not allowed`;
   }
 
   const dynamicPrisma = prisma as any;
