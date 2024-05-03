@@ -1,4 +1,6 @@
 import prisma from "@/database/prisma";
+import { roleRank } from "@/shared/roleUtils";
+import { user_role_type } from "@prisma/client";
 import { notFound } from "next/navigation";
 import { FieldOrm, TableOrm } from "../../database/orm/ormTypes";
 import sketchDatabaseOrm from "../../database/orm/sketchDatabaseOrm";
@@ -13,22 +15,34 @@ export function findAndBuildTableOrm(table: string) {
   return structuredClone(tableOrm);
 }
 
-export async function getTableOrm(table: string, id: number) {
+export async function getTableOrm(
+  table: string,
+  id: number,
+  role?: user_role_type,
+) {
   const tableOrm = findAndBuildTableOrm(table);
 
   tableOrm.operation = id ? "update" : "create";
 
+  const includeReviewStatus =
+    roleRank(role) >= roleRank(user_role_type.Moderator);
+
   if (id) {
-    await setFieldValues(tableOrm, id);
+    await setFieldValues(tableOrm, id, includeReviewStatus);
   }
 
   return tableOrm;
 }
 
-export async function setFieldValues(table: TableOrm, id: number) {
+export async function setFieldValues(
+  table: TableOrm,
+  id: number,
+  includeReviewStatus: boolean,
+) {
   // Base select
   const selectParams: any = {
     id: true,
+    ...(includeReviewStatus && { review_status: true }),
   };
 
   addFieldsToSelect(table, selectParams);
@@ -36,19 +50,23 @@ export async function setFieldValues(table: TableOrm, id: number) {
   // Perform the select
   const dynamicPrisma = prisma as any;
 
-  const dbResults = await dynamicPrisma[table.name].findUnique({
+  const dbResult = await dynamicPrisma[table.name].findUnique({
     where: {
       id: id,
     },
     select: selectParams,
   });
 
-  if (!dbResults) {
+  if (!dbResult) {
     notFound();
   }
 
   // Map values from the db to the orm
-  mapDatabaseToOrm(dbResults, table.fields);
+  mapDatabaseToOrm(dbResult, table.fields);
+
+  if (dbResult.review_status) {
+    table.reviewStatus = dbResult.review_status;
+  }
 }
 
 function addFieldsToSelect(table: Omit<TableOrm, "title">, selectParams: any) {

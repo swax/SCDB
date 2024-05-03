@@ -18,6 +18,7 @@ import {
   IconButton,
   MenuItem,
   Select,
+  SelectChangeEvent,
   Table,
   TableBody,
   TableCell,
@@ -26,11 +27,12 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import { $Enums } from "@prisma/client";
+import { $Enums, review_status_type } from "@prisma/client";
 import Image from "next/image";
 import { useState } from "react";
 import deleteAction from "./actions/deleteAction";
 import editAction from "./actions/editAction";
+import { updateReviewStatus } from "./actions/reviewAction";
 import DateField2 from "./components/DateField2";
 import ImageField from "./components/ImageField";
 import ListField from "./components/ListField";
@@ -56,6 +58,9 @@ export default function EditClientPage({ table, id }: EditClientPageProps) {
     useState<MappingEditField>();
   const [editMappingRowIndex, setEditDialogMappingRowIndex] =
     useState<number>();
+
+  const [reviewStatus, setReviewStatus] = useState(table.reviewStatus);
+  const [updatingReviewStatus, setUpdatingReviewStatus] = useState(false);
 
   // Event Handlers
   function handleChange_enumField(
@@ -155,6 +160,26 @@ export default function EditClientPage({ table, id }: EditClientPageProps) {
     }
 
     forceUpdate();
+  }
+
+  async function reviewStatusSelect_change(e: SelectChangeEvent) {
+    const newStatus = e.target.value as review_status_type;
+
+    if (newStatus === reviewStatus) {
+      return;
+    }
+
+    setUpdatingReviewStatus(true);
+
+    const response = await updateReviewStatus(table, id, newStatus);
+
+    if (response.error) {
+      alert(response.error);
+    } else {
+      setReviewStatus(newStatus);
+    }
+
+    setUpdatingReviewStatus(false);
   }
 
   // Helpers
@@ -469,6 +494,15 @@ export default function EditClientPage({ table, id }: EditClientPageProps) {
     );
   }
 
+  const reviewStatusBorderColor =
+    reviewStatus == review_status_type.NeedsReview
+      ? "orange"
+      : reviewStatus == review_status_type.Flagged
+        ? "red"
+        : reviewStatus == review_status_type.Reviewed
+          ? "limegreen"
+          : "pink";
+
   return (
     <>
       <title>{pageTitle}</title>
@@ -483,6 +517,9 @@ export default function EditClientPage({ table, id }: EditClientPageProps) {
         <Box key={i}>{renderEditField(table.name, field, 0)}</Box>
       ))}
 
+      {/* Space so the buttons don't cover the last field at the bototm of the page */}
+      <Box sx={{ height: 64 }}></Box>
+
       {/* Create, update, delete */}
       <Box
         sx={{
@@ -491,6 +528,36 @@ export default function EditClientPage({ table, id }: EditClientPageProps) {
           right: 8,
         }}
       >
+        {Boolean(table.reviewStatus) && table.operation == "update" && (
+          <Select
+            disabled={updatingReviewStatus}
+            onChange={(e) => void reviewStatusSelect_change(e)}
+            size="small"
+            color="warning"
+            sx={{
+              mr: 1,
+              // wtf is it so hard to color the border of a select?
+              "& .MuiOutlinedInput-notchedOutline": {
+                borderColor: reviewStatusBorderColor,
+              },
+              "&.MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline":
+                {
+                  borderColor: reviewStatusBorderColor,
+                },
+              "&.MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline":
+                {
+                  borderColor: reviewStatusBorderColor,
+                },
+            }}
+            value={reviewStatus}
+          >
+            <MenuItem value={review_status_type.NeedsReview}>
+              ⚠️ Needs Review
+            </MenuItem>
+            <MenuItem value={review_status_type.Flagged}>🚩 Flagged</MenuItem>
+            <MenuItem value={review_status_type.Reviewed}>👍 Reviewed</MenuItem>
+          </Select>
+        )}
         <Fab
           color="primary"
           disabled={loading}

@@ -1,3 +1,5 @@
+import { review_status_type } from "@prisma/client";
+
 export type BaseFieldOrm = {
   label: string;
   column?: string;
@@ -91,6 +93,7 @@ export type FieldOrm =
   | ListFieldOrm
   | ImageFieldOrm;
 
+// TODO: Maybe rename to 'Row' would make more sense?
 export type TableOrm = {
   /** Name of the table in Postgres */
   name: string;
@@ -100,6 +103,7 @@ export type TableOrm = {
   title: string;
   operation?: "create" | "update";
   fields: FieldOrm[];
+  reviewStatus?: review_status_type;
 };
 
 export type DatabaseOrm = {

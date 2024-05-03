@@ -1,4 +1,6 @@
+import authOptions from "@/app/api/auth/[...nextauth]/authOptions";
 import { getTableOrm } from "@/backend/edit/editReadService";
+import { getServerSession } from "next-auth";
 import EditClientPage from "./page.client";
 
 interface EditTablePageProps {
@@ -13,7 +15,9 @@ export default async function EditTablePage({ params }: EditTablePageProps) {
 
   const numId = parseInt(id);
 
-  const table = await getTableOrm(tableName, numId);
+  const session = await getServerSession(authOptions);
+
+  const table = await getTableOrm(tableName, numId, session?.user.role);
 
   // Rendering
   return <EditClientPage table={table} id={numId} />;

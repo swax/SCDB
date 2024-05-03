@@ -6,16 +6,12 @@ import { getAccount } from "./accountService";
 
 export async function saveRole(
   sessionUserId: string,
+  sessionRole: user_role_type,
   userId: string,
   newRole: user_role_type,
 ) {
   if (sessionUserId === userId) {
     throw "Cannot change your own role";
-  }
-
-  const sessionAccount = await getAccount(sessionUserId);
-  if (!sessionAccount) {
-    throw "Session user account not found";
   }
 
   const userAccount = await getAccount(userId);
@@ -25,12 +21,12 @@ export async function saveRole(
 
   const currentUserRole = userAccount.role;
 
-  if (!allowedToChangeRole(currentUserRole, sessionAccount.role)) {
-    throw `Unable to change a ${currentUserRole}'s role when your role is ${sessionAccount.role}`;
+  if (!allowedToChangeRole(currentUserRole, sessionRole)) {
+    throw `Unable to change a ${currentUserRole}'s role when your role is ${sessionRole}`;
   }
 
   // New role must be less than your role
-  if (roleRank(newRole) >= roleRank(sessionAccount.role)) {
+  if (roleRank(newRole) >= roleRank(sessionRole)) {
     throw "You cannot change a user's role to a role equal to or higher than your own";
   }
 
@@ -63,14 +59,10 @@ export async function saveRole(
 
 export async function saveModNote(
   sessionUserId: string,
+  sessionRole: user_role_type,
   userId: string,
   modNote: string,
 ) {
-  const sessionAccount = await getAccount(sessionUserId);
-  if (!sessionAccount) {
-    throw "Session user account not found";
-  }
-
   const userAccount = await getAccount(userId);
   if (!userAccount) {
     throw "User account not found";
@@ -78,8 +70,8 @@ export async function saveModNote(
 
   const currentUserRole = userAccount.role;
 
-  if (!allowedToChangeRole(currentUserRole, sessionAccount.role)) {
-    throw `Unable to change a ${currentUserRole}'s mod note when your role is ${sessionAccount.role}`;
+  if (!allowedToChangeRole(currentUserRole, sessionRole)) {
+    throw `Unable to change a ${currentUserRole}'s mod note when your role is ${sessionRole}`;
   }
 
   await prisma.user.update({
