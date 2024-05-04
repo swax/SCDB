@@ -1,12 +1,12 @@
 "use server";
 
 import * as accountService from "@/backend/accountService";
-import { catchServiceErrors, validateLoggedIn } from "@/backend/actionHelper";
+import { catchServiceErrors, getLoggedInUser } from "@/backend/actionHelper";
 
 export default async function saveUsername(username: string) {
   return await catchServiceErrors(async () => {
-    const session = await validateLoggedIn();
+    const user = await getLoggedInUser();
 
-    await accountService.saveUsername(session.user.id, username);
+    await accountService.saveUsername(user.id, username);
   });
 }

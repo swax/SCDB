@@ -85,7 +85,7 @@ export default function LookupField({
 
   // Event Handlers
   /** User input change, searching */
-  function handleInputChange(event: any, value: string, reason: string) {
+  function handleInputChange(event: any, value: string) {
     setInputValue(value);
     setLoading(true);
     setOptions([]);

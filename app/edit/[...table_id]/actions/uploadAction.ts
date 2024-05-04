@@ -2,7 +2,7 @@
 
 import {
   catchServiceErrors,
-  validateLoggedIn,
+  getLoggedInUser,
   validateRoleAtLeast,
 } from "@/backend/actionHelper";
 import ProcessEnv from "@/shared/ProcessEnv";
@@ -23,14 +23,14 @@ export async function getPresignedUploadUrl(
   fileSize: number,
 ) {
   return await catchServiceErrors(async () => {
-    const session = await validateLoggedIn();
+    const user = await getLoggedInUser();
 
-    validateRoleAtLeast(session.user.role, user_role_type.Editor);
+    validateRoleAtLeast(user.role, user_role_type.Editor);
 
     _validateFile(fileType, fileSize);
 
     // Build aws key
-    const miniUserId = session.user.id.substring(0, 6);
+    const miniUserId = user.id.substring(0, 6);
     const guid = uuidv4().substring(0, 4);
     const slugName = slugify(fileName, { lower: true });
     const uploadFileName = `${miniUserId}_${guid}_${slugName}`;

@@ -9,14 +9,14 @@ import { user_role_type } from "@prisma/client";
 import { getServerSession } from "next-auth";
 import "server-only"; // Helps prevent forgetting to mark files as "use server"
 
-export async function validateLoggedIn() {
+export async function getLoggedInUser() {
   const session = await getServerSession(authOptions);
 
   if (!session?.user) {
     throw "You must login to save changes";
   }
 
-  return session;
+  return session.user;
 }
 
 export function validateRoleAtLeast(

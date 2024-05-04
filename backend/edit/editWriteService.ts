@@ -1,7 +1,7 @@
 import prisma from "@/database/prisma";
 import { contentResponse } from "@/shared/serviceResponse";
 import { slugifyForUrl } from "@/shared/string";
-import { operation_type } from "@prisma/client";
+import { operation_type, review_status_type, user_role_type } from "@prisma/client";
 import {
   FieldOrm,
   ImageFieldOrm,
@@ -10,6 +10,8 @@ import {
   TableOrm,
 } from "../../database/orm/ormTypes";
 import sketchDatabaseOrm from "../../database/orm/sketchDatabaseOrm";
+import { validateRoleAtLeast } from "../actionHelper";
+import { SessionUser } from "next-auth";
 
 const allowedColumnsByTable: { [key: string]: string[] } = {};
 const allowedMappingsByTable: { [key: string]: string[] } = {};
@@ -33,10 +35,12 @@ Object.keys(sketchDatabaseOrm).forEach((table) => {
  * @param table The orm from the client, don't trust it
  */
 export async function writeFieldValues(
-  userid: string,
+  user: SessionUser,
   table: TableOrm,
   id: number,
 ) {
+  validateRoleAtLeast(user.role, user_role_type.Editor);
+
   // Verify table is allowed to be edited
   const allowedColumns = allowedColumnsByTable[table.name];
 
@@ -50,7 +54,7 @@ export async function writeFieldValues(
   validateRequiredFields(table.fields);
 
   const rowId = await writeFieldChanges(
-    userid,
+    user.id,
     table.name,
     id,
     table.fields,
@@ -58,11 +62,11 @@ export async function writeFieldValues(
     {},
   );
 
-  await writeMappingChanges(userid, table, rowId);
+  await writeMappingChanges(user.id, table, rowId);
 
   await prisma.audit.create({
     data: {
-      changed_by_id: userid,
+      changed_by_id: user.id,
       operation: id ? operation_type.UPDATE : operation_type.INSERT,
       table_name: table.name,
       row_id: rowId.toString(),
@@ -188,6 +192,7 @@ async function writeFieldChanges(
 
   dataParams["modified_by_id"] = userid;
   dataParams["modified_at"] = new Date();
+  dataParams["review_status"] = review_status_type.NeedsReview;
 
   // Update row
   if (rowId && rowId >= 0) {
@@ -302,12 +307,30 @@ async function writeMappingChanges(
 }
 
 export async function deleteRow(
-  userid: string,
+  user: SessionUser,
   table: TableOrm,
   rowId: number,
 ) {
   const dynamicPrisma = prisma as any;
 
+  // Allow the user that created the row to delete, otherwise it must be a mod
+  const row = await dynamicPrisma[table.name].findUnique({
+    where: {
+      id: rowId,
+    },
+    select: {
+      created_by_id: true,
+    },
+  });
+
+  validateRoleAtLeast(
+    user.role,
+    row.created_by_id == user.id
+      ? user_role_type.Editor
+      : user_role_type.Moderator,
+  );
+
+  // Perform the delete
   await dynamicPrisma[table.name].delete({
     where: {
       id: rowId,
@@ -316,7 +339,7 @@ export async function deleteRow(
 
   await prisma.audit.create({
     data: {
-      changed_by_id: userid,
+      changed_by_id: user.id,
       operation: operation_type.DELETE,
       table_name: table.name,
       row_id: rowId.toString(),

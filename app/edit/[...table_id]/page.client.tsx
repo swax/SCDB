@@ -579,7 +579,6 @@ export default function EditClientPage({ table, id }: EditClientPageProps) {
             variant="extended"
           >
             <DeleteIcon />
-            Delete
           </Fab>
         )}
       </Box>
