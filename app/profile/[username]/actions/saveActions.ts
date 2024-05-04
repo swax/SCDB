@@ -1,31 +1,21 @@
 "use server";
 
-import { catchServiceErrors, validateLoggedIn } from "@/backend/actionHelper";
+import { catchServiceErrors, getLoggedInUser } from "@/backend/actionHelper";
 import * as roleService from "@/backend/roleService";
 import { user_role_type } from "@prisma/client";
 
 export async function saveRole(userId: string, newRole: user_role_type) {
   return await catchServiceErrors(async () => {
-    const session = await validateLoggedIn();
+    const sessionUser = await getLoggedInUser();
 
-    await roleService.saveRole(
-      session.user.id,
-      session.user.role,
-      userId,
-      newRole,
-    );
+    await roleService.saveRole(sessionUser, userId, newRole);
   });
 }
 
 export async function saveModNote(userId: string, modNote: string) {
   return await catchServiceErrors(async () => {
-    const session = await validateLoggedIn();
+    const sessionUser = await getLoggedInUser();
 
-    await roleService.saveModNote(
-      session.user.id,
-      session.user.role,
-      userId,
-      modNote,
-    );
+    await roleService.saveModNote(sessionUser, userId, modNote);
   });
 }
