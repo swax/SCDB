@@ -1,5 +1,6 @@
 import { FieldOrm } from "@/database/orm/ormTypes";
 import prisma from "@/database/prisma";
+import { operation_type } from "@prisma/client";
 
 interface ChangelogEntry {
   id: number;
@@ -15,9 +16,12 @@ interface ChangelogEntry {
 }
 
 interface GetChangelogRequest {
-  username?: string;
+  operation?: string;
   page: number;
+  rowId?: string;
   rowsPerPage: number;
+  tableName?: string;
+  username?: string;
 }
 
 export interface GetChangelogResponse {
@@ -26,18 +30,28 @@ export interface GetChangelogResponse {
 }
 
 export async function getChangelog({
-  username,
+  operation,
   page,
+  rowId,
   rowsPerPage,
+  tableName,
+  username,
 }: GetChangelogRequest) {
   const whereFilter = {
-    where: username
-      ? {
-          changed_by: {
-            username,
-          },
-        }
-      : {},
+    where: {
+      ...(operation
+        ? { operation: operation.toUpperCase() as operation_type }
+        : {}),
+      ...(tableName ? { table_name: tableName } : {}),
+      ...(rowId ? { row_id: rowId } : {}),
+      ...(username
+        ? {
+            changed_by: {
+              username,
+            },
+          }
+        : {}),
+    },
   };
 
   // Get total

@@ -5,8 +5,11 @@ export default async function Changelog({
   searchParams,
 }: {
   searchParams: {
+    op?: string;
     page?: string;
+    row?: string;
     rowsPerPage?: string;
+    table?: string;
     username?: string;
   };
 }) {
@@ -16,9 +19,12 @@ export default async function Changelog({
 
   // Server Data
   const changelog = await getChangelog({
-    username: searchParams.username,
+    operation: searchParams.op,
     page,
+    rowId: searchParams.row,
     rowsPerPage,
+    tableName: searchParams.table,
+    username: searchParams.username,
   });
 
   // Rendering
@@ -27,8 +33,11 @@ export default async function Changelog({
       <h1>Changelog</h1>
       <ChangeLogTable
         changelog={changelog}
+        operation={searchParams.op}
         page={page}
+        rowId={searchParams.row}
         rowsPerPage={rowsPerPage}
+        table={searchParams.table}
         username={searchParams.username}
       />
     </>

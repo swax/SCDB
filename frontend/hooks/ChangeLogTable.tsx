@@ -15,18 +15,24 @@ import { usePathname, useRouter } from "next/navigation";
 
 interface ChangeLogTableProps {
   changelog: GetChangelogResponse;
+  operation?: string;
   page: number;
+  rowId?: string;
   rowsPerPage: number;
-  username?: string;
   profilePage?: boolean;
+  table?: string;
+  username?: string;
 }
 
 export default function ChangeLogTable({
   changelog,
+  operation,
   page,
-  rowsPerPage,
-  username,
   profilePage,
+  rowId,
+  rowsPerPage,
+  table,
+  username,
 }: ChangeLogTableProps) {
   // Hooks
   const router = useRouter();
@@ -37,7 +43,9 @@ export default function ChangeLogTable({
     event: React.MouseEvent<HTMLButtonElement> | null,
     newPage: number,
   ) {
-    router.push(buildHref(newPage + 1, rowsPerPage, username));
+    router.push(
+      buildHref(newPage + 1, rowsPerPage, username, table, rowId, operation),
+    );
   }
 
   function handleChangeRowsPerPage(
@@ -45,15 +53,27 @@ export default function ChangeLogTable({
   ) {
     const newRowsPerPage = parseInt(event.target.value, 10);
 
-    router.push(buildHref(1, newRowsPerPage, username));
+    router.push(
+      buildHref(1, newRowsPerPage, username, table, rowId, operation),
+    );
   }
 
   // Helper
-  function buildHref(page: number, rowsPerPage: number, username?: string) {
+  function buildHref(
+    _page: number,
+    _rowsPerPage: number,
+    _username?: string,
+    _table?: string,
+    _rowId?: string,
+    _operation?: string,
+  ) {
     return (
       pathname +
-      `?page=${page}&rowsPerPage=${rowsPerPage}` +
-      (username ? `&username=${username}` : "")
+      `?page=${_page}&rowsPerPage=${_rowsPerPage}` +
+      (_username ? `&username=${_username}` : "") +
+      (_table ? `&table=${_table}` : "") +
+      (_rowId ? `&row=${_rowId}` : "") +
+      (_operation ? `&op=${_operation}` : "")
     );
   }
 
@@ -70,7 +90,7 @@ export default function ChangeLogTable({
           <TableCell sx={headCellStyle}>Table</TableCell>
           <TableCell sx={headCellStyle}>Row ID</TableCell>
           <TableCell sx={headCellStyle}>Operation</TableCell>
-          <TableCell sx={headCellStyle}>Summary</TableCell>
+          <TableCell sx={headCellStyle}>Fields</TableCell>
         </TableRow>
       </TableHead>
       <TableBody>
@@ -82,15 +102,58 @@ export default function ChangeLogTable({
             {!profilePage && (
               <TableCell sx={bodyCellStyle}>
                 <Link
-                  href={buildHref(1, rowsPerPage, entry.changed_by.username)}
+                  href={buildHref(
+                    1,
+                    rowsPerPage,
+                    entry.changed_by.username,
+                    table,
+                    rowId,
+                  )}
                 >
                   {entry.changed_by.username}
                 </Link>
               </TableCell>
             )}
-            <TableCell sx={bodyCellStyle}>{entry.table_name}</TableCell>
-            <TableCell sx={bodyCellStyle}>{entry.row_id}</TableCell>
-            <TableCell sx={bodyCellStyle}>{entry.operation}</TableCell>
+            <TableCell sx={bodyCellStyle}>
+              <Link
+                href={buildHref(
+                  1,
+                  rowsPerPage,
+                  username,
+                  entry.table_name,
+                  undefined,
+                )}
+              >
+                {entry.table_name}
+              </Link>
+            </TableCell>
+            <TableCell sx={bodyCellStyle}>
+              <Link
+                href={buildHref(
+                  1,
+                  rowsPerPage,
+                  username,
+                  entry.table_name,
+                  entry.row_id,
+                )}
+              >
+                {entry.row_id}
+              </Link>
+            </TableCell>
+            <TableCell sx={bodyCellStyle}>
+              <Link
+                href={buildHref(
+                  1,
+                  rowsPerPage,
+                  username,
+                  entry.table_name,
+                  undefined,
+                  entry.operation,
+                )}
+              >
+                {entry.operation}
+              </Link>
+            </TableCell>
             <TableCell sx={{ verticalAlign: "top" }}>
               <pre style={{ fontSize: 12, margin: 0 }}>{entry.summary}</pre>
             </TableCell>
