@@ -112,6 +112,10 @@ model audit {
   row_id          String
   modified_fields Json?
   changed_by      User           @relation(fields: [changed_by_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+
+  @@index([table_name, row_id]) // Latest changes on edit page
+  @@index([table_name, operation]) 
+  @@index([changed_by_id]) // Changelog on profile page
 }
 
 model character {
@@ -128,6 +132,8 @@ model character {
   created_by   User          @relation("CharactersCreated", fields: [created_by_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
   modified_by  User          @relation("CharactersModified", fields: [modified_by_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
   sketch_casts sketch_cast[]
+
+  @@index([review_status])
 }
 
 model episode {
@@ -151,6 +157,7 @@ model episode {
   sketches    sketch[]
 
   @@unique([season_id, number])
+  @@index([review_status])
 }
 
 model person {
@@ -171,6 +178,8 @@ model person {
   sketch_casts   sketch_cast[]
   sketch_credits sketch_credit[]
   person_images  person_image[]
+
+  @@index([review_status])
 }
 
 model person_image {
@@ -220,6 +229,7 @@ model recurring_sketch {
   sketches    sketch[]
 
   @@unique([show_id, name])
+  @@index([review_status])
 }
 
 model season {
@@ -242,6 +252,7 @@ model season {
   show        show      @relation(fields: [show_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
 
   @@unique([show_id, number])
+  @@index([review_status])
 }
 
 model show {
@@ -260,6 +271,8 @@ model show {
   recurring_sketches recurring_sketch[]
   seasons            season[]
   show_images        show_image[]
+
+  @@index([review_status])
 }
 
 model show_image {
@@ -357,6 +370,8 @@ model sketch {
   episode          episode           @relation(fields: [episode_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
   recurring_sketch recurring_sketch? @relation(fields: [recurring_sketch_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
   sketch_images    sketch_image[]
+
+  @@index([review_status])
 }
 
 model sketch_image {
@@ -387,6 +402,8 @@ model tag_category {
   created_by  User  @relation("TagCategoriesCreated", fields: [created_by_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
   modified_by User  @relation("TagCategoriesModified", fields: [modified_by_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
   tags        tag[]
+
+  @@index([review_status])
 }
 
 model tag {
@@ -408,14 +425,14 @@ model tag {
 
   @@unique([tag_category_id, url_slug])
   @@unique([tag_category_id, name])
+  @@index([review_status])
 }
 
 model image {
-  id            Int                @id @default(autoincrement())
-  cdn_key       String             @unique
-  review_status review_status_type @default(NeedsReview)
+  id            Int      @id @default(autoincrement())
+  cdn_key       String   @unique
   created_by_id String
-  created_at    DateTime           @default(now())
+  created_at    DateTime @default(now())
 
   created_by    User           @relation("ImagesCreated", fields: [created_by_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
   person_images person_image[]

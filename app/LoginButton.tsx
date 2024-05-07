@@ -1,3 +1,4 @@
+import { roleRank } from "@/shared/roleUtils";
 import AccountCircle from "@mui/icons-material/AccountCircle";
 import {
   Box,
@@ -10,6 +11,7 @@ import {
   MenuItem,
   Tooltip,
 } from "@mui/material";
+import { user_role_type } from "@prisma/client";
 import { signIn, signOut, useSession } from "next-auth/react";
 import { useState } from "react";
 
@@ -40,6 +42,10 @@ export default function LoginButton() {
     );
   }
 
+  const showReviewMenuItem =
+    session?.user &&
+    roleRank(session.user.role) >= roleRank(user_role_type.Moderator);
+
   return (
     <Box>
       <IconButton
@@ -56,22 +62,29 @@ export default function LoginButton() {
         onClose={handleClick_closeMenu}
         open={Boolean(anchorEl)}
       >
-        <MenuItem>{session.user.username}</MenuItem>
-        <Divider />
-        <MenuItem>
-          <Link color="inherit" href="/account" underline="none">
-            My Account
-          </Link>
-        </MenuItem>
         <MenuItem>
           <Link
             color="inherit"
             href={`/profile/${session.user.username}`}
             underline="none"
           >
-            My Profile
+            {session.user.username}
           </Link>
         </MenuItem>
+        <MenuItem>
+          <Link color="inherit" href="/account" underline="none">
+            My Account
+          </Link>
+        </MenuItem>
+
+        <Divider />
+        {showReviewMenuItem && (
+          <MenuItem>
+            <Link color="inherit" href="/review" underline="none">
+              Review
+            </Link>
+          </MenuItem>
+        )}
         <MenuItem>
           <Link color="inherit" href="/changelog" underline="none">
             Changelog
