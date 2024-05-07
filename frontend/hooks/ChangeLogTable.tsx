@@ -11,7 +11,7 @@ import {
   TablePagination,
   TableRow,
 } from "@mui/material";
-import { usePathname, useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 
 interface ChangeLogTableProps {
   changelog: GetChangelogResponse;
@@ -36,7 +36,6 @@ export default function ChangeLogTable({
 }: ChangeLogTableProps) {
   // Hooks
   const router = useRouter();
-  const pathname = usePathname();
 
   // Events
   function handleChangePage(
@@ -68,8 +67,7 @@ export default function ChangeLogTable({
     _operation?: string,
   ) {
     return (
-      pathname +
-      `?page=${_page}&rowsPerPage=${_rowsPerPage}` +
+      `/changelog?page=${_page}&rowsPerPage=${_rowsPerPage}` +
       (_username ? `&username=${_username}` : "") +
       (_table ? `&table=${_table}` : "") +
       (_rowId ? `&row=${_rowId}` : "") +

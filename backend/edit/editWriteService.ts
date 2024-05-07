@@ -1,7 +1,11 @@
 import prisma from "@/database/prisma";
 import { contentResponse } from "@/shared/serviceResponse";
 import { slugifyForUrl } from "@/shared/string";
-import { operation_type, review_status_type, user_role_type } from "@prisma/client";
+import {
+  operation_type,
+  review_status_type,
+  user_role_type,
+} from "@prisma/client";
 import {
   FieldOrm,
   ImageFieldOrm,
@@ -59,7 +63,6 @@ export async function writeFieldValues(
     id,
     table.fields,
     0,
-    {},
   );
 
   await writeMappingChanges(user.id, table, rowId);
@@ -170,7 +173,7 @@ async function writeFieldChanges(
   rowId: number,
   fields: FieldOrm[],
   index: number,
-  mappingTableRelation: object,
+  mappingTableRelation?: object,
 ) {
   const dataParams: any = {};
 
@@ -192,14 +195,18 @@ async function writeFieldChanges(
 
   dataParams["modified_by_id"] = userid;
   dataParams["modified_at"] = new Date();
-  dataParams["review_status"] = review_status_type.NeedsReview;
+
+  // Only flag the root as needs review
+  if (!mappingTableRelation) {
+    dataParams["review_status"] = review_status_type.NeedsReview;
+  }
 
   // Update row
   if (rowId && rowId >= 0) {
     await dynamicPrisma[tableName].update({
       where: {
         id: rowId,
-        ...mappingTableRelation,
+        ...(mappingTableRelation ? mappingTableRelation : {}),
       },
       data: dataParams,
     });
@@ -208,7 +215,9 @@ async function writeFieldChanges(
   // Create row
   else {
     // add table relation to data params
-    Object.assign(dataParams, mappingTableRelation);
+    if (mappingTableRelation) {
+      Object.assign(dataParams, mappingTableRelation);
+    }
 
     dataParams["created_by_id"] = userid;
     dataParams["created_at"] = new Date();
