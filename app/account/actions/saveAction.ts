@@ -1,6 +1,6 @@
 "use server";
 
-import * as accountService from "@/backend/accountService";
+import * as accountService from "@/backend/user/accountService";
 import { catchServiceErrors, getLoggedInUser } from "@/backend/actionHelper";
 
 export default async function saveUsername(username: string) {

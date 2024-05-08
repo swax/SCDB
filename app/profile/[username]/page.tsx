@@ -1,6 +1,6 @@
 import authOptions from "@/app/api/auth/[...nextauth]/authOptions";
-import { getChangelog } from "@/backend/changelogService";
-import { getProfile } from "@/backend/profileService";
+import { getChangelog } from "@/backend/mgmt/changelogService";
+import { getProfile } from "@/backend/user/profileService";
 import { getServerSession } from "next-auth";
 import { notFound } from "next/navigation";
 import ProfileClientPage from "./page.client";

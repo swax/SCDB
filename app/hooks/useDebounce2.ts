@@ -4,7 +4,7 @@ import { UseDebounceReturn } from "react-use/lib/useDebounce";
 
 /** Fixes debounce so it doesn't run on initializaiton when the deps haven't even changed */
 export default function useDebounce2(
-  fn: Function,
+  fn: () => Promise<void>,
   ms?: number,
   deps?: DependencyList,
 ): UseDebounceReturn {
@@ -16,7 +16,7 @@ export default function useDebounce2(
         firstRun.current = false;
         return;
       }
-      fn();
+      void fn();
     },
     ms,
     deps,

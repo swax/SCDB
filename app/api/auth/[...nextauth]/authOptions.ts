@@ -2,7 +2,7 @@
  * This was made it's own file so that it can be imported into server actions for authentication
  */
 
-import { getAccount } from "@/backend/accountService";
+import { getAccount } from "@/backend/user/accountService";
 import prisma from "@/database/prisma";
 import ProcessEnv from "@/shared/ProcessEnv";
 import { PrismaAdapter } from "@auth/prisma-adapter";
