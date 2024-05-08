@@ -1,6 +1,6 @@
 import { user_role_type } from "@prisma/client";
 
-export function roleRank(role?: user_role_type) {
+export function getRoleRank(role?: user_role_type) {
   switch (role) {
     case user_role_type.None:
       return 0;
@@ -23,7 +23,7 @@ export function allowedToChangeRole(
   sessionRole: user_role_type,
 ) {
   return (
-    roleRank(sessionRole) >= roleRank(user_role_type.Moderator) &&
-    roleRank(sessionRole) > roleRank(userRole)
+    getRoleRank(sessionRole) >= getRoleRank(user_role_type.Moderator) &&
+    getRoleRank(sessionRole) > getRoleRank(userRole)
   );
 }

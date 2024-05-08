@@ -114,7 +114,7 @@ model audit {
   changed_by      User           @relation(fields: [changed_by_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
 
   @@index([table_name, row_id]) // Latest changes on edit page
-  @@index([table_name, operation]) 
+  @@index([table_name, operation])
   @@index([changed_by_id]) // Changelog on profile page
 }
 

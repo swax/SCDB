@@ -1,5 +1,5 @@
 import prisma from "@/database/prisma";
-import { roleRank } from "@/shared/roleUtils";
+import { getRoleRank } from "@/shared/roleUtils";
 import { user_role_type } from "@prisma/client";
 
 export interface GetProfileResponse {
@@ -23,7 +23,7 @@ export async function getProfile(
       role: true,
       mod_note:
         sessionRole &&
-        roleRank(sessionRole) >= roleRank(user_role_type.Moderator),
+        getRoleRank(sessionRole) >= getRoleRank(user_role_type.Moderator),
     },
   })) satisfies GetProfileResponse | null;
 }

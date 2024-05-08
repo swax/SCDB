@@ -1,4 +1,4 @@
-import { roleRank } from "@/shared/roleUtils";
+import { getRoleRank } from "@/shared/roleUtils";
 import AccountCircle from "@mui/icons-material/AccountCircle";
 import {
   Box,
@@ -44,7 +44,7 @@ export default function LoginButton() {
 
   const showReviewMenuItem =
     session?.user &&
-    roleRank(session.user.role) >= roleRank(user_role_type.Moderator);
+    getRoleRank(session.user.role) >= getRoleRank(user_role_type.Moderator);
 
   return (
     <Box>
