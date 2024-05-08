@@ -1,5 +1,5 @@
 import { FieldOrm, ImageFieldOrm } from "@/database/orm/ormTypes";
-import { useForceUpdate } from "@/frontend/hooks/useForceUpdate";
+import { useForceUpdate } from "@/app/hooks/useForceUpdate";
 import s3url from "@/shared/cdnHost";
 import { Button, Stack } from "@mui/material";
 import Image from "next/image";

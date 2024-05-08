@@ -1,6 +1,6 @@
 import prisma from "@/database/prisma";
 import { contentResponse } from "@/shared/serviceResponse";
-import { slugifyForUrl } from "@/shared/string";
+import { slugifyForUrl } from "@/shared/stringUtils";
 import {
   operation_type,
   review_status_type,

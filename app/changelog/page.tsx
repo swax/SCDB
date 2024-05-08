@@ -1,5 +1,5 @@
 import { getChangelog } from "@/backend/changelogService";
-import ChangeLogTable from "@/frontend/hooks/ChangeLogTable";
+import ChangeLogTable from "@/app/changelog/components/ChangeLogTable";
 
 export default async function Changelog({
   searchParams,

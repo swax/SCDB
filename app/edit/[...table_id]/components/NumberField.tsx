@@ -1,5 +1,5 @@
 import { FieldOrm, NumberFieldOrm } from "@/database/orm/ormTypes";
-import { useForceUpdate } from "@/frontend/hooks/useForceUpdate";
+import { useForceUpdate } from "@/app/hooks/useForceUpdate";
 import { TextField } from "@mui/material";
 
 interface NumberFieldProps {

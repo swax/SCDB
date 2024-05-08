@@ -2,7 +2,7 @@
 
 import { GetChangelogResponse } from "@/backend/changelogService";
 import { GetProfileResponse } from "@/backend/profileService";
-import ChangeLogTable from "@/frontend/hooks/ChangeLogTable";
+import ChangeLogTable from "@/app/changelog/components/ChangeLogTable";
 import { allowedToChangeRole } from "@/shared/roleUtils";
 import { ServiceResponse } from "@/shared/serviceResponse";
 import {
