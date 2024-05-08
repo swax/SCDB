@@ -1,6 +1,6 @@
 "use client";
 
-import { GetChangelogResponse } from "@/backend/changelogService";
+import { GetChangelogResponse } from "@/backend/mgmt/changelogService";
 import {
   Link,
   Table,

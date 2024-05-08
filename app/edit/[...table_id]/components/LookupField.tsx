@@ -51,6 +51,8 @@ export default function LookupField({
   const comboBoxId = "combo-box-" + useId();
 
   useDebounce2(
+    // TODO: Not sure how to fix this warning
+    // eslint-disable-next-line @typescript-eslint/no-misused-promises
     async () => {
       const response = await lookupAction(inputValue, field.lookup);
 

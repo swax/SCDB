@@ -3,7 +3,7 @@ import prisma from "@/database/prisma";
 import { allowedToChangeRole, getRoleRank } from "@/shared/roleUtils";
 import { operation_type, user_role_type } from "@prisma/client";
 import { SessionUser } from "next-auth";
-import { getAccount } from "./accountService";
+import { getAccount } from "../user/accountService";
 
 export async function saveRole(
   sessionUser: SessionUser,

@@ -1,4 +1,4 @@
-import { getSketch } from "@/backend/sketchService";
+import { getSketch } from "@/backend/content/sketchService";
 import { notFound } from "next/navigation";
 import { SketchClientPage } from "./page.client";
 

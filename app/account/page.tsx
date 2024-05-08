@@ -1,5 +1,5 @@
 import authOptions from "@/app/api/auth/[...nextauth]/authOptions";
-import { getAccount } from "@/backend/accountService";
+import { getAccount } from "@/backend/user/accountService";
 import { getServerSession } from "next-auth";
 import AccountClientPage from "./page.client";
 

@@ -1,4 +1,4 @@
-import { getChangelog } from "@/backend/changelogService";
+import { getChangelog } from "@/backend/mgmt/changelogService";
 import ChangeLogTable from "@/app/changelog/components/ChangeLogTable";
 
 export default async function Changelog({

@@ -1,4 +1,4 @@
-import { getRowsToReview } from "@/backend/reviewService";
+import { getRowsToReview } from "@/backend/mgmt/reviewService";
 import {
   Link,
   Table,

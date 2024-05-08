@@ -1,7 +1,7 @@
 "use server";
 
 import { catchServiceErrors, getLoggedInUser } from "@/backend/actionHelper";
-import * as roleService from "@/backend/roleService";
+import * as roleService from "@/backend/mgmt/roleService";
 import { user_role_type } from "@prisma/client";
 
 export async function saveRole(userId: string, newRole: user_role_type) {

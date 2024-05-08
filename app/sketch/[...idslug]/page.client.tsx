@@ -1,4 +1,4 @@
-import { ISketch } from "@/backend/sketchService";
+import { ISketch } from "@/backend/content/sketchService";
 import { Typography } from "@mui/material";
 
 interface SketchClientPageProps {
