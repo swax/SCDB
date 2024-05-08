@@ -2,7 +2,7 @@ import { Container } from "@mui/material";
 import type { Metadata, Viewport } from "next";
 import { Inter } from "next/font/google";
 import { NextAuthProvider } from "./NextAuthProvider";
-import ResponsiveAppBar from "./ResponsiveAppBar";
+import ResponsiveAppBar from "./components/ResponsiveAppBar";
 import ThemeRegistry from "./ThemeRegistry";
 import "./globals.css";
 

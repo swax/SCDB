@@ -1,20 +1,7 @@
 import prisma from "@/database/prisma";
 
-export interface ISketch {
-  id: number;
-  title: string;
-  description: Nullable<string>;
-  episode: {
-    season: {
-      year: number;
-      show: {
-        title: string;
-      };
-    };
-  };
-}
 export async function getSketch(id: number) {
-  const result: Nullable<ISketch> = await prisma.sketch.findUnique({
+  const result = await prisma.sketch.findUnique({
     where: {
       id: id,
     },
@@ -22,6 +9,17 @@ export async function getSketch(id: number) {
       id: true,
       title: true,
       description: true,
+      url_slug: true,
+      sketch_images: {
+        select: {
+          image: {
+            select: {
+              cdn_key: true,
+            },
+          },
+        },
+      },
+      video_urls: true,
       episode: {
         select: {
           season: {
