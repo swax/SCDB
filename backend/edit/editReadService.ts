@@ -1,5 +1,5 @@
 import prisma from "@/database/prisma";
-import { roleRank } from "@/shared/roleUtils";
+import { getRoleRank } from "@/shared/roleUtils";
 import { user_role_type } from "@prisma/client";
 import { notFound } from "next/navigation";
 import { FieldOrm, TableOrm } from "../../database/orm/ormTypes";
@@ -25,7 +25,7 @@ export async function getTableOrm(
   tableOrm.operation = id ? "update" : "create";
 
   const includeReviewStatus =
-    roleRank(role) >= roleRank(user_role_type.Moderator);
+    getRoleRank(role) >= getRoleRank(user_role_type.Moderator);
 
   if (id) {
     await setFieldValues(tableOrm, id, includeReviewStatus);

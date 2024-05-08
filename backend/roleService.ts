@@ -1,6 +1,6 @@
 import { StringFieldOrm } from "@/database/orm/ormTypes";
 import prisma from "@/database/prisma";
-import { allowedToChangeRole, roleRank } from "@/shared/roleUtils";
+import { allowedToChangeRole, getRoleRank } from "@/shared/roleUtils";
 import { operation_type, user_role_type } from "@prisma/client";
 import { SessionUser } from "next-auth";
 import { getAccount } from "./accountService";
@@ -26,7 +26,7 @@ export async function saveRole(
   }
 
   // New role must be less than your role
-  if (roleRank(newRole) >= roleRank(sessionUser.role)) {
+  if (getRoleRank(newRole) >= getRoleRank(sessionUser.role)) {
     throw "You cannot change a user's role to a role equal to or higher than your own";
   }
 

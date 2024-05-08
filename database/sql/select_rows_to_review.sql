@@ -1,3 +1,5 @@
+-- A function that scans all tables for rows that need review
+-- Powers the /review page
 CREATE
 OR REPLACE FUNCTION select_rows_to_review (row_count INT) RETURNS TABLE (
     table_name VARCHAR,
