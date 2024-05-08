@@ -1,5 +1,5 @@
 import { FieldOrm, ListFieldOrm } from "@/database/orm/ormTypes";
-import { useForceUpdate } from "@/frontend/hooks/useForceUpdate";
+import { useForceUpdate } from "@/app/hooks/useForceUpdate";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { Box, Button, IconButton, TextField, Typography } from "@mui/material";
 

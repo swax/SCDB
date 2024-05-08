@@ -1,9 +1,9 @@
 "use client";
 
 import { FieldOrm, MappingEditField, TableOrm } from "@/database/orm/ormTypes";
-import { useForceUpdate } from "@/frontend/hooks/useForceUpdate";
+import { useForceUpdate } from "@/app/hooks/useForceUpdate";
 import s3url from "@/shared/cdnHost";
-import { resolveTemplateVars, slugifyForUrl } from "@/shared/string";
+import { resolveTemplateVars, slugifyForUrl } from "@/shared/stringUtils";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
 import SaveIcon from "@mui/icons-material/Save";

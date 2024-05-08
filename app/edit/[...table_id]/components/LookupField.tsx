@@ -1,6 +1,6 @@
 import { LookupFieldOption } from "@/backend/edit/lookupService";
 import { LookupFieldOrm } from "@/database/orm/ormTypes";
-import useDebounce2 from "@/frontend/hooks/useDebounce2";
+import useDebounce2 from "@/app/hooks/useDebounce2";
 import OpenInNewIcon from "@mui/icons-material/OpenInNew";
 import {
   Autocomplete,

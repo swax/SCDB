@@ -3,7 +3,7 @@ import { getTableOrm } from "@/backend/edit/editReadService";
 import { getServerSession } from "next-auth";
 import EditClientPage from "./page.client";
 import { getChangelog } from "@/backend/changelogService";
-import ChangeLogTable from "@/frontend/hooks/ChangeLogTable";
+import ChangeLogTable from "@/app/changelog/components/ChangeLogTable";
 
 interface EditTablePageProps {
   params: {
