@@ -1,8 +1,27 @@
 import { getSketch } from "@/backend/content/sketchService";
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import LocalOfferIcon from "@mui/icons-material/LocalOffer";
+import NotesIcon from "@mui/icons-material/Notes";
+import GroupsIcon from "@mui/icons-material/Groups";
+import {
+  Accordion,
+  AccordionDetails,
+  AccordionSummary,
+  Box,
+  Chip,
+  Stack,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableRow,
+  Typography,
+} from "@mui/material";
 import { notFound, redirect } from "next/navigation";
-import { SketchClientPage } from "./page.client";
-import { Typography } from "@mui/material";
+import Markdown from "react-markdown";
 import VideoHero from "./components/VideoHero";
+import Image from "next/image";
+import s3url from "@/shared/cdnHost";
 
 export default async function SketchPage({
   params,
@@ -25,7 +44,6 @@ export default async function SketchPage({
   // Rendering
   const show = sketch.episode.season.show;
 
-  console.log(sketch);
   return (
     <>
       <Typography variant="h4">{sketch.title}</Typography>
@@ -37,39 +55,102 @@ export default async function SketchPage({
         previewImgCdnKey={sketch.sketch_images[0]?.image.cdn_key}
         videoEmbedUrl={sketch.video_urls[0]}
       />
+
+      <Box sx={{ marginTop: 2 }}>
+        <Accordion defaultExpanded>
+          <AccordionSummary
+            expandIcon={<ExpandMoreIcon />}
+            aria-controls="tags-content"
+            id="tags-header"
+          >
+            <LocalOfferIcon />
+            <Typography fontWeight="bold" marginLeft={1}>
+              Tags
+            </Typography>
+          </AccordionSummary>
+          <AccordionDetails>
+            <Stack direction="row" flexWrap="wrap" spacing={1} useFlexGap>
+              {sketch.sketch_tags.map((sketch_tag, i) => (
+                <Chip
+                  clickable
+                  key={i}
+                  label={
+                    <span>
+                      {sketch_tag.tag.tag_category.name}&nbsp;/&nbsp;
+                      {sketch_tag.tag.name}
+                    </span>
+                  }
+                  size="small"
+                  variant="outlined"
+                />
+              ))}
+            </Stack>
+          </AccordionDetails>
+        </Accordion>
+        <Accordion defaultExpanded>
+          <AccordionSummary
+            expandIcon={<ExpandMoreIcon />}
+            aria-controls="description-content"
+            id="description-header"
+          >
+            <NotesIcon />
+            <Typography fontWeight="bold" marginLeft={1}>
+              Description
+            </Typography>
+          </AccordionSummary>
+          <AccordionDetails>
+            <Markdown>{sketch.description}</Markdown>
+          </AccordionDetails>
+        </Accordion>
+
+        <Accordion defaultExpanded>
+          <AccordionSummary
+            expandIcon={<ExpandMoreIcon />}
+            aria-controls="cast-content"
+            id="cast-header"
+          >
+            <GroupsIcon />
+            <Typography fontWeight="bold" marginLeft={1}>
+              Cast
+            </Typography>
+          </AccordionSummary>
+          <AccordionDetails>
+            <TableContainer>
+              <Table aria-label="simple table">
+                <TableBody>
+                  {sketch.sketch_casts.map((sketch_cast, i) => (
+                    <TableRow key={i}>
+                      <TableCell>
+                        {Boolean(sketch_cast.image) && (
+                          <Image
+                            alt={sketch_cast.character.name}
+                            objectFit="cover"
+                            src={`${s3url}/${sketch_cast.image?.cdn_key}`}
+                            height={50}
+                            width={50}
+                          />
+                        )}
+                      </TableCell>
+                      <TableCell>{sketch_cast.character.name}</TableCell>
+                      <TableCell sx={{ whiteSpace: "nowrap" }}>
+                        ({sketch_cast.person?.name || ""})
+                      </TableCell>
+                      <TableCell>{sketch_cast.role}</TableCell>
+                      <TableCell>{sketch_cast.description}</TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </TableContainer>
+          </AccordionDetails>
+        </Accordion>
+      </Box>
     </>
   );
 }
 
 /*
-      <Typography variant="h4">{SketchData.title}</Typography>
-      <Typography variant="subtitle1">
-        {SketchData.show.title} ({SketchData.season.year})
-      </Typography>
-      <Box>
-        <div
-          onClick={handleOpenPlayer}
-          style={{
-            borderRadius: 8,
-            cursor: "pointer",
-            overflow: "hidden",
-            position: "relative",
-            width: imgWidth,
-            height: imgHeight,
-          }}
-        >
-          <Image
-            alt={SketchData.title}
-            fill
-            objectFit="cover"
-            src={SketchData.preview_img.url}
-          />
-        </div>
-      </Box>
-      ------------------------
-      <Box marginTop={1}>
-        <Typography variant="body1">{SketchData.teaser}</Typography>
-      </Box>
+
       <Box marginTop={1}>
         <Stack direction="row" flexWrap="wrap" spacing={1} useFlexGap>
           {SketchData.links.map((link, i) => (
@@ -90,85 +171,7 @@ export default async function SketchPage({
         <Rating name="half-rating" defaultValue={2.5} precision={0.5} />
       </Box>
       <Box sx={{ marginTop: 2 }}>
-        <Accordion>
-          <AccordionSummary
-            expandIcon={<ExpandMoreIcon />}
-            aria-controls="panel0a-content"
-            id="panel0a-header"
-          >
-            <LocalOfferIcon />
-            <Typography fontWeight="bold" marginLeft={1}>
-              Tags
-            </Typography>
-          </AccordionSummary>
-          <AccordionDetails>
-            <Stack direction="row" flexWrap="wrap" spacing={1} useFlexGap>
-              {SketchData.tags.map((tag, i) => (
-                <Chip
-                  clickable
-                  key={i}
-                  label={
-                    <span>
-                      {tag.category}&nbsp;/&nbsp;{tag.name}
-                    </span>
-                  }
-                  size="small"
-                  variant="outlined"
-                />
-              ))}
-            </Stack>
-          </AccordionDetails>
-        </Accordion>
-        <Accordion>
-          <AccordionSummary
-            expandIcon={<ExpandMoreIcon />}
-            aria-controls="panel1a-content"
-            id="panel1a-header"
-          >
-            <GroupsIcon />
-            <Typography fontWeight="bold" marginLeft={1}>
-              People
-            </Typography>
-          </AccordionSummary>
-          <AccordionDetails>
-            <TableContainer>
-              <Table aria-label="simple table">
-                <TableBody>
-                  {SketchData.characters.map((character, i) => (
-                    <TableRow key={i}>
-                      <TableCell>{character.character.name}</TableCell>
-                      <TableCell sx={{ whiteSpace: "nowrap" }}>
-                        ({character.actor.name}{" "}
-                        {character.actor.guestStar && (
-                          <span title="Guest Star">⭐</span>
-                        )}
-                        )
-                      </TableCell>
-                      <TableCell>{character.summary}</TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </TableContainer>
-          </AccordionDetails>
-        </Accordion>
-        <Accordion>
-          <AccordionSummary
-            expandIcon={<ExpandMoreIcon />}
-            aria-controls="panel2a-content"
-            id="panel2a-header"
-          >
-            <NotesIcon />
-            <Typography fontWeight="bold" marginLeft={1}>
-              Detailed Summary
-            </Typography>
-          </AccordionSummary>
-          <AccordionDetails>
-            <Typography variant="body2" sx={{ whiteSpace: "pre-wrap" }}>
-              {SketchData.summary}
-            </Typography>
-          </AccordionDetails>
-        </Accordion>
+  
         <Accordion>
           <AccordionSummary
             expandIcon={<ExpandMoreIcon />}
@@ -224,24 +227,4 @@ export default async function SketchPage({
         <Button variant="outlined" startIcon={<ForumIcon />}>
           Discuss on Discord
         </Button>
-      </Box>
-      {playerOpen && (
-        <Backdrop
-          onClick={handleClosePlayer}
-          open={true}
-          sx={{
-            backgroundColor: "#000d",
-            color: "white",
-            zIndex: (theme) => theme.zIndex.drawer + 1,
-          }}
-        >
-          <iframe
-            allowFullScreen
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-            src={SketchData.embedUrl}
-            title="YouTube video player"
-            width="800"
-            height="600"
-          ></iframe>
-        </Backdrop>
-      )}*/
+      </Box>*/
