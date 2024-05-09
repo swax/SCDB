@@ -34,6 +34,41 @@ export async function getSketch(id: number) {
           },
         },
       },
+      sketch_tags: {
+        select: {
+          tag: {
+            select: {
+              name: true,
+              tag_category: {
+                select: {
+                  name: true,
+                },
+              },
+            },
+          },
+        },
+      },
+      sketch_casts: {
+        select: {
+          character: {
+            select: {
+              name: true,
+            },
+          },
+          person: {
+            select: {
+              name: true,
+            },
+          },
+          role: true,
+          description: true,
+          image: {
+            select: {
+              cdn_key: true,
+            },
+          },
+        },
+      },
     },
   });
 
