@@ -41,7 +41,7 @@ const episodeOrm: TableOrm = {
       label: "Lookup Slug",
       column: "lookup_slug",
       type: "string",
-      template: "${episode.season.lookup_slug} E${episode.number}",
+      templates: ["${season.lookup_slug}E${number}"],
     },
     {
       label: "URL Slug",

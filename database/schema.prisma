@@ -250,6 +250,7 @@ model season {
   modified_by User      @relation("SeasonsModified", fields: [modified_by_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
   episodes    episode[]
   show        show      @relation(fields: [show_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  sketches    sketch[]
 
   @@unique([show_id, number])
   @@index([review_status])
@@ -271,6 +272,7 @@ model show {
   recurring_sketches recurring_sketch[]
   seasons            season[]
   show_images        show_image[]
+  sketches           sketch[]
 
   @@index([review_status])
 }
@@ -353,7 +355,9 @@ model sketch {
   video_urls          String[]
   description         String?
   duration            Int?
-  episode_id          Int
+  show_id             Int
+  season_id           Int?
+  episode_id          Int?
   recurring_sketch_id Int?
   review_status       review_status_type @default(NeedsReview)
   created_by_id       String
@@ -367,7 +371,9 @@ model sketch {
   sketch_casts     sketch_cast[]
   sketch_credits   sketch_credit[]
   sketch_tags      sketch_tag[]
-  episode          episode           @relation(fields: [episode_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  show             show              @relation(fields: [show_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  season           season?           @relation(fields: [season_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  episode          episode?          @relation(fields: [episode_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
   recurring_sketch recurring_sketch? @relation(fields: [recurring_sketch_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
   sketch_images    sketch_image[]
 

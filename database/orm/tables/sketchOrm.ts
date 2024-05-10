@@ -6,6 +6,30 @@ const sketchOrm: TableOrm = {
   title: "${sketch.title} - ${sketch.episode.lookup_slug}",
   fields: [
     {
+      label: "Title",
+      column: "title",
+      type: "string",
+    },
+    {
+      label: "Show",
+      column: "show_id",
+      type: "lookup",
+      lookup: {
+        table: "show",
+        labelColumn: "title",
+      },
+    },
+    {
+      label: "Season",
+      column: "season_id",
+      type: "lookup",
+      lookup: {
+        table: "season",
+        labelColumn: "lookup_slug",
+      },
+      optional: true,
+    },
+    {
       label: "Episode",
       column: "episode_id",
       type: "lookup",
@@ -13,11 +37,7 @@ const sketchOrm: TableOrm = {
         table: "episode",
         labelColumn: "lookup_slug",
       },
-    },
-    {
-      label: "Title",
-      column: "title",
-      type: "string",
+      optional: true,
     },
     {
       label: "Images",
@@ -170,7 +190,12 @@ const sketchOrm: TableOrm = {
       label: "Lookup Slug",
       column: "lookup_slug",
       type: "string",
-      template: "${sketch.episode.lookup_slug}: ${sketch.title}",
+      // Fallback templates as season/episode may not always be defined
+      templates: [
+        "${episode.lookup_slug}: ${title}",
+        "${season.lookup_slug}: ${title}",
+        "${show.title}: ${title}",
+      ],
     },
     {
       label: "URL Slug",

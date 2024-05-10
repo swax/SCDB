@@ -22,18 +22,20 @@ export default async function EditTablePage({ params }: EditTablePageProps) {
   const table = await getTableOrm(tableName, numId, session?.user.role);
 
   // TODO: Get changes since last reviewed
-  const changelog = await getChangelog({
-    page: 1,
-    rowsPerPage: 5,
-    tableName,
-    rowId: id,
-  });
+  const changelog = id
+    ? await getChangelog({
+        page: 1,
+        rowsPerPage: 5,
+        tableName,
+        rowId: id,
+      })
+    : null;
 
   // Rendering
   return (
     <>
       <EditClientPage table={table} id={numId} />
-      {Boolean(changelog.entries.length) && (
+      {changelog && Boolean(changelog.entries.length) && (
         <>
           <h4>Recent Changes:</h4>
           <ChangeLogTable

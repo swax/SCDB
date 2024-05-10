@@ -47,7 +47,7 @@ interface EditClientPageProps {
 
 export default function EditClientPage({ table, id }: EditClientPageProps) {
   const pageTitle =
-    resolveTemplateVars(table.title, table.name, getFieldForTemplate(0)) +
+    resolveTemplateVars(table.title, getFieldForTemplate(0)) +
     " - SketchTV.lol";
 
   // Hooks
@@ -192,25 +192,13 @@ export default function EditClientPage({ table, id }: EditClientPageProps) {
 
     forceUpdate();
 
-    // Update template values
-    if (!field.template) {
+    // If this isn't a template field itself
+    // Update template fields that may reference this value
+    if (!field.templates) {
       table.fields.forEach((templateField) => {
-        if (!templateField.template) return;
-
-        const originalValue = templateField.values?.[index] || "";
-        let newValue = "";
-
-        newValue = resolveTemplateVars(
-          templateField.template,
-          table.name,
-          getFieldForTemplate(index),
-        );
-
-        if (originalValue == newValue) {
-          return;
+        if (templateField.templates) {
+          updateTemplateField(templateField, index);
         }
-
-        setFieldValue(templateField, index, newValue);
       });
     }
 
@@ -240,8 +228,33 @@ export default function EditClientPage({ table, id }: EditClientPageProps) {
     }
   }
 
+  function updateTemplateField(templateField: FieldOrm, index: number) {
+    const originalValue = templateField.values?.[index] || "";
+
+    for (const template of templateField.templates || []) {
+      const newValue = resolveTemplateVars(
+        template,
+        getFieldForTemplate(index),
+      );
+
+      if (!newValue) {
+        continue;
+      }
+
+      if (originalValue == newValue) {
+        return;
+      }
+
+      setFieldValue(templateField, index, newValue);
+      return;
+    }
+
+    // If no template matched, clear the value
+    setFieldValue(templateField, index, "");
+  }
+
   function getFieldForTemplate(index: number) {
-    const field: any = {};
+    const field: Record<string, any> = {};
 
     table.fields.forEach((f) => {
       if (f.column) {

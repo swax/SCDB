@@ -34,7 +34,7 @@ const seasonOrm: TableOrm = {
       label: "Lookup Slug",
       column: "lookup_slug",
       type: "string",
-      template: "${season.show.title} ${season.year}: S${season.number}",
+      templates: ["${show.title} ${year}: S${number}"],
     },
     {
       label: "URL Slug",

@@ -23,7 +23,7 @@ const tagOrm: TableOrm = {
       label: "Lookup Slug",
       column: "lookup_slug",
       type: "string",
-      template: "${tag.tag_category.name} / ${tag.name}",
+      templates: ["${tag_category.name} / ${name}"],
     },
     {
       label: "URL Slug",

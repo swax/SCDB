@@ -20,18 +20,20 @@ export async function getSketch(id: number) {
         },
       },
       video_urls: true,
+      show: {
+        select: {
+          title: true,
+        },
+      },
+      season: {
+        select: {
+          year: true,
+          number: true,
+        },
+      },
       episode: {
         select: {
-          season: {
-            select: {
-              year: true,
-              show: {
-                select: {
-                  title: true,
-                },
-              },
-            },
-          },
+          number: true,
         },
       },
       sketch_tags: {

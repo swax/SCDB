@@ -42,13 +42,11 @@ export default async function SketchPage({
   }
 
   // Rendering
-  const show = sketch.episode.season.show;
-
   return (
     <>
       <Typography variant="h4">{sketch.title}</Typography>
       <Typography variant="subtitle1">
-        {show.title} ({sketch.episode.season.year})
+        {sketch.show.title} ({sketch.season?.year || "Unknown Year"})
       </Typography>
       <VideoHero
         title={sketch.title}
