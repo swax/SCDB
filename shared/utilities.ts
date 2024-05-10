@@ -53,3 +53,17 @@ function valueFromString(
   }
   return result;
 }
+
+/**
+ * If you set myArray[3] = true, and nothing else, index 1/2 are 'holes' in the array.
+ * They will be sent to the server as "$undefined".
+ * If you don't want that, this function will set those values to null
+ */
+export function fillHolesWithNullInPlace<T>(arr: Nullable<T>[]) {
+  for (let i = 0; i < arr.length; i++) {
+    if (!arr.hasOwnProperty(i)) {
+      arr[i] = null;
+    }
+  }
+  return arr; // Optional, for chaining or confirmation
+}

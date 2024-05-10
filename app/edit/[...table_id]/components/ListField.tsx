@@ -20,7 +20,8 @@ export default function ListField({
 }: ListFieldProps) {
   // Constants
   const list = field.values?.[index] || [];
-  const hasError = !field.optional && !field.values?.[index] && !field.templates;
+  const hasError =
+    !field.optional && !field.values?.[index] && !field.templates;
 
   // Hooks
   const forceUpdate = useForceUpdate();

@@ -116,8 +116,10 @@ function mapDatabaseToOrm(dbResult: any, fields: FieldOrm[]) {
         field.values ||= [];
         field.values.push(dbValue as any);
       } else if (field.type == "lookup") {
-        if (field.lookup.table === dbKey && dbValue) {
-          const lookupValue = (dbValue as any)[field.lookup.labelColumn];
+        if (field.lookup.table === dbKey) {
+          const lookupValue = dbValue
+            ? (dbValue as any)[field.lookup.labelColumn]
+            : null;
           field.lookup.labelValues ||= [];
           field.lookup.labelValues.push(lookupValue);
         }

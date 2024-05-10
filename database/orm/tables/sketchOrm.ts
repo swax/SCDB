@@ -95,13 +95,20 @@ const sketchOrm: TableOrm = {
             optional: true,
           },
           {
-            label: "Character",
+            label: "Character Name",
+            column: "character_name",
+            type: "string",
+            optional: true,
+          },
+          {
+            label: "Recurring Character",
             column: "character_id",
             type: "lookup",
             lookup: {
               table: "character",
               labelColumn: "name",
             },
+            optional: true,
           },
           {
             label: "Actor",

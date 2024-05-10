@@ -121,7 +121,7 @@ export default async function SketchPage({
                       <TableCell>
                         {Boolean(sketch_cast.image) && (
                           <Image
-                            alt={sketch_cast.character.name}
+                            alt={sketch_cast.character?.name || "Unknown"}
                             objectFit="cover"
                             src={`${s3url}/${sketch_cast.image?.cdn_key}`}
                             height={50}
@@ -129,7 +129,9 @@ export default async function SketchPage({
                           />
                         )}
                       </TableCell>
-                      <TableCell>{sketch_cast.character.name}</TableCell>
+                      <TableCell>
+                        {sketch_cast.character?.name || "Unknown"}
+                      </TableCell>
                       <TableCell sx={{ whiteSpace: "nowrap" }}>
                         ({sketch_cast.person?.name || ""})
                       </TableCell>

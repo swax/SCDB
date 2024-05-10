@@ -1,9 +1,13 @@
 "use client";
 
-import { FieldOrm, MappingEditField, TableOrm } from "@/database/orm/ormTypes";
 import { useForceUpdate } from "@/app/hooks/useForceUpdate";
+import { FieldOrm, MappingEditField, TableOrm } from "@/database/orm/ormTypes";
 import s3url from "@/shared/cdnHost";
-import { resolveTemplateVars, slugifyForUrl } from "@/shared/stringUtils";
+import {
+  fillHolesWithNullInPlace,
+  resolveTemplateVars,
+  slugifyForUrl,
+} from "@/shared/utilities";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
 import SaveIcon from "@mui/icons-material/Save";
@@ -189,6 +193,11 @@ export default function EditClientPage({ table, id }: EditClientPageProps) {
 
     field.modified ||= [];
     field.modified[index] = true;
+
+    // Set empty/undefined values in array to null as postgres cant write json arrays with undefined entries to the audit table
+    // @ts-expect-error - Values is a union of many types and TS can't figure it out
+    fillHolesWithNullInPlace(field.values);
+    fillHolesWithNullInPlace(field.modified);
 
     forceUpdate();
 

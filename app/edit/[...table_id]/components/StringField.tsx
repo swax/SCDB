@@ -18,7 +18,8 @@ export default function StringField({
   setFieldValue,
 }: StringFieldProps) {
   // Constants
-  const hasError = !field.optional && !field.values?.[index] && !field.templates;
+  const hasError =
+    !field.optional && !field.values?.[index] && !field.templates;
 
   // Hooks
   const forceUpdate = useForceUpdate();

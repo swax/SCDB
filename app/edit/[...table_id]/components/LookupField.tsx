@@ -1,6 +1,7 @@
+import useDebounce2 from "@/app/hooks/useDebounce2";
 import { LookupFieldOption } from "@/backend/edit/lookupService";
 import { LookupFieldOrm } from "@/database/orm/ormTypes";
-import useDebounce2 from "@/app/hooks/useDebounce2";
+import { fillHolesWithNullInPlace } from "@/shared/utilities";
 import OpenInNewIcon from "@mui/icons-material/OpenInNew";
 import {
   Autocomplete,
@@ -112,6 +113,8 @@ export default function LookupField({
 
     field.lookup.labelValues ||= [];
     field.lookup.labelValues[index] = value ? value.label : null;
+
+    fillHolesWithNullInPlace(field.lookup.labelValues);
 
     // Important to set null as undefined isn't sent over the wire
     setFieldValue(field, index, value ? value.id : null);

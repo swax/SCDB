@@ -1,6 +1,6 @@
 import prisma from "@/database/prisma";
 import { contentResponse } from "@/shared/serviceResponse";
-import { slugifyForUrl } from "@/shared/stringUtils";
+import { slugifyForUrl } from "@/shared/utilities";
 import {
   operation_type,
   review_status_type,
@@ -52,11 +52,14 @@ export async function writeFieldValues(
     throw `Table ${table.name} not allowed`;
   }
 
+  // Sanitization
   updateSlugs(table);
   removeUnmodifiedFields(table);
 
+  // Validation
   validateRequiredFields(table.fields);
 
+  // Write the changes
   const rowId = await writeFieldChanges(
     user.id,
     table.name,
@@ -67,6 +70,7 @@ export async function writeFieldValues(
 
   await writeMappingChanges(user.id, table, rowId);
 
+  // Create audit record
   await prisma.audit.create({
     data: {
       changed_by_id: user.id,
@@ -85,7 +89,7 @@ function validateRequiredFields(fields: FieldOrm[]) {
 
   for (const field of fields) {
     if (field.column) {
-      if (!field.optional && !field.values?.[0]) {
+      if (!field.optional && !field.values?.[0] && field.modified?.[0]) {
         errors.push(`Field '${field.column}' is required`);
       }
     }
@@ -96,7 +100,11 @@ function validateRequiredFields(fields: FieldOrm[]) {
         for (let i = 0; i < rowCount; i++) {
           if (!mappedField.values || mappedField.values.length < rowCount) {
             errors.push(`${field.label}: Row ${i + 1}: No data`);
-          } else if (!mappedField.optional && !mappedField.values[i]) {
+          } else if (
+            !mappedField.optional &&
+            !mappedField.values[i] &&
+            mappedField.modified?.[i]
+          ) {
             errors.push(
               `${field.label}: Row ${i + 1}: Field '${mappedField.column}' is required`,
             );
