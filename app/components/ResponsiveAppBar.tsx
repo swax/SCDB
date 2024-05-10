@@ -12,6 +12,8 @@ import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import { MouseEvent, useState } from "react";
 import LoginButton from "./LoginButton";
+import DiscordIcon from "./DiscordIcon";
+import { Stack } from "@mui/material";
 
 const pages = ["Actors", "Characters", "Sketches", "Shows", "Tags"];
 
@@ -53,9 +55,10 @@ function ResponsiveAppBar() {
             {appName}
           </Typography>
 
+          {/* Hamburger Menu */}
           <Box sx={{ flexGrow: 1, display: { xs: "flex", md: "none" } }}>
             <IconButton
-              aria-label="account of current user"
+              aria-label="Account of current user"
               aria-controls="menu-appbar"
               aria-haspopup="true"
               onClick={handleOpenNavMenu}
@@ -118,9 +121,17 @@ function ResponsiveAppBar() {
             ))}
           </Box>
 
-          <Box sx={{ flexGrow: 0 }}>
+          <Stack direction={"row"} sx={{ flexGrow: 0 }}>
+            <IconButton
+              aria-label="Discord Link"
+              aria-controls="menu-appbar"
+              href="https://discord.gg/"
+              color="inherit"
+            >
+              <DiscordIcon />
+            </IconButton>
             <LoginButton />
-          </Box>
+          </Stack>
         </Toolbar>
       </Container>
     </AppBar>

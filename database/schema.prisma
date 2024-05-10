@@ -295,7 +295,8 @@ model show_image {
 model sketch_cast {
   id             Int            @id @default(autoincrement())
   sketch_id      Int
-  character_id   Int
+  character_name String? // Used for one-off characters, otherwise use character_id, a trigger syncs the name if the id is set
+  character_id   Int?
   person_id      Int?
   image_id       Int?
   description    String?
@@ -305,12 +306,12 @@ model sketch_cast {
   modified_by_id String
   modified_at    DateTime       @default(now())
 
-  created_by  User      @relation("SketchCastCreated", fields: [created_by_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  modified_by User      @relation("SketchCastModified", fields: [modified_by_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  image       image?    @relation(fields: [image_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  character   character @relation(fields: [character_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  person      person?   @relation(fields: [person_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  sketch      sketch    @relation(fields: [sketch_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  created_by  User       @relation("SketchCastCreated", fields: [created_by_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  modified_by User       @relation("SketchCastModified", fields: [modified_by_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  image       image?     @relation(fields: [image_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  character   character? @relation(fields: [character_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  person      person?    @relation(fields: [person_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  sketch      sketch     @relation(fields: [sketch_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
 }
 
 model sketch_credit {
