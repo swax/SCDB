@@ -5,7 +5,8 @@ export type BaseFieldOrm = {
   column?: string;
   helperText?: string;
   optional?: boolean;
-  template?: string;
+  /** Mutliple templates can be defined as fallbacks if properties are undefined */
+  templates?: string[];
   modified?: boolean[];
   /** In a mapping table, this is the field you want to take the max width,
    * which pushes the edit/delete buttons over to the far right */

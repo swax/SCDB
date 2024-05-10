@@ -16,19 +16,22 @@ export function slugifyForUrl(str: string) {
 
 export function resolveTemplateVars(
   templateString: string,
-  allowedVarString: string,
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  mappedVar: any,
+  mappedVar: Record<string, any>,
 ) {
-  const pattern = new RegExp(`\\$\\{${allowedVarString}\\.([^}]+)\\}`, "g");
+  const pattern = new RegExp(`\\$\\{([^}]+)\\}`, "g");
 
-  return templateString.replace(pattern, (match, key) => {
-    let value = valueFromString(mappedVar, key);
+  let success = true;
+
+  const resolvedString = templateString.replace(pattern, (match, key) => {
+    const value = valueFromString(mappedVar, key);
     if (!value) {
-      value = `<${key}>`;
+      success = false;
     }
     return value;
   });
+
+  return success ? resolvedString : null;
 }
 
 function valueFromString(

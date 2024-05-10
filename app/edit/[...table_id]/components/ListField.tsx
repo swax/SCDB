@@ -20,7 +20,7 @@ export default function ListField({
 }: ListFieldProps) {
   // Constants
   const list = field.values?.[index] || [];
-  const hasError = !field.optional && !field.values?.[index] && !field.template;
+  const hasError = !field.optional && !field.values?.[index] && !field.templates;
 
   // Hooks
   const forceUpdate = useForceUpdate();
@@ -62,7 +62,7 @@ export default function ListField({
       {list.map((value, listIndex) => (
         <Box sx={{ display: "flex", gap: 2, ml: 2, mt: 1 }} key={listIndex}>
           <TextField
-            disabled={loading || Boolean(field.template)}
+            disabled={loading || Boolean(field.templates)}
             error={hasError}
             fullWidth
             key={listIndex}
