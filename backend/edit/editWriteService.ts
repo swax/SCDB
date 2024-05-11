@@ -9,7 +9,7 @@ import {
 import {
   FieldOrm,
   ImageFieldOrm,
-  MappingEditField,
+  MappingFieldOrm,
   SlugFieldOrm,
   TableOrm,
 } from "../../database/orm/ormTypes";
@@ -21,7 +21,7 @@ const allowedColumnsByTable: { [key: string]: string[] } = {};
 const allowedMappingsByTable: { [key: string]: string[] } = {};
 
 /** Perserves type information in the result */
-function isMappingField(e: FieldOrm): e is MappingEditField {
+function isMappingField(e: FieldOrm): e is MappingFieldOrm {
   return e.type === "mapping";
 }
 

@@ -4,7 +4,7 @@ import s3url from "@/shared/cdnHost";
 import { Button, Stack } from "@mui/material";
 import Image from "next/image";
 import { useState } from "react";
-import { getPresignedUploadUrl } from "../actions/uploadAction";
+import { getPresignedUploadUrl } from "../../actions/uploadAction";
 
 interface ImageFieldProps {
   field: ImageFieldOrm;

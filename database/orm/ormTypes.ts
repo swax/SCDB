@@ -45,19 +45,18 @@ export type ImageFieldOrm = BaseFieldOrm & {
   values?: Nullable<string>[];
 };
 
-export type MappingEditField = BaseFieldOrm & {
+export type MappingTableOrm = Omit<TableOrm, "title"> & {
+  navProp: string;
+  /** Undefined or false if a separate dialog is used to edit the mapped fields. Useful for with many fields. */
+  inline?: boolean;
+  ids?: number[];
+  removeIds?: number[];
+};
+
+export type MappingFieldOrm = BaseFieldOrm & {
   type: "mapping";
   values?: Nullable<number>[];
-  mappingTable: {
-    name: string;
-    navProp: string;
-    label: string;
-    /** Undefined or false if a separate dialog is used to edit the mapped fields. Useful for with many fields. */
-    inline?: boolean;
-    ids?: number[];
-    removeIds?: number[];
-    fields: FieldOrm[];
-  };
+  mappingTable: MappingTableOrm;
 };
 
 export type SlugFieldOrm = BaseFieldOrm & {
@@ -87,7 +86,7 @@ export type FieldOrm =
   | DateFieldOrm
   | EnumFieldOrm
   | LookupFieldOrm
-  | MappingEditField
+  | MappingFieldOrm
   | SlugFieldOrm
   | StringFieldOrm
   | NumberFieldOrm

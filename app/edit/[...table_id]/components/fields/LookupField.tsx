@@ -11,7 +11,7 @@ import {
   Typography,
 } from "@mui/material";
 import { SyntheticEvent, useId, useState } from "react";
-import lookupAction from "../actions/lookupAction";
+import lookupAction from "../../actions/lookupAction";
 
 interface LookupFieldProps {
   field: LookupFieldOrm;
