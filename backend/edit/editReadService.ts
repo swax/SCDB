@@ -77,6 +77,9 @@ function addFieldsToSelect(table: Omit<TableOrm, "title">, selectParams: any) {
         select: {
           id: true,
         },
+        orderBy: {
+          sequence: "asc",
+        },
       };
 
       addFieldsToSelect(field.mappingTable, selectMany.select);

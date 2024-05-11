@@ -67,3 +67,17 @@ export function fillHolesWithNullInPlace<T>(arr: Nullable<T>[]) {
   }
   return arr; // Optional, for chaining or confirmation
 }
+
+export function moveElementInArray<T>(
+  list: T[],
+  startIndex: number,
+  endIndex: number,
+) {
+  const newOrder = Array.from(list);
+  const [removed] = newOrder.splice(startIndex, 1);
+  newOrder.splice(endIndex, 0, removed);
+
+  for (let i = 0; i < list.length; i++) {
+    list[i] = newOrder[i];
+  }
+}

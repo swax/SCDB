@@ -51,6 +51,7 @@ export type MappingTableOrm = Omit<TableOrm, "title"> & {
   inline?: boolean;
   ids?: number[];
   removeIds?: number[];
+  resequence?: boolean;
 };
 
 export type MappingFieldOrm = BaseFieldOrm & {

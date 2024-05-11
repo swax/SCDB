@@ -1,8 +1,6 @@
 import { useForceUpdate } from "@/app/hooks/useForceUpdate";
 import { FieldOrm, MappingTableOrm } from "@/database/orm/ormTypes";
-import s3url from "@/shared/cdnHost";
-import DeleteIcon from "@mui/icons-material/Delete";
-import EditIcon from "@mui/icons-material/Edit";
+import { DragDropContext, DropResult, Droppable } from "@hello-pangea/dnd";
 import {
   Box,
   Button,
@@ -17,10 +15,10 @@ import {
   TableRow,
   Typography,
 } from "@mui/material";
-import IconButton from "@mui/material/IconButton/IconButton";
-import Image from "next/image";
-import { useState } from "react";
+import { useId, useState } from "react";
 import EditableField from "./EditableField";
+import MappingTableRow from "./MappingTableRow";
+import { moveElementInArray } from "@/shared/utilities";
 
 interface MappingTableEditorProps {
   label: string;
@@ -41,6 +39,8 @@ export default function MappingTableEditor({
   const [showMappingDialog, setShowMappingDialog] = useState(false);
   const [editMappingRowIndex, setEditDialogMappingRowIndex] =
     useState<number>();
+
+  const droppableId = useId();
 
   // Event Handlers
   function handleClick_openEditMappingDialog(mappingRowIndex: number) {
@@ -93,53 +93,26 @@ export default function MappingTableEditor({
     forceUpdate();
   }
 
-  // Rendering
-  function renderViewField(field: FieldOrm, index: number, inTable = false) {
-    let color: string | undefined;
-    let value = field.values?.[index];
-
-    if (field.type == "lookup") {
-      value = field.lookup.labelValues?.[index];
+  function handleDragEnd({ destination, source }: DropResult) {
+    if (!destination || destination.index === source.index) {
+      return;
     }
 
-    if (!field.optional && !value) {
-      color = "red";
-      value =
-        value === ""
-          ? "<empty>"
-          : value === null
-            ? "<null>"
-            : value === undefined
-              ? "<undefined>"
-              : "<unknown>";
+    moveElementInArray(mappingTable.ids || [], source.index, destination.index);
+
+    // Reorder the values in each of the fields, as they match the order of the ids
+    for (const mappedField of mappingTable.fields) {
+      const fieldValues: any[] = mappedField.values || [];
+
+      moveElementInArray(fieldValues, source.index, destination.index);
     }
 
-    if (field.type == "image") {
-      const cdnKey = field.values?.[index] || "";
+    mappingTable.resequence = true;
 
-      return (
-        <>
-          {cdnKey ? (
-            <Image
-              alt="Alt text generated dynamically on view page"
-              height={50}
-              src={`${s3url}/${cdnKey}`}
-              style={{ objectFit: "cover" }}
-              unoptimized={true /* Not optimized in edit mode */}
-              width={50}
-            />
-          ) : (
-            <></>
-          )}
-        </>
-      );
-    }
-
-    return (
-      <Box sx={{ marginTop: inTable ? 0 : 3, color }}>{`${value || ""}`}</Box>
-    );
+    forceUpdate();
   }
 
+  // Rendering
   return (
     <>
       <Typography variant="h6">{label}</Typography>
@@ -155,59 +128,34 @@ export default function MappingTableEditor({
               <TableCell />
             </TableRow>
           </TableHead>
-          <TableBody>
-            {mappingTable.ids?.map((mappedId, mappedIndex) => (
-              <TableRow key={mappedId}>
-                {mappingTable?.fields.map((mappedField, fieldIndex) => (
-                  <TableCell
-                    key={fieldIndex}
-                    sx={{
-                      ...(mappedField.fillWidth
-                        ? {
-                            width: "100%",
-                          }
-                        : {
-                            whiteSpace: "nowrap",
-                          }),
-                    }}
-                  >
-                    {mappingTable.inline ? (
-                      <EditableField
-                        tableName={mappingTable.name}
-                        field={mappedField}
-                        index={mappedIndex}
-                        inTable={true}
-                        loading={loading}
-                        setFieldValue={setFieldValue}
-                      />
-                    ) : (
-                      renderViewField(mappedField, mappedIndex, true)
-                    )}
-                  </TableCell>
-                ))}
-                <TableCell sx={{ whiteSpace: "nowrap" }}>
-                  {!mappingTable.inline && (
-                    <IconButton
-                      aria-label="edit"
-                      onClick={() =>
-                        handleClick_openEditMappingDialog(mappedIndex)
+          <DragDropContext onDragEnd={handleDragEnd}>
+            <Droppable droppableId={droppableId}>
+              {(droppable) => (
+                <TableBody
+                  ref={droppable.innerRef}
+                  {...droppable.droppableProps}
+                >
+                  {mappingTable.ids?.map((mappedId, mappedIndex) => (
+                    <MappingTableRow
+                      key={mappedId}
+                      mappedId={mappedId}
+                      mappedIndex={mappedIndex}
+                      mappingTable={mappingTable}
+                      loading={loading}
+                      setFieldValue={setFieldValue}
+                      handleClick_openEditMappingDialog={
+                        handleClick_openEditMappingDialog
                       }
-                      size="small"
-                    >
-                      <EditIcon />
-                    </IconButton>
-                  )}
-                  <IconButton
-                    aria-label="delete"
-                    onClick={() => handleClick_deleteMappingRow(mappedIndex)}
-                    size="small"
-                  >
-                    <DeleteIcon />
-                  </IconButton>
-                </TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
+                      handleClick_deleteMappingRow={
+                        handleClick_deleteMappingRow
+                      }
+                    />
+                  ))}
+                  {droppable.placeholder}
+                </TableBody>
+              )}
+            </Droppable>
+          </DragDropContext>
         </Table>
       )}
       <Button
