@@ -148,7 +148,12 @@ function removeUnmodifiedFields(table: TableOrm) {
       );
     });
 
-    if (!mappingTable.fields.length && !mappingTable.removeIds?.length) {
+    // Remove mapping field if there are no changes
+    if (
+      !mappingTable.fields.length &&
+      !mappingTable.removeIds?.length &&
+      !mappingTable.resequence
+    ) {
       table.fields = table.fields.filter((f) => f !== field);
     }
   }
@@ -192,10 +197,12 @@ async function writeFieldChanges(
     /* if (!allowedColumns.includes(field.column!)) {
         throw new Error(`Column ${field.column} not allowed`);
       }*/
-    if (field.type == "image") {
-      await writeImageField(field, index, userid, dataParams);
-    } else {
-      dataParams[field.column!] = field.values![index];
+    if (field.modified?.[index]) {
+      if (field.type == "image") {
+        await writeImageField(field, index, userid, dataParams);
+      } else {
+        dataParams[field.column!] = field.values![index];
+      }
     }
   }
 
@@ -207,6 +214,8 @@ async function writeFieldChanges(
   // Only flag the root as needs review
   if (!mappingTableRelation) {
     dataParams["review_status"] = review_status_type.NeedsReview;
+  } else {
+    dataParams["sequence"] = index;
   }
 
   // Update row
@@ -303,10 +312,12 @@ async function writeMappingChanges(
       });
     }
 
+    // For each id/row
     let index = 0;
     for (let mappingId of mappingTable.ids || []) {
       if (
         mappingId < 0 ||
+        mappingTable.resequence ||
         mappingTable.fields.some((field) => field.modified?.[index])
       ) {
         await writeFieldChanges(

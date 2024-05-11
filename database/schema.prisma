@@ -186,6 +186,7 @@ model person_image {
   id             Int      @id @default(autoincrement())
   person_id      Int
   image_id       Int
+  sequence       Int
   created_by_id  String
   created_at     DateTime @default(now())
   modified_by_id String
@@ -281,6 +282,7 @@ model show_image {
   id             Int      @id @default(autoincrement())
   show_id        Int
   image_id       Int
+  sequence       Int
   created_by_id  String
   created_at     DateTime @default(now())
   modified_by_id String
@@ -299,6 +301,7 @@ model sketch_cast {
   character_id   Int?
   person_id      Int?
   image_id       Int?
+  sequence       Int
   description    String?
   role           cast_role_type
   created_by_id  String
@@ -318,6 +321,7 @@ model sketch_credit {
   id             Int              @id @default(autoincrement())
   sketch_id      Int
   person_id      Int
+  sequence       Int
   description    String?
   role           credit_role_type
   created_by_id  String
@@ -335,6 +339,7 @@ model sketch_tag {
   id             Int      @id @default(autoincrement())
   sketch_id      Int
   tag_id         Int
+  sequence       Int
   created_by_id  String
   created_at     DateTime @default(now())
   modified_by_id String
@@ -385,6 +390,7 @@ model sketch_image {
   id             Int      @id @default(autoincrement())
   sketch_id      Int
   image_id       Int
+  sequence       Int
   created_by_id  String
   created_at     DateTime @default(now())
   modified_by_id String
