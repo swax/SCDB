@@ -30,9 +30,8 @@ interface EditClientPageProps {
 }
 
 export default function EditClientPage({ table, id }: EditClientPageProps) {
-  const pageTitle =
-    resolveTemplateVars(table.title, getFieldForTemplate(0)) +
-    " - SketchTV.lol";
+  // Get title from template
+  const pageTitle = getTemplateValue(table.title, 0) + " - SketchTV.lol";
 
   // Hooks
   const forceUpdate = useForceUpdate();
@@ -156,7 +155,15 @@ export default function EditClientPage({ table, id }: EditClientPageProps) {
   function updateTemplateField(templateField: FieldOrm, index: number) {
     const originalValue = templateField.values?.[index] || "";
 
-    for (const template of templateField.templates || []) {
+    const newValue = getTemplateValue(templateField.templates || [], index);
+
+    if (newValue != originalValue) {
+      setFieldValue(templateField, index, newValue);
+    }
+  }
+
+  function getTemplateValue(templates: string[], index: number) {
+    for (const template of templates) {
       const newValue = resolveTemplateVars(
         template,
         getFieldForTemplate(index),
@@ -166,16 +173,11 @@ export default function EditClientPage({ table, id }: EditClientPageProps) {
         continue;
       }
 
-      if (originalValue == newValue) {
-        return;
-      }
-
-      setFieldValue(templateField, index, newValue);
-      return;
+      return newValue;
     }
 
     // If no template matched, clear the value
-    setFieldValue(templateField, index, "");
+    return "";
   }
 
   function getFieldForTemplate(index: number) {

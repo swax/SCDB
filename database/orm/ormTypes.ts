@@ -101,7 +101,7 @@ export type TableOrm = {
   /** Name of the table in the UI */
   label: string;
   /** Title used for the webpage */
-  title: string;
+  title: string[];
   operation?: "create" | "update";
   fields: FieldOrm[];
   reviewStatus?: review_status_type;

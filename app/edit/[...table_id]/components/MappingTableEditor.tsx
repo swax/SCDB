@@ -120,6 +120,7 @@ export default function MappingTableEditor({
         <Table size="small">
           <TableHead>
             <TableRow>
+              <TableCell sx={{ color: "grey" }}>ID</TableCell>
               {mappingTable.fields.map((mappedField, fieldIndex) => (
                 <TableCell key={fieldIndex}>
                   <Box sx={{ color: "grey" }}>{mappedField.label}</Box>
