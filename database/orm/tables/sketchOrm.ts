@@ -3,7 +3,11 @@ import { TableOrm } from "../ormTypes";
 const sketchOrm: TableOrm = {
   name: "sketch",
   label: "Sketch",
-  title: "${sketch.title} - ${sketch.episode.lookup_slug}",
+  title: [
+    "${title} - ${episode.lookup_slug}",
+    "${title} - ${season.lookup_slug}",
+    "${title} - ${show.title}",
+  ],
   fields: [
     {
       label: "Title",

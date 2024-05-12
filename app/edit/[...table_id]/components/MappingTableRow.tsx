@@ -84,6 +84,9 @@ export default function MappingTableRow({
           ref={draggable.innerRef}
           {...draggable.draggableProps}
         >
+          <TableCell sx={{ whiteSpace: "nowrap", color: "grey" }}>
+            {mappedId}
+          </TableCell>
           {mappingTable?.fields.map((mappedField, fieldIndex) => (
             <TableCell
               key={fieldIndex}

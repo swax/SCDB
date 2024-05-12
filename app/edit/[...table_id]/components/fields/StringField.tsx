@@ -36,9 +36,12 @@ export default function StringField({
   }
 
   // Rendering
+  const isTemplate = Boolean(field.templates);
+  const placeholderValue = isTemplate ? field.templates?.join(" || ") : "";
+
   return (
     <TextField
-      disabled={loading || Boolean(field.templates)}
+      disabled={loading || isTemplate}
       error={hasError}
       fullWidth
       helperText={field.helperText}
@@ -46,7 +49,7 @@ export default function StringField({
       multiline={Boolean(field.multiline)}
       onChange={(e) => handleChange_field(field, index, e.target.value)}
       size="small"
-      value={field.values?.[index] || ""}
+      value={field.values?.[index] || placeholderValue}
       variant="outlined"
     />
   );

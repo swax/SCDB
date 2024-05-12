@@ -3,7 +3,7 @@ import { TableOrm } from "../ormTypes";
 const characterOrm: TableOrm = {
   name: "character",
   label: "Character",
-  title: "${character.name}",
+  title: ["${name}"],
   fields: [
     {
       label: "Name",

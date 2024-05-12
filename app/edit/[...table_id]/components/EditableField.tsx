@@ -110,7 +110,7 @@ export default function EditableField({
           helperText={field.helperText}
           label="URL Slug"
           size="small"
-          value={field.values?.[index] || ""}
+          value={field.values?.[index] || `(${field.derivedFrom})`}
           variant="outlined"
         />
       )}

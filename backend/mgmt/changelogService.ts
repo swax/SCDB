@@ -88,11 +88,19 @@ export async function getChangelog({
 
         if (f.type == "mapping") {
           changes.push(`${f.label}:`);
+
           f.mappingTable.fields.map((mf) => {
-            changes.push(`  ${mf.label}: ${getValueString(mf.values)}`);
+            changes.push(
+              `  ${mf.label}: ${getValueString(mf.values, f.mappingTable.ids)}`,
+            );
           });
+
           if (f.mappingTable.removeIds) {
             changes.push(`  Removed: ${f.mappingTable.removeIds.join(", ")}`);
+          }
+
+          if (f.mappingTable.resequence && f.mappingTable.ids) {
+            changes.push(`  Resequenced: ${f.mappingTable.ids.join(", ")}`);
           }
         } else {
           changes.push(`${f.label}: ${getValueString(f.values)}`);
@@ -106,27 +114,39 @@ export async function getChangelog({
   return { total, entries } satisfies GetChangelogResponse;
 }
 
-function getValueString(values?: any[]) {
+function getValueString(values?: any[], ids?: number[]) {
   if (!values) {
     return "<none>";
   }
 
-  return values
-    .map((v) => {
-      if (v === null) {
-        return "<null>";
-      } else if (v === undefined) {
-        return "<undefined>";
-      } else if (v === "") {
-        return "<empty string>";
-      }
-      if (typeof v == "string") {
-        return v;
-      } else if (Array.isArray(v)) {
-        return v.join(", ");
-      } else {
-        return JSON.stringify(v);
-      }
-    })
-    .join(" / ");
+  const valueStrs: string[] = [];
+
+  for (let i = 0; i < values.length; i++) {
+    const value = values[i];
+    let valueStr = "";
+
+    if (value === null) {
+      continue;
+    } else if (value === undefined) {
+      valueStr = "<undefined>";
+    } else if (value === "") {
+      valueStr = "<empty>";
+    }
+
+    if (typeof value == "string") {
+      valueStr = value;
+    } else if (Array.isArray(value)) {
+      valueStr = value.join(", ");
+    } else {
+      valueStr = JSON.stringify(value);
+    }
+
+    if (ids) {
+      valueStr = `${ids[i]}: ${valueStr}`;
+    }
+
+    valueStrs.push(valueStr);
+  }
+
+  return valueStrs.join(" / ");
 }
