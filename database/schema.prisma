@@ -467,7 +467,7 @@ enum operation_type {
 }
 
 enum cast_role_type {
-  Cast_Member
+  CastMember
   Guest
   Host
   Uncredited
