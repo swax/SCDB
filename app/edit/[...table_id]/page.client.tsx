@@ -1,8 +1,9 @@
 "use client";
 
 import { useForceUpdate } from "@/app/hooks/useForceUpdate";
-import { FieldOrm, TableOrm } from "@/database/orm/ormTypes";
+import { FieldOrm, SlugFieldOrm, TableOrm } from "@/database/orm/ormTypes";
 import {
+  capitalizeFirstLetter,
   fillHolesWithNullInPlace,
   resolveTemplateVars,
   slugifyForUrl,
@@ -18,7 +19,8 @@ import {
   Typography,
 } from "@mui/material";
 import { review_status_type } from "@prisma/client";
-import { useState } from "react";
+import { useRef, useState } from "react";
+import { useBeforeUnload } from "react-use";
 import deleteAction from "./actions/deleteAction";
 import editAction from "./actions/editAction";
 import { updateReviewStatus } from "./actions/reviewAction";
@@ -40,8 +42,19 @@ export default function EditClientPage({ table, id }: EditClientPageProps) {
   const [reviewStatus, setReviewStatus] = useState(table.reviewStatus);
   const [updatingReviewStatus, setUpdatingReviewStatus] = useState(false);
 
+  const dirty = useRef(false); // Use a ref because navigation won't wait for a re-render
+  useBeforeUnload(
+    () => dirty.current,
+    "Are you sure you want to leave? You have unsaved changes.",
+  );
+
   // Event Handlers
   async function handleClick_save() {
+    if (!dirty.current) {
+      alert("You have no changes to save.");
+      return;
+    }
+
     setLoading(true);
 
     const response = await editAction(table, id);
@@ -53,6 +66,7 @@ export default function EditClientPage({ table, id }: EditClientPageProps) {
     }
 
     const rowId = response.content;
+    dirty.current = false;
 
     // If update refresh
     if (id) {
@@ -114,6 +128,7 @@ export default function EditClientPage({ table, id }: EditClientPageProps) {
     fillHolesWithNullInPlace(field.values);
     fillHolesWithNullInPlace(field.modified);
 
+    dirty.current = true;
     forceUpdate();
 
     // If this isn't a template field itself
@@ -129,27 +144,31 @@ export default function EditClientPage({ table, id }: EditClientPageProps) {
     // Update slug values
     if (field.type != "slug") {
       table.fields.forEach((slugField) => {
-        if (slugField.type != "slug") return;
-
-        slugField.values ||= [];
-
-        const originalValue = slugField.values[index] || "";
-
-        const derivedField = table.fields.find(
-          (f) => f.column == slugField.derivedFrom,
-        );
-
-        const newValue = slugifyForUrl(
-          (derivedField?.values?.[index] || "").toString(),
-        );
-
-        if (originalValue == newValue) {
-          return;
+        if (slugField.type == "slug") {
+          updateSlugField(slugField, index);
         }
-
-        setFieldValue(slugField, index, newValue);
       });
     }
+  }
+
+  function updateSlugField(slugField: SlugFieldOrm, index: number) {
+    slugField.values ||= [];
+
+    const originalValue = slugField.values[index] || "";
+
+    const derivedField = table.fields.find(
+      (f) => f.column == slugField.derivedFrom,
+    );
+
+    const newValue = slugifyForUrl(
+      (derivedField?.values?.[index] || "").toString(),
+    );
+
+    if (originalValue == newValue) {
+      return;
+    }
+
+    setFieldValue(slugField, index, newValue);
   }
 
   function updateTemplateField(templateField: FieldOrm, index: number) {
@@ -199,10 +218,6 @@ export default function EditClientPage({ table, id }: EditClientPageProps) {
     return field;
   }
 
-  function capitalizeFirstLetter(string: string) {
-    return string.charAt(0).toUpperCase() + string.slice(1);
-  }
-
   // Rendering
   const reviewStatusBorderColor =
     reviewStatus == review_status_type.NeedsReview
@@ -239,7 +254,7 @@ export default function EditClientPage({ table, id }: EditClientPageProps) {
       {/* Space so the buttons don't cover the last field at the bototm of the page */}
       <Box sx={{ height: 64 }}></Box>
 
-      {/* Create, update, delete */}
+      {/* Create, update, delete buttons */}
       <Box
         sx={{
           bottom: 8,
@@ -278,7 +293,7 @@ export default function EditClientPage({ table, id }: EditClientPageProps) {
           </Select>
         )}
         <Fab
-          color="primary"
+          color={dirty.current ? "primary" : "default"}
           disabled={loading}
           onClick={() => void handleClick_save()}
           sx={{ mr: 1 }}

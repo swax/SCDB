@@ -1,8 +1,10 @@
 import { getSketch } from "@/backend/content/sketchService";
+import s3url from "@/shared/cdnHost";
+import { enumNameToDisplayName } from "@/shared/utilities";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import GroupsIcon from "@mui/icons-material/Groups";
 import LocalOfferIcon from "@mui/icons-material/LocalOffer";
 import NotesIcon from "@mui/icons-material/Notes";
-import GroupsIcon from "@mui/icons-material/Groups";
 import {
   Accordion,
   AccordionDetails,
@@ -17,11 +19,10 @@ import {
   TableRow,
   Typography,
 } from "@mui/material";
+import Image from "next/image";
 import { notFound, redirect } from "next/navigation";
 import Markdown from "react-markdown";
 import VideoHero from "./components/VideoHero";
-import Image from "next/image";
-import s3url from "@/shared/cdnHost";
 
 export default async function SketchPage({
   params,
@@ -55,95 +56,102 @@ export default async function SketchPage({
       />
 
       <Box sx={{ marginTop: 2 }}>
-        <Accordion defaultExpanded>
-          <AccordionSummary
-            expandIcon={<ExpandMoreIcon />}
-            aria-controls="tags-content"
-            id="tags-header"
-          >
-            <LocalOfferIcon />
-            <Typography fontWeight="bold" marginLeft={1}>
-              Tags
-            </Typography>
-          </AccordionSummary>
-          <AccordionDetails>
-            <Stack direction="row" flexWrap="wrap" spacing={1} useFlexGap>
-              {sketch.sketch_tags.map((sketch_tag, i) => (
-                <Chip
-                  clickable
-                  key={i}
-                  label={
-                    <span>
-                      {sketch_tag.tag.tag_category.name}&nbsp;/&nbsp;
-                      {sketch_tag.tag.name}
-                    </span>
-                  }
-                  size="small"
-                  variant="outlined"
-                />
-              ))}
-            </Stack>
-          </AccordionDetails>
-        </Accordion>
-        <Accordion defaultExpanded>
-          <AccordionSummary
-            expandIcon={<ExpandMoreIcon />}
-            aria-controls="description-content"
-            id="description-header"
-          >
-            <NotesIcon />
-            <Typography fontWeight="bold" marginLeft={1}>
-              Description
-            </Typography>
-          </AccordionSummary>
-          <AccordionDetails>
-            <Markdown>{sketch.description}</Markdown>
-          </AccordionDetails>
-        </Accordion>
-
-        <Accordion defaultExpanded>
-          <AccordionSummary
-            expandIcon={<ExpandMoreIcon />}
-            aria-controls="cast-content"
-            id="cast-header"
-          >
-            <GroupsIcon />
-            <Typography fontWeight="bold" marginLeft={1}>
-              Cast
-            </Typography>
-          </AccordionSummary>
-          <AccordionDetails>
-            <TableContainer>
-              <Table aria-label="simple table">
-                <TableBody>
-                  {sketch.sketch_casts.map((sketch_cast, i) => (
-                    <TableRow key={i}>
-                      <TableCell>
-                        {Boolean(sketch_cast.image) && (
-                          <Image
-                            alt={sketch_cast.character?.name || "Unknown"}
-                            objectFit="cover"
-                            src={`${s3url}/${sketch_cast.image?.cdn_key}`}
-                            height={50}
-                            width={50}
-                          />
-                        )}
-                      </TableCell>
-                      <TableCell>
-                        {sketch_cast.character?.name || "Unknown"}
-                      </TableCell>
-                      <TableCell sx={{ whiteSpace: "nowrap" }}>
-                        ({sketch_cast.person?.name || ""})
-                      </TableCell>
-                      <TableCell>{sketch_cast.role}</TableCell>
-                      <TableCell>{sketch_cast.description}</TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </TableContainer>
-          </AccordionDetails>
-        </Accordion>
+        {Boolean(sketch.sketch_tags.length) && (
+          <Accordion defaultExpanded>
+            <AccordionSummary
+              expandIcon={<ExpandMoreIcon />}
+              aria-controls="tags-content"
+              id="tags-header"
+            >
+              <LocalOfferIcon />
+              <Typography fontWeight="bold" marginLeft={1}>
+                Tags
+              </Typography>
+            </AccordionSummary>
+            <AccordionDetails>
+              <Stack direction="row" flexWrap="wrap" spacing={1} useFlexGap>
+                {sketch.sketch_tags.map((sketch_tag, i) => (
+                  <Chip
+                    clickable
+                    key={i}
+                    label={
+                      <span>
+                        {sketch_tag.tag.tag_category.name}&nbsp;/&nbsp;
+                        {sketch_tag.tag.name}
+                      </span>
+                    }
+                    size="small"
+                    variant="outlined"
+                  />
+                ))}
+              </Stack>
+            </AccordionDetails>
+          </Accordion>
+        )}
+        {Boolean(sketch.description) && (
+          <Accordion defaultExpanded>
+            <AccordionSummary
+              expandIcon={<ExpandMoreIcon />}
+              aria-controls="description-content"
+              id="description-header"
+            >
+              <NotesIcon />
+              <Typography fontWeight="bold" marginLeft={1}>
+                Description
+              </Typography>
+            </AccordionSummary>
+            <AccordionDetails>
+              <Markdown>{sketch.description}</Markdown>
+            </AccordionDetails>
+          </Accordion>
+        )}
+        {Boolean(sketch.sketch_casts.length) && (
+          <Accordion defaultExpanded>
+            <AccordionSummary
+              expandIcon={<ExpandMoreIcon />}
+              aria-controls="cast-content"
+              id="cast-header"
+            >
+              <GroupsIcon />
+              <Typography fontWeight="bold" marginLeft={1}>
+                Cast
+              </Typography>
+            </AccordionSummary>
+            <AccordionDetails>
+              <TableContainer>
+                <Table aria-label="simple table">
+                  <TableBody>
+                    {sketch.sketch_casts.map((sketch_cast, i) => (
+                      <TableRow key={i}>
+                        <TableCell>
+                          {Boolean(sketch_cast.image) && (
+                            <Image
+                              alt={sketch_cast.character_name || "Unknown"}
+                              objectFit="cover"
+                              src={`${s3url}/${sketch_cast.image?.cdn_key}`}
+                              height={50}
+                              width={50}
+                            />
+                          )}
+                        </TableCell>
+                        <TableCell>
+                          {sketch_cast.character_name || "Unknown"}
+                        </TableCell>
+                        <TableCell sx={{ whiteSpace: "nowrap" }}>
+                          {sketch_cast.person?.name || ""}
+                        </TableCell>
+                        <TableCell>
+                          {enumNameToDisplayName(sketch_cast.role)}
+                        </TableCell>
+                        <TableCell>{sketch_cast.description}</TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </TableContainer>
+            </AccordionDetails>
+          </Accordion>
+        )}
       </Box>
     </>
   );

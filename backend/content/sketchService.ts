@@ -18,6 +18,9 @@ export async function getSketch(id: number) {
             },
           },
         },
+        orderBy: {
+          sequence: "asc",
+        },
       },
       video_urls: true,
       show: {
@@ -49,9 +52,13 @@ export async function getSketch(id: number) {
             },
           },
         },
+        orderBy: {
+          sequence: "asc",
+        },
       },
       sketch_casts: {
         select: {
+          character_name: true,
           character: {
             select: {
               name: true,
@@ -69,6 +76,9 @@ export async function getSketch(id: number) {
               cdn_key: true,
             },
           },
+        },
+        orderBy: {
+          sequence: "asc",
         },
       },
     },

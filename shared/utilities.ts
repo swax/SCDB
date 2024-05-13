@@ -81,3 +81,12 @@ export function moveElementInArray<T>(
     list[i] = newOrder[i];
   }
 }
+
+export function capitalizeFirstLetter(string: string) {
+  return string.charAt(0).toUpperCase() + string.slice(1);
+}
+
+/** Un-camelcase the enum, so like 'CastMember' becomes 'Cast Member' */
+export function enumNameToDisplayName(enumName: string) {
+  return enumName.replace(/([A-Z])/g, " $1").trim();
+}
