@@ -66,7 +66,9 @@ export async function getSketch(id: number) {
           },
           person: {
             select: {
+              id: true,
               name: true,
+              url_slug: true,
             },
           },
           role: true,

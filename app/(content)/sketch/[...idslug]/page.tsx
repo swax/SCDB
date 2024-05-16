@@ -11,6 +11,7 @@ import {
   AccordionSummary,
   Box,
   Chip,
+  Link,
   Stack,
   Table,
   TableBody,
@@ -20,27 +21,12 @@ import {
   Typography,
 } from "@mui/material";
 import Image from "next/image";
-import { notFound, redirect } from "next/navigation";
 import Markdown from "react-markdown";
+import { ContentPageProps, getContent } from "../../content";
 import VideoHero from "./components/VideoHero";
 
-export default async function SketchPage({
-  params,
-}: {
-  params: { idslug: string[] };
-}) {
-  // Validate slug and redirect if invalid
-  const [id, slug] = params.idslug;
-
-  const sketch = await getSketch(parseInt(id));
-
-  if (!sketch) {
-    notFound();
-  }
-
-  if (slug !== sketch.url_slug) {
-    redirect(`/sketch/${id}/${sketch.url_slug}`);
-  }
+export default async function SketchPage({ params }: ContentPageProps) {
+  const sketch = await getContent("sketch", params, getSketch);
 
   // Rendering
   return (
@@ -138,7 +124,14 @@ export default async function SketchPage({
                           {sketch_cast.character_name || "Unknown"}
                         </TableCell>
                         <TableCell sx={{ whiteSpace: "nowrap" }}>
-                          {sketch_cast.person?.name || ""}
+                          {!!sketch_cast.person?.name && (
+                            <Link
+                              href={`/person/${sketch_cast.person.id}/${sketch_cast.person.url_slug}`}
+                              underline="hover"
+                            >
+                              {sketch_cast.person.name}
+                            </Link>
+                          )}
                         </TableCell>
                         <TableCell>
                           {enumNameToDisplayName(sketch_cast.role)}
