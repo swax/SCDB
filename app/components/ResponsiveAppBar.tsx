@@ -1,6 +1,7 @@
 "use client";
 
 import MenuIcon from "@mui/icons-material/Menu";
+import { Stack } from "@mui/material";
 import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
@@ -11,9 +12,9 @@ import MenuItem from "@mui/material/MenuItem";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import { MouseEvent, useState } from "react";
-import LoginButton from "./LoginButton";
 import DiscordIcon from "./DiscordIcon";
-import { Stack } from "@mui/material";
+import EditViewButton from "./EditViewButton";
+import LoginButton from "./LoginButton";
 
 const pages = ["Actors", "Characters", "Sketches", "Shows", "Tags"];
 
@@ -122,6 +123,7 @@ function ResponsiveAppBar() {
           </Box>
 
           <Stack direction={"row"} sx={{ flexGrow: 0 }}>
+            <EditViewButton />
             <IconButton
               aria-label="Discord Link"
               aria-controls="menu-appbar"

@@ -31,7 +31,11 @@ export default function LoginButton() {
 
   // Rendering
   if (status == "loading") {
-    return <CircularProgress aria-label="Login Progress" size={16} />;
+    return (
+      <IconButton>
+        <CircularProgress aria-label="Login Progress" size={16} />
+      </IconButton>
+    );
   }
 
   if (status == "unauthenticated" || !session) {
