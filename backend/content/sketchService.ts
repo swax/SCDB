@@ -1,5 +1,36 @@
 import prisma from "@/database/prisma";
 
+export async function getSketchList(page: number, rowsPerPage: number) {
+  const list = await prisma.sketch.findMany({
+    select: {
+      id: true,
+      title: true,
+      url_slug: true,
+      show: {
+        select: {
+          title: true,
+        },
+      },
+      season: {
+        select: {
+          year: true,
+        },
+      },
+      created_at: true,
+    },
+    orderBy: {
+      created_at: "desc",
+    },
+    skip: (page - 1) * rowsPerPage,
+    take: rowsPerPage,
+  });
+
+  // get total count
+  const count = await prisma.sketch.count();
+
+  return { list, count };
+}
+
 export async function getSketch(id: number) {
   const result = await prisma.sketch.findUnique({
     where: {

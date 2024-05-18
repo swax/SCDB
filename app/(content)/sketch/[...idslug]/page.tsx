@@ -22,7 +22,7 @@ import {
 } from "@mui/material";
 import Image from "next/image";
 import Markdown from "react-markdown";
-import { ContentPageProps, getContent } from "../../content";
+import { ContentPageProps, getContent } from "../../contentBase";
 import VideoHero from "./components/VideoHero";
 
 export default async function SketchPage({ params }: ContentPageProps) {
