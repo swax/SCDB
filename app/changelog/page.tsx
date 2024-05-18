@@ -13,7 +13,7 @@ export default async function Changelog({
     username?: string;
   };
 }) {
-  // URL parmam
+  // URL params
   const page = parseInt(searchParams.page || "1");
   const rowsPerPage = parseInt(searchParams.rowsPerPage || "10");
 

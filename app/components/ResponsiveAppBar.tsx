@@ -1,7 +1,7 @@
 "use client";
 
 import MenuIcon from "@mui/icons-material/Menu";
-import { Stack } from "@mui/material";
+import { Link, Stack } from "@mui/material";
 import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
@@ -16,7 +16,7 @@ import DiscordIcon from "./DiscordIcon";
 import EditViewButton from "./EditViewButton";
 import LoginButton from "./LoginButton";
 
-const pages = ["Actors", "Characters", "Sketches", "Shows", "Tags"];
+const pages = ["People", "Characters", "Sketches", "Shows", "Tags"];
 
 function ResponsiveAppBar() {
   // Hooks
@@ -86,7 +86,11 @@ function ResponsiveAppBar() {
               }}
             >
               {pages.map((page) => (
-                <MenuItem key={page} onClick={handleCloseNavMenu}>
+                <MenuItem
+                  key={page}
+                  component={Link}
+                  href={`/${page.toLowerCase()}`}
+                >
                   <Typography textAlign="center">{page}</Typography>
                 </MenuItem>
               ))}
@@ -114,8 +118,11 @@ function ResponsiveAppBar() {
             {pages.map((page) => (
               <Button
                 key={page}
-                onClick={handleCloseNavMenu}
-                sx={{ my: 1, color: "white", display: "block" }}
+                component={Link}
+                href={`/${page.toLowerCase()}`}
+                sx={{
+                  color: "white",
+                }}
               >
                 {page}
               </Button>
