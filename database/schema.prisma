@@ -188,6 +188,7 @@ model person_image {
   person_id      Int
   image_id       Int
   sequence       Int
+  description    String?
   created_by_id  String
   created_at     DateTime @default(now())
   modified_by_id String

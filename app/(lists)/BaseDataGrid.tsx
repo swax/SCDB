@@ -1,7 +1,7 @@
 import { DataGrid, GridColDef, GridPaginationModel } from "@mui/x-data-grid";
 import { useRouter } from "next/navigation";
 
-interface SearchGridProps {
+interface BaseDataGridProps {
   basePath: string;
   columns: GridColDef[];
   page: number;
@@ -10,14 +10,14 @@ interface SearchGridProps {
   rowCount: number;
 }
 
-export default function SearchGrid({
+export default function BaseDataGrid({
   basePath,
   columns,
   page,
   pageSize,
   rows,
   rowCount,
-}: SearchGridProps) {
+}: BaseDataGridProps) {
   // Hooks
   const router = useRouter();
 

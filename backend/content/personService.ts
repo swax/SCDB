@@ -28,8 +28,10 @@ export async function getPerson(id: number) {
       name: true,
       description: true,
       birth_date: true,
+      death_date: true,
       person_images: {
         select: {
+          description: true,
           image: {
             select: {
               cdn_key: true,

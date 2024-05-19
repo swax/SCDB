@@ -30,6 +30,12 @@ const personOrm: TableOrm = {
             type: "image",
             navProp: "image",
           },
+          {
+            label: "Description",
+            column: "description",
+            type: "string",
+            optional: true,
+          },
         ],
       },
     },

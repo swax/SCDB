@@ -1,7 +1,7 @@
 import { getPersonList } from "@/backend/content/personService";
-import PersonListClientPage from "./page.client";
+import PeopleDataGrid from "./PeopleDataGrid";
 
-export default async function PersonListPage({
+export default async function PeoplePage({
   searchParams,
 }: {
   searchParams: {
@@ -25,7 +25,7 @@ export default async function PersonListPage({
 
   // Rendering
   return (
-    <PersonListClientPage
+    <PeopleDataGrid
       page={page - 1}
       pageSize={pageSize}
       rowCount={people.count}
