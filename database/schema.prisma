@@ -166,6 +166,7 @@ model person {
   name           String             @unique @db.VarChar(100)
   description    String?
   birth_date     DateTime?          @db.Date
+  death_date     DateTime?          @db.Date
   gender         gender_type
   review_status  review_status_type @default(NeedsReview)
   created_by_id  String
