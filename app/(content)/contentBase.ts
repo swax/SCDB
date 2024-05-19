@@ -8,6 +8,10 @@ export interface ContentPageProps {
   params: ContentPageParams;
 }
 
+/** 
+ * Generic function to get the id/slug from the query params and pull the data from the backend service 
+ * Re-routing if the slug doesn't match the one from the backend
+ */
 export async function getContent<T extends { url_slug: string }>(
   route: string,
   params: ContentPageParams,

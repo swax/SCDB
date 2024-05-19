@@ -1,7 +1,8 @@
 import { getSketchList } from "@/backend/content/sketchService";
-import SketchListClientPage from "./page.client";
+import SketchDataGrid from "./SketchDataGrid";
+import { Button, Link } from "@mui/material";
 
-export default async function SketchListPage({
+export default async function SketchesPage({
   searchParams,
 }: {
   searchParams: {
@@ -26,11 +27,16 @@ export default async function SketchListPage({
 
   // Rendering
   return (
-    <SketchListClientPage
-      page={page - 1}
-      pageSize={pageSize}
-      rowCount={sketches.count}
-      rows={rows}
-    />
+    <>
+      <SketchDataGrid
+        page={page - 1}
+        pageSize={pageSize}
+        rowCount={sketches.count}
+        rows={rows}
+      />
+      <Link component={Button} href="/edit/sketch">
+        Add Sketch
+      </Link>
+    </>
   );
 }

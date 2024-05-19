@@ -32,9 +32,6 @@ interface EditClientPageProps {
 }
 
 export default function EditClientPage({ table, id }: EditClientPageProps) {
-  // Get title from template
-  const pageTitle = getTemplateValue(table.title, 0) + " - SketchTV.lol";
-
   // Hooks
   const forceUpdate = useForceUpdate();
   const [loading, setLoading] = useState(false);
@@ -72,7 +69,7 @@ export default function EditClientPage({ table, id }: EditClientPageProps) {
     if (id) {
       window.location.reload();
     }
-    // Else navigate to created row
+    // Else navigate to added row
     else {
       const url = `/edit/${table.name}/${rowId}`;
       window.location.href = url;
@@ -228,14 +225,16 @@ export default function EditClientPage({ table, id }: EditClientPageProps) {
           ? "limegreen"
           : "pink";
 
+  let rowTitle = getTemplateValue(table.title, 0);
+  const tableName = capitalizeFirstLetter(table.label);
+  rowTitle ||= tableName;
+  const pageTitle = rowTitle + " - SketchTV.lol";
+  const addOrUpdate = table.operation == "update" ? "Edit " : "Add ";
+
   return (
     <>
-      <title>{pageTitle}</title>
-      <Typography variant="h5">
-        {capitalizeFirstLetter(table.operation || "") +
-          " " +
-          capitalizeFirstLetter(table.label)}
-      </Typography>
+      <title>{addOrUpdate + pageTitle}</title>
+      <Typography variant="h5">{addOrUpdate + tableName}</Typography>
 
       {/* Render fields */}
       {table.fields.map((field, i) => (
@@ -254,7 +253,7 @@ export default function EditClientPage({ table, id }: EditClientPageProps) {
       {/* Space so the buttons don't cover the last field at the bototm of the page */}
       <Box sx={{ height: 64 }}></Box>
 
-      {/* Create, update, delete buttons */}
+      {/* Add, update, delete buttons */}
       <Box
         sx={{
           bottom: 8,
@@ -303,7 +302,7 @@ export default function EditClientPage({ table, id }: EditClientPageProps) {
           {table.operation == "update"
             ? "Save"
             : table.operation == "create"
-              ? "Create"
+              ? "Add"
               : "unknown"}
         </Fab>
         {table.operation == "update" && (

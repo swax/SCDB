@@ -2,9 +2,9 @@
 
 import { Link } from "@mui/material";
 import { GridRenderCellParams } from "@mui/x-data-grid";
-import SearchGrid from "../SearchGrid";
+import BaseDataGrid from "../BaseDataGrid";
 
-interface SketchListClientPageProps {
+interface SketchDataGridProps {
   page: number;
   pageSize: number;
   rows: {
@@ -17,12 +17,12 @@ interface SketchListClientPageProps {
   rowCount: number;
 }
 
-export default function SketchListClientPage({
+export default function SketchDataGrid({
   page,
   rows,
   rowCount,
   pageSize,
-}: SketchListClientPageProps) {
+}: SketchDataGridProps) {
   // Constants
   type SketchRow = (typeof rows)[number];
 
@@ -50,7 +50,7 @@ export default function SketchListClientPage({
   ];
 
   return (
-    <SearchGrid
+    <BaseDataGrid
       basePath="sketches"
       columns={columns}
       page={page}

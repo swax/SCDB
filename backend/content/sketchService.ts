@@ -119,3 +119,30 @@ export async function getSketch(id: number) {
 
   return result;
 }
+
+export async function saveRating(
+  userId: string,
+  sketchId: number,
+  rating: number | null,
+) {
+  await prisma.sketch_rating.upsert({
+    where: {
+      user_id_sketch_id: {
+        user_id: userId,
+        sketch_id: sketchId,
+      },
+    },
+    update: {
+      rating_value: rating,
+      modified_by_id: userId,
+      modified_at: new Date(),
+    },
+    create: {
+      user_id: userId,
+      sketch_id: sketchId,
+      rating_value: rating,
+      modified_by_id: userId,
+      modified_at: new Date(),
+    },
+  });
+}

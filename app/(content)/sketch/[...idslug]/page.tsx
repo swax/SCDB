@@ -24,6 +24,7 @@ import Image from "next/image";
 import Markdown from "react-markdown";
 import { ContentPageProps, getContent } from "../../contentBase";
 import VideoHero from "./components/VideoHero";
+import SketchRating from "./components/SketchRating";
 
 export default async function SketchPage({ params }: ContentPageProps) {
   const sketch = await getContent("sketch", params, getSketch);
@@ -40,7 +41,7 @@ export default async function SketchPage({ params }: ContentPageProps) {
         previewImgCdnKey={sketch.sketch_images[0]?.image.cdn_key}
         videoEmbedUrl={sketch.video_urls[0]}
       />
-
+      <SketchRating sketchId={sketch.id} />
       <Box sx={{ marginTop: 2 }}>
         {Boolean(sketch.sketch_tags.length) && (
           <Accordion defaultExpanded>

@@ -2,9 +2,9 @@
 
 import { Link } from "@mui/material";
 import { GridRenderCellParams } from "@mui/x-data-grid";
-import SearchGrid from "../SearchGrid";
+import BaseDataGrid from "../BaseDataGrid";
 
-interface PersonListClientPageProps {
+interface PeopleDataGridProps {
   page: number;
   pageSize: number;
   rows: {
@@ -16,12 +16,12 @@ interface PersonListClientPageProps {
   rowCount: number;
 }
 
-export default function SketchListClientPage({
+export default function PeopleDataGrid({
   page,
   rows,
   rowCount,
   pageSize,
-}: PersonListClientPageProps) {
+}: PeopleDataGridProps) {
   // Constants
   type PersonRow = (typeof rows)[number];
 
@@ -47,7 +47,7 @@ export default function SketchListClientPage({
   ];
 
   return (
-    <SearchGrid
+    <BaseDataGrid
       basePath="people"
       columns={columns}
       page={page}
