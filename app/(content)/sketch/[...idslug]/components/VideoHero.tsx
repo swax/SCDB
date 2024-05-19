@@ -42,19 +42,17 @@ export default function VideoHero({
         <Box
           onClick={handleOpenPlayer}
           style={{
-            borderRadius: 8,
             cursor: "pointer",
             overflow: "hidden",
             position: "relative",
-            width: imgWidth,
-            height: imgHeight,
           }}
         >
           <Image
             alt={title}
-            fill
-            objectFit="cover"
             src={`${s3url}/${previewImgCdnKey}`}
+            style={{ objectFit: "cover", borderRadius: 8 }}
+            width={imgWidth}
+            height={imgHeight}
           />
         </Box>
       ) : (

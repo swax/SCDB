@@ -17,9 +17,27 @@ const personOrm: TableOrm = {
       derivedFrom: "name",
     },
     {
+      label: "Images",
+      type: "mapping",
+      mappingTable: {
+        name: "person_image",
+        navProp: "person_images",
+        label: "Images",
+        fields: [
+          {
+            label: "",
+            column: "image_id",
+            type: "image",
+            navProp: "image",
+          },
+        ],
+      },
+    },
+    {
       label: "Description",
       column: "description",
       type: "string",
+      multiline: true,
       optional: true,
     },
     {
@@ -31,6 +49,12 @@ const personOrm: TableOrm = {
     {
       label: "Birthday",
       column: "birth_date",
+      type: "date",
+      optional: true,
+    },
+    {
+      label: "Deathday",
+      column: "death_date",
       type: "date",
       optional: true,
     },

@@ -1,9 +1,7 @@
 "use client";
 
 import { Link } from "@mui/material";
-import {
-  GridRenderCellParams
-} from "@mui/x-data-grid";
+import { GridRenderCellParams } from "@mui/x-data-grid";
 import SearchGrid from "../SearchGrid";
 
 interface PersonListClientPageProps {
