@@ -73,6 +73,8 @@ export default async function PersonaPage({ params }: ContentPageProps) {
           sx={{ fontStyle: "italic", color: "grey" }}
         >
           Generated: {new Date(person.dateGenerated).toLocaleString()}
+          <br />
+          Page Generated: {new Date().toLocaleString()}
         </Typography>
       </Box>
     </>
