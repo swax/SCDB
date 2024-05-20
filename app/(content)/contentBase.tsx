@@ -1,4 +1,5 @@
-import { unstable_cache } from "next/cache";
+import { Box, Typography } from "@mui/material";
+import { revalidatePath, revalidateTag, unstable_cache } from "next/cache";
 import { notFound, redirect } from "next/navigation";
 
 interface ContentPageParams {
@@ -10,20 +11,24 @@ export interface ContentPageProps {
 }
 
 /**
- * Deprecated as only fetch() is cacheable
  * Generic function to get the id/slug from the query params and pull the data from the backend service
  * Re-routing if the slug doesn't match the one from the backend
  */
 export async function getCachedContent<T extends { url_slug: string }>(
-  route: string,
+  table: string,
   params: ContentPageParams,
   serviceFunc: (id: number) => Promise<T | null>,
 ) {
   const [id, slug] = params.idslug;
 
+  const idNum = parseInt(id);
+
   const getCachedContent = unstable_cache(
-    async () => serviceFunc(parseInt(id)),
-    [route, id],
+    async () => serviceFunc(idNum),
+    [table, id],
+    {
+      tags: [getContentTag(table, idNum)],
+    },
   );
 
   const content = await getCachedContent();
@@ -33,12 +38,27 @@ export async function getCachedContent<T extends { url_slug: string }>(
   }
 
   if (slug !== content.url_slug) {
-    redirect(`/${route}/${id}/${content.url_slug}`);
+    redirect(`/${table}/${id}/${content.url_slug}`);
   }
 
   return content;
 }
 
+export function getContentTag(table: string, id: number) {
+  return `content:${table}:${id}`;
+}
+
+export function revalidateContent(table: string, id: number) {
+  revalidatePath(`/${table}/${id}`); // Invalidates page cache
+  revalidateTag(getContentTag(table, id)); // Invalidates data cache
+}
+
+/**
+ * Deprecated for the more direct, simple and type safe version above
+ * Usage:
+ *   type SketchType = PromiseReturnType<typeof getContentFuncs.sketch>;
+ *   const sketch = await fetchContent<SketchType>("sketch", params);
+ */
 export async function fetchCachedContent<T extends { url_slug: string } | null>(
   route: string,
   params: ContentPageParams,
@@ -48,9 +68,6 @@ export async function fetchCachedContent<T extends { url_slug: string } | null>(
   const res = await fetch(
     process.env["NEXTAUTH_URL"] + `/api/content/${route}/${id}`,
   );
-
-  // The return value is *not* serialized
-  // You can return Date, Map, Set, etc.
 
   if (!res.ok) {
     if (res.status === 404) {
@@ -71,4 +88,16 @@ export async function fetchCachedContent<T extends { url_slug: string } | null>(
   }
 
   return content;
+}
+
+export function DateGeneratedFooter(params: { dateGenerated: Date }) {
+  return (
+    <Box mt={4}>
+      <Typography variant="caption" sx={{ fontStyle: "italic", color: "grey" }}>
+        Data Fetched: {new Date(params.dateGenerated).toLocaleString()}
+        <br />
+        Page Generated: {new Date().toLocaleString()}
+      </Typography>
+    </Box>
+  );
 }

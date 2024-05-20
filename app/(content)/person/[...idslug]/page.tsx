@@ -1,4 +1,4 @@
-import getContentFuncs from "@/app/api/content/getContentFuncs";
+import { getPerson } from "@/backend/content/personService";
 import s3url from "@/shared/cdnHost";
 import {
   Box,
@@ -7,14 +7,16 @@ import {
   ImageListItemBar,
   Typography,
 } from "@mui/material";
-import { PromiseReturnType } from "@prisma/client/extension";
 import Image from "next/image";
-import { ContentPageProps, fetchCachedContent } from "../../contentBase";
+import {
+  ContentPageProps,
+  DateGeneratedFooter,
+  getCachedContent,
+} from "../../contentBase";
 
 export default async function PersonaPage({ params }: ContentPageProps) {
   // Data fetching
-  type PersonType = PromiseReturnType<typeof getContentFuncs.person>;
-  const person = await fetchCachedContent<PersonType>("person", params);
+  const person = await getCachedContent("person", params, getPerson);
 
   // Constants
   const imgHeight = 300;
@@ -67,16 +69,7 @@ export default async function PersonaPage({ params }: ContentPageProps) {
         ))}
       </ImageList>
       <Typography variant="subtitle1">{person.description}</Typography>
-      <Box mt={4}>
-        <Typography
-          variant="caption"
-          sx={{ fontStyle: "italic", color: "grey" }}
-        >
-          Generated: {new Date(person.dateGenerated).toLocaleString()}
-          <br />
-          Page Generated: {new Date().toLocaleString()}
-        </Typography>
-      </Box>
+      <DateGeneratedFooter dateGenerated={person.dateGenerated} />
     </>
   );
 }
