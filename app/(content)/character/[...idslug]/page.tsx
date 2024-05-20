@@ -1,9 +1,9 @@
 import { getCharacter } from "@/backend/content/characterService";
 import { Typography } from "@mui/material";
-import { ContentPageProps, getContent } from "../../contentBase";
+import { ContentPageProps, getCachedContent } from "../../contentBase";
 
 export default async function CharacterPage({ params }: ContentPageProps) {
-  const character = await getContent("character", params, getCharacter);
+  const character = await getCachedContent("character", params, getCharacter);
 
   // Rendering
   return (

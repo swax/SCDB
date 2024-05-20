@@ -1,4 +1,5 @@
-import { getPerson } from "@/backend/content/personService";
+import getContentFuncs from "@/app/api/content/getContentFuncs";
+import s3url from "@/shared/cdnHost";
 import {
   Box,
   ImageList,
@@ -6,36 +7,41 @@ import {
   ImageListItemBar,
   Typography,
 } from "@mui/material";
-import { ContentPageProps, getContent } from "../../contentBase";
-import s3url from "@/shared/cdnHost";
+import { PromiseReturnType } from "@prisma/client/extension";
 import Image from "next/image";
+import { ContentPageProps, fetchCachedContent } from "../../contentBase";
 
 export default async function PersonaPage({ params }: ContentPageProps) {
-  const person = await getContent("person", params, getPerson);
+  // Data fetching
+  type PersonType = PromiseReturnType<typeof getContentFuncs.person>;
+  const person = await fetchCachedContent<PersonType>("person", params);
 
-  // Rendering
+  // Constants
   const imgHeight = 300;
   const imgWidth = imgHeight * (9 / 16);
 
-  const age = person.birth_date
-    ? (person.death_date || new Date()).getFullYear() -
-      person.birth_date.getFullYear()
+  const birthDate = person.birth_date ? new Date(person.birth_date) : null;
+  const deathDate = person.death_date ? new Date(person.death_date) : null;
+
+  const age = birthDate
+    ? (deathDate || new Date()).getFullYear() - birthDate.getFullYear()
     : undefined;
 
+  // Rendering
   return (
     <>
       <Typography variant="h4">{person.name}</Typography>
 
       {/* birth, death, age */}
       <Box sx={{ display: "flex", gap: 2 }}>
-        {!!person.birth_date && (
+        {!!birthDate && (
           <Typography variant="subtitle1">
-            B. {person.birth_date.toLocaleDateString()}
+            B. {birthDate.toLocaleDateString()}
           </Typography>
         )}
-        {!!person.death_date && (
+        {!!deathDate && (
           <Typography variant="subtitle1">
-            D. {person.death_date.toLocaleDateString()}
+            D. {deathDate.toLocaleDateString()}
           </Typography>
         )}
         {!!age && <Typography variant="subtitle1">Age: {age}</Typography>}
@@ -61,6 +67,14 @@ export default async function PersonaPage({ params }: ContentPageProps) {
         ))}
       </ImageList>
       <Typography variant="subtitle1">{person.description}</Typography>
+      <Box mt={4}>
+        <Typography
+          variant="caption"
+          sx={{ fontStyle: "italic", color: "grey" }}
+        >
+          Generated: {new Date(person.dateGenerated).toLocaleString()}
+        </Typography>
+      </Box>
     </>
   );
 }
