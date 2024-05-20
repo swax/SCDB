@@ -1,4 +1,4 @@
-import { getSketch } from "@/backend/content/sketchService";
+import getContentFuncs from "@/app/api/content/getContentFuncs";
 import s3url from "@/shared/cdnHost";
 import { enumNameToDisplayName } from "@/shared/utilities";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
@@ -20,14 +20,28 @@ import {
   TableRow,
   Typography,
 } from "@mui/material";
+import { PromiseReturnType } from "@prisma/client/extension";
 import Image from "next/image";
 import Markdown from "react-markdown";
-import { ContentPageProps, getContent } from "../../contentBase";
-import VideoHero from "./components/VideoHero";
+import { ContentPageProps, fetchCachedContent, getCachedContent } from "../../contentBase";
 import SketchRating from "./components/SketchRating";
+import VideoHero from "./components/VideoHero";
+import { getSketch, getSketchList } from "@/backend/content/sketchService";
+
+export async function generateStaticParams() {
+  const sketches = await getSketchList(1, 1000);
+
+  return sketches.list.map((sketch) => ({
+    idslug: [sketch.id.toString(), sketch.url_slug],
+  }));
+}
 
 export default async function SketchPage({ params }: ContentPageProps) {
-  const sketch = await getContent("sketch", params, getSketch);
+  // Data fetching
+  //type SketchType = PromiseReturnType<typeof getContentFuncs.sketch>;
+  //const sketch = await fetchContent<SketchType>("sketch", params);
+
+  const sketch = await getCachedContent("sketch", params, getSketch);
 
   // Rendering
   return (
@@ -146,6 +160,16 @@ export default async function SketchPage({ params }: ContentPageProps) {
             </AccordionDetails>
           </Accordion>
         )}
+      </Box>
+      <Box mt={4}>
+        <Typography
+          variant="caption"
+          sx={{ fontStyle: "italic", color: "grey" }}
+        >
+          Data Fetched: {new Date(sketch.dateGenerated).toLocaleString()}
+          <br />
+          Page Generated: {new Date().toLocaleString()}
+        </Typography>
       </Box>
     </>
   );

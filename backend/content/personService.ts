@@ -45,5 +45,12 @@ export async function getPerson(id: number) {
     },
   });
 
-  return result;
+  if (!result) {
+    return null;
+  }
+
+  return {
+    ...result,
+    dateGenerated: new Date(),
+  };
 }

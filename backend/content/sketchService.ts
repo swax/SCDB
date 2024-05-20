@@ -117,7 +117,14 @@ export async function getSketch(id: number) {
     },
   });
 
-  return result;
+  if (!result) {
+    return null;
+  }
+
+  return {
+    ...result,
+    dateGenerated: new Date(),
+  };
 }
 
 export async function saveRating(
