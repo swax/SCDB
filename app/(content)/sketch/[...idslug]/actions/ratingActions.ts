@@ -10,3 +10,11 @@ export async function saveRating(sketchId: number, rating: number | null) {
     await sketchService.saveRating(user.id, sketchId, rating);
   });
 }
+
+export async function getRating(sketchId: number) {
+  //return await catchServiceErrors(async () => {
+  const user = await getLoggedInUser();
+
+  return await sketchService.getRating(user.id, sketchId);
+  //});
+}

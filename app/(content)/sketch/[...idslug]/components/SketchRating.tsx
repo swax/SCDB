@@ -3,8 +3,8 @@
 import StarIcon from "@mui/icons-material/Star";
 import { Box, Rating } from "@mui/material";
 import { useSession } from "next-auth/react";
-import { useState } from "react";
-import { saveRating } from "../actions/saveAction";
+import { useEffect, useState } from "react";
+import { getRating, saveRating } from "../actions/ratingActions";
 
 const labels: { [index: string]: string } = {
   1: "The worst",
@@ -29,26 +29,38 @@ interface SketchRatingProps {
 
 export default function SketchRating({ sketchId }: SketchRatingProps) {
   // Hooks
+  const [canEdit, setCanEdit] = useState(false);
   const [value, setValue] = useState<number | null>(null);
   const [hover, setHover] = useState(-1);
-  const [saving, setSaving] = useState(false);
   const session = useSession();
 
-  const userId = session.data?.user.id;
+  useEffect(() => {
+    const getUserRating = async () => {
+      const initialUserRating = await getRating(sketchId);
+      setValue(initialUserRating);
+      setCanEdit(true);
+    };
+
+    if (session.status == "authenticated" && !canEdit) {
+      void getUserRating();
+    }
+  }, [session.status]);
 
   // Events
   async function rating_handleChange(newValue: number | null) {
-    setSaving(true);
+    const oldValue = value;
+
+    setCanEdit(false);
+    setValue(newValue); // Optimistic update
 
     const response = await saveRating(sketchId, newValue);
 
-    setSaving(false);
+    setCanEdit(true);
 
     if (response.error) {
       alert(response.error);
+      setValue(oldValue);
     }
-
-    setValue(newValue);
   }
 
   // Rendering
@@ -64,7 +76,7 @@ export default function SketchRating({ sketchId }: SketchRatingProps) {
     >
       <Rating
         name="hover-feedback"
-        disabled={saving || !userId}
+        disabled={!canEdit}
         value={value}
         getLabelText={getLabelText}
         defaultValue={0}

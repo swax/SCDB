@@ -153,3 +153,19 @@ export async function saveRating(
     },
   });
 }
+
+export async function getRating(userId: string, sketchId: number) {
+  const result = await prisma.sketch_rating.findUnique({
+    where: {
+      user_id_sketch_id: {
+        user_id: userId,
+        sketch_id: sketchId,
+      },
+    },
+    select: {
+      rating_value: true,
+    },
+  });
+
+  return result?.rating_value || null;
+}
