@@ -135,7 +135,16 @@ export default async function SketchPage({ params }: ContentPageProps) {
                           )}
                         </TableCell>
                         <TableCell>
-                          {sketch_cast.character_name || "Unknown"}
+                          {sketch_cast.character ? (
+                            <Link
+                              href={`/character/${sketch_cast.character.id}/${sketch_cast.character.url_slug}`}
+                              underline="hover"
+                            >
+                              {sketch_cast.character.name}
+                            </Link>
+                          ) : (
+                            <>{sketch_cast.character_name || "Unknown"}</>
+                          )}
                         </TableCell>
                         <TableCell sx={{ whiteSpace: "nowrap" }}>
                           {!!sketch_cast.person?.name && (

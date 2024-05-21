@@ -93,6 +93,8 @@ export async function getSketch(id: number) {
           character: {
             select: {
               name: true,
+              id: true,
+              url_slug: true,
             },
           },
           person: {

@@ -1,5 +1,5 @@
-import { useForceUpdate } from "@/app/hooks/useForceUpdate";
 import { FieldOrm, MappingTableOrm } from "@/database/orm/ormTypes";
+import { moveElementInArray } from "@/shared/utilities";
 import { DragDropContext, DropResult, Droppable } from "@hello-pangea/dnd";
 import {
   Box,
@@ -18,13 +18,13 @@ import {
 import { useId, useState } from "react";
 import EditableField from "./EditableField";
 import MappingTableRow from "./MappingTableRow";
-import { moveElementInArray } from "@/shared/utilities";
 
 interface MappingTableEditorProps {
   label: string;
   mappingTable: MappingTableOrm;
   loading: boolean;
   setFieldValue: (field: FieldOrm, index: number, value: any) => void;
+  setDirty: () => void;
 }
 
 export default function MappingTableEditor({
@@ -32,10 +32,9 @@ export default function MappingTableEditor({
   mappingTable,
   loading,
   setFieldValue,
+  setDirty,
 }: MappingTableEditorProps) {
   // Hooks
-  const forceUpdate = useForceUpdate();
-
   const [showMappingDialog, setShowMappingDialog] = useState(false);
   const [editMappingRowIndex, setEditDialogMappingRowIndex] =
     useState<number>();
@@ -69,7 +68,7 @@ export default function MappingTableEditor({
       }
     });
 
-    forceUpdate();
+    setDirty();
   }
 
   function handleClick_addMappingRow() {
@@ -90,7 +89,7 @@ export default function MappingTableEditor({
       setEditDialogMappingRowIndex(mappingTable.ids.length - 1);
     }
 
-    forceUpdate();
+    setDirty();
   }
 
   function handleDragEnd({ destination, source }: DropResult) {
@@ -105,11 +104,20 @@ export default function MappingTableEditor({
       const fieldValues: any[] = mappedField.values || [];
 
       moveElementInArray(fieldValues, source.index, destination.index);
+
+      if (mappedField.type === "lookup") {
+        mappedField.lookup.labelValues ||= [];
+        moveElementInArray(
+          mappedField.lookup.labelValues,
+          source.index,
+          destination.index,
+        );
+      }
     }
 
     mappingTable.resequence = true;
 
-    forceUpdate();
+    setDirty();
   }
 
   // Rendering
@@ -144,6 +152,7 @@ export default function MappingTableEditor({
                       mappingTable={mappingTable}
                       loading={loading}
                       setFieldValue={setFieldValue}
+                      setDirty={setDirty}
                       handleClick_openEditMappingDialog={
                         handleClick_openEditMappingDialog
                       }
@@ -186,6 +195,7 @@ export default function MappingTableEditor({
                 inTable={false}
                 loading={loading}
                 setFieldValue={setFieldValue}
+                setDirty={setDirty}
               />
             </Box>
           ))}

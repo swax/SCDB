@@ -93,7 +93,10 @@ export async function fetchCachedContent<T extends { url_slug: string } | null>(
 export function DateGeneratedFooter(params: { dateGenerated: Date }) {
   return (
     <Box mt={4}>
-      <Typography variant="caption" sx={{ fontStyle: "italic", color: "grey" }}>
+      <Typography
+        variant="caption"
+        sx={{ fontStyle: "italic", color: "DimGrey" }}
+      >
         Data Fetched: {new Date(params.dateGenerated).toLocaleString()}
         <br />
         Page Generated: {new Date().toLocaleString()}

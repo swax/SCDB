@@ -10,7 +10,7 @@ export default async function deleteAction(table: TableOrm, id: number) {
     const user = await getLoggedInUser();
 
     revalidateContent(table.name, id);
-    
+
     await deleteRow(user, table, id);
   });
 }
