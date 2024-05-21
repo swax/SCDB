@@ -16,6 +16,7 @@ interface EditableFieldProps {
   inTable: boolean;
   loading: boolean;
   setFieldValue: (field: FieldOrm, index: number, value: any) => void;
+  setDirty: () => void;
 }
 
 export default function EditableField({
@@ -25,6 +26,7 @@ export default function EditableField({
   inTable,
   loading,
   setFieldValue,
+  setDirty,
 }: EditableFieldProps) {
   // Event Handlers
   function handleChange_enumField(
@@ -127,6 +129,7 @@ export default function EditableField({
           label={field.label}
           mappingTable={field.mappingTable}
           setFieldValue={setFieldValue}
+          setDirty={setDirty}
           loading={loading}
         />
       )}

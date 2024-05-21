@@ -19,7 +19,7 @@ import {
   Typography,
 } from "@mui/material";
 import { review_status_type } from "@prisma/client";
-import { useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { useBeforeUnload } from "react-use";
 import deleteAction from "./actions/deleteAction";
 import editAction from "./actions/editAction";
@@ -33,21 +33,42 @@ interface EditClientPageProps {
 
 export default function EditClientPage({ table, id }: EditClientPageProps) {
   // Hooks
-  const forceUpdate = useForceUpdate();
   const [loading, setLoading] = useState(false);
+  const forceUpdate = useForceUpdate();
 
   const [reviewStatus, setReviewStatus] = useState(table.reviewStatus);
   const [updatingReviewStatus, setUpdatingReviewStatus] = useState(false);
 
-  const dirty = useRef(false); // Use a ref because navigation won't wait for a re-render
+  const [changeState, setChangeState] = useState<
+    "no-changes" | "dirty" | "saved"
+  >("no-changes");
+
+  const [createdRowId, setCreatedRowId] = useState<number | null>(null);
+
   useBeforeUnload(
-    () => dirty.current,
+    () => changeState == "dirty",
     "Are you sure you want to leave? You have unsaved changes.",
   );
 
+  useEffect(() => {
+    if (changeState == "saved") {
+      // If updated refresh
+      if (id) {
+        window.location.reload();
+      }
+      // Else navigate to added row
+      else if (createdRowId) {
+        const url = `/edit/${table.name}/${createdRowId}`;
+        window.location.href = url;
+      } else {
+        alert("Error: No ID or createdRowId to navigate to.");
+      }
+    }
+  }, [changeState]);
+
   // Event Handlers
   async function handleClick_save() {
-    if (!dirty.current) {
+    if (changeState == "no-changes") {
       alert("You have no changes to save.");
       return;
     }
@@ -63,17 +84,15 @@ export default function EditClientPage({ table, id }: EditClientPageProps) {
     }
 
     const rowId = response.content;
-    dirty.current = false;
 
-    // If update refresh
-    if (id) {
-      window.location.reload();
+    if (!id) {
+      setCreatedRowId(rowId);
     }
-    // Else navigate to added row
-    else {
-      const url = `/edit/${table.name}/${rowId}`;
-      window.location.href = url;
-    }
+
+    setChangeState("saved");
+
+    // Will trigger a useEffect refresh
+    // Can't just refresh here because useBeforeUnload() hook needs the new state
   }
 
   async function handleClick_delete() {
@@ -125,8 +144,7 @@ export default function EditClientPage({ table, id }: EditClientPageProps) {
     fillHolesWithNullInPlace(field.values);
     fillHolesWithNullInPlace(field.modified);
 
-    dirty.current = true;
-    forceUpdate();
+    setDirty();
 
     // If this isn't a template field itself
     // Update template fields that may reference this value
@@ -215,6 +233,11 @@ export default function EditClientPage({ table, id }: EditClientPageProps) {
     return field;
   }
 
+  function setDirty() {
+    setChangeState("dirty");
+    forceUpdate(); // Ensures slugs and templates are updated
+  }
+
   // Rendering
   const reviewStatusBorderColor =
     reviewStatus == review_status_type.NeedsReview
@@ -246,6 +269,7 @@ export default function EditClientPage({ table, id }: EditClientPageProps) {
             inTable={false}
             loading={loading}
             setFieldValue={setFieldValue}
+            setDirty={setDirty}
           />
         </Box>
       ))}
@@ -292,7 +316,7 @@ export default function EditClientPage({ table, id }: EditClientPageProps) {
           </Select>
         )}
         <Fab
-          color={dirty.current ? "primary" : "default"}
+          color={changeState == "dirty" ? "primary" : "default"}
           disabled={loading}
           onClick={() => void handleClick_save()}
           sx={{ mr: 1 }}

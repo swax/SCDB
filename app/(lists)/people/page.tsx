@@ -19,7 +19,7 @@ export default async function PeoplePage({
   const rows = people.list.map((person) => ({
     id: person.id,
     name: person.name,
-    birthDate: person.birth_date,
+    age: person.age,
     url_slug: person.url_slug,
   }));
 

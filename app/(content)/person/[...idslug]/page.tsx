@@ -1,4 +1,4 @@
-import { getPerson } from "@/backend/content/personService";
+import { getPerson, getPersonList } from "@/backend/content/personService";
 import s3url from "@/shared/cdnHost";
 import {
   Box,
@@ -14,6 +14,14 @@ import {
   getCachedContent,
 } from "../../contentBase";
 
+export async function generateStaticParams() {
+  const poeple = await getPersonList(1, 1000);
+
+  return poeple.list.map((person) => ({
+    idslug: [person.id.toString(), person.url_slug],
+  }));
+}
+
 export default async function PersonaPage({ params }: ContentPageProps) {
   // Data fetching
   const person = await getCachedContent("person", params, getPerson);
@@ -24,10 +32,6 @@ export default async function PersonaPage({ params }: ContentPageProps) {
 
   const birthDate = person.birth_date ? new Date(person.birth_date) : null;
   const deathDate = person.death_date ? new Date(person.death_date) : null;
-
-  const age = birthDate
-    ? (deathDate || new Date()).getFullYear() - birthDate.getFullYear()
-    : undefined;
 
   // Rendering
   return (
@@ -46,7 +50,9 @@ export default async function PersonaPage({ params }: ContentPageProps) {
             D. {deathDate.toLocaleDateString()}
           </Typography>
         )}
-        {!!age && <Typography variant="subtitle1">Age: {age}</Typography>}
+        {!!person.age && (
+          <Typography variant="subtitle1">Age: {person.age}</Typography>
+        )}
       </Box>
 
       <ImageList

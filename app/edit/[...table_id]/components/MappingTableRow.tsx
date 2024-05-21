@@ -15,6 +15,7 @@ interface MappingTableRowProps {
   mappedId: number;
   loading: boolean;
   setFieldValue: (field: FieldOrm, index: number, value: any) => void;
+  setDirty: () => void;
   handleClick_openEditMappingDialog: (mappingRowIndex: number) => void;
   handleClick_deleteMappingRow: (mappedIndex: number) => void;
 }
@@ -25,6 +26,7 @@ export default function MappingTableRow({
   mappedId,
   loading,
   setFieldValue,
+  setDirty,
   handleClick_openEditMappingDialog,
   handleClick_deleteMappingRow,
 }: MappingTableRowProps) {
@@ -108,6 +110,7 @@ export default function MappingTableRow({
                   inTable={true}
                   loading={loading}
                   setFieldValue={setFieldValue}
+                  setDirty={setDirty}
                 />
               ) : (
                 renderViewField(mappedField, mappedIndex, true)

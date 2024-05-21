@@ -1,7 +1,7 @@
 import prisma from "@/database/prisma";
 
 export async function getPersonList(page: number, pageSize: number) {
-  const list = await prisma.person.findMany({
+  const dbList = await prisma.person.findMany({
     skip: (page - 1) * pageSize,
     take: pageSize,
     select: {
@@ -9,10 +9,16 @@ export async function getPersonList(page: number, pageSize: number) {
       url_slug: true,
       name: true,
       birth_date: true,
+      death_date: true,
     },
   });
 
   const count = await prisma.person.count();
+
+  const list = dbList.map((person) => ({
+    ...person,
+    age: getAge(person.birth_date, person.death_date),
+  }));
 
   return { list, count };
 }
@@ -51,6 +57,17 @@ export async function getPerson(id: number) {
 
   return {
     ...result,
+    age: getAge(result.birth_date, result.death_date),
     dateGenerated: new Date(),
   };
+}
+
+function getAge(birthDate: Nullable<Date>, deathDate: Nullable<Date>) {
+  if (!birthDate) {
+    return null;
+  }
+
+  const endDate = deathDate || new Date();
+
+  return endDate.getFullYear() - birthDate.getFullYear();
 }
