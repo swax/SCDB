@@ -31,7 +31,7 @@ import SketchRating from "./components/SketchRating";
 import VideoHero from "./components/VideoHero";
 
 export async function generateStaticParams() {
-  const sketches = await getSketchList(1, 1000);
+  const sketches = await getSketchList({ page: 1, pageSize: 1000 });
 
   return sketches.list.map((sketch) => ({
     idslug: [sketch.id.toString(), sketch.url_slug],

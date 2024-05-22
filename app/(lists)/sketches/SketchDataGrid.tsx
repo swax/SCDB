@@ -1,12 +1,11 @@
 "use client";
 
+import { ListSearchParms } from "@/backend/content/listHelper";
 import { Link } from "@mui/material";
 import { GridRenderCellParams } from "@mui/x-data-grid";
 import BaseDataGrid from "../BaseDataGrid";
 
 interface SketchDataGridProps {
-  page: number;
-  pageSize: number;
   rows: {
     id: number;
     title: string;
@@ -14,14 +13,14 @@ interface SketchDataGridProps {
     year: number | undefined;
     url_slug: string;
   }[];
-  rowCount: number;
+  searchParams: ListSearchParms;
+  totalRowCount: number;
 }
 
 export default function SketchDataGrid({
-  page,
   rows,
-  rowCount,
-  pageSize,
+  searchParams,
+  totalRowCount,
 }: SketchDataGridProps) {
   // Constants
   type SketchRow = (typeof rows)[number];
@@ -53,10 +52,9 @@ export default function SketchDataGrid({
     <BaseDataGrid
       basePath="sketches"
       columns={columns}
-      page={page}
-      pageSize={pageSize}
+      searchParams={searchParams}
       rows={rows}
-      rowCount={rowCount}
+      totalRowCount={totalRowCount}
     />
   );
 }

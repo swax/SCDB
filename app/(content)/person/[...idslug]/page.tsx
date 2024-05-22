@@ -15,7 +15,7 @@ import {
 } from "../../contentBase";
 
 export async function generateStaticParams() {
-  const poeple = await getPersonList(1, 1000);
+  const poeple = await getPersonList({ page: 1, pageSize: 1000 });
 
   return poeple.list.map((person) => ({
     idslug: [person.id.toString(), person.url_slug],

@@ -3,23 +3,22 @@
 import { Link } from "@mui/material";
 import { GridRenderCellParams } from "@mui/x-data-grid";
 import BaseDataGrid from "../BaseDataGrid";
+import { ListSearchParms } from "@/backend/content/listHelper";
 
 interface CharacterDataGridProps {
-  page: number;
-  pageSize: number;
   rows: {
     id: number;
     name: string;
     url_slug: string;
   }[];
-  rowCount: number;
+  searchParams: ListSearchParms;
+  totalRowCount: number;
 }
 
 export default function CharacterDataGrid({
-  page,
   rows,
-  rowCount,
-  pageSize,
+  searchParams,
+  totalRowCount,
 }: CharacterDataGridProps) {
   // Constants
   type CharacterRow = (typeof rows)[number];
@@ -48,10 +47,9 @@ export default function CharacterDataGrid({
     <BaseDataGrid
       basePath="characters"
       columns={columns}
-      page={page}
-      pageSize={pageSize}
+      searchParams={searchParams}
       rows={rows}
-      rowCount={rowCount}
+      totalRowCount={totalRowCount}
     />
   );
 }

@@ -1,9 +1,11 @@
 import prisma from "@/database/prisma";
+import { ListSearchParms, getBaseFindParams } from "./listHelper";
 
-export async function getPersonList(page: number, pageSize: number) {
-  const dbList = await prisma.person.findMany({
-    skip: (page - 1) * pageSize,
-    take: pageSize,
+export async function getPersonList(searchParams: ListSearchParms) {
+  const baseFindParams = getBaseFindParams(searchParams);
+
+  const findParams = {
+    ...baseFindParams,
     select: {
       id: true,
       url_slug: true,
@@ -11,7 +13,9 @@ export async function getPersonList(page: number, pageSize: number) {
       birth_date: true,
       death_date: true,
     },
-  });
+  };
+
+  const dbList = await prisma.person.findMany(findParams);
 
   const count = await prisma.person.count();
 

@@ -1,21 +1,14 @@
 import { getSketchList } from "@/backend/content/sketchService";
-import SketchDataGrid from "./SketchDataGrid";
 import { Button, Link } from "@mui/material";
+import { ListPageProps, parseSearchParams } from "../baseListTypes";
+import SketchDataGrid from "./SketchDataGrid";
 
-export default async function SketchesPage({
-  searchParams,
-}: {
-  searchParams: {
-    page?: string;
-    pageSize?: string;
-  };
-}) {
+export default async function SketchesPage(props: ListPageProps) {
   // URL params
-  const page = parseInt(searchParams.page || "1");
-  const pageSize = parseInt(searchParams.pageSize || "30");
+  const searchParams = parseSearchParams(props.searchParams);
 
   // Data
-  const sketches = await getSketchList(page, pageSize);
+  const sketches = await getSketchList(searchParams);
 
   const rows = sketches.list.map((sketch) => ({
     id: sketch.id,
@@ -29,10 +22,9 @@ export default async function SketchesPage({
   return (
     <>
       <SketchDataGrid
-        page={page - 1}
-        pageSize={pageSize}
-        rowCount={sketches.count}
+        searchParams={searchParams}
         rows={rows}
+        totalRowCount={sketches.count}
       />
       <Link component={Button} href="/edit/sketch">
         Add Sketch

@@ -1,9 +1,11 @@
 import prisma from "@/database/prisma";
+import { ListSearchParms, getBaseFindParams } from "./listHelper";
 
-export async function getCharacterList(page: number, pageSize: number) {
+export async function getCharacterList(searchParams: ListSearchParms) {
+  const baseFindParams = getBaseFindParams(searchParams);
+
   const list = await prisma.character.findMany({
-    skip: (page - 1) * pageSize,
-    take: pageSize,
+    ...baseFindParams,
     select: {
       id: true,
       url_slug: true,

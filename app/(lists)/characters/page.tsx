@@ -1,20 +1,13 @@
 import { getCharacterList } from "@/backend/content/characterService";
+import { ListPageProps, parseSearchParams } from "../baseListTypes";
 import CharacterDataGrid from "./CharacterDataGrid";
 
-export default async function CharactersPage({
-  searchParams,
-}: {
-  searchParams: {
-    page?: string;
-    pageSize?: string;
-  };
-}) {
+export default async function CharactersPage(props: ListPageProps) {
   // URL params
-  const page = parseInt(searchParams.page || "1");
-  const pageSize = parseInt(searchParams.pageSize || "30");
+  const searchParams = parseSearchParams(props.searchParams);
 
   // Data
-  const characters = await getCharacterList(page, pageSize);
+  const characters = await getCharacterList(searchParams);
 
   const rows = characters.list.map((character) => ({
     id: character.id,
@@ -25,10 +18,9 @@ export default async function CharactersPage({
   // Rendering
   return (
     <CharacterDataGrid
-      page={page - 1}
-      pageSize={pageSize}
-      rowCount={characters.count}
+      searchParams={searchParams}
       rows={rows}
+      totalRowCount={characters.count}
     />
   );
 }
