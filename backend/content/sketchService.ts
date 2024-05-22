@@ -1,7 +1,11 @@
 import prisma from "@/database/prisma";
+import { ListSearchParms, getBaseFindParams } from "./listHelper";
 
-export async function getSketchList(page: number, rowsPerPage: number) {
+export async function getSketchList(searchParams: ListSearchParms) {
+  const baseFindParams = getBaseFindParams(searchParams);
+
   const list = await prisma.sketch.findMany({
+    ...baseFindParams,
     select: {
       id: true,
       title: true,
@@ -18,11 +22,6 @@ export async function getSketchList(page: number, rowsPerPage: number) {
       },
       created_at: true,
     },
-    orderBy: {
-      created_at: "desc",
-    },
-    skip: (page - 1) * rowsPerPage,
-    take: rowsPerPage,
   });
 
   // get total count

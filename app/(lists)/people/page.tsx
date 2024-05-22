@@ -1,20 +1,13 @@
 import { getPersonList } from "@/backend/content/personService";
+import { ListPageProps, parseSearchParams } from "../baseListTypes";
 import PeopleDataGrid from "./PeopleDataGrid";
 
-export default async function PeoplePage({
-  searchParams,
-}: {
-  searchParams: {
-    page?: string;
-    pageSize?: string;
-  };
-}) {
+export default async function PeoplePage(props: ListPageProps) {
   // URL params
-  const page = parseInt(searchParams.page || "1");
-  const pageSize = parseInt(searchParams.pageSize || "30");
+  const searchParams = parseSearchParams(props.searchParams);
 
   // Data
-  const people = await getPersonList(page, pageSize);
+  const people = await getPersonList(searchParams);
 
   const rows = people.list.map((person) => ({
     id: person.id,
@@ -26,10 +19,9 @@ export default async function PeoplePage({
   // Rendering
   return (
     <PeopleDataGrid
-      page={page - 1}
-      pageSize={pageSize}
-      rowCount={people.count}
+      searchParams={searchParams}
       rows={rows}
+      totalRowCount={people.count}
     />
   );
 }

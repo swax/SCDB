@@ -1,26 +1,25 @@
 "use client";
 
+import { ListSearchParms } from "@/backend/content/listHelper";
 import { Link } from "@mui/material";
 import { GridRenderCellParams } from "@mui/x-data-grid";
 import BaseDataGrid from "../BaseDataGrid";
 
 interface PeopleDataGridProps {
-  page: number;
-  pageSize: number;
   rows: {
     id: number;
     name: string;
     age: number | null;
     url_slug: string;
   }[];
-  rowCount: number;
+  searchParams: ListSearchParms;
+  totalRowCount: number;
 }
 
 export default function PeopleDataGrid({
-  page,
   rows,
-  rowCount,
-  pageSize,
+  searchParams,
+  totalRowCount,
 }: PeopleDataGridProps) {
   // Constants
   type PersonRow = (typeof rows)[number];
@@ -50,10 +49,9 @@ export default function PeopleDataGrid({
     <BaseDataGrid
       basePath="people"
       columns={columns}
-      page={page}
-      pageSize={pageSize}
+      searchParams={searchParams}
       rows={rows}
-      rowCount={rowCount}
+      totalRowCount={totalRowCount}
     />
   );
 }

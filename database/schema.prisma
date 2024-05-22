@@ -123,12 +123,14 @@ model character {
   url_slug       String             @unique @db.VarChar(100)
   name           String             @unique @db.VarChar(100)
   description    String?
+  person_id      Int?               @unique
   review_status  review_status_type @default(NeedsReview)
   created_by_id  String
   created_at     DateTime           @default(now())
   modified_by_id String
   modified_at    DateTime           @default(now())
 
+  person       person?       @relation(fields: [person_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
   created_by   User          @relation("CharactersCreated", fields: [created_by_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
   modified_by  User          @relation("CharactersModified", fields: [modified_by_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
   sketch_casts sketch_cast[]
@@ -179,6 +181,7 @@ model person {
   sketch_casts   sketch_cast[]
   sketch_credits sketch_credit[]
   person_images  person_image[]
+  character      character?
 
   @@index([review_status])
 }
