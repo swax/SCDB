@@ -4,7 +4,7 @@ import { ListSearchParms, getBaseFindParams } from "./listHelper";
 export async function getPersonList(searchParams: ListSearchParms) {
   const baseFindParams = getBaseFindParams(searchParams);
 
-  const findParams = {
+  const dbList = await prisma.person.findMany({
     ...baseFindParams,
     select: {
       id: true,
@@ -13,9 +13,7 @@ export async function getPersonList(searchParams: ListSearchParms) {
       birth_date: true,
       death_date: true,
     },
-  };
-
-  const dbList = await prisma.person.findMany(findParams);
+  });
 
   const count = await prisma.person.count();
 

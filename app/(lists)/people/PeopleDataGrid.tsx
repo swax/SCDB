@@ -2,7 +2,7 @@
 
 import { ListSearchParms } from "@/backend/content/listHelper";
 import { Link } from "@mui/material";
-import { GridRenderCellParams } from "@mui/x-data-grid";
+import { GridColDef, GridRenderCellParams } from "@mui/x-data-grid";
 import BaseDataGrid from "../BaseDataGrid";
 
 interface PeopleDataGridProps {
@@ -24,7 +24,7 @@ export default function PeopleDataGrid({
   // Constants
   type PersonRow = (typeof rows)[number];
 
-  const columns = [
+  const columns: GridColDef[] = [
     {
       field: "name",
       headerName: "Person",
@@ -42,7 +42,25 @@ export default function PeopleDataGrid({
         );
       },
     },
-    { field: "age", headerName: "Age", width: 200 },
+    {
+      field: "age",
+      headerName: "Age",
+      width: 100,
+      filterable: false,
+      sortable: false,
+    },
+    {
+      field: "birth_date",
+      headerName: "Birth",
+      width: 150,
+      type: "date",
+    },
+    {
+      field: "death_date",
+      headerName: "Death",
+      width: 150,
+      type: "date",
+    },
   ];
 
   return (
