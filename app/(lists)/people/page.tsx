@@ -13,6 +13,8 @@ export default async function PeoplePage(props: ListPageProps) {
     id: person.id,
     name: person.name,
     age: person.age,
+    birth_date: person.birth_date,
+    death_date: person.death_date,
     url_slug: person.url_slug,
   }));
 

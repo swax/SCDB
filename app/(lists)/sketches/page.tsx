@@ -13,8 +13,8 @@ export default async function SketchesPage(props: ListPageProps) {
   const rows = sketches.list.map((sketch) => ({
     id: sketch.id,
     title: sketch.title,
-    show: sketch.show.title,
-    year: sketch.season?.year,
+    show__title: sketch.show.title,
+    season__year: sketch.season?.year,
     url_slug: sketch.url_slug,
   }));
 

@@ -4,8 +4,9 @@ import {
   GridColDef,
   GridFilterModel,
   GridPaginationModel,
-  GridSortDirection,
   GridSortModel,
+  GridToolbarContainer,
+  GridToolbarFilterButton
 } from "@mui/x-data-grid";
 import { useRouter } from "next/navigation";
 
@@ -49,16 +50,28 @@ export default function BaseDataGrid({
   }
 
   function dataGrid_filterModelChange(filterModel: GridFilterModel) {
-    const { field, value } = filterModel.items[0];
-    searchParams.filterField = field;
-    searchParams.filterValue = value;
+    if (!filterModel.items.length) {
+      searchParams.filterField = undefined;
+      searchParams.filterValue = undefined;
+      searchParams.filterOp = undefined;
+    } else {
+      const { field, value, operator } = filterModel.items[0];
+
+      // if value is a date set it to the just the date component of the iso string
+      const cleanVal = value instanceof Date ? value.toISOString().split("T")[0] : value;
+
+      searchParams.filterField = field;
+      searchParams.filterValue = cleanVal;
+      searchParams.filterOp = operator;
+    }
 
     buildAndPushUrl();
   }
 
   // Helpers
   function buildAndPushUrl() {
-    const { page, sortField, sortDir, filterField, filterValue } = searchParams;
+    const { page, sortField, sortDir, filterField, filterValue, filterOp } =
+      searchParams;
 
     let url = `/${basePath}?page=${page}`;
 
@@ -66,16 +79,23 @@ export default function BaseDataGrid({
       url += `&sortField=${sortField}&sortDir=${sortDir}`;
     }
 
-    if (filterField && filterValue) {
-      url += `&filterField=${filterField}&filterValue=${filterValue}`;
+    if (filterField && filterValue && filterOp) {
+      url += `&filterField=${filterField}&filterValue=${filterValue}&filterOp=${filterOp}`;
     }
 
     router.push(url);
   }
 
   // Rendering
-  const { page, pageSize, sortField, sortDir, filterField, filterValue } =
-    searchParams;
+  const {
+    page,
+    pageSize,
+    sortField,
+    sortDir,
+    filterField,
+    filterValue,
+    filterOp,
+  } = searchParams;
 
   const sorting =
     sortField && sortDir
@@ -90,14 +110,14 @@ export default function BaseDataGrid({
       : undefined;
 
   const filter =
-    filterField && filterValue
+    filterField && filterValue && filterOp
       ? {
           filterModel: {
             items: [
               {
                 field: filterField,
                 value: filterValue,
-                operator: "contains",
+                operator: filterOp,
               },
             ],
           },
@@ -123,8 +143,17 @@ export default function BaseDataGrid({
       rowCount={totalRowCount}
       rows={rows}
       rowSelection={false}
+      slots={{ toolbar: CustomToolbar }}
       sortingMode="server"
       sx={{ border: "none" }}
     />
+  );
+}
+
+function CustomToolbar() {
+  return (
+    <GridToolbarContainer>
+      <GridToolbarFilterButton />
+    </GridToolbarContainer>
   );
 }
