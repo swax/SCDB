@@ -18,7 +18,7 @@ export function getBaseFindParams(searchParams: ListSearchParms) {
   return {
     where,
     orderBy,
-    skip: page * pageSize,
+    skip: (page - 1) * pageSize,
     take: pageSize,
   };
 }

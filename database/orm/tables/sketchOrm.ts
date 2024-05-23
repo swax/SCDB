@@ -80,7 +80,7 @@ const sketchOrm: TableOrm = {
       optional: true,
       lookup: {
         table: "recurring_sketch",
-        labelColumn: "name",
+        labelColumn: "lookup_slug",
       },
     },
     {
