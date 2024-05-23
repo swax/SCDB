@@ -220,7 +220,8 @@ model sketch_rating {
 model recurring_sketch {
   id             Int                @id @default(autoincrement())
   url_slug       String             @unique @db.VarChar(100)
-  name           String             @db.VarChar(100)
+  lookup_slug    String             @unique @db.VarChar(100)
+  title          String             @db.VarChar(100)
   description    String?
   show_id        Int
   review_status  review_status_type @default(NeedsReview)
@@ -234,7 +235,7 @@ model recurring_sketch {
   show        show     @relation(fields: [show_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
   sketches    sketch[]
 
-  @@unique([show_id, name])
+  @@unique([show_id, title])
   @@index([review_status])
 }
 

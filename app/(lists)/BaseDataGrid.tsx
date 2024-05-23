@@ -6,7 +6,7 @@ import {
   GridPaginationModel,
   GridSortModel,
   GridToolbarContainer,
-  GridToolbarFilterButton
+  GridToolbarFilterButton,
 } from "@mui/x-data-grid";
 import { useRouter } from "next/navigation";
 
@@ -30,8 +30,9 @@ export default function BaseDataGrid({
 
   // Event Handlers
   function dataGrid_paginationModelChange(model: GridPaginationModel) {
-    if (model.page != searchParams.page) {
-      searchParams.page = model.page;
+    // Grid uses a zero based page number
+    if (model.page != searchParams.page - 1) {
+      searchParams.page = model.page + 1;
       buildAndPushUrl();
     }
   }
@@ -58,7 +59,8 @@ export default function BaseDataGrid({
       const { field, value, operator } = filterModel.items[0];
 
       // if value is a date set it to the just the date component of the iso string
-      const cleanVal = value instanceof Date ? value.toISOString().split("T")[0] : value;
+      const cleanVal =
+        value instanceof Date ? value.toISOString().split("T")[0] : value;
 
       searchParams.filterField = field;
       searchParams.filterValue = cleanVal;
@@ -131,7 +133,7 @@ export default function BaseDataGrid({
       filterMode="server"
       initialState={{
         pagination: {
-          paginationModel: { pageSize, page },
+          paginationModel: { pageSize, page: page - 1 },
         },
         sorting,
         filter,

@@ -7,6 +7,7 @@ import sketchOrm from "./tables/sketchOrm";
 import { DatabaseOrm } from "./ormTypes";
 import tagCategoryOrm from "./tables/tagCategoryOrm";
 import tagOrm from "./tables/tagOrm";
+import recurringSketch from "./tables/recurringSketchOrm";
 
 const sketchDatabaseOrm: DatabaseOrm = {
   character: characterOrm,
@@ -17,6 +18,7 @@ const sketchDatabaseOrm: DatabaseOrm = {
   sketch: sketchOrm,
   tag: tagOrm,
   tag_category: tagCategoryOrm,
+  recurring_sketch: recurringSketch,
 };
 
 Object.freeze(sketchDatabaseOrm); // Doesn't seem to prevent modification like it should
