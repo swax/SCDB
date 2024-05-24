@@ -1,42 +1,39 @@
 "use client";
 
+import { ListSearchParms } from "@/backend/content/listHelper";
 import { Link } from "@mui/material";
 import { GridRenderCellParams } from "@mui/x-data-grid";
 import BaseDataGrid from "../BaseDataGrid";
-import { ListSearchParms } from "@/backend/content/listHelper";
 
-interface CharacterDataGridProps {
+interface ShowDataGridProps {
   rows: {
     id: number;
-    name: string;
+    title: string;
     url_slug: string;
   }[];
   searchParams: ListSearchParms;
   totalRowCount: number;
 }
 
-export default function CharacterDataGrid({
+export default function ShowDataGrid({
   rows,
   searchParams,
   totalRowCount,
-}: CharacterDataGridProps) {
+}: ShowDataGridProps) {
   // Constants
-  type CharacterRow = (typeof rows)[number];
+  type ShowRow = (typeof rows)[number];
 
   const columns = [
     {
-      field: "name",
+      field: "title",
       flex: 1,
-      headerName: "Character",
+      headerName: "Show",
       renderCell: ({
-        row: character,
-      }: GridRenderCellParams<CharacterRow, CharacterRow["name"]>) => {
+        row: show,
+      }: GridRenderCellParams<ShowRow, ShowRow["title"]>) => {
         return (
-          <Link
-            href={`/character/${character.id}/${character.url_slug}`}
-            underline="hover"
-          >
-            {character.name}
+          <Link href={`/show/${show.id}/${show.url_slug}`} underline="hover">
+            {show.title}
           </Link>
         );
       },
@@ -45,7 +42,7 @@ export default function CharacterDataGrid({
 
   return (
     <BaseDataGrid
-      basePath="characters"
+      basePath="shows"
       columns={columns}
       searchParams={searchParams}
       rows={rows}

@@ -11,12 +11,13 @@ import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
+import Image from "next/image";
 import { MouseEvent, useState } from "react";
 import DiscordIcon from "./DiscordIcon";
 import EditViewButton from "./EditViewButton";
 import LoginButton from "./LoginButton";
 
-const pages = ["People", "Characters", "Sketches", "Shows", "Tags"];
+const pages = ["Categories", "Characters", "People", "Shows", "Sketches"];
 
 function ResponsiveAppBar() {
   // Hooks
@@ -38,26 +39,18 @@ function ResponsiveAppBar() {
     <AppBar position="static">
       <Container maxWidth="xl">
         <Toolbar disableGutters variant="dense">
-          <Typography
-            component="a"
-            href="/"
-            noWrap
-            sx={{
-              color: "inherit",
-              display: { xs: "none", md: "flex" },
-              fontFamily: "cursive",
-              fontWeight: 700,
-              letterSpacing: ".1rem",
-              marginRight: 3,
-              textDecoration: "none",
-            }}
-            variant="h6"
-          >
-            {appName}
-          </Typography>
+          <Link href="/" sx={{ flexGrow: 0 }}>
+            <Image
+              alt="SketchTV.lol"
+              style={{ objectFit: "cover" }}
+              src={`/images/logo2dark.webp`}
+              width={90}
+              height={45}
+            />
+          </Link>
 
           {/* Hamburger Menu */}
-          <Box sx={{ flexGrow: 1, display: { xs: "flex", md: "none" } }}>
+          <Box sx={{ flexGrow: 1, display: { xs: "flex", sm: "none" } }}>
             <IconButton
               aria-label="Account of current user"
               aria-controls="menu-appbar"
@@ -96,25 +89,7 @@ function ResponsiveAppBar() {
               ))}
             </Menu>
           </Box>
-          <Typography
-            variant="h5"
-            noWrap
-            component="a"
-            href="/"
-            sx={{
-              mr: 2,
-              display: { xs: "flex", md: "none" },
-              flexGrow: 1,
-              fontFamily: "monospace",
-              fontWeight: 700,
-              letterSpacing: ".3rem",
-              color: "inherit",
-              textDecoration: "none",
-            }}
-          >
-            {appName}
-          </Typography>
-          <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" } }}>
+          <Box sx={{ flexGrow: 1, display: { xs: "none", sm: "flex" } }}>
             {pages.map((page) => (
               <Button
                 key={page}
@@ -122,6 +97,9 @@ function ResponsiveAppBar() {
                 href={`/${page.toLowerCase()}`}
                 sx={{
                   color: "white",
+                  fontWeight: "bold",
+                  fontFamily: "comic sans ms",
+                  fontSize: "1.0rem",
                 }}
               >
                 {page}

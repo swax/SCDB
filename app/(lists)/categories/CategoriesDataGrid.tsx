@@ -1,11 +1,11 @@
 "use client";
 
+import { ListSearchParms } from "@/backend/content/listHelper";
 import { Link } from "@mui/material";
 import { GridRenderCellParams } from "@mui/x-data-grid";
 import BaseDataGrid from "../BaseDataGrid";
-import { ListSearchParms } from "@/backend/content/listHelper";
 
-interface CharacterDataGridProps {
+interface CategoryDataGridProps {
   rows: {
     id: number;
     name: string;
@@ -15,28 +15,28 @@ interface CharacterDataGridProps {
   totalRowCount: number;
 }
 
-export default function CharacterDataGrid({
+export default function CategoryDataGrid({
   rows,
   searchParams,
   totalRowCount,
-}: CharacterDataGridProps) {
+}: CategoryDataGridProps) {
   // Constants
-  type CharacterRow = (typeof rows)[number];
+  type CategoryRow = (typeof rows)[number];
 
   const columns = [
     {
       field: "name",
       flex: 1,
-      headerName: "Character",
+      headerName: "Category",
       renderCell: ({
-        row: character,
-      }: GridRenderCellParams<CharacterRow, CharacterRow["name"]>) => {
+        row: category,
+      }: GridRenderCellParams<CategoryRow, CategoryRow["name"]>) => {
         return (
           <Link
-            href={`/character/${character.id}/${character.url_slug}`}
+            href={`/cateogy/${category.id}/${category.url_slug}`}
             underline="hover"
           >
-            {character.name}
+            {category.name}
           </Link>
         );
       },
@@ -45,7 +45,7 @@ export default function CharacterDataGrid({
 
   return (
     <BaseDataGrid
-      basePath="characters"
+      basePath="categories"
       columns={columns}
       searchParams={searchParams}
       rows={rows}
