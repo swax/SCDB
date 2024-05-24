@@ -56,38 +56,6 @@ export default async function SketchPage({ params }: ContentPageProps) {
       />
       <SketchRating sketchId={sketch.id} />
       <Box sx={{ marginTop: 2 }}>
-        {Boolean(sketch.sketch_tags.length) && (
-          <Accordion defaultExpanded>
-            <AccordionSummary
-              expandIcon={<ExpandMoreIcon />}
-              aria-controls="tags-content"
-              id="tags-header"
-            >
-              <LocalOfferIcon />
-              <Typography fontWeight="bold" marginLeft={1}>
-                Tags
-              </Typography>
-            </AccordionSummary>
-            <AccordionDetails>
-              <Stack direction="row" flexWrap="wrap" spacing={1} useFlexGap>
-                {sketch.sketch_tags.map((sketch_tag, i) => (
-                  <Chip
-                    clickable
-                    key={i}
-                    label={
-                      <span>
-                        {sketch_tag.tag.tag_category.name}&nbsp;/&nbsp;
-                        {sketch_tag.tag.name}
-                      </span>
-                    }
-                    size="small"
-                    variant="outlined"
-                  />
-                ))}
-              </Stack>
-            </AccordionDetails>
-          </Accordion>
-        )}
         {Boolean(sketch.description) && (
           <Accordion defaultExpanded>
             <AccordionSummary
@@ -165,6 +133,39 @@ export default async function SketchPage({ params }: ContentPageProps) {
                   </TableBody>
                 </Table>
               </TableContainer>
+            </AccordionDetails>
+          </Accordion>
+        )}
+
+        {Boolean(sketch.sketch_tags.length) && (
+          <Accordion defaultExpanded>
+            <AccordionSummary
+              expandIcon={<ExpandMoreIcon />}
+              aria-controls="tags-content"
+              id="tags-header"
+            >
+              <LocalOfferIcon />
+              <Typography fontWeight="bold" marginLeft={1}>
+                Tags
+              </Typography>
+            </AccordionSummary>
+            <AccordionDetails>
+              <Stack direction="row" flexWrap="wrap" spacing={1} useFlexGap>
+                {sketch.sketch_tags.map((sketch_tag, i) => (
+                  <Chip
+                    clickable
+                    key={i}
+                    label={
+                      <span>
+                        {sketch_tag.tag.tag_category.name}&nbsp;/&nbsp;
+                        {sketch_tag.tag.name}
+                      </span>
+                    }
+                    size="small"
+                    variant="outlined"
+                  />
+                ))}
+              </Stack>
             </AccordionDetails>
           </Accordion>
         )}

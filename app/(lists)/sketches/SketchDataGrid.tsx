@@ -28,8 +28,8 @@ export default function SketchDataGrid({
   const columns: GridColDef[] = [
     {
       field: "title",
+      flex: 1,
       headerName: "Sketch",
-      width: 300,
       renderCell: (
         params: GridRenderCellParams<SketchRow, SketchRow["title"]>,
       ) => {
@@ -44,11 +44,11 @@ export default function SketchDataGrid({
         );
       },
     },
-    { field: "show__title", headerName: "Show", width: 200, type: "string" },
+    { field: "show__title", flex: 1, headerName: "Show", type: "string" },
     {
       field: "season__year",
+      flex: 1,
       headerName: "Year",
-      width: 100,
       type: "number",
       valueFormatter: (value?: number) => value?.toString(),
     },

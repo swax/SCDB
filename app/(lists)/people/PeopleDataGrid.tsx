@@ -27,8 +27,8 @@ export default function PeopleDataGrid({
   const columns: GridColDef[] = [
     {
       field: "name",
+      flex: 2,
       headerName: "Person",
-      width: 300,
       renderCell: ({
         row: person,
       }: GridRenderCellParams<PersonRow, PersonRow["name"]>) => {
@@ -44,21 +44,21 @@ export default function PeopleDataGrid({
     },
     {
       field: "age",
+      flex: 0.5,
       headerName: "Age",
-      width: 100,
       filterable: false,
       sortable: false,
     },
     {
       field: "birth_date",
+      flex: 1,
       headerName: "Birth",
-      width: 150,
       type: "date",
     },
     {
       field: "death_date",
+      flex: 1,
       headerName: "Death",
-      width: 150,
       type: "date",
     },
   ];
