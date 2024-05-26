@@ -55,7 +55,11 @@ export default function LookupField({
     // TODO: Not sure how to fix this warning
     // eslint-disable-next-line @typescript-eslint/no-misused-promises
     async () => {
-      const response = await lookupAction(inputValue, field.lookup);
+      const valueWithPrefix = field.lookup.prefixValue
+        ? field.lookup.prefixValue + " " + inputValue
+        : inputValue;
+
+      const response = await lookupAction(valueWithPrefix, field.lookup);
 
       if (response.error || !response.content) {
         setError(response.error || "Unknown error");

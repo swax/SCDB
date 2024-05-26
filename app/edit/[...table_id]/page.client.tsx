@@ -1,7 +1,12 @@
 "use client";
 
 import { useForceUpdate } from "@/app/hooks/useForceUpdate";
-import { FieldOrm, SlugFieldOrm, TableOrm } from "@/database/orm/ormTypes";
+import {
+  FieldOrm,
+  LookupFieldOrm,
+  SlugFieldOrm,
+  TableOrm,
+} from "@/database/orm/ormTypes";
 import {
   capitalizeFirstLetter,
   fillHolesWithNullInPlace,
@@ -20,11 +25,12 @@ import {
 } from "@mui/material";
 import { review_status_type } from "@prisma/client";
 import { useEffect, useState } from "react";
-import { useBeforeUnload } from "react-use";
+import { useBeforeUnload, useEffectOnce } from "react-use";
 import deleteAction from "./actions/deleteAction";
 import editAction from "./actions/editAction";
 import { updateReviewStatus } from "./actions/reviewAction";
 import EditableField from "./components/EditableField";
+import { LookupFunction } from "net";
 
 interface EditClientPageProps {
   table: TableOrm;
@@ -49,6 +55,10 @@ export default function EditClientPage({ table, id }: EditClientPageProps) {
     () => changeState == "dirty",
     "Are you sure you want to leave? You have unsaved changes.",
   );
+
+  useEffectOnce(() => {
+    updateLookupSearchPrefixes(table, 0);
+  });
 
   useEffect(() => {
     if (changeState == "saved") {
@@ -164,6 +174,8 @@ export default function EditClientPage({ table, id }: EditClientPageProps) {
         }
       });
     }
+
+    updateLookupSearchPrefixes(table, index);
   }
 
   function updateSlugField(slugField: SlugFieldOrm, index: number) {
@@ -184,6 +196,17 @@ export default function EditClientPage({ table, id }: EditClientPageProps) {
     }
 
     setFieldValue(slugField, index, newValue);
+  }
+
+  function updateLookupSearchPrefixes(table: TableOrm, index: number) {
+    table.fields.forEach((lookupField) => {
+      if (lookupField.type == "lookup" && lookupField.lookup.prefixTemplate) {
+        lookupField.lookup.prefixValue = getTemplateValue(
+          lookupField.lookup.prefixTemplate,
+          index,
+        );
+      }
+    });
   }
 
   function updateTemplateField(templateField: FieldOrm, index: number) {

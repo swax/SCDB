@@ -5,7 +5,6 @@ import { Link, Stack } from "@mui/material";
 import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
-import Container from "@mui/material/Container";
 import IconButton from "@mui/material/IconButton";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
@@ -35,92 +34,100 @@ function ResponsiveAppBar() {
   // Rendering
   const appName = "SketchTV.lol";
 
+  const funFont = `"Comic Sans MS", "Comic Neue", "Chalkboard", "Segoe Print", "Kristen ITC", "Caveat", sans-serif`;
+
   return (
     <AppBar position="static">
-      <Container maxWidth="xl">
-        <Toolbar disableGutters variant="dense">
-          <Link href="/" sx={{ flexGrow: 0 }}>
-            <Image
-              alt="SketchTV.lol"
-              style={{ objectFit: "cover" }}
-              src={`/images/logo2dark.webp`}
-              width={90}
-              height={45}
-            />
-          </Link>
+      <Toolbar disableGutters variant="dense">
+        <Link href="/" sx={{ flexGrow: 0 }}>
+          <Image
+            alt="SketchTV.lol"
+            style={{ objectFit: "cover" }}
+            src={`/images/logo2dark.webp`}
+            width={90}
+            height={45}
+          />
+        </Link>
 
-          {/* Hamburger Menu */}
-          <Box sx={{ flexGrow: 1, display: { xs: "flex", sm: "none" } }}>
-            <IconButton
-              aria-label="Account of current user"
-              aria-controls="menu-appbar"
-              aria-haspopup="true"
-              onClick={handleOpenNavMenu}
-              color="inherit"
-            >
-              <MenuIcon />
-            </IconButton>
-            <Menu
-              id="menu-appbar"
-              anchorEl={anchorElNav}
-              anchorOrigin={{
-                vertical: "bottom",
-                horizontal: "left",
-              }}
-              keepMounted
-              transformOrigin={{
-                vertical: "top",
-                horizontal: "left",
-              }}
-              open={Boolean(anchorElNav)}
-              onClose={handleCloseNavMenu}
-              sx={{
-                display: { xs: "block", md: "none" },
-              }}
-            >
-              {pages.map((page) => (
-                <MenuItem
-                  key={page}
-                  component={Link}
-                  href={`/${page.toLowerCase()}`}
-                >
-                  <Typography textAlign="center">{page}</Typography>
-                </MenuItem>
-              ))}
-            </Menu>
-          </Box>
-          <Box sx={{ flexGrow: 1, display: { xs: "none", sm: "flex" } }}>
+        {/* Hamburger Menu */}
+        <Box sx={{ flexGrow: 1, display: { xs: "flex", sm: "none" } }}>
+          <IconButton
+            aria-label="Account of current user"
+            aria-controls="menu-appbar"
+            aria-haspopup="true"
+            onClick={handleOpenNavMenu}
+            color="inherit"
+          >
+            <Image
+              alt="Hamburger Menu"
+              style={{ objectFit: "cover" }}
+              src={`/images/hamburger.webp`}
+              width={32}
+              height={32}
+            />
+          </IconButton>
+          <Menu
+            id="menu-appbar"
+            anchorEl={anchorElNav}
+            anchorOrigin={{
+              vertical: "bottom",
+              horizontal: "left",
+            }}
+            keepMounted
+            transformOrigin={{
+              vertical: "top",
+              horizontal: "left",
+            }}
+            open={Boolean(anchorElNav)}
+            onClose={handleCloseNavMenu}
+            sx={{
+              display: { xs: "block", md: "none" },
+            }}
+          >
             {pages.map((page) => (
-              <Button
+              <MenuItem
                 key={page}
                 component={Link}
                 href={`/${page.toLowerCase()}`}
-                sx={{
-                  color: "white",
-                  fontWeight: "bold",
-                  fontFamily: "comic sans ms",
-                  fontSize: "1.0rem",
-                }}
               >
-                {page}
-              </Button>
+                <Typography textAlign="center" fontFamily={funFont}>
+                  {page}
+                </Typography>
+              </MenuItem>
             ))}
-          </Box>
-
-          <Stack direction={"row"} sx={{ flexGrow: 0 }}>
-            <EditViewButton />
-            <IconButton
-              aria-label="Discord Link"
-              aria-controls="menu-appbar"
-              href="https://discord.gg/"
-              color="inherit"
+          </Menu>
+        </Box>
+        <Box sx={{ flexGrow: 1, display: { xs: "none", sm: "flex" } }}>
+          {pages.map((page) => (
+            <Button
+              key={page}
+              component={Link}
+              href={`/${page.toLowerCase()}`}
+              sx={{
+                color: "white",
+                fontFamily: funFont,
+                fontWeight: "bold",
+                fontSize: "1.0rem",
+              }}
             >
-              <DiscordIcon />
-            </IconButton>
-            <LoginButton />
-          </Stack>
-        </Toolbar>
-      </Container>
+              {page}
+            </Button>
+          ))}
+        </Box>
+
+        <Stack direction={"row"} sx={{ flexGrow: 0 }}>
+          <EditViewButton />
+          <IconButton
+            aria-label="Discord Link"
+            aria-controls="menu-appbar"
+            href="https://discord.gg/"
+            color="inherit"
+          >
+            <DiscordIcon />
+          </IconButton>
+          <LoginButton />
+        </Stack>
+      </Toolbar>
     </AppBar>
   );
 }
