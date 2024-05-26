@@ -35,6 +35,8 @@ export type LookupFieldOrm = BaseFieldOrm & {
     table: string;
     labelColumn: string;
     labelValues?: Nullable<string>[];
+    prefixTemplate?: string[];
+    prefixValue?: string;
   };
 };
 

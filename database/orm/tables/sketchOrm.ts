@@ -30,6 +30,7 @@ const sketchOrm: TableOrm = {
       lookup: {
         table: "season",
         labelColumn: "lookup_slug",
+        prefixTemplate: ["${show.title}"],
       },
       optional: true,
     },
@@ -40,6 +41,7 @@ const sketchOrm: TableOrm = {
       lookup: {
         table: "episode",
         labelColumn: "lookup_slug",
+        prefixTemplate: ["${season.lookup_slug}", "${show.title}"],
       },
       optional: true,
     },
