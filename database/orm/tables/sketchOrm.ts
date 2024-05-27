@@ -65,6 +65,7 @@ const sketchOrm: TableOrm = {
     {
       label: "Video URLs",
       column: "video_urls",
+      helperText: "Supports: YouTube, Vimeo, TikTok, or Internet Archive",
       type: "list",
       optional: true,
     },

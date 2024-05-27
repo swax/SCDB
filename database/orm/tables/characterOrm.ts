@@ -11,8 +11,9 @@ const characterOrm: TableOrm = {
       type: "string",
     },
     {
-      label: "Real Person",
+      label: "Person Link",
       column: "person_id",
+      helperText: "If the character portrays a real person who has also been in sketch comedy, create or link to them here",
       type: "lookup",
       lookup: {
         table: "person",

@@ -1,6 +1,6 @@
 import EditIcon from "@mui/icons-material/Edit";
 import VisibilityIcon from "@mui/icons-material/Visibility";
-import { IconButton } from "@mui/material";
+import { IconButton, Tooltip } from "@mui/material";
 import { useSession } from "next-auth/react";
 import { usePathname } from "next/navigation";
 
@@ -27,27 +27,31 @@ export default function EditViewButton() {
     const viewPath = pathname.replace(/^\/edit/, "");
 
     return (
-      <IconButton
-        aria-label="View Page"
-        aria-controls="menu-appbar"
-        href={viewPath}
-        color="inherit"
-      >
-        <VisibilityIcon />
-      </IconButton>
+      <Tooltip title={`View this page`}>
+        <IconButton
+          aria-label="View Page"
+          aria-controls="menu-appbar"
+          href={viewPath}
+          color="inherit"
+        >
+          <VisibilityIcon />
+        </IconButton>
+      </Tooltip>
     );
   } else {
     const editPath = `/edit${pathname}`;
 
     return (
-      <IconButton
-        aria-label="Edit Page"
-        aria-controls="menu-appbar"
-        href={editPath}
-        color="inherit"
-      >
-        <EditIcon />
-      </IconButton>
+      <Tooltip title={`Edit this page`}>
+        <IconButton
+          aria-label="Edit Page"
+          aria-controls="menu-appbar"
+          href={editPath}
+          color="inherit"
+        >
+          <EditIcon />
+        </IconButton>
+      </Tooltip>
     );
   }
 }

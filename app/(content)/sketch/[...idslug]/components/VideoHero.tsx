@@ -20,7 +20,6 @@ export default function VideoHero({
   const [playerOpen, setPlayerOpen] = useState(false);
 
   const [cleanVideoUrl, provider] = useMemo(() => {
-    // scrub query params from url
     if (!videoEmbedUrl) {
       return ["", ""] as const;
     }
@@ -35,6 +34,10 @@ export default function VideoHero({
       return [url, "vimeo"] as const;
     }
 
+    if (url.includes("https://archive.org/embed/")) {
+      return [url, "archive"] as const;
+    }
+
     // Turn https://www.youtube.com/watch?v=abc123 into https://www.youtube.com/embed/abc123
     if (url.includes("youtube.com/watch?v=")) {
       const videoId = url.split("v=").pop();
@@ -45,6 +48,12 @@ export default function VideoHero({
     if (url.includes("https://vimeo.com/")) {
       const videoId = url.split("/").pop();
       return [`https://player.vimeo.com/video/${videoId}`, "vimeo"] as const;
+    }
+
+    // Turn https://archive.org/details/the-state-season-4-mkv/The+State+-+S04E01.mkv into https://archive.org/embed/the-state-season-4-mkv
+    if (url.includes("archive.org/details/")) {
+      const videoId = url.split("/")[4];
+      return [`https://archive.org/embed/${videoId}`, "archive"] as const;
     }
 
     // Get ID 7371058051584970026 from https://www.tiktok.com/@nypost/video/7371058051584970026 with regex
@@ -122,7 +131,9 @@ export default function VideoHero({
             </>
           )}
 
-          {(provider == "youtube" || provider == "vimeo") && (
+          {(provider == "youtube" ||
+            provider == "vimeo" ||
+            provider == "archive") && (
             <iframe
               allowFullScreen
               allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"

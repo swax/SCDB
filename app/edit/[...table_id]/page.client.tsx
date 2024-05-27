@@ -1,18 +1,14 @@
 "use client";
 
 import { useForceUpdate } from "@/app/hooks/useForceUpdate";
-import {
-  FieldOrm,
-  LookupFieldOrm,
-  SlugFieldOrm,
-  TableOrm,
-} from "@/database/orm/ormTypes";
+import { FieldOrm, SlugFieldOrm, TableOrm } from "@/database/orm/ormTypes";
 import {
   capitalizeFirstLetter,
   fillHolesWithNullInPlace,
   resolveTemplateVars,
   slugifyForUrl,
 } from "@/shared/utilities";
+import AddIcon from "@mui/icons-material/Add";
 import DeleteIcon from "@mui/icons-material/Delete";
 import SaveIcon from "@mui/icons-material/Save";
 import {
@@ -21,6 +17,7 @@ import {
   MenuItem,
   Select,
   SelectChangeEvent,
+  Tooltip,
   Typography,
 } from "@mui/material";
 import { review_status_type } from "@prisma/client";
@@ -30,7 +27,6 @@ import deleteAction from "./actions/deleteAction";
 import editAction from "./actions/editAction";
 import { updateReviewStatus } from "./actions/reviewAction";
 import EditableField from "./components/EditableField";
-import { LookupFunction } from "net";
 
 interface EditClientPageProps {
   table: TableOrm;
@@ -352,14 +348,28 @@ export default function EditClientPage({ table, id }: EditClientPageProps) {
               ? "Add"
               : "unknown"}
         </Fab>
+        {table.operation != "create" && (
+          <Tooltip title={`Add a new ${table.label}`}>
+            <Fab
+              disabled={loading}
+              href={`/edit/${table.name}`}
+              sx={{ mr: 1 }}
+              variant="extended"
+            >
+              <AddIcon />
+            </Fab>
+          </Tooltip>
+        )}
         {table.operation == "update" && (
-          <Fab
-            disabled={loading}
-            onClick={() => void handleClick_delete()}
-            variant="extended"
-          >
-            <DeleteIcon />
-          </Fab>
+          <Tooltip title={`Delete this ${table.label}`}>
+            <Fab
+              disabled={loading}
+              onClick={() => void handleClick_delete()}
+              variant="extended"
+            >
+              <DeleteIcon />
+            </Fab>
+          </Tooltip>
         )}
       </Box>
     </>
