@@ -74,6 +74,9 @@ export default function ListField({
             sx={{ flexGrow: 1 }}
             value={value}
             variant="outlined"
+            helperText={
+              listIndex == list.length - 1 ? field.helperText : undefined
+            }
           />
           <IconButton
             aria-label="delete"

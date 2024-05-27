@@ -1,7 +1,6 @@
 "use client";
 
-import MenuIcon from "@mui/icons-material/Menu";
-import { Link, Stack } from "@mui/material";
+import { Link, Stack, Tooltip } from "@mui/material";
 import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
@@ -117,14 +116,16 @@ function ResponsiveAppBar() {
 
         <Stack direction={"row"} sx={{ flexGrow: 0 }}>
           <EditViewButton />
-          <IconButton
-            aria-label="Discord Link"
-            aria-controls="menu-appbar"
-            href="https://discord.gg/"
-            color="inherit"
-          >
-            <DiscordIcon />
-          </IconButton>
+          <Tooltip title={`Discuss on Discord`}>
+            <IconButton
+              aria-label="Discord Link"
+              aria-controls="menu-appbar"
+              href="https://discord.gg/"
+              color="inherit"
+            >
+              <DiscordIcon />
+            </IconButton>
+          </Tooltip>
           <LoginButton />
         </Stack>
       </Toolbar>

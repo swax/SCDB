@@ -173,6 +173,7 @@ export default function LookupField({
           <TextField
             {...params}
             error={hasError}
+            helperText={field.helperText}
             label={inTable ? "" : field.label}
             placeholder="Type to search..."
           />
