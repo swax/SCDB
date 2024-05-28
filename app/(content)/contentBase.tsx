@@ -1,6 +1,7 @@
 import { Box, Typography } from "@mui/material";
 import { revalidatePath, revalidateTag, unstable_cache } from "next/cache";
 import { notFound, redirect } from "next/navigation";
+import "server-only";
 
 interface ContentPageParams {
   idslug: string[];
