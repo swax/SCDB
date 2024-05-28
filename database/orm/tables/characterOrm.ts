@@ -24,6 +24,7 @@ const characterOrm: TableOrm = {
     {
       label: "Description",
       column: "description",
+      multiline: true,
       type: "string",
       optional: true,
     },

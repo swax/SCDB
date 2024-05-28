@@ -13,6 +13,7 @@ import Image from "next/image";
 import { MouseEvent, useState } from "react";
 import DiscordIcon from "./DiscordIcon";
 import EditViewButton from "./EditViewButton";
+import InvalidateCacheButton from "./InvalidateCacheButton";
 import LoginButton from "./LoginButton";
 
 const pages = ["Categories", "Characters", "People", "Shows", "Sketches"];
@@ -115,6 +116,7 @@ function ResponsiveAppBar() {
         </Box>
 
         <Stack direction={"row"} sx={{ flexGrow: 0 }}>
+          <InvalidateCacheButton />
           <EditViewButton />
           <Tooltip title={`Discuss on Discord`}>
             <IconButton
