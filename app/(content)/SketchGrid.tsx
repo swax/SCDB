@@ -64,6 +64,7 @@ export default function SketchGrid({ initialData, getData }: SketchGridProps) {
       </AccordionSummary>
       <AccordionDetails>
         <div
+          className="sketch-grid"
           style={{
             display: "flex",
             flexWrap: "wrap",
@@ -71,22 +72,20 @@ export default function SketchGrid({ initialData, getData }: SketchGridProps) {
           }}
         >
           {data.sketches.map((sketch, i) => (
-            <ImageListItem
-              key={i}
-              component={MuiNextLink}
-              href={`/sketch/${sketch.id}/${sketch.url_slug}`}
-            >
-              <Image
-                alt={sketch.title}
-                style={{ objectFit: "cover", borderRadius: 8 }}
-                src={
-                  sketch.image_cdnkey
-                    ? `${s3url}/${sketch.image_cdnkey}`
-                    : "/images/no-image.webp"
-                }
-                width={imgWidth}
-                height={imgHeight}
-              />
+            <ImageListItem key={i}>
+              <MuiNextLink href={`/sketch/${sketch.id}/${sketch.url_slug}`}>
+                <Image
+                  alt={sketch.title?.toLocaleString() || ""}
+                  style={{ objectFit: "cover", borderRadius: 8 }}
+                  src={
+                    sketch.image_cdnkey
+                      ? `${s3url}/${sketch.image_cdnkey}`
+                      : "/images/no-image.webp"
+                  }
+                  width={imgWidth}
+                  height={imgHeight}
+                />
+              </MuiNextLink>
               <ImageListItemBar
                 title={sketch.title}
                 subtitle={sketch.subtitle}

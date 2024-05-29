@@ -1,6 +1,7 @@
+import { ContentLink } from "@/app/components/ContentLink";
 import prisma from "@/database/prisma";
-import { ListSearchParms, getBaseFindParams } from "./listHelper";
 import { SKETCH_PAGE_SIZE, SketchGridData } from "@/shared/sketchGridBase";
+import { ListSearchParms, getBaseFindParams } from "./listHelper";
 
 export async function getCharacterList(searchParams: ListSearchParms) {
   const baseFindParams = getBaseFindParams(searchParams);
@@ -60,6 +61,8 @@ export async function getCharacterSketchGrid(
       person: {
         select: {
           name: true,
+          id: true,
+          url_slug: true,
         },
       },
       sketch: {
@@ -75,11 +78,15 @@ export async function getCharacterSketchGrid(
           show: {
             select: {
               title: true,
+              id: true,
+              url_slug: true,
             },
           },
           season: {
             select: {
               year: true,
+              id: true,
+              url_slug: true,
             },
           },
         },
@@ -103,8 +110,25 @@ export async function getCharacterSketchGrid(
   const sketches = dbResults.map((sc) => ({
     id: sc.sketch.id,
     url_slug: sc.sketch.url_slug,
-    title: sc.sketch.title,
-    subtitle: `${sc.person?.name} • ${sc.sketch.show.title} (${sc.sketch.season?.year})`,
+    title: <ContentLink table="sketch" entry={sc.sketch} />,
+    subtitle: (
+      <>
+        {!!sc.person && (
+          <>
+            <ContentLink table="person" entry={sc.person} />
+            {" • "}
+          </>
+        )}
+        <ContentLink table="show" entry={sc.sketch.show} />{" "}
+        {!!sc.sketch.season && (
+          <>
+            {"("}
+            <ContentLink table="season" entry={sc.sketch.season} />
+            {")"}
+          </>
+        )}
+      </>
+    ),
     image_cdnkey: sc.image?.cdn_key || sc.sketch.image?.cdn_key,
   }));
 
@@ -114,3 +138,4 @@ export async function getCharacterSketchGrid(
     totalPages: Math.ceil(totalCount / SKETCH_PAGE_SIZE),
   };
 }
+

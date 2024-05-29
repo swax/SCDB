@@ -1,8 +1,8 @@
 export interface SketchGridItem {
   id: number;
   url_slug: string;
-  title: string;
-  subtitle?: string;
+  title: React.ReactNode;
+  subtitle?: React.ReactNode;
   image_cdnkey?: string;
 }
 
@@ -12,4 +12,4 @@ export interface SketchGridData {
   totalPages: number;
 }
 
-export const SKETCH_PAGE_SIZE = 9;
+export const SKETCH_PAGE_SIZE = 2;

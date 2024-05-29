@@ -1,2 +1,11 @@
 @media (prefers-color-scheme: dark) {
 }
+
+.sketch-grid a {
+  color: white;
+  text-decoration: none;
+}
+
+.sketch-grid a:hover {
+    text-decoration: underline;
+  }
