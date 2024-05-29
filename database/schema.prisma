@@ -1,5 +1,6 @@
 generator client {
-  provider = "prisma-client-js"
+  provider        = "prisma-client-js"
+  previewFeatures = ["relationJoins"]
 }
 
 datasource db {
@@ -80,8 +81,6 @@ model User {
   sketch_cast_modified        sketch_cast[]      @relation("SketchCastModified")
   sketch_credits_created      sketch_credit[]    @relation("SketchCreditsCreated")
   sketch_credits_modified     sketch_credit[]    @relation("SketchCreditsModified")
-  sketch_images_created       sketch_image[]     @relation("SketchImagesCreated")
-  sketch_images_modified      sketch_image[]     @relation("SketchImagesModified")
   sketch_tags_created         sketch_tag[]       @relation("SketchTagsCreated")
   sketch_tags_modified        sketch_tag[]       @relation("SketchTagsModified")
   tag_categories_created      tag_category[]     @relation("TagCategoriesCreated")
@@ -365,6 +364,7 @@ model sketch {
   url_slug            String             @unique @db.VarChar(100)
   lookup_slug         String             @unique @db.VarChar(100)
   video_urls          String[]
+  image_id            Int?
   description         String?
   duration            Int?
   show_id             Int
@@ -379,6 +379,7 @@ model sketch {
 
   created_by       User              @relation("SketchesCreated", fields: [created_by_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
   modified_by      User              @relation("SketchesModified", fields: [modified_by_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  image            image?            @relation(fields: [image_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
   user_ratings     sketch_rating[]
   sketch_casts     sketch_cast[]
   sketch_credits   sketch_credit[]
@@ -387,25 +388,8 @@ model sketch {
   season           season?           @relation(fields: [season_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
   episode          episode?          @relation(fields: [episode_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
   recurring_sketch recurring_sketch? @relation(fields: [recurring_sketch_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  sketch_images    sketch_image[]
 
   @@index([review_status])
-}
-
-model sketch_image {
-  id             Int      @id @default(autoincrement())
-  sketch_id      Int
-  image_id       Int
-  sequence       Int
-  created_by_id  String
-  created_at     DateTime @default(now())
-  modified_by_id String
-  modified_at    DateTime @default(now())
-
-  created_by  User   @relation("SketchImagesCreated", fields: [created_by_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  modified_by User   @relation("SketchImagesModified", fields: [modified_by_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  sketch      sketch @relation(fields: [sketch_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  image       image  @relation(fields: [image_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
 }
 
 model tag_category {
@@ -457,7 +441,7 @@ model image {
   person_images person_image[]
   show_images   show_image[]
   sketch_casts  sketch_cast[]
-  sketch_images sketch_image[]
+  sketch        sketch[]
 }
 
 enum gender_type {

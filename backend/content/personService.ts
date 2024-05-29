@@ -37,6 +37,12 @@ export async function getPerson(id: number) {
       description: true,
       birth_date: true,
       death_date: true,
+      character: {
+        select: {
+          id: true,
+          url_slug: true,
+        },
+      },
       person_images: {
         select: {
           description: true,

@@ -31,53 +31,11 @@ export async function getCharacter(id: number, skip?: number, take?: number) {
       url_slug: true,
       name: true,
       description: true,
-      person_id: true,
-      sketch_casts: {
+      person: {
         select: {
-          role: true,
-          description: true,
-          sketch: {
-            select: {
-              id: true,
-              title: true,
-              url_slug: true,
-              show: {
-                select: {
-                  title: true,
-                },
-              },
-              season: {
-                select: {
-                  year: true,
-                },
-              },
-              sketch_images: {
-                select: {
-                  image: {
-                    select: {
-                      cdn_key: true,
-                    },
-                  },
-                },
-                take: 1,
-              },
-            },
-          },
-          person: {
-            select: {
-              id: true,
-              name: true,
-              url_slug: true,
-            },
-          },
-          image: {
-            select: {
-              cdn_key: true,
-            },
-          },
+          id: true,
+          url_slug: true,
         },
-        skip,
-        take,
       },
     },
   });
@@ -89,5 +47,64 @@ export async function getCharacter(id: number, skip?: number, take?: number) {
   return {
     ...result,
     dateGenerated: new Date(),
+  };
+}
+
+export async function getCharacterSketches(
+  id: number,
+  skip?: number,
+  take?: number,
+) {
+  const list = await prisma.sketch_cast.findMany({
+    where: {
+      character_id: id,
+    },
+    select: {
+      person: {
+        select: {
+          name: true,
+        },
+      },
+      sketch: {
+        select: {
+          id: true,
+          url_slug: true,
+          title: true,
+          image: {
+            select: {
+              cdn_key: true,
+            },
+          },
+          show: {
+            select: {
+              title: true,
+            },
+          },
+          season: {
+            select: {
+              year: true,
+            },
+          },
+        },
+      },
+      image: {
+        select: {
+          cdn_key: true,
+        },
+      },
+    },
+    skip,
+    take,
+  });
+
+  const totalCount = await prisma.sketch_cast.count({
+    where: {
+      character_id: id,
+    },
+  });
+
+  return {
+    list,
+    totalCount,
   };
 }
