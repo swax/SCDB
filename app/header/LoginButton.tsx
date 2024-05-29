@@ -6,7 +6,6 @@ import {
   CircularProgress,
   Divider,
   IconButton,
-  Link,
   Menu,
   MenuItem,
   Tooltip,
@@ -14,6 +13,7 @@ import {
 import { user_role_type } from "@prisma/client";
 import { signIn, signOut, useSession } from "next-auth/react";
 import { useState } from "react";
+import MuiNextLink from "../components/MuiNextLink";
 
 export default function LoginButton() {
   // Hooks
@@ -67,32 +67,32 @@ export default function LoginButton() {
         open={Boolean(anchorEl)}
       >
         <MenuItem>
-          <Link
+          <MuiNextLink
             color="inherit"
             href={`/profile/${session.user.username}`}
             underline="none"
           >
             {session.user.username}
-          </Link>
+          </MuiNextLink>
         </MenuItem>
         <MenuItem>
-          <Link color="inherit" href="/account" underline="none">
+          <MuiNextLink color="inherit" href="/account" underline="none">
             My Account
-          </Link>
+          </MuiNextLink>
         </MenuItem>
 
         <Divider />
         {showReviewMenuItem && (
           <MenuItem>
-            <Link color="inherit" href="/review" underline="none">
+            <MuiNextLink color="inherit" href="/review" underline="none">
               Review
-            </Link>
+            </MuiNextLink>
           </MenuItem>
         )}
         <MenuItem>
-          <Link color="inherit" href="/changelog" underline="none">
+          <MuiNextLink color="inherit" href="/changelog" underline="none">
             Changelog
-          </Link>
+          </MuiNextLink>
         </MenuItem>
         <Divider />
         <MenuItem onClick={() => void signOut()}>Logout</MenuItem>

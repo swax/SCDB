@@ -1,5 +1,6 @@
+import MuiNextLink from "@/app/components/MuiNextLink";
 import { getSketchList } from "@/backend/content/sketchService";
-import { Button, Link } from "@mui/material";
+import { Button } from "@mui/material";
 import { ListPageProps, parseSearchParams } from "../baseListTypes";
 import SketchDataGrid from "./SketchDataGrid";
 
@@ -26,9 +27,9 @@ export default async function SketchesPage(props: ListPageProps) {
         rows={rows}
         totalRowCount={sketches.count}
       />
-      <Link component={Button} href="/edit/sketch">
-        Add Sketch
-      </Link>
+      <MuiNextLink href="/edit/sketch">
+        <Button>Add Sketch</Button>
+      </MuiNextLink>
     </>
   );
 }

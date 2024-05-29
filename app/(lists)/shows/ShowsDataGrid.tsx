@@ -1,7 +1,7 @@
 "use client";
 
+import MuiNextLink from "@/app/components/MuiNextLink";
 import { ListSearchParms } from "@/backend/content/listHelper";
-import { Link } from "@mui/material";
 import { GridRenderCellParams } from "@mui/x-data-grid";
 import BaseDataGrid from "../BaseDataGrid";
 
@@ -32,9 +32,12 @@ export default function ShowDataGrid({
         row: show,
       }: GridRenderCellParams<ShowRow, ShowRow["title"]>) => {
         return (
-          <Link href={`/show/${show.id}/${show.url_slug}`} underline="hover">
+          <MuiNextLink
+            href={`/show/${show.id}/${show.url_slug}`}
+            underline="hover"
+          >
             {show.title}
-          </Link>
+          </MuiNextLink>
         );
       },
     },

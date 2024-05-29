@@ -1,7 +1,7 @@
 "use client";
 
+import MuiNextLink from "@/app/components/MuiNextLink";
 import { ListSearchParms } from "@/backend/content/listHelper";
-import { Link } from "@mui/material";
 import { GridColDef, GridRenderCellParams } from "@mui/x-data-grid";
 import BaseDataGrid from "../BaseDataGrid";
 
@@ -33,12 +33,12 @@ export default function PeopleDataGrid({
         row: person,
       }: GridRenderCellParams<PersonRow, PersonRow["name"]>) => {
         return (
-          <Link
+          <MuiNextLink
             href={`/person/${person.id}/${person.url_slug}`}
             underline="hover"
           >
             {person.name}
-          </Link>
+          </MuiNextLink>
         );
       },
     },

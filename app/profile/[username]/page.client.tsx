@@ -1,14 +1,14 @@
 "use client";
 
+import ChangeLogTable from "@/app/changelog/components/ChangeLogTable";
+import MuiNextLink from "@/app/components/MuiNextLink";
 import { GetChangelogResponse } from "@/backend/mgmt/changelogService";
 import { GetProfileResponse } from "@/backend/user/profileService";
-import ChangeLogTable from "@/app/changelog/components/ChangeLogTable";
 import { allowedToChangeRole } from "@/shared/roleUtils";
 import { ServiceResponse } from "@/shared/serviceResponse";
 import {
   Box,
   Button,
-  Link,
   MenuItem,
   Select,
   TextField,
@@ -166,9 +166,9 @@ export default function ProfileClientPage({
         profilePage={true}
       />
       <Box mt={2}>
-        <Link href={`/changelog?username=${profile.username}`}>
+        <MuiNextLink href={`/changelog?username=${profile.username}`}>
           See full change history
-        </Link>
+        </MuiNextLink>
       </Box>
     </Box>
   );

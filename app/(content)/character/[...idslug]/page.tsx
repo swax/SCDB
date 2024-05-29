@@ -1,3 +1,4 @@
+import MuiNextLink from "@/app/components/MuiNextLink";
 import {
   getCharacter,
   getCharacterList,
@@ -9,7 +10,6 @@ import {
   Accordion,
   AccordionDetails,
   AccordionSummary,
-  Link,
   Typography,
 } from "@mui/material";
 import Markdown from "react-markdown";
@@ -45,11 +45,11 @@ export default async function CharacterPage({ params }: ContentPageProps) {
       {Boolean(character.person) && (
         <Typography variant="subtitle1" mb={4}>
           The Character,{" "}
-          <Link
+          <MuiNextLink
             href={`/person/${character.person?.id}/${character.person?.url_slug}`}
           >
             The Person
-          </Link>
+          </MuiNextLink>
         </Typography>
       )}
       {Boolean(character.description) && (

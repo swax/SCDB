@@ -1,7 +1,7 @@
 "use client";
 
+import MuiNextLink from "@/app/components/MuiNextLink";
 import { ListSearchParms } from "@/backend/content/listHelper";
-import { Link } from "@mui/material";
 import { GridRenderCellParams } from "@mui/x-data-grid";
 import BaseDataGrid from "../BaseDataGrid";
 
@@ -32,12 +32,12 @@ export default function CategoryDataGrid({
         row: category,
       }: GridRenderCellParams<CategoryRow, CategoryRow["name"]>) => {
         return (
-          <Link
+          <MuiNextLink
             href={`/cateogy/${category.id}/${category.url_slug}`}
             underline="hover"
           >
             {category.name}
-          </Link>
+          </MuiNextLink>
         );
       },
     },
