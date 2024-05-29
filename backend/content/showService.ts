@@ -1,3 +1,4 @@
+import { SKETCH_PAGE_SIZE, SketchGridData } from "@/shared/sketchGridBase";
 import { ListSearchParms, getBaseFindParams } from "./listHelper";
 import prisma from "@/database/prisma";
 
@@ -31,12 +32,11 @@ export async function getShow(id: number) {
   });
 }
 
-export async function getShowSketches(
+export async function getShowSketchGrid(
   id: number,
-  skip?: number,
-  take?: number,
-) {
-  const list = await prisma.sketch.findMany({
+  page: number,
+): Promise<SketchGridData> {
+  const dbResults = await prisma.sketch.findMany({
     where: {
       show_id: id,
     },
@@ -55,8 +55,8 @@ export async function getShowSketches(
         },
       },
     },
-    skip,
-    take,
+    skip: (page - 1) * SKETCH_PAGE_SIZE,
+    take: SKETCH_PAGE_SIZE,
   });
 
   const totalCount = await prisma.sketch.count({
@@ -65,8 +65,17 @@ export async function getShowSketches(
     },
   });
 
+  const sketches = dbResults.map((s) => ({
+    id: s.id,
+    url_slug: s.url_slug,
+    title: s.title,
+    subtitle: s.season?.year.toString(),
+    image_cdnkey: s.image?.cdn_key,
+  }));
+
   return {
-    list,
+    sketches,
     totalCount,
+    totalPages: Math.ceil(totalCount / SKETCH_PAGE_SIZE),
   };
 }
