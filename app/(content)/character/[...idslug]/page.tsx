@@ -1,7 +1,7 @@
 import {
   getCharacter,
   getCharacterList,
-  getCharacterSketches,
+  getCharacterSketchGrid,
 } from "@/backend/content/characterService";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import NotesIcon from "@mui/icons-material/Notes";
@@ -13,11 +13,11 @@ import {
   Typography,
 } from "@mui/material";
 import Markdown from "react-markdown";
-import SketchAccordian from "../../SketchAccordian";
+import SketchGrid from "../../SketchGrid";
 import {
   ContentPageProps,
   DateGeneratedFooter,
-  getCachedContent,
+  tryGetContent,
 } from "../../contentBase";
 
 export async function generateStaticParams() {
@@ -29,17 +29,14 @@ export async function generateStaticParams() {
 }
 
 export default async function CharacterPage({ params }: ContentPageProps) {
-  const character = await getCachedContent("character", params, getCharacter);
+  const character = await tryGetContent("character", params, getCharacter);
 
-  const sketchData = await getCharacterSketches(character.id, 0, 9);
+  async function getSketchData(page: number) {
+    "use server";
+    return await getCharacterSketchGrid(character.id, page);
+  }
 
-  const sketches = sketchData.list.map((sc) => ({
-    id: sc.sketch.id,
-    url_slug: sc.sketch.url_slug,
-    title: sc.sketch.title,
-    subtitle: `${sc.person?.name} • ${sc.sketch.show.title} (${sc.sketch.season?.year})`,
-    image_cdnkey: sc.image?.cdn_key || sc.sketch.image?.cdn_key,
-  }));
+  const sketchData = await getSketchData(1);
 
   // Rendering
   return (
@@ -72,9 +69,9 @@ export default async function CharacterPage({ params }: ContentPageProps) {
           </AccordionDetails>
         </Accordion>
       )}
-      <SketchAccordian sketches={sketches} />
+      <SketchGrid initialData={sketchData} getData={getSketchData} />
 
-      <DateGeneratedFooter dateGenerated={character.dateGenerated} />
+      <DateGeneratedFooter />
     </>
   );
 }

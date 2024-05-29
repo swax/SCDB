@@ -25,7 +25,7 @@ import Markdown from "react-markdown";
 import {
   ContentPageProps,
   DateGeneratedFooter,
-  getCachedContent,
+  tryGetContent,
 } from "../../contentBase";
 import SketchRating from "./components/SketchRating";
 import VideoHero from "./components/VideoHero";
@@ -40,7 +40,7 @@ export async function generateStaticParams() {
 
 export default async function SketchPage({ params }: ContentPageProps) {
   // Data fetching
-  const sketch = await getCachedContent("sketch", params, getSketch);
+  const sketch = await tryGetContent("sketch", params, getSketch);
 
   // Rendering
   return (
@@ -170,7 +170,7 @@ export default async function SketchPage({ params }: ContentPageProps) {
           </Accordion>
         )}
       </Box>
-      <DateGeneratedFooter dateGenerated={sketch.dateGenerated} />
+      <DateGeneratedFooter />
     </>
   );
 }

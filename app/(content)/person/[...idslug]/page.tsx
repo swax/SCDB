@@ -12,7 +12,7 @@ import Image from "next/image";
 import {
   ContentPageProps,
   DateGeneratedFooter,
-  getCachedContent,
+  tryGetContent,
 } from "../../contentBase";
 
 export async function generateStaticParams() {
@@ -25,7 +25,7 @@ export async function generateStaticParams() {
 
 export default async function PersonaPage({ params }: ContentPageProps) {
   // Data fetching
-  const person = await getCachedContent("person", params, getPerson);
+  const person = await tryGetContent("person", params, getPerson);
 
   // Constants
   const imgHeight = 300;
@@ -85,7 +85,7 @@ export default async function PersonaPage({ params }: ContentPageProps) {
         ))}
       </ImageList>
       <Typography variant="subtitle1">{person.description}</Typography>
-      <DateGeneratedFooter dateGenerated={person.dateGenerated} />
+      <DateGeneratedFooter />
     </>
   );
 }

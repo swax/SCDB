@@ -15,7 +15,7 @@ export interface ContentPageProps {
  * Generic function to get the id/slug from the query params and pull the data from the backend service
  * Re-routing if the slug doesn't match the one from the backend
  */
-export async function getCachedContent<T extends { url_slug: string }>(
+export async function tryGetContent<T extends { url_slug: string }>(
   table: string,
   params: ContentPageParams,
   serviceFunc: (id: number) => Promise<T | null>,
@@ -24,15 +24,7 @@ export async function getCachedContent<T extends { url_slug: string }>(
 
   const idNum = parseInt(id);
 
-  const getCachedContent = unstable_cache(
-    async () => serviceFunc(idNum),
-    [table, id],
-    {
-      tags: [getContentTag(table, idNum)],
-    },
-  );
-
-  const content = await getCachedContent();
+  const content = await serviceFunc(idNum);
 
   if (!content) {
     notFound();
@@ -45,13 +37,8 @@ export async function getCachedContent<T extends { url_slug: string }>(
   return content;
 }
 
-export function getContentTag(table: string, id: number) {
-  return `content:${table}:${id}`;
-}
-
 export function revalidateContent(table: string, id: number) {
   revalidatePath(`/${table}/${id}`); // Invalidates page cache
-  revalidateTag(getContentTag(table, id)); // Invalidates data cache
 }
 
 /**
@@ -88,18 +75,15 @@ export async function fetchCachedContent<T extends { url_slug: string } | null>(
     redirect(`/${route}/${id}/${content.url_slug}`);
   }
 
-  return content;
 }
 
-export function DateGeneratedFooter(params: { dateGenerated: Date }) {
+export function DateGeneratedFooter() {
   return (
     <Box mt={4}>
       <Typography
         variant="caption"
         sx={{ fontStyle: "italic", color: "DimGrey" }}
       >
-        Data Fetched: {new Date(params.dateGenerated).toLocaleString()}
-        <br />
         Page Generated: {new Date().toLocaleString()}
       </Typography>
     </Box>

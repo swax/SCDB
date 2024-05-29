@@ -1,5 +1,6 @@
 import prisma from "@/database/prisma";
 import { ListSearchParms, getBaseFindParams } from "./listHelper";
+import { SKETCH_PAGE_SIZE, SketchGridData } from "@/shared/sketchGridBase";
 
 export async function getCharacterList(searchParams: ListSearchParms) {
   const baseFindParams = getBaseFindParams(searchParams);
@@ -18,10 +19,7 @@ export async function getCharacterList(searchParams: ListSearchParms) {
   return { list, count };
 }
 
-export async function getCharacter(id: number, skip?: number, take?: number) {
-  skip ||= 0;
-  take ||= 10;
-
+export async function getCharacter(id: number) {
   const result = await prisma.character.findUnique({
     where: {
       id: id,
@@ -50,12 +48,11 @@ export async function getCharacter(id: number, skip?: number, take?: number) {
   };
 }
 
-export async function getCharacterSketches(
+export async function getCharacterSketchGrid(
   id: number,
-  skip?: number,
-  take?: number,
-) {
-  const list = await prisma.sketch_cast.findMany({
+  page: number,
+): Promise<SketchGridData> {
+  const dbResults = await prisma.sketch_cast.findMany({
     where: {
       character_id: id,
     },
@@ -93,8 +90,8 @@ export async function getCharacterSketches(
         },
       },
     },
-    skip,
-    take,
+    skip: (page - 1) * SKETCH_PAGE_SIZE,
+    take: SKETCH_PAGE_SIZE,
   });
 
   const totalCount = await prisma.sketch_cast.count({
@@ -103,8 +100,17 @@ export async function getCharacterSketches(
     },
   });
 
+  const sketches = dbResults.map((sc) => ({
+    id: sc.sketch.id,
+    url_slug: sc.sketch.url_slug,
+    title: sc.sketch.title,
+    subtitle: `${sc.person?.name} • ${sc.sketch.show.title} (${sc.sketch.season?.year})`,
+    image_cdnkey: sc.image?.cdn_key || sc.sketch.image?.cdn_key,
+  }));
+
   return {
-    list,
+    sketches,
     totalCount,
+    totalPages: Math.ceil(totalCount / SKETCH_PAGE_SIZE),
   };
 }
