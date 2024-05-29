@@ -46,21 +46,10 @@ const sketchOrm: TableOrm = {
       optional: true,
     },
     {
-      label: "Images",
-      type: "mapping",
-      mappingTable: {
-        name: "sketch_image",
-        navProp: "sketch_images",
-        label: "Images",
-        fields: [
-          {
-            label: "",
-            column: "image_id",
-            type: "image",
-            navProp: "image",
-          },
-        ],
-      },
+      label: "Preview Image",
+      column: "image_id",
+      type: "image",
+      navProp: "image",
     },
     {
       label: "Video URLs",

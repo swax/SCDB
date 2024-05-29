@@ -5,6 +5,7 @@ import {
   ImageList,
   ImageListItem,
   ImageListItemBar,
+  Link,
   Typography,
 } from "@mui/material";
 import Image from "next/image";
@@ -37,7 +38,16 @@ export default async function PersonaPage({ params }: ContentPageProps) {
   return (
     <>
       <Typography variant="h4">{person.name}</Typography>
-
+      {Boolean(person.character) && (
+        <Typography variant="subtitle1" mb={4}>
+          The Person,{" "}
+          <Link
+            href={`/character/${person.character?.id}/${person.character?.url_slug}`}
+          >
+            The Character
+          </Link>
+        </Typography>
+      )}
       {/* birth, death, age */}
       <Box sx={{ display: "flex", gap: 2 }}>
         {!!birthDate && (

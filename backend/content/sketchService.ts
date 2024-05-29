@@ -40,16 +40,9 @@ export async function getSketch(id: number) {
       title: true,
       description: true,
       url_slug: true,
-      sketch_images: {
+      image: {
         select: {
-          image: {
-            select: {
-              cdn_key: true,
-            },
-          },
-        },
-        orderBy: {
-          sequence: "asc",
+          cdn_key: true,
         },
       },
       video_urls: true,

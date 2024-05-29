@@ -51,7 +51,7 @@ export default async function SketchPage({ params }: ContentPageProps) {
       </Typography>
       <VideoHero
         title={sketch.title}
-        previewImgCdnKey={sketch.sketch_images[0]?.image.cdn_key}
+        previewImgCdnKey={sketch.image?.cdn_key}
         videoEmbedUrl={sketch.video_urls[0]}
       />
       <SketchRating sketchId={sketch.id} />
@@ -92,11 +92,11 @@ export default async function SketchPage({ params }: ContentPageProps) {
                     {sketch.sketch_casts.map((sketch_cast, i) => (
                       <TableRow key={i}>
                         <TableCell>
-                          {Boolean(sketch_cast.image) && (
+                          {!!sketch_cast.image && (
                             <Image
                               alt={sketch_cast.character_name || "Unknown"}
-                              objectFit="cover"
-                              src={`${s3url}/${sketch_cast.image?.cdn_key}`}
+                              style={{ objectFit: "cover" }}
+                              src={`${s3url}/${sketch_cast.image.cdn_key}`}
                               height={50}
                               width={50}
                             />
