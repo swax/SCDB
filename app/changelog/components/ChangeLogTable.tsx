@@ -1,8 +1,8 @@
 "use client";
 
+import MuiNextLink from "@/app/components/MuiNextLink";
 import { GetChangelogResponse } from "@/backend/mgmt/changelogService";
 import {
-  Link,
   Table,
   TableBody,
   TableCell,
@@ -99,7 +99,7 @@ export default function ChangeLogTable({
             </TableCell>
             {!profilePage && (
               <TableCell sx={bodyCellStyle}>
-                <Link
+                <MuiNextLink
                   href={buildHref(
                     1,
                     rowsPerPage,
@@ -109,11 +109,11 @@ export default function ChangeLogTable({
                   )}
                 >
                   {entry.changed_by.username}
-                </Link>
+                </MuiNextLink>
               </TableCell>
             )}
             <TableCell sx={bodyCellStyle}>
-              <Link
+              <MuiNextLink
                 href={buildHref(
                   1,
                   rowsPerPage,
@@ -123,10 +123,10 @@ export default function ChangeLogTable({
                 )}
               >
                 {entry.table_name}
-              </Link>
+              </MuiNextLink>
             </TableCell>
             <TableCell sx={bodyCellStyle}>
-              <Link
+              <MuiNextLink
                 href={buildHref(
                   1,
                   rowsPerPage,
@@ -136,10 +136,10 @@ export default function ChangeLogTable({
                 )}
               >
                 {entry.row_id}
-              </Link>
+              </MuiNextLink>
             </TableCell>
             <TableCell sx={bodyCellStyle}>
-              <Link
+              <MuiNextLink
                 href={buildHref(
                   1,
                   rowsPerPage,
@@ -150,7 +150,7 @@ export default function ChangeLogTable({
                 )}
               >
                 {entry.operation}
-              </Link>
+              </MuiNextLink>
             </TableCell>
             <TableCell sx={{ verticalAlign: "top" }}>
               <pre style={{ fontSize: 12, margin: 0 }}>{entry.summary}</pre>

@@ -1,12 +1,12 @@
 import { getRowsToReview } from "@/backend/mgmt/reviewService";
 import {
-  Link,
   Table,
   TableBody,
   TableCell,
   TableHead,
   TableRow,
 } from "@mui/material";
+import MuiNextLink from "../components/MuiNextLink";
 
 export default async function ReviewPage({
   searchParams,
@@ -43,15 +43,15 @@ export default async function ReviewPage({
           {rowsToReview.map((row) => (
             <TableRow key={row.row_id}>
               <TableCell>
-                <Link href={`/edit/${row.table_name}/${row.row_id}`}>
+                <MuiNextLink href={`/edit/${row.table_name}/${row.row_id}`}>
                   {row.table_name}/{row.row_id}
-                </Link>
+                </MuiNextLink>
               </TableCell>
               <TableCell>{row.review_status}</TableCell>
               <TableCell>
-                <Link href={`/profile/${row.modified_by_username}`}>
+                <MuiNextLink href={`/profile/${row.modified_by_username}`}>
                   {row.modified_by_username}
-                </Link>
+                </MuiNextLink>
               </TableCell>
               <TableCell>{row.modified_at.toLocaleString()}</TableCell>
             </TableRow>

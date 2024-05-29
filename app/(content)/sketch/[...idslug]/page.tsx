@@ -1,3 +1,4 @@
+import MuiNextLink from "@/app/components/MuiNextLink";
 import { getSketch, getSketchList } from "@/backend/content/sketchService";
 import s3url from "@/shared/cdnHost";
 import { enumNameToDisplayName } from "@/shared/utilities";
@@ -11,7 +12,6 @@ import {
   AccordionSummary,
   Box,
   Chip,
-  Link,
   Stack,
   Table,
   TableBody,
@@ -104,24 +104,24 @@ export default async function SketchPage({ params }: ContentPageProps) {
                         </TableCell>
                         <TableCell>
                           {sketch_cast.character ? (
-                            <Link
+                            <MuiNextLink
                               href={`/character/${sketch_cast.character.id}/${sketch_cast.character.url_slug}`}
                               underline="hover"
                             >
                               {sketch_cast.character.name}
-                            </Link>
+                            </MuiNextLink>
                           ) : (
                             <>{sketch_cast.character_name || "Unknown"}</>
                           )}
                         </TableCell>
                         <TableCell sx={{ whiteSpace: "nowrap" }}>
                           {!!sketch_cast.person?.name && (
-                            <Link
+                            <MuiNextLink
                               href={`/person/${sketch_cast.person.id}/${sketch_cast.person.url_slug}`}
                               underline="hover"
                             >
                               {sketch_cast.person.name}
-                            </Link>
+                            </MuiNextLink>
                           )}
                         </TableCell>
                         <TableCell>

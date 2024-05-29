@@ -1,6 +1,6 @@
 "use client";
 
-import { Link, Stack, Tooltip } from "@mui/material";
+import { Stack, Tooltip } from "@mui/material";
 import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
@@ -15,6 +15,7 @@ import DiscordIcon from "./DiscordIcon";
 import EditViewButton from "./EditViewButton";
 import InvalidateCacheButton from "./InvalidateCacheButton";
 import LoginButton from "./LoginButton";
+import MuiNextLink from "../components/MuiNextLink";
 
 const pages = ["Categories", "Characters", "People", "Shows", "Sketches"];
 
@@ -39,7 +40,7 @@ function ResponsiveAppBar() {
   return (
     <AppBar position="static">
       <Toolbar disableGutters variant="dense">
-        <Link href="/" sx={{ flexGrow: 0 }}>
+        <MuiNextLink href="/" sx={{ flexGrow: 0 }}>
           <Image
             alt="SketchTV.lol"
             style={{ objectFit: "cover" }}
@@ -47,7 +48,7 @@ function ResponsiveAppBar() {
             width={90}
             height={45}
           />
-        </Link>
+        </MuiNextLink>
 
         {/* Hamburger Menu */}
         <Box sx={{ flexGrow: 1, display: { xs: "flex", sm: "none" } }}>
@@ -85,33 +86,42 @@ function ResponsiveAppBar() {
             }}
           >
             {pages.map((page) => (
-              <MenuItem
-                key={page}
-                component={Link}
-                href={`/${page.toLowerCase()}`}
-              >
-                <Typography textAlign="center" fontFamily={funFont}>
-                  {page}
-                </Typography>
+              <MenuItem key={page}>
+                <MuiNextLink
+                  href={`/${page.toLowerCase()}`}
+                  underline="none"
+                  onClick={handleCloseNavMenu}
+                >
+                  <Typography
+                    textAlign="center"
+                    sx={{
+                      color: "white",
+                      fontFamily: funFont,
+                      fontWeight: "bold",
+                      fontSize: "1.0rem",
+                    }}
+                  >
+                    {page}
+                  </Typography>
+                </MuiNextLink>
               </MenuItem>
             ))}
           </Menu>
         </Box>
         <Box sx={{ flexGrow: 1, display: { xs: "none", sm: "flex" } }}>
           {pages.map((page) => (
-            <Button
-              key={page}
-              component={Link}
-              href={`/${page.toLowerCase()}`}
-              sx={{
-                color: "white",
-                fontFamily: funFont,
-                fontWeight: "bold",
-                fontSize: "1.0rem",
-              }}
-            >
-              {page}
-            </Button>
+            <MuiNextLink key={page} href={`/${page.toLowerCase()}`}>
+              <Button
+                sx={{
+                  color: "white",
+                  fontFamily: funFont,
+                  fontWeight: "bold",
+                  fontSize: "1.0rem",
+                }}
+              >
+                {page}
+              </Button>
+            </MuiNextLink>
           ))}
         </Box>
 

@@ -13,9 +13,9 @@ import {
   Typography,
 } from "@mui/material";
 import Image from "next/image";
-import Link from "next/link";
 import { useState } from "react";
 import { SketchGridData } from "../../shared/sketchGridBase";
+import MuiNextLink from "../components/MuiNextLink";
 
 interface SketchGridProps {
   initialData: SketchGridData;
@@ -73,7 +73,7 @@ export default function SketchGrid({ initialData, getData }: SketchGridProps) {
           {data.sketches.map((sketch, i) => (
             <ImageListItem
               key={i}
-              component={Link}
+              component={MuiNextLink}
               href={`/sketch/${sketch.id}/${sketch.url_slug}`}
             >
               <Image

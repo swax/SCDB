@@ -74,7 +74,6 @@ export async function fetchCachedContent<T extends { url_slug: string } | null>(
   if (slug !== content.url_slug) {
     redirect(`/${route}/${id}/${content.url_slug}`);
   }
-
 }
 
 export function DateGeneratedFooter() {

@@ -5,7 +5,6 @@ import {
   ImageList,
   ImageListItem,
   ImageListItemBar,
-  Link,
   Typography,
 } from "@mui/material";
 import Image from "next/image";
@@ -14,6 +13,7 @@ import {
   DateGeneratedFooter,
   tryGetContent,
 } from "../../contentBase";
+import MuiNextLink from "@/app/components/MuiNextLink";
 
 export async function generateStaticParams() {
   const poeple = await getPersonList({ page: 1, pageSize: 1000 });
@@ -41,11 +41,11 @@ export default async function PersonaPage({ params }: ContentPageProps) {
       {Boolean(person.character) && (
         <Typography variant="subtitle1" mb={4}>
           The Person,{" "}
-          <Link
+          <MuiNextLink
             href={`/character/${person.character?.id}/${person.character?.url_slug}`}
           >
             The Character
-          </Link>
+          </MuiNextLink>
         </Typography>
       )}
       {/* birth, death, age */}
