@@ -44,6 +44,7 @@ export async function getShowSketchGrid(
       id: true,
       url_slug: true,
       title: true,
+      site_rating: true,
       image: {
         select: {
           cdn_key: true,
@@ -54,6 +55,9 @@ export async function getShowSketchGrid(
           year: true,
         },
       },
+    },
+    orderBy: {
+      site_rating: "desc",
     },
     skip: (page - 1) * SKETCH_PAGE_SIZE,
     take: SKETCH_PAGE_SIZE,
@@ -68,6 +72,7 @@ export async function getShowSketchGrid(
   const sketches = dbResults.map((s) => ({
     id: s.id,
     url_slug: s.url_slug,
+    site_rating: s.site_rating,
     title: s.title,
     subtitle: s.season?.year.toString(),
     image_cdnkey: s.image?.cdn_key,

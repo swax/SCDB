@@ -87,7 +87,16 @@ export default function SketchGrid({ initialData, getData }: SketchGridProps) {
                 />
               </MuiNextLink>
               <ImageListItemBar
-                title={sketch.title}
+                title={
+                  <div style={{ display: "flex" }}>
+                    <div style={{ flex: "1", overflow: "hidden" }}>
+                      {sketch.title}
+                    </div>
+                    {!!sketch.site_rating && (
+                      <div>⭐ {sketch.site_rating.toFixed(0)}</div>
+                    )}
+                  </div>
+                }
                 subtitle={sketch.subtitle}
               />
             </ImageListItem>

@@ -1,5 +1,6 @@
 import prisma from "@/database/prisma";
 import { ListSearchParms, getBaseFindParams } from "./listHelper";
+import { contentResponse } from "@/shared/serviceResponse";
 
 export async function getSketchList(searchParams: ListSearchParms) {
   const baseFindParams = getBaseFindParams(searchParams);
@@ -37,9 +38,10 @@ export async function getSketch(id: number) {
     },
     select: {
       id: true,
+      url_slug: true,
       title: true,
       description: true,
-      url_slug: true,
+      site_rating: true,
       image: {
         select: {
           cdn_key: true,
@@ -146,10 +148,12 @@ export async function saveRating(
       modified_at: new Date(),
     },
   });
+
+  return await getRating(userId, sketchId);
 }
 
 export async function getRating(userId: string, sketchId: number) {
-  const result = await prisma.sketch_rating.findUnique({
+  const userRating = await prisma.sketch_rating.findUnique({
     where: {
       user_id_sketch_id: {
         user_id: userId,
@@ -161,5 +165,17 @@ export async function getRating(userId: string, sketchId: number) {
     },
   });
 
-  return result?.rating_value || null;
+  const sketchRating = await prisma.sketch.findUnique({
+    where: {
+      id: sketchId,
+    },
+    select: {
+      site_rating: true,
+    },
+  });
+
+  return contentResponse({
+    userRating: userRating?.rating_value || null,
+    siteRating: sketchRating?.site_rating || null,
+  });
 }
