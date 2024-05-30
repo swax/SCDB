@@ -1,20 +1,25 @@
 "use server";
 
+import { revalidateContent } from "@/app/(content)/contentBase";
 import { catchServiceErrors, getLoggedInUser } from "@/backend/actionHelper";
 import * as sketchService from "@/backend/content/sketchService";
 
 export async function saveRating(sketchId: number, rating: number | null) {
-  return await catchServiceErrors(async () => {
+  return catchServiceErrors(async () => {
     const user = await getLoggedInUser();
 
-    await sketchService.saveRating(user.id, sketchId, rating);
+    const response = sketchService.saveRating(user.id, sketchId, rating);
+
+    revalidateContent("sketch", sketchId); // Invalidates page cache so the updated rating will show
+
+    return response;
   });
 }
 
 export async function getRating(sketchId: number) {
-  //return await catchServiceErrors(async () => {
-  const user = await getLoggedInUser();
+  return catchServiceErrors(async () => {
+    const user = await getLoggedInUser();
 
-  return await sketchService.getRating(user.id, sketchId);
-  //});
+    return sketchService.getRating(user.id, sketchId);
+  });
 }

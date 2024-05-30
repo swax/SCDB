@@ -54,8 +54,8 @@ export default async function SketchPage({ params }: ContentPageProps) {
         previewImgCdnKey={sketch.image?.cdn_key}
         videoEmbedUrl={sketch.video_urls[0]}
       />
-      <SketchRating sketchId={sketch.id} />
       <Box sx={{ marginTop: 2 }}>
+        <SketchRating sketchId={sketch.id} siteRating={sketch.site_rating} />
         {Boolean(sketch.description) && (
           <Accordion defaultExpanded>
             <AccordionSummary

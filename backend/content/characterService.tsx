@@ -70,6 +70,7 @@ export async function getCharacterSketchGrid(
           id: true,
           url_slug: true,
           title: true,
+          site_rating: true,
           image: {
             select: {
               cdn_key: true,
@@ -97,6 +98,11 @@ export async function getCharacterSketchGrid(
         },
       },
     },
+    orderBy: {
+      sketch: {
+        site_rating: "desc",
+      },
+    },
     skip: (page - 1) * SKETCH_PAGE_SIZE,
     take: SKETCH_PAGE_SIZE,
   });
@@ -110,6 +116,7 @@ export async function getCharacterSketchGrid(
   const sketches = dbResults.map((sc) => ({
     id: sc.sketch.id,
     url_slug: sc.sketch.url_slug,
+    site_rating: sc.sketch.site_rating,
     title: <ContentLink table="sketch" entry={sc.sketch} />,
     subtitle: (
       <>
@@ -138,4 +145,3 @@ export async function getCharacterSketchGrid(
     totalPages: Math.ceil(totalCount / SKETCH_PAGE_SIZE),
   };
 }
-
