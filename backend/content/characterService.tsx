@@ -34,6 +34,7 @@ export async function getCharacter(id: number) {
         select: {
           id: true,
           url_slug: true,
+          name: true,
         },
       },
     },

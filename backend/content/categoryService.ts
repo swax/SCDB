@@ -17,3 +17,25 @@ export async function getCategoriesList(searchParams: ListSearchParms) {
 
   return { list, count };
 }
+
+export async function getCategory(id: number) {
+  const result = await prisma.tag_category.findUnique({
+    where: {
+      id: id,
+    },
+    select: {
+      id: true,
+      url_slug: true,
+      name: true,
+    },
+  });
+
+  if (!result) {
+    return null;
+  }
+
+  return {
+    ...result,
+    dateGenerated: new Date(),
+  };
+}

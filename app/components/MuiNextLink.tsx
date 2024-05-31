@@ -1,5 +1,5 @@
-import NextLink from "next/link";
 import { Link as MuiLink } from "@mui/material";
+import NextLink from "next/link";
 
 type MuiLinkProps = Parameters<typeof MuiLink>[0] & { href: string };
 

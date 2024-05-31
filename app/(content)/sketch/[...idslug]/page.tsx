@@ -1,4 +1,4 @@
-import MuiNextLink from "@/app/components/MuiNextLink";
+import { ContentLink } from "@/app/components/ContentLink";
 import { getSketch, getSketchList } from "@/backend/content/sketchService";
 import s3url from "@/shared/cdnHost";
 import { enumNameToDisplayName } from "@/shared/utilities";
@@ -29,7 +29,6 @@ import {
 } from "../../contentBase";
 import SketchRating from "./components/SketchRating";
 import VideoHero from "./components/VideoHero";
-import { ContentLink } from "@/app/components/ContentLink";
 
 export async function generateStaticParams() {
   const sketches = await getSketchList({ page: 1, pageSize: 1000 });
@@ -125,24 +124,22 @@ export default async function SketchPage({ params }: ContentPageProps) {
                         </TableCell>
                         <TableCell>
                           {sketch_cast.character ? (
-                            <MuiNextLink
-                              href={`/character/${sketch_cast.character.id}/${sketch_cast.character.url_slug}`}
-                              underline="hover"
-                            >
-                              {sketch_cast.character.name}
-                            </MuiNextLink>
+                            <ContentLink
+                              mui
+                              table="character"
+                              entry={sketch_cast.character}
+                            />
                           ) : (
                             <>{sketch_cast.character_name || "Unknown"}</>
                           )}
                         </TableCell>
                         <TableCell sx={{ whiteSpace: "nowrap" }}>
                           {!!sketch_cast.person?.name && (
-                            <MuiNextLink
-                              href={`/person/${sketch_cast.person.id}/${sketch_cast.person.url_slug}`}
-                              underline="hover"
-                            >
-                              {sketch_cast.person.name}
-                            </MuiNextLink>
+                            <ContentLink
+                              mui
+                              table="person"
+                              entry={sketch_cast.person}
+                            />
                           )}
                         </TableCell>
                         <TableCell>

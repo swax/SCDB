@@ -1,9 +1,9 @@
 "use client";
 
+import { ContentLink } from "@/app/components/ContentLink";
+import { ListSearchParms } from "@/backend/content/listHelper";
 import { GridRenderCellParams } from "@mui/x-data-grid";
 import BaseDataGrid from "../BaseDataGrid";
-import { ListSearchParms } from "@/backend/content/listHelper";
-import MuiNextLink from "@/app/components/MuiNextLink";
 
 interface CharacterDataGridProps {
   rows: {
@@ -31,14 +31,7 @@ export default function CharacterDataGrid({
       renderCell: ({
         row: character,
       }: GridRenderCellParams<CharacterRow, CharacterRow["name"]>) => {
-        return (
-          <MuiNextLink
-            href={`/character/${character.id}/${character.url_slug}`}
-            underline="hover"
-          >
-            {character.name}
-          </MuiNextLink>
-        );
+        return <ContentLink mui entry={character} table="character" />;
       },
     },
   ];
