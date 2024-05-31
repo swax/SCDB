@@ -29,6 +29,7 @@ import {
 } from "../../contentBase";
 import SketchRating from "./components/SketchRating";
 import VideoHero from "./components/VideoHero";
+import { ContentLink } from "@/app/components/ContentLink";
 
 export async function generateStaticParams() {
   const sketches = await getSketchList({ page: 1, pageSize: 1000 });
@@ -45,10 +46,30 @@ export default async function SketchPage({ params }: ContentPageProps) {
   // Rendering
   return (
     <>
-      <Typography variant="h4">{sketch.title}</Typography>
-      <Typography variant="subtitle1">
-        {sketch.show.title} ({sketch.season?.year || "Unknown Year"})
-      </Typography>
+      <Box mb={2}>
+        <Typography variant="h4">{sketch.title}</Typography>
+        <Typography variant="subtitle1">
+          <ContentLink mui table="show" entry={sketch.show} />
+
+          {!!sketch.season && (
+            <>
+              {" ("}
+              <ContentLink mui table="season" entry={sketch.season} />
+              {")"}
+            </>
+          )}
+          {!!sketch.episode && (
+            <>
+              {" Episode "}
+              <ContentLink mui table="episode" entry={sketch.episode}>
+                {sketch.episode.air_date
+                  ? sketch.episode.air_date.toLocaleDateString()
+                  : sketch.episode.number}
+              </ContentLink>
+            </>
+          )}
+        </Typography>
+      </Box>
       <VideoHero
         title={sketch.title}
         previewImgCdnKey={sketch.image?.cdn_key}
@@ -248,9 +269,4 @@ export default async function SketchPage({ params }: ContentPageProps) {
             </Typography>
           </AccordionDetails>
         </Accordion>
-      </Box>
-      <Box sx={{ marginTop: 2 }}>
-        <Button variant="outlined" startIcon={<ForumIcon />}>
-          Discuss on Discord
-        </Button>
       </Box>*/
