@@ -1,4 +1,4 @@
-import MuiNextLink from "@/app/components/MuiNextLink";
+import { ContentLink } from "@/app/components/ContentLink";
 import {
   getPerson,
   getPersonList,
@@ -50,14 +50,12 @@ export default async function PersonPage({ params }: ContentPageProps) {
   return (
     <>
       <Typography variant="h4">{person.name}</Typography>
-      {Boolean(person.character) && (
+      {!!person.character && (
         <Typography variant="subtitle1" mb={4}>
           The Person,{" "}
-          <MuiNextLink
-            href={`/character/${person.character?.id}/${person.character?.url_slug}`}
-          >
+          <ContentLink mui table="character" entry={person.character}>
             The Character
-          </MuiNextLink>
+          </ContentLink>
         </Typography>
       )}
       {/* birth, death, age */}

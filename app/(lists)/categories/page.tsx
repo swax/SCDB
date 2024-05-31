@@ -9,17 +9,11 @@ export default async function CategoriesPage(props: ListPageProps) {
   // Data
   const categories = await getCategoriesList(searchParams);
 
-  const rows = categories.list.map((character) => ({
-    id: character.id,
-    name: character.name,
-    url_slug: character.url_slug,
-  }));
-
   // Rendering
   return (
     <CategoriesDataGrid
       searchParams={searchParams}
-      rows={rows}
+      rows={categories.list}
       totalRowCount={categories.count}
     />
   );

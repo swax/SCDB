@@ -43,6 +43,7 @@ export async function getPerson(id: number) {
         select: {
           id: true,
           url_slug: true,
+          name: true,
         },
       },
       person_images: {

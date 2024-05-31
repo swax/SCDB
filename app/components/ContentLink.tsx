@@ -23,7 +23,9 @@ export function ContentLink({
   const content = children || entry.name || entry.title || entry.year;
 
   return mui ? (
-    <MuiNextLink href={href}>{content}</MuiNextLink>
+    <MuiNextLink href={href} underline="hover">
+      {content}
+    </MuiNextLink>
   ) : (
     <Link href={href}>{content}</Link>
   );

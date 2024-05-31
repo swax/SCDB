@@ -1,6 +1,6 @@
 "use client";
 
-import MuiNextLink from "@/app/components/MuiNextLink";
+import { ContentLink } from "@/app/components/ContentLink";
 import { ListSearchParms } from "@/backend/content/listHelper";
 import { GridColDef, GridRenderCellParams } from "@mui/x-data-grid";
 import BaseDataGrid from "../BaseDataGrid";
@@ -34,14 +34,7 @@ export default function SketchDataGrid({
         params: GridRenderCellParams<SketchRow, SketchRow["title"]>,
       ) => {
         const sketch = params.row;
-        return (
-          <MuiNextLink
-            href={`/sketch/${sketch.id}/${sketch.url_slug}`}
-            underline="hover"
-          >
-            {sketch.title}
-          </MuiNextLink>
-        );
+        return <ContentLink mui entry={sketch} table="sketch" />;
       },
     },
     { field: "show__title", flex: 1, headerName: "Show", type: "string" },

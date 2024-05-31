@@ -3,9 +3,10 @@
 import { ContentLink } from "@/app/components/ContentLink";
 import { ListSearchParms } from "@/backend/content/listHelper";
 import { GridRenderCellParams } from "@mui/x-data-grid";
-import BaseDataGrid from "../BaseDataGrid";
+import BaseDataGrid from "../../BaseDataGrid";
 
-interface CategoryDataGridProps {
+interface TagsDataGridProps {
+  basePath: string;
   rows: {
     id: number;
     name: string;
@@ -15,30 +16,31 @@ interface CategoryDataGridProps {
   totalRowCount: number;
 }
 
-export default function CategoryDataGrid({
+export default function TagsDataGrid({
+  basePath,
   rows,
   searchParams,
   totalRowCount,
-}: CategoryDataGridProps) {
+}: TagsDataGridProps) {
   // Constants
-  type CategoryRow = (typeof rows)[number];
+  type TagRow = (typeof rows)[number];
 
   const columns = [
     {
       field: "name",
       flex: 1,
-      headerName: "Category",
+      headerName: "Tag",
       renderCell: ({
-        row: category,
-      }: GridRenderCellParams<CategoryRow, CategoryRow["name"]>) => {
-        return <ContentLink mui entry={category} table="category" />;
+        row: tag,
+      }: GridRenderCellParams<TagRow, TagRow["name"]>) => {
+        return <ContentLink mui entry={tag} table="tag" />;
       },
     },
   ];
 
   return (
     <BaseDataGrid
-      basePath="categories"
+      basePath={basePath}
       columns={columns}
       searchParams={searchParams}
       rows={rows}
