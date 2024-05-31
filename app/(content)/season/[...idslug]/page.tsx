@@ -1,8 +1,9 @@
+import { ContentLink } from "@/app/components/ContentLink";
 import {
-  getShow,
-  getShowSketchGrid,
-  getShowsList,
-} from "@/backend/content/showService";
+  getSeason,
+  getSeasonSketchGrid,
+  getSeasonsList,
+} from "@/backend/content/seasonService";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import FormatListNumberedIcon from "@mui/icons-material/FormatListNumbered";
 import {
@@ -23,23 +24,22 @@ import {
   DateGeneratedFooter,
   tryGetContent,
 } from "../../contentBase";
-import { ContentLink } from "@/app/components/ContentLink";
 
 export async function generateStaticParams() {
-  const shows = await getShowsList({ page: 1, pageSize: 1000 });
+  const seasons = await getSeasonsList({ page: 1, pageSize: 1000 });
 
-  return shows.list.map((show) => ({
-    idslug: [show.id.toString(), show.url_slug],
+  return seasons.list.map((season) => ({
+    idslug: [season.id.toString(), season.url_slug],
   }));
 }
 
-export default async function ShowPage({ params }: ContentPageProps) {
+export default async function SeasonPage({ params }: ContentPageProps) {
   // Data fetching
-  const show = await tryGetContent("show", params, getShow);
+  const season = await tryGetContent("season", params, getSeason);
 
   async function getSketchData(page: number) {
     "use server";
-    return await getShowSketchGrid(show.id, page);
+    return await getSeasonSketchGrid(season.id, page);
   }
 
   const sketchData = await getSketchData(1);
@@ -48,9 +48,14 @@ export default async function ShowPage({ params }: ContentPageProps) {
   return (
     <>
       <Box mb={4}>
-        <Typography variant="h4">{show.title}</Typography>
+        <Typography variant="h4">
+          Season {season.number} ({season.year})
+        </Typography>
+        <Typography variant="subtitle1">
+          <ContentLink mui table="show" entry={season.show} />
+        </Typography>
       </Box>
-      {!!show.seasons.length && (
+      {!!season.episodes.length && (
         <Accordion defaultExpanded>
           <AccordionSummary
             expandIcon={<ExpandMoreIcon />}
@@ -59,7 +64,7 @@ export default async function ShowPage({ params }: ContentPageProps) {
           >
             <FormatListNumberedIcon />
             <Typography fontWeight="bold" marginLeft={1}>
-              Seasons
+              Episodes
             </Typography>
           </AccordionSummary>
           <AccordionDetails>
@@ -67,20 +72,24 @@ export default async function ShowPage({ params }: ContentPageProps) {
               <TableHead>
                 <TableRow>
                   <TableCell>Number</TableCell>
-                  <TableCell>Year</TableCell>
+                  <TableCell>Date</TableCell>
                   <TableCell>Sketches</TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
-                {show.seasons.map((season) => (
-                  <TableRow key={season.id}>
+                {season.episodes.map((episode) => (
+                  <TableRow key={episode.id}>
                     <TableCell>
-                      <ContentLink mui table="season" entry={season}>
-                        {season.number}
+                      <ContentLink mui table="episode" entry={episode}>
+                        {episode.number}
                       </ContentLink>
                     </TableCell>
-                    <TableCell>{season.year}</TableCell>
-                    <TableCell>{season._count.sketches}</TableCell>
+                    <TableCell>
+                      {episode.air_date
+                        ? episode.air_date.toLocaleDateString()
+                        : ""}
+                    </TableCell>
+                    <TableCell>{episode._count.sketches}</TableCell>
                   </TableRow>
                 ))}
               </TableBody>

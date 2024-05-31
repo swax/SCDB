@@ -1,4 +1,9 @@
-import { getPerson, getPersonList } from "@/backend/content/personService";
+import MuiNextLink from "@/app/components/MuiNextLink";
+import {
+  getPerson,
+  getPersonList,
+  getPersonSketchGrid,
+} from "@/backend/content/personService";
 import s3url from "@/shared/cdnHost";
 import {
   Box,
@@ -8,12 +13,12 @@ import {
   Typography,
 } from "@mui/material";
 import Image from "next/image";
+import SketchGrid from "../../SketchGrid";
 import {
   ContentPageProps,
   DateGeneratedFooter,
   tryGetContent,
 } from "../../contentBase";
-import MuiNextLink from "@/app/components/MuiNextLink";
 
 export async function generateStaticParams() {
   const poeple = await getPersonList({ page: 1, pageSize: 1000 });
@@ -23,9 +28,16 @@ export async function generateStaticParams() {
   }));
 }
 
-export default async function PersonaPage({ params }: ContentPageProps) {
+export default async function PersonPage({ params }: ContentPageProps) {
   // Data fetching
   const person = await tryGetContent("person", params, getPerson);
+
+  async function getSketchData(page: number) {
+    "use server";
+    return await getPersonSketchGrid(person.id, page);
+  }
+
+  const sketchData = await getSketchData(1);
 
   // Constants
   const imgHeight = 300;
@@ -85,6 +97,7 @@ export default async function PersonaPage({ params }: ContentPageProps) {
         ))}
       </ImageList>
       <Typography variant="subtitle1">{person.description}</Typography>
+      <SketchGrid initialData={sketchData} getData={getSketchData} />
       <DateGeneratedFooter />
     </>
   );

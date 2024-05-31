@@ -10,6 +10,7 @@ import {
   Accordion,
   AccordionDetails,
   AccordionSummary,
+  Box,
   Typography,
 } from "@mui/material";
 import Markdown from "react-markdown";
@@ -41,17 +42,19 @@ export default async function CharacterPage({ params }: ContentPageProps) {
   // Rendering
   return (
     <>
-      <Typography variant="h4">{character.name}</Typography>
-      {Boolean(character.person) && (
-        <Typography variant="subtitle1" mb={4}>
-          The Character,{" "}
-          <MuiNextLink
-            href={`/person/${character.person?.id}/${character.person?.url_slug}`}
-          >
-            The Person
-          </MuiNextLink>
-        </Typography>
-      )}
+      <Box mb={4}>
+        <Typography variant="h4">{character.name}</Typography>
+        {Boolean(character.person) && (
+          <Typography variant="subtitle1">
+            The Character,{" "}
+            <MuiNextLink
+              href={`/person/${character.person?.id}/${character.person?.url_slug}`}
+            >
+              The Person
+            </MuiNextLink>
+          </Typography>
+        )}
+      </Box>
       {Boolean(character.description) && (
         <Accordion defaultExpanded>
           <AccordionSummary

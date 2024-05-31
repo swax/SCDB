@@ -2,38 +2,45 @@ import { SKETCH_PAGE_SIZE, SketchGridData } from "@/shared/sketchGridBase";
 import { ListSearchParms, getBaseFindParams } from "./listHelper";
 import prisma from "@/database/prisma";
 
-export async function getShowsList(searchParams: ListSearchParms) {
+export async function getSeasonsList(searchParams: ListSearchParms) {
   const baseFindParams = getBaseFindParams(searchParams);
 
-  const list = await prisma.show.findMany({
+  const list = await prisma.season.findMany({
     ...baseFindParams,
     select: {
       id: true,
       url_slug: true,
-      title: true,
     },
   });
 
-  const count = await prisma.show.count();
+  const count = await prisma.season.count();
 
   return { list, count };
 }
 
-export async function getShow(id: number) {
-  return prisma.show.findUnique({
+export async function getSeason(id: number) {
+  return prisma.season.findUnique({
     where: {
       id,
     },
     select: {
       id: true,
       url_slug: true,
-      title: true,
-      seasons: {
+      year: true,
+      number: true,
+      show: {
         select: {
           id: true,
           url_slug: true,
-          year: true,
+          title: true,
+        },
+      },
+      episodes: {
+        select: {
+          id: true,
+          url_slug: true,
           number: true,
+          air_date: true,
           _count: {
             select: {
               sketches: true,
@@ -48,13 +55,13 @@ export async function getShow(id: number) {
   });
 }
 
-export async function getShowSketchGrid(
+export async function getSeasonSketchGrid(
   id: number,
   page: number,
 ): Promise<SketchGridData> {
   const dbResults = await prisma.sketch.findMany({
     where: {
-      show_id: id,
+      season_id: id,
     },
     select: {
       id: true,
@@ -81,7 +88,7 @@ export async function getShowSketchGrid(
 
   const totalCount = await prisma.sketch.count({
     where: {
-      show_id: id,
+      season_id: id,
     },
   });
 

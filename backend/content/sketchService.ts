@@ -50,18 +50,25 @@ export async function getSketch(id: number) {
       video_urls: true,
       show: {
         select: {
+          id: true,
+          url_slug: true,
           title: true,
         },
       },
       season: {
         select: {
+          id: true,
+          url_slug: true,
           year: true,
           number: true,
         },
       },
       episode: {
         select: {
+          id: true,
+          url_slug: true,
           number: true,
+          air_date: true,
         },
       },
       sketch_tags: {
