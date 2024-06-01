@@ -1,6 +1,6 @@
 import { ContentPageProps, tryGetContent } from "@/app/(content)/contentBase";
 import { getCategory } from "@/backend/content/categoryService";
-import { getTagsList } from "@/backend/content/tagService";
+import { getTagsByCategoryList } from "@/backend/content/tagService";
 import { Box, Typography } from "@mui/material";
 import { ListPageProps, parseSearchParams } from "../../baseListTypes";
 import TagsDataGrid from "./TagsDataGrid";
@@ -14,7 +14,7 @@ export default async function CategoryPage(
 
   // Fetch data
   const category = await tryGetContent("category", props.params, getCategory);
-  const tags = await getTagsList(category.id, searchParams);
+  const tags = await getTagsByCategoryList(category.id, searchParams);
 
   // Rendering
   return (

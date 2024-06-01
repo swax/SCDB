@@ -17,7 +17,19 @@ export default function EditViewButton() {
   const pathParts = pathname.split("/");
   const editMode = pathname.startsWith("/edit");
   const table = editMode ? pathParts[2] : pathParts[1];
-  const validTables = ["character", "person", "sketch", "shows", "tag"];
+
+  // Should match tables in sketchDatabaseOrm
+  const validTables = [
+    "character",
+    "episode",
+    "season",
+    "person",
+    "show",
+    "sketch",
+    "tag",
+    "category",
+    "recurring-sketch",
+  ];
 
   if (!validTables.includes(table)) {
     return <></>;

@@ -33,8 +33,6 @@ function ResponsiveAppBar() {
   }
 
   // Rendering
-  const appName = "SketchTV.lol";
-
   const funFont = `"Comic Sans MS", "Comic Neue", "Chalkboard", "Segoe Print", "Kristen ITC", "Caveat", sans-serif`;
 
   return (

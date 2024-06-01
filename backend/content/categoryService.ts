@@ -4,7 +4,7 @@ import prisma from "@/database/prisma";
 export async function getCategoriesList(searchParams: ListSearchParms) {
   const baseFindParams = getBaseFindParams(searchParams);
 
-  const list = await prisma.tag_category.findMany({
+  const list = await prisma.category.findMany({
     ...baseFindParams,
     select: {
       id: true,
@@ -13,13 +13,13 @@ export async function getCategoriesList(searchParams: ListSearchParms) {
     },
   });
 
-  const count = await prisma.tag_category.count();
+  const count = await prisma.category.count();
 
   return { list, count };
 }
 
 export async function getCategory(id: number) {
-  const result = await prisma.tag_category.findUnique({
+  const result = await prisma.category.findUnique({
     where: {
       id: id,
     },

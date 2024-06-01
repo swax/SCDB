@@ -5,9 +5,10 @@ import seasonOrm from "./tables/seasonOrm";
 import showOrm from "./tables/showOrm";
 import sketchOrm from "./tables/sketchOrm";
 import { DatabaseOrm } from "./ormTypes";
-import tagCategoryOrm from "./tables/tagCategoryOrm";
+import categoryOrm from "./tables/categoryOrm";
 import tagOrm from "./tables/tagOrm";
 import recurringSketch from "./tables/recurringSketchOrm";
+import "server-only";
 
 const sketchDatabaseOrm: DatabaseOrm = {
   character: characterOrm,
@@ -17,7 +18,7 @@ const sketchDatabaseOrm: DatabaseOrm = {
   show: showOrm,
   sketch: sketchOrm,
   tag: tagOrm,
-  tag_category: tagCategoryOrm,
+  category: categoryOrm,
   recurring_sketch: recurringSketch,
 };
 

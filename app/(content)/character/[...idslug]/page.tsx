@@ -44,11 +44,11 @@ export default async function CharacterPage({ params }: ContentPageProps) {
     <>
       <Box mb={4}>
         <Typography variant="h4">{character.name}</Typography>
+        <Typography variant="subtitle1">The Character</Typography>
         {!!character.person && (
-          <Typography variant="subtitle1">
-            The Character,{" "}
+          <Typography variant="subtitle2">
             <ContentLink mui table="person" entry={character.person}>
-              The Person
+              Go to the Person
             </ContentLink>
           </Typography>
         )}

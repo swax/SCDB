@@ -49,15 +49,17 @@ export default async function PersonPage({ params }: ContentPageProps) {
   // Rendering
   return (
     <>
-      <Typography variant="h4">{person.name}</Typography>
-      {!!person.character && (
-        <Typography variant="subtitle1" mb={4}>
-          The Person,{" "}
-          <ContentLink mui table="character" entry={person.character}>
-            The Character
-          </ContentLink>
-        </Typography>
-      )}
+      <Box mb={4}>
+        <Typography variant="h4">{person.name}</Typography>
+        <Typography variant="subtitle1">The Person</Typography>
+        {!!person.character && (
+          <Typography variant="subtitle2">
+            <ContentLink mui table="character" entry={person.character}>
+              Go to the Character
+            </ContentLink>
+          </Typography>
+        )}
+      </Box>
       {/* birth, death, age */}
       <Box sx={{ display: "flex", gap: 2 }}>
         {!!birthDate && (

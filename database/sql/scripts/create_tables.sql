@@ -132,20 +132,20 @@ CREATE TABLE sketch_writers (
     PRIMARY KEY (sketch_id, person_id)
 );
 
-CREATE TABLE tag_categories (
-    tag_category_id SERIAL PRIMARY KEY,
-    tag_category_name VARCHAR(100) NOT NULL,
+CREATE TABLE categories (
+    category_id SERIAL PRIMARY KEY,
+    category_name VARCHAR(100) NOT NULL,
     slug VARCHAR(100) NOT NULL UNIQUE,
-    UNIQUE(tag_category_name)
+    UNIQUE(category_name)
 );
 
 CREATE TABLE tags (
     tag_id SERIAL PRIMARY KEY,
     tag_name VARCHAR(100) NOT NULL,
     slug VARCHAR(100) NOT NULL,
-    tag_category_id INT NOT NULL REFERENCES tag_categories (tag_category_id),
-    UNIQUE(tag_category_id, tag_name),
-    UNIQUE(tag_category_id, slug)
+    category_id INT NOT NULL REFERENCES categories (category_id),
+    UNIQUE(category_id, tag_name),
+    UNIQUE(category_id, slug)
 );
 
 CREATE TABLE sketch_tags (
