@@ -16,6 +16,7 @@ export default async function PeoplePage(props: ListPageProps) {
     birth_date: person.birth_date,
     death_date: person.death_date,
     url_slug: person.url_slug,
+    sketch_casts___count: person._count.sketch_casts,
   }));
 
   // Rendering

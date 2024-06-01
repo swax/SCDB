@@ -17,6 +17,7 @@ import {
   TableBody,
   TableCell,
   TableContainer,
+  TableHead,
   TableRow,
   Typography,
 } from "@mui/material";
@@ -74,6 +75,16 @@ export default async function SketchPage({ params }: ContentPageProps) {
         previewImgCdnKey={sketch.image?.cdn_key}
         videoEmbedUrl={sketch.video_urls[0]}
       />
+      {!!sketch.recurring_sketch && (
+        <Typography variant="subtitle1">
+          {"See more "}
+          <ContentLink
+            mui
+            table="recurring-sketch"
+            entry={sketch.recurring_sketch}
+          />
+        </Typography>
+      )}
       <Box sx={{ marginTop: 2 }}>
         <SketchRating sketchId={sketch.id} siteRating={sketch.site_rating} />
         {Boolean(sketch.description) && (
@@ -107,7 +118,16 @@ export default async function SketchPage({ params }: ContentPageProps) {
             </AccordionSummary>
             <AccordionDetails>
               <TableContainer>
-                <Table aria-label="simple table">
+                <Table aria-label="simple table" size="small">
+                  <TableHead>
+                    <TableRow>
+                      <TableCell></TableCell>
+                      <TableCell>Character</TableCell>
+                      <TableCell>Actor</TableCell>
+                      <TableCell>Role</TableCell>
+                      <TableCell></TableCell>
+                    </TableRow>
+                  </TableHead>
                   <TableBody>
                     {sketch.sketch_casts.map((sketch_cast, i) => (
                       <TableRow key={i}>
@@ -117,8 +137,8 @@ export default async function SketchPage({ params }: ContentPageProps) {
                               alt={sketch_cast.character_name || "Unknown"}
                               style={{ objectFit: "cover" }}
                               src={`${s3url}/${sketch_cast.image.cdn_key}`}
-                              height={50}
-                              width={50}
+                              height={40}
+                              width={40}
                             />
                           )}
                         </TableCell>

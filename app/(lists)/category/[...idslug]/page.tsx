@@ -16,6 +16,13 @@ export default async function CategoryPage(
   const category = await tryGetContent("category", props.params, getCategory);
   const tags = await getTagsByCategoryList(category.id, searchParams);
 
+  const rows = tags.list.map((tag) => ({
+    id: tag.id,
+    name: tag.name,
+    url_slug: tag.url_slug,
+    sketch_tags___count: tag._count.sketch_tags,
+  }));
+
   // Rendering
   return (
     <>
@@ -25,7 +32,7 @@ export default async function CategoryPage(
       <TagsDataGrid
         basePath={`category/${category.id}/${category.url_slug}`}
         searchParams={searchParams}
-        rows={tags.list}
+        rows={rows}
         totalRowCount={tags.count}
       />
     </>

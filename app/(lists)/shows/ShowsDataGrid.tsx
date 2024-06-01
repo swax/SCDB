@@ -2,7 +2,7 @@
 
 import { ContentLink } from "@/app/components/ContentLink";
 import { ListSearchParms } from "@/backend/content/listHelper";
-import { GridRenderCellParams } from "@mui/x-data-grid";
+import { GridColDef, GridRenderCellParams } from "@mui/x-data-grid";
 import BaseDataGrid from "../BaseDataGrid";
 
 interface ShowDataGridProps {
@@ -23,7 +23,7 @@ export default function ShowDataGrid({
   // Constants
   type ShowRow = (typeof rows)[number];
 
-  const columns = [
+  const columns: GridColDef[] = [
     {
       field: "title",
       flex: 1,
@@ -33,6 +33,12 @@ export default function ShowDataGrid({
       }: GridRenderCellParams<ShowRow, ShowRow["title"]>) => {
         return <ContentLink mui entry={show} table="show" />;
       },
+    },
+    {
+      field: "sketches___count",
+      headerName: "Sketches",
+      filterable: false,
+      type: "number",
     },
   ];
 

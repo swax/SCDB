@@ -12,6 +12,11 @@ export async function getCharacterList(searchParams: ListSearchParms) {
       id: true,
       url_slug: true,
       name: true,
+      _count: {
+        select: {
+          sketch_casts: true,
+        },
+      },
     },
   });
 

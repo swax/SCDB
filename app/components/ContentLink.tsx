@@ -1,5 +1,6 @@
 import Link from "next/link";
 import MuiNextLink from "./MuiNextLink";
+import { ReactNode } from "react";
 
 /** Minimal link used for returning with data from server action */
 export function ContentLink({
@@ -14,7 +15,7 @@ export function ContentLink({
     id: number;
     url_slug: string;
     name?: string;
-    title?: string;
+    title?: string | ReactNode;
     year?: number;
   };
   children?: React.ReactNode;

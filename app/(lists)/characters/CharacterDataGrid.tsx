@@ -2,7 +2,7 @@
 
 import { ContentLink } from "@/app/components/ContentLink";
 import { ListSearchParms } from "@/backend/content/listHelper";
-import { GridRenderCellParams } from "@mui/x-data-grid";
+import { GridColDef, GridRenderCellParams } from "@mui/x-data-grid";
 import BaseDataGrid from "../BaseDataGrid";
 
 interface CharacterDataGridProps {
@@ -23,7 +23,7 @@ export default function CharacterDataGrid({
   // Constants
   type CharacterRow = (typeof rows)[number];
 
-  const columns = [
+  const columns: GridColDef[] = [
     {
       field: "name",
       flex: 1,
@@ -33,6 +33,12 @@ export default function CharacterDataGrid({
       }: GridRenderCellParams<CharacterRow, CharacterRow["name"]>) => {
         return <ContentLink mui entry={character} table="character" />;
       },
+    },
+    {
+      field: "sketch_casts___count",
+      headerName: "Sketches",
+      type: "number",
+      filterable: false,
     },
   ];
 

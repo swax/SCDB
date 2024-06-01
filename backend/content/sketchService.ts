@@ -71,6 +71,13 @@ export async function getSketch(id: number) {
           air_date: true,
         },
       },
+      recurring_sketch: {
+        select: {
+          id: true,
+          url_slug: true,
+          title: true,
+        },
+      },
       sketch_tags: {
         select: {
           tag: {

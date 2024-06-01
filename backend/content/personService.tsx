@@ -14,6 +14,11 @@ export async function getPersonList(searchParams: ListSearchParms) {
       name: true,
       birth_date: true,
       death_date: true,
+      _count: {
+        select: {
+          sketch_casts: true,
+        },
+      },
     },
   });
 

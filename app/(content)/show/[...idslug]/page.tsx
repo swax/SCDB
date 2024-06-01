@@ -1,3 +1,4 @@
+import { ContentLink } from "@/app/components/ContentLink";
 import {
   getShow,
   getShowSketchGrid,
@@ -23,7 +24,6 @@ import {
   DateGeneratedFooter,
   tryGetContent,
 } from "../../contentBase";
-import { ContentLink } from "@/app/components/ContentLink";
 
 export async function generateStaticParams() {
   const shows = await getShowsList({ page: 1, pageSize: 1000 });

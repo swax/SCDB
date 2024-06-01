@@ -10,6 +10,11 @@ export async function getCategoriesList(searchParams: ListSearchParms) {
       id: true,
       url_slug: true,
       name: true,
+      _count: {
+        select: {
+          tags: true,
+        },
+      },
     },
   });
 

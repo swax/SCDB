@@ -2,7 +2,7 @@
 
 import { ContentLink } from "@/app/components/ContentLink";
 import { ListSearchParms } from "@/backend/content/listHelper";
-import { GridRenderCellParams } from "@mui/x-data-grid";
+import { GridColDef, GridRenderCellParams } from "@mui/x-data-grid";
 import BaseDataGrid from "../../BaseDataGrid";
 
 interface TagsDataGridProps {
@@ -25,7 +25,7 @@ export default function TagsDataGrid({
   // Constants
   type TagRow = (typeof rows)[number];
 
-  const columns = [
+  const columns: GridColDef[] = [
     {
       field: "name",
       flex: 1,
@@ -35,6 +35,12 @@ export default function TagsDataGrid({
       }: GridRenderCellParams<TagRow, TagRow["name"]>) => {
         return <ContentLink mui entry={tag} table="tag" />;
       },
+    },
+    {
+      field: "sketch_tags___count",
+      headerName: "Sketches",
+      filterable: false,
+      type: "number",
     },
   ];
 
