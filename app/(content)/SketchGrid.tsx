@@ -15,7 +15,7 @@ import {
 import Image from "next/image";
 import { useState } from "react";
 import { SketchGridData } from "../../shared/sketchGridBase";
-import MuiNextLink from "../components/MuiNextLink";
+import { ContentLink } from "../components/ContentLink";
 
 interface SketchGridProps {
   initialData: SketchGridData;
@@ -73,10 +73,14 @@ export default function SketchGrid({ initialData, getData }: SketchGridProps) {
         >
           {data.sketches.map((sketch, i) => (
             <ImageListItem key={i}>
-              <MuiNextLink href={`/sketch/${sketch.id}/${sketch.url_slug}`}>
+              <ContentLink mui table="sketch" entry={sketch}>
                 <Image
                   alt={sketch.title?.toLocaleString() || ""}
-                  style={{ objectFit: "cover", borderRadius: 8 }}
+                  style={{
+                    objectFit: "cover",
+                    objectPosition: "50% 0",
+                    borderRadius: 8,
+                  }}
                   src={
                     sketch.image_cdnkey
                       ? `${s3url}/${sketch.image_cdnkey}`
@@ -85,7 +89,7 @@ export default function SketchGrid({ initialData, getData }: SketchGridProps) {
                   width={imgWidth}
                   height={imgHeight}
                 />
-              </MuiNextLink>
+              </ContentLink>
               <ImageListItemBar
                 title={
                   <div style={{ display: "flex" }}>

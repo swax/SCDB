@@ -40,6 +40,11 @@ export async function getTagsByCategoryList(
       id: true,
       url_slug: true,
       name: true,
+      _count: {
+        select: {
+          sketch_tags: true,
+        },
+      },
     },
   });
 

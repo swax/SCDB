@@ -2,7 +2,7 @@
 
 import { ContentLink } from "@/app/components/ContentLink";
 import { ListSearchParms } from "@/backend/content/listHelper";
-import { GridRenderCellParams } from "@mui/x-data-grid";
+import { GridColDef, GridRenderCellParams } from "@mui/x-data-grid";
 import BaseDataGrid from "../BaseDataGrid";
 
 interface CategoryDataGridProps {
@@ -23,7 +23,7 @@ export default function CategoryDataGrid({
   // Constants
   type CategoryRow = (typeof rows)[number];
 
-  const columns = [
+  const columns: GridColDef[] = [
     {
       field: "name",
       flex: 1,
@@ -33,6 +33,12 @@ export default function CategoryDataGrid({
       }: GridRenderCellParams<CategoryRow, CategoryRow["name"]>) => {
         return <ContentLink mui table="category" entry={category} />;
       },
+    },
+    {
+      field: "tags___count",
+      headerName: "Tags",
+      type: "number",
+      filterable: false,
     },
   ];
 

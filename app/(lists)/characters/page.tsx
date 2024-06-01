@@ -13,6 +13,7 @@ export default async function CharactersPage(props: ListPageProps) {
     id: character.id,
     name: character.name,
     url_slug: character.url_slug,
+    sketch_casts___count: character._count.sketch_casts,
   }));
 
   // Rendering

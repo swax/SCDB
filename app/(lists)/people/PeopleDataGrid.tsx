@@ -54,6 +54,13 @@ export default function PeopleDataGrid({
       headerName: "Death",
       type: "date",
     },
+    {
+      field: "sketch_casts___count",
+      flex: 1,
+      headerName: "Sketches",
+      type: "number",
+      filterable: false,
+    },
   ];
 
   return (

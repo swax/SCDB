@@ -1,31 +1,26 @@
+import prisma from "@/database/prisma";
 import { SKETCH_PAGE_SIZE, SketchGridData } from "@/shared/sketchGridBase";
 import { ListSearchParms, getBaseFindParams } from "./listHelper";
-import prisma from "@/database/prisma";
 
-export async function getShowsList(searchParams: ListSearchParms) {
+export async function getRecurringSketchList(searchParams: ListSearchParms) {
   const baseFindParams = getBaseFindParams(searchParams);
 
-  const list = await prisma.show.findMany({
+  const list = await prisma.recurring_sketch.findMany({
     ...baseFindParams,
     select: {
       id: true,
       url_slug: true,
       title: true,
-      _count: {
-        select: {
-          sketches: true,
-        },
-      },
     },
   });
 
-  const count = await prisma.show.count();
+  const count = await prisma.recurring_sketch.count();
 
   return { list, count };
 }
 
-export async function getShow(id: number) {
-  return prisma.show.findUnique({
+export async function getRecurringSketch(id: number) {
+  return prisma.recurring_sketch.findUnique({
     where: {
       id,
     },
@@ -33,33 +28,18 @@ export async function getShow(id: number) {
       id: true,
       url_slug: true,
       title: true,
-      seasons: {
-        select: {
-          id: true,
-          url_slug: true,
-          year: true,
-          number: true,
-          _count: {
-            select: {
-              sketches: true,
-            },
-          },
-        },
-        orderBy: {
-          number: "asc",
-        },
-      },
+      description: true,
     },
   });
 }
 
-export async function getShowSketchGrid(
+export async function getRecurringSketchGrid(
   id: number,
   page: number,
 ): Promise<SketchGridData> {
   const dbResults = await prisma.sketch.findMany({
     where: {
-      show_id: id,
+      recurring_sketch_id: id,
     },
     select: {
       id: true,
@@ -86,7 +66,7 @@ export async function getShowSketchGrid(
 
   const totalCount = await prisma.sketch.count({
     where: {
-      show_id: id,
+      recurring_sketch_id: id,
     },
   });
 

@@ -13,6 +13,7 @@ export default async function CategoriesPage(props: ListPageProps) {
     id: show.id,
     title: show.title,
     url_slug: show.url_slug,
+    sketches___count: show._count.sketches,
   }));
 
   // Rendering
