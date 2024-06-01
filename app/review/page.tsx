@@ -1,4 +1,5 @@
 import { getRowsToReview } from "@/backend/mgmt/reviewService";
+import { getEditUrl } from "@/shared/urls";
 import {
   Table,
   TableBody,
@@ -43,7 +44,7 @@ export default async function ReviewPage({
           {rowsToReview.map((row) => (
             <TableRow key={row.row_id}>
               <TableCell>
-                <MuiNextLink href={`/edit/${row.table_name}/${row.row_id}`}>
+                <MuiNextLink href={getEditUrl(row.table_name, row.row_id)}>
                   {row.table_name}/{row.row_id}
                 </MuiNextLink>
               </TableCell>

@@ -170,18 +170,19 @@ export default async function SketchPage({ params }: ContentPageProps) {
             <AccordionDetails>
               <Stack direction="row" flexWrap="wrap" spacing={1} useFlexGap>
                 {sketch.sketch_tags.map((sketch_tag, i) => (
-                  <Chip
-                    clickable
-                    key={i}
-                    label={
-                      <span>
-                        {sketch_tag.tag.tag_category.name}&nbsp;/&nbsp;
-                        {sketch_tag.tag.name}
-                      </span>
-                    }
-                    size="small"
-                    variant="outlined"
-                  />
+                  <ContentLink mui key={i} table="tag" entry={sketch_tag.tag}>
+                    <Chip
+                      clickable
+                      label={
+                        <span>
+                          {sketch_tag.tag.category.name}&nbsp;/&nbsp;
+                          {sketch_tag.tag.name}
+                        </span>
+                      }
+                      size="small"
+                      variant="outlined"
+                    />
+                  </ContentLink>
                 ))}
               </Stack>
             </AccordionDetails>

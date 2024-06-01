@@ -31,7 +31,7 @@ export default function CategoryDataGrid({
       renderCell: ({
         row: category,
       }: GridRenderCellParams<CategoryRow, CategoryRow["name"]>) => {
-        return <ContentLink mui entry={category} table="category" />;
+        return <ContentLink mui table="category" entry={category} />;
       },
     },
   ];

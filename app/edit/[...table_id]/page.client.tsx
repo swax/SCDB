@@ -2,6 +2,7 @@
 
 import { useForceUpdate } from "@/app/hooks/useForceUpdate";
 import { FieldOrm, SlugFieldOrm, TableOrm } from "@/database/orm/ormTypes";
+import { getEditUrl } from "@/shared/urls";
 import {
   capitalizeFirstLetter,
   fillHolesWithNullInPlace,
@@ -64,7 +65,7 @@ export default function EditClientPage({ table, id }: EditClientPageProps) {
       }
       // Else navigate to added row
       else if (createdRowId) {
-        const url = `/edit/${table.name}/${createdRowId}`;
+        const url = getEditUrl(table.name, createdRowId);
         window.location.href = url;
       } else {
         alert("Error: No ID or createdRowId to navigate to.");
@@ -113,7 +114,7 @@ export default function EditClientPage({ table, id }: EditClientPageProps) {
       alert(response.error);
       setLoading(false);
     } else {
-      window.location.href = `/edit/${table.name}`;
+      window.location.href = getEditUrl(table.name);
     }
   }
 
@@ -352,7 +353,7 @@ export default function EditClientPage({ table, id }: EditClientPageProps) {
           <Tooltip title={`Add a new ${table.label}`}>
             <Fab
               disabled={loading}
-              href={`/edit/${table.name}`}
+              href={getEditUrl(table.name)}
               sx={{ mr: 1 }}
               variant="extended"
             >

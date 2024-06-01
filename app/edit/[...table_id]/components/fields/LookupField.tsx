@@ -1,6 +1,7 @@
 import useDebounce2 from "@/app/hooks/useDebounce2";
 import { LookupFieldOption } from "@/backend/edit/lookupService";
 import { LookupFieldOrm } from "@/database/orm/ormTypes";
+import { getEditUrl } from "@/shared/urls";
 import { fillHolesWithNullInPlace } from "@/shared/utilities";
 import OpenInNewIcon from "@mui/icons-material/OpenInNew";
 import {
@@ -34,7 +35,7 @@ export default function LookupField({
   const initialValue: Nullable<LookupFieldOption> = field.values?.[index]
     ? {
         id: field.values[index] as number,
-        label: field.lookup?.labelValues?.[index] ?? "(lookup init error)",
+        label: field.lookup.labelValues?.[index] ?? "(lookup init error)",
       }
     : null;
 
@@ -108,7 +109,7 @@ export default function LookupField({
     }
 
     if (value?.createNew) {
-      const url = "/edit/" + field.lookup?.table;
+      const url = getEditUrl(field.lookup.table);
       window.open(url, "_blank");
       return;
     }
@@ -133,7 +134,7 @@ export default function LookupField({
   }
 
   function handleClick_openMappingRow(option: LookupFieldOption) {
-    const url = "/edit/" + field.lookup?.table + "/" + option.id;
+    const url = getEditUrl(field.lookup.table, option.id);
     window.open(url, "_blank");
   }
 

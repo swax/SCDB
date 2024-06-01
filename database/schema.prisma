@@ -83,8 +83,8 @@ model User {
   sketch_credits_modified     sketch_credit[]    @relation("SketchCreditsModified")
   sketch_tags_created         sketch_tag[]       @relation("SketchTagsCreated")
   sketch_tags_modified        sketch_tag[]       @relation("SketchTagsModified")
-  tag_categories_created      tag_category[]     @relation("TagCategoriesCreated")
-  tag_categories_modified     tag_category[]     @relation("TagCategoriesModified")
+  categories_created          category[]         @relation("CategoriesCreated")
+  categories_modified         category[]         @relation("CategoriesModified")
   tags_created                tag[]              @relation("TagsCreated")
   tags_modified               tag[]              @relation("TagsModified")
   user_ratings_modified       sketch_rating[]    @relation("SketchRatingsModified")
@@ -392,7 +392,7 @@ model sketch {
   @@index([review_status])
 }
 
-model tag_category {
+model category {
   id             Int                @id @default(autoincrement())
   name           String             @unique @db.VarChar(100)
   url_slug       String             @unique @db.VarChar(100)
@@ -402,32 +402,32 @@ model tag_category {
   modified_by_id String
   modified_at    DateTime           @default(now())
 
-  created_by  User  @relation("TagCategoriesCreated", fields: [created_by_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  modified_by User  @relation("TagCategoriesModified", fields: [modified_by_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  created_by  User  @relation("CategoriesCreated", fields: [created_by_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  modified_by User  @relation("CategoriesModified", fields: [modified_by_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
   tags        tag[]
 
   @@index([review_status])
 }
 
 model tag {
-  id              Int                @id @default(autoincrement())
-  name            String             @db.VarChar(100)
-  url_slug        String             @db.VarChar(100)
-  lookup_slug     String             @unique @db.VarChar(100)
-  tag_category_id Int
-  review_status   review_status_type @default(NeedsReview)
-  created_by_id   String
-  created_at      DateTime           @default(now())
-  modified_by_id  String
-  modified_at     DateTime           @default(now())
+  id             Int                @id @default(autoincrement())
+  name           String             @db.VarChar(100)
+  url_slug       String             @db.VarChar(100)
+  lookup_slug    String             @unique @db.VarChar(100)
+  category_id    Int
+  review_status  review_status_type @default(NeedsReview)
+  created_by_id  String
+  created_at     DateTime           @default(now())
+  modified_by_id String
+  modified_at    DateTime           @default(now())
 
-  created_by   User         @relation("TagsCreated", fields: [created_by_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  modified_by  User         @relation("TagsModified", fields: [modified_by_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  sketch_tags  sketch_tag[]
-  tag_category tag_category @relation(fields: [tag_category_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  created_by  User         @relation("TagsCreated", fields: [created_by_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  modified_by User         @relation("TagsModified", fields: [modified_by_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  sketch_tags sketch_tag[]
+  category    category     @relation(fields: [category_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
 
-  @@unique([tag_category_id, url_slug])
-  @@unique([tag_category_id, name])
+  @@unique([category_id, url_slug])
+  @@unique([category_id, name])
   @@index([review_status])
 }
 

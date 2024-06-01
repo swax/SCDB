@@ -75,8 +75,10 @@ export async function getSketch(id: number) {
         select: {
           tag: {
             select: {
+              id: true,
+              url_slug: true,
               name: true,
-              tag_category: {
+              category: {
                 select: {
                   name: true,
                 },

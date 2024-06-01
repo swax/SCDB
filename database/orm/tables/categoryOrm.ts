@@ -1,8 +1,8 @@
 import { TableOrm } from "../ormTypes";
 
-const tagCategoryOrm: TableOrm = {
-  name: "tag_category",
-  label: "Tag Category",
+const categoryOrm: TableOrm = {
+  name: "category",
+  label: "Category",
   title: ["${name}"],
   fields: [
     {
@@ -19,4 +19,4 @@ const tagCategoryOrm: TableOrm = {
   ],
 };
 
-export default tagCategoryOrm;
+export default categoryOrm;

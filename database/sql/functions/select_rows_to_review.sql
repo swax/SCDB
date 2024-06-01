@@ -9,7 +9,7 @@ OR REPLACE FUNCTION select_rows_to_review (row_count INT) RETURNS TABLE (
     modified_at TIMESTAMP
 ) LANGUAGE plpgsql AS $$
 DECLARE
-    tbl_names TEXT[] = ARRAY['character', 'episode', 'person', 'recurring_sketch', 'season', 'show', 'sketch', 'tag_category', 'tag'];
+    tbl_names TEXT[] = ARRAY['character', 'episode', 'person', 'recurring_sketch', 'season', 'show', 'sketch', 'category', 'tag'];
     tbl_name TEXT;
 BEGIN
     -- Create a temporary table to collect all results

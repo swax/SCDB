@@ -2,7 +2,7 @@ DROP TABLE IF EXISTS audit;
 DROP TABLE IF EXISTS ratings;
 DROP TABLE IF EXISTS sketch_tags;
 DROP TABLE IF EXISTS tags;
-DROP TABLE IF EXISTS tag_categories;
+DROP TABLE IF EXISTS categories;
 DROP TABLE IF EXISTS sketch_writers;
 DROP TABLE IF EXISTS sketch_character_actors;
 DROP TABLE IF EXISTS sketches;

@@ -20,6 +20,9 @@ export async function getTableOrm(
   id: number,
   role?: user_role_type,
 ) {
+  // Replace - with _
+  table = table.replace("-", "_");
+
   const tableOrm = findAndBuildTableOrm(table);
 
   tableOrm.operation = id ? "update" : "create";
