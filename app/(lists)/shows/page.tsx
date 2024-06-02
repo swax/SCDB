@@ -18,10 +18,13 @@ export default async function CategoriesPage(props: ListPageProps) {
 
   // Rendering
   return (
-    <ShowsDataGrid
-      searchParams={searchParams}
-      rows={rows}
-      totalRowCount={shows.count}
-    />
+    <>
+      <title>Shows - SketchTV.lol</title>
+      <ShowsDataGrid
+        searchParams={searchParams}
+        rows={rows}
+        totalRowCount={shows.count}
+      />
+    </>
   );
 }

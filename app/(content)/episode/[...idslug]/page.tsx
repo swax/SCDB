@@ -32,8 +32,11 @@ export default async function EpisodePage({ params }: ContentPageProps) {
   const sketchData = await getSketchData(1);
 
   // Rendering
+  const pageTitle = `Episode ${episode.number} - ${episode.season.lookup_slug} - SketchTV.lol`;
+
   return (
     <>
+      <title>{pageTitle}</title>
       <Box mb={4}>
         <Typography variant="h4">Episode {episode.number}</Typography>
         <Typography variant="subtitle1">

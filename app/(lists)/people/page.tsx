@@ -21,10 +21,13 @@ export default async function PeoplePage(props: ListPageProps) {
 
   // Rendering
   return (
-    <PeopleDataGrid
-      searchParams={searchParams}
-      rows={rows}
-      totalRowCount={people.count}
-    />
+    <>
+      <title>People - SketchTV.lol</title>
+      <PeopleDataGrid
+        searchParams={searchParams}
+        rows={rows}
+        totalRowCount={people.count}
+      />
+    </>
   );
 }
