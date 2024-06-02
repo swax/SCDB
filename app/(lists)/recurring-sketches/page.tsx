@@ -18,10 +18,13 @@ export default async function RecurringSketchesPage(props: ListPageProps) {
 
   // Rendering
   return (
-    <RecurringSketchesDataGrid
-      searchParams={searchParams}
-      rows={rows}
-      totalRowCount={recurringSketches.count}
-    />
+    <>
+      <title>Recurring Sketches - SketchTV.lol</title>
+      <RecurringSketchesDataGrid
+        searchParams={searchParams}
+        rows={rows}
+        totalRowCount={recurringSketches.count}
+      />
+    </>
   );
 }

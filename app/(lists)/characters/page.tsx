@@ -18,10 +18,13 @@ export default async function CharactersPage(props: ListPageProps) {
 
   // Rendering
   return (
-    <CharacterDataGrid
-      searchParams={searchParams}
-      rows={rows}
-      totalRowCount={characters.count}
-    />
+    <>
+      <title>Characters - SketchTV.lol</title>
+      <CharacterDataGrid
+        searchParams={searchParams}
+        rows={rows}
+        totalRowCount={characters.count}
+      />
+    </>
   );
 }

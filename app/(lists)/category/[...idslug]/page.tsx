@@ -25,8 +25,11 @@ export default async function CategoryPage(
   }));
 
   // Rendering
+  const pageTitle = category.name + " - SketchTV.lol";
+
   return (
     <>
+      <title>{pageTitle}</title>
       <Box mb={4}>
         <Typography variant="h4">{category.name}</Typography>
         <Typography variant="subtitle1" color="textSecondary">

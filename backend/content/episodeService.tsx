@@ -1,8 +1,9 @@
 import { SKETCH_PAGE_SIZE, SketchGridData } from "@/shared/sketchGridBase";
 import { ListSearchParms, getBaseFindParams } from "./listHelper";
 import prisma from "@/database/prisma";
+import { ContentLink } from "@/app/components/ContentLink";
 
-export async function getSeasonsList(searchParams: ListSearchParms) {
+export async function getEpisodesList(searchParams: ListSearchParms) {
   const baseFindParams = getBaseFindParams(searchParams);
 
   const list = await prisma.season.findMany({
@@ -13,55 +14,48 @@ export async function getSeasonsList(searchParams: ListSearchParms) {
     },
   });
 
-  const count = await prisma.season.count();
+  const count = await prisma.episode.count();
 
   return { list, count };
 }
 
-export async function getSeason(id: number) {
-  return prisma.season.findUnique({
+export async function getEpisode(id: number) {
+  return prisma.episode.findUnique({
     where: {
       id,
     },
     select: {
       id: true,
       url_slug: true,
-      year: true,
       number: true,
-      show: {
-        select: {
-          id: true,
-          url_slug: true,
-          title: true,
-        },
-      },
-      episodes: {
+      air_date: true,
+      season: {
         select: {
           id: true,
           url_slug: true,
           number: true,
-          air_date: true,
-          _count: {
+          year: true,
+          lookup_slug: true,
+          show: {
             select: {
-              sketches: true,
+              id: true,
+              url_slug: true,
+              title: true,
             },
           },
-        },
-        orderBy: {
-          number: "asc",
         },
       },
     },
   });
 }
 
-export async function getSeasonSketchGrid(
+export async function getEpisodeSketchGrid(
   id: number,
   page: number,
 ): Promise<SketchGridData> {
   const dbResults = await prisma.sketch.findMany({
     where: {
-      season_id: id,
+      episode_id: id,
     },
     select: {
       id: true,
@@ -75,6 +69,8 @@ export async function getSeasonSketchGrid(
       },
       season: {
         select: {
+          id: true,
+          url_slug: true,
           year: true,
         },
       },
@@ -88,7 +84,7 @@ export async function getSeasonSketchGrid(
 
   const totalCount = await prisma.sketch.count({
     where: {
-      season_id: id,
+      episode_id: id,
     },
   });
 
@@ -96,8 +92,12 @@ export async function getSeasonSketchGrid(
     id: s.id,
     url_slug: s.url_slug,
     site_rating: s.site_rating,
-    title: s.title,
-    subtitle: s.season?.year.toString(),
+    title: <ContentLink table="sketch" entry={s} />,
+    subtitle: s.season ? (
+      <ContentLink table="season" entry={s.season} />
+    ) : (
+      <></>
+    ),
     image_cdnkey: s.image?.cdn_key,
   }));
 

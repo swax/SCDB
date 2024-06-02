@@ -1,11 +1,12 @@
-import prisma from "@/database/prisma";
 import { SKETCH_PAGE_SIZE, SketchGridData } from "@/shared/sketchGridBase";
 import { ListSearchParms, getBaseFindParams } from "./listHelper";
+import prisma from "@/database/prisma";
+import { ContentLink } from "@/app/components/ContentLink";
 
-export async function getRecurringSketchList(searchParams: ListSearchParms) {
+export async function getShowsList(searchParams: ListSearchParms) {
   const baseFindParams = getBaseFindParams(searchParams);
 
-  const list = await prisma.recurring_sketch.findMany({
+  const list = await prisma.show.findMany({
     ...baseFindParams,
     select: {
       id: true,
@@ -19,13 +20,13 @@ export async function getRecurringSketchList(searchParams: ListSearchParms) {
     },
   });
 
-  const count = await prisma.recurring_sketch.count();
+  const count = await prisma.show.count();
 
   return { list, count };
 }
 
-export async function getRecurringSketch(id: number) {
-  return prisma.recurring_sketch.findUnique({
+export async function getShow(id: number) {
+  return prisma.show.findUnique({
     where: {
       id,
     },
@@ -33,18 +34,33 @@ export async function getRecurringSketch(id: number) {
       id: true,
       url_slug: true,
       title: true,
-      description: true,
+      seasons: {
+        select: {
+          id: true,
+          url_slug: true,
+          year: true,
+          number: true,
+          _count: {
+            select: {
+              sketches: true,
+            },
+          },
+        },
+        orderBy: {
+          number: "asc",
+        },
+      },
     },
   });
 }
 
-export async function getRecurringSketchGrid(
+export async function getShowSketchGrid(
   id: number,
   page: number,
 ): Promise<SketchGridData> {
   const dbResults = await prisma.sketch.findMany({
     where: {
-      recurring_sketch_id: id,
+      show_id: id,
     },
     select: {
       id: true,
@@ -58,6 +74,8 @@ export async function getRecurringSketchGrid(
       },
       season: {
         select: {
+          id: true,
+          url_slug: true,
           year: true,
         },
       },
@@ -71,7 +89,7 @@ export async function getRecurringSketchGrid(
 
   const totalCount = await prisma.sketch.count({
     where: {
-      recurring_sketch_id: id,
+      show_id: id,
     },
   });
 
@@ -79,8 +97,12 @@ export async function getRecurringSketchGrid(
     id: s.id,
     url_slug: s.url_slug,
     site_rating: s.site_rating,
-    title: s.title,
-    subtitle: s.season?.year.toString(),
+    title: <ContentLink table="sketch" entry={s} />,
+    subtitle: s.season ? (
+      <ContentLink table="season" entry={s.season} />
+    ) : (
+      <></>
+    ),
     image_cdnkey: s.image?.cdn_key,
   }));
 

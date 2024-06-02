@@ -44,8 +44,11 @@ export default async function SketchPage({ params }: ContentPageProps) {
   const sketch = await tryGetContent("sketch", params, getSketch);
 
   // Rendering
+  const pageTitle = sketch.title + " - SketchTV.lol";
+
   return (
     <>
+      <title>{pageTitle}</title>
       <Box mb={2}>
         <Typography variant="h4">{sketch.title}</Typography>
         <Typography variant="subtitle1">

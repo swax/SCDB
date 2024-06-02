@@ -50,8 +50,11 @@ export default async function RecurringSketchPage({
   const sketchData = await getSketchData(1);
 
   // Rendering
+  const pageTitle = recurringSketch.title + " - SketchTV.lol";
+
   return (
     <>
+      <title>{pageTitle}</title>
       <Box mb={4}>
         <Typography variant="h4">{recurringSketch.title}</Typography>
         <Typography variant="subtitle1" color="textSecondary">

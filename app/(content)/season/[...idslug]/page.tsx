@@ -45,8 +45,11 @@ export default async function SeasonPage({ params }: ContentPageProps) {
   const sketchData = await getSketchData(1);
 
   // Rendering
+  const pageTitle = `Season ${season.number} - ${season.show.title} ${season.year} - SketchTV.lol`;
+
   return (
     <>
+      <title>{pageTitle}</title>
       <Box mb={4}>
         <Typography variant="h4">
           Season {season.number} ({season.year})

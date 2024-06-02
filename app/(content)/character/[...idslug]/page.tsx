@@ -40,8 +40,11 @@ export default async function CharacterPage({ params }: ContentPageProps) {
   const sketchData = await getSketchData(1);
 
   // Rendering
+  const pageTitle = character.name + " - SketchTV.lol";
+  
   return (
     <>
+      <title>{pageTitle}</title>
       <Box mb={4}>
         <Typography variant="h4">{character.name}</Typography>
         <Typography variant="subtitle1">The Character</Typography>

@@ -22,6 +22,7 @@ export default async function SketchesPage(props: ListPageProps) {
   // Rendering
   return (
     <>
+      <title>Sketches - SketchTV.lol</title>
       <SketchDataGrid
         searchParams={searchParams}
         rows={rows}

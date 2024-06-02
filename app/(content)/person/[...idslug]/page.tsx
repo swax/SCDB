@@ -54,8 +54,11 @@ export default async function PersonPage({ params }: ContentPageProps) {
   const deathDate = person.death_date ? new Date(person.death_date) : null;
 
   // Rendering
+  const pageTitle = person.name + " - SketchTV.lol";
+
   return (
     <>
+      <title>{pageTitle}</title>
       <Box mb={4}>
         <Typography variant="h4">{person.name}</Typography>
         <Typography variant="subtitle1">The Person</Typography>
