@@ -174,7 +174,60 @@ export default async function SketchPage({ params }: ContentPageProps) {
             </AccordionDetails>
           </Accordion>
         )}
-
+        {Boolean(sketch.sketch_credits.length) && (
+          <Accordion defaultExpanded>
+            <AccordionSummary
+              expandIcon={<ExpandMoreIcon />}
+              aria-controls="credit-content"
+              id="credit-header"
+            >
+              <GroupsIcon />
+              <Typography fontWeight="bold" marginLeft={1}>
+                Credit
+              </Typography>
+            </AccordionSummary>
+            <AccordionDetails>
+              <TableContainer>
+                <Table aria-label="simple table" size="small">
+                  <TableHead>
+                    <TableRow>
+                      <TableCell></TableCell>
+                      <TableCell>Person</TableCell>
+                      <TableCell>Role</TableCell>
+                    </TableRow>
+                  </TableHead>
+                  <TableBody>
+                    {sketch.sketch_credits.map((sketch_credit, i) => (
+                      <TableRow key={i}>
+                        <TableCell>
+                          {!!sketch_credit.person.person_images.length && (
+                            <Image
+                              alt={sketch_credit.person.name}
+                              style={{ objectFit: "cover" }}
+                              src={`${s3url}/${sketch_credit.person.person_images[0].image.cdn_key}`}
+                              height={40}
+                              width={40}
+                            />
+                          )}
+                        </TableCell>
+                        <TableCell sx={{ whiteSpace: "nowrap" }}>
+                          <ContentLink
+                            mui
+                            table="person"
+                            entry={sketch_credit.person}
+                          />
+                        </TableCell>
+                        <TableCell>
+                          {enumNameToDisplayName(sketch_credit.role)}
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </TableContainer>
+            </AccordionDetails>
+          </Accordion>
+        )}
         {Boolean(sketch.sketch_tags.length) && (
           <Accordion defaultExpanded>
             <AccordionSummary

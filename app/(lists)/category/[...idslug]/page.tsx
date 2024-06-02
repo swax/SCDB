@@ -4,6 +4,7 @@ import { getTagsByCategoryList } from "@/backend/content/tagService";
 import { Box, Typography } from "@mui/material";
 import { ListPageProps, parseSearchParams } from "../../baseListTypes";
 import TagsDataGrid from "./TagsDataGrid";
+import MuiNextLink from "@/app/components/MuiNextLink";
 
 /** A combination of a list page and a content page because the url has an id/slug */
 export default async function CategoryPage(
@@ -28,6 +29,9 @@ export default async function CategoryPage(
     <>
       <Box mb={4}>
         <Typography variant="h4">{category.name}</Typography>
+        <Typography variant="subtitle1" color="textSecondary">
+          <MuiNextLink href={"/categories"}>Category</MuiNextLink>
+        </Typography>
       </Box>
       <TagsDataGrid
         basePath={`category/${category.id}/${category.url_slug}`}

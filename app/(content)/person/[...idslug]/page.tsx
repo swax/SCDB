@@ -2,7 +2,8 @@ import { ContentLink } from "@/app/components/ContentLink";
 import {
   getPerson,
   getPersonList,
-  getPersonSketchGrid,
+  getPersonSketchCastGrid,
+  getPersonSketchCreditGrid,
 } from "@/backend/content/personService";
 import s3url from "@/shared/cdnHost";
 import {
@@ -32,12 +33,18 @@ export default async function PersonPage({ params }: ContentPageProps) {
   // Data fetching
   const person = await tryGetContent("person", params, getPerson);
 
-  async function getSketchData(page: number) {
+  async function getSketchCastData(page: number) {
     "use server";
-    return await getPersonSketchGrid(person.id, page);
+    return await getPersonSketchCastGrid(person.id, page);
   }
 
-  const sketchData = await getSketchData(1);
+  async function getSketchCreditData(page: number) {
+    "use server";
+    return await getPersonSketchCreditGrid(person.id, page);
+  }
+
+  const sketchCastData = await getSketchCastData(1);
+  const sketchCreditData = await getSketchCreditData(1);
 
   // Constants
   const imgHeight = 300;
@@ -97,7 +104,12 @@ export default async function PersonPage({ params }: ContentPageProps) {
         ))}
       </ImageList>
       <Typography variant="subtitle1">{person.description}</Typography>
-      <SketchGrid initialData={sketchData} getData={getSketchData} />
+      <SketchGrid initialData={sketchCastData} getData={getSketchCastData} />
+      <SketchGrid
+        initialData={sketchCreditData}
+        getData={getSketchCreditData}
+        title="Credits"
+      />
       <DateGeneratedFooter />
     </>
   );

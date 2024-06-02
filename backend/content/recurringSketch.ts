@@ -11,6 +11,11 @@ export async function getRecurringSketchList(searchParams: ListSearchParms) {
       id: true,
       url_slug: true,
       title: true,
+      _count: {
+        select: {
+          sketches: true,
+        },
+      },
     },
   });
 

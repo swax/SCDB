@@ -20,9 +20,14 @@ import { ContentLink } from "../components/ContentLink";
 interface SketchGridProps {
   initialData: SketchGridData;
   getData: (page: number) => Promise<SketchGridData>;
+  title?: string;
 }
 
-export default function SketchGrid({ initialData, getData }: SketchGridProps) {
+export default function SketchGrid({
+  initialData,
+  getData,
+  title,
+}: SketchGridProps) {
   // Hooks
   const [data, setData] = useState(initialData);
   const [page, setPage] = useState(1);
@@ -59,7 +64,7 @@ export default function SketchGrid({ initialData, getData }: SketchGridProps) {
       >
         <LiveTvIcon />
         <Typography fontWeight="bold" marginLeft={1}>
-          {data.totalCount} Sketches
+          {data.totalCount} {title || "Sketches"}
         </Typography>
       </AccordionSummary>
       <AccordionDetails>

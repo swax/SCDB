@@ -88,7 +88,7 @@ function getAge(birthDate: Nullable<Date>, deathDate: Nullable<Date>) {
   return endDate.getFullYear() - birthDate.getFullYear();
 }
 
-export async function getPersonSketchGrid(
+export async function getPersonSketchCastGrid(
   id: number,
   page: number,
 ): Promise<SketchGridData> {
@@ -181,6 +181,85 @@ export async function getPersonSketchGrid(
       </>
     ),
     image_cdnkey: sc.image?.cdn_key || sc.sketch.image?.cdn_key,
+  }));
+
+  return {
+    sketches,
+    totalCount,
+    totalPages: Math.ceil(totalCount / SKETCH_PAGE_SIZE),
+  };
+}
+
+export async function getPersonSketchCreditGrid(
+  id: number,
+  page: number,
+): Promise<SketchGridData> {
+  const dbResults = await prisma.sketch_credit.findMany({
+    where: {
+      person_id: id,
+    },
+    select: {
+      sketch: {
+        select: {
+          id: true,
+          url_slug: true,
+          title: true,
+          site_rating: true,
+          image: {
+            select: {
+              cdn_key: true,
+            },
+          },
+          show: {
+            select: {
+              title: true,
+              id: true,
+              url_slug: true,
+            },
+          },
+          season: {
+            select: {
+              year: true,
+              id: true,
+              url_slug: true,
+            },
+          },
+        },
+      },
+    },
+    orderBy: {
+      sketch: {
+        site_rating: "desc",
+      },
+    },
+    skip: (page - 1) * SKETCH_PAGE_SIZE,
+    take: SKETCH_PAGE_SIZE,
+  });
+
+  const totalCount = await prisma.sketch_credit.count({
+    where: {
+      person_id: id,
+    },
+  });
+
+  const sketches = dbResults.map((sc) => ({
+    id: sc.sketch.id,
+    url_slug: sc.sketch.url_slug,
+    site_rating: sc.sketch.site_rating,
+    title: <ContentLink table="sketch" entry={sc.sketch} />,
+    subtitle: (
+      <>
+        <ContentLink table="show" entry={sc.sketch.show} />{" "}
+        {!!sc.sketch.season && (
+          <>
+            {"("}
+            <ContentLink table="season" entry={sc.sketch.season} />
+            {")"}
+          </>
+        )}
+      </>
+    ),
+    image_cdnkey: sc.sketch.image?.cdn_key,
   }));
 
   return {

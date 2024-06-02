@@ -1,4 +1,5 @@
 import { ContentLink } from "@/app/components/ContentLink";
+import MuiNextLink from "@/app/components/MuiNextLink";
 import {
   getShow,
   getShowSketchGrid,
@@ -49,6 +50,9 @@ export default async function ShowPage({ params }: ContentPageProps) {
     <>
       <Box mb={4}>
         <Typography variant="h4">{show.title}</Typography>
+        <Typography variant="subtitle1" color="textSecondary">
+          <MuiNextLink href={"/shows"}>Show</MuiNextLink>
+        </Typography>
       </Box>
       {!!show.seasons.length && (
         <Accordion defaultExpanded>
