@@ -19,6 +19,7 @@ import {
   DateGeneratedFooter,
   tryGetContent,
 } from "../../contentBase";
+import MuiNextLink from "@/app/components/MuiNextLink";
 
 export async function generateStaticParams() {
   const recurringSketches = await getRecurringSketchList({
@@ -53,6 +54,11 @@ export default async function RecurringSketchPage({
     <>
       <Box mb={4}>
         <Typography variant="h4">{recurringSketch.title}</Typography>
+        <Typography variant="subtitle1" color="textSecondary">
+          <MuiNextLink href={"/recurring-sketches"}>
+            Recurring Sketch
+          </MuiNextLink>
+        </Typography>
       </Box>
       {Boolean(recurringSketch.description) && (
         <Accordion defaultExpanded>

@@ -126,6 +126,34 @@ export async function getSketch(id: number) {
           sequence: "asc",
         },
       },
+      sketch_credits: {
+        select: {
+          person: {
+            select: {
+              id: true,
+              name: true,
+              url_slug: true,
+              person_images: {
+                select: {
+                  image: {
+                    select: {
+                      cdn_key: true,
+                    },
+                  },
+                },
+                orderBy: {
+                  sequence: "asc",
+                },
+                take: 1,
+              },
+            },
+          },
+          role: true,
+        },
+        orderBy: {
+          sequence: "asc",
+        },
+      },
     },
   });
 
