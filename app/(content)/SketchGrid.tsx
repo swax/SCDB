@@ -132,7 +132,7 @@ export default function SketchGrid({
                     width={imgWidth}
                     height={imgHeight}
                   />
-                </Box>{" "}
+                </Box>
               </ContentLink>
               <ImageListItemBar
                 position="below"
