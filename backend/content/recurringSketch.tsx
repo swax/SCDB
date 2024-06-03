@@ -52,6 +52,7 @@ export async function getRecurringSketchGrid(
       url_slug: true,
       title: true,
       site_rating: true,
+      video_urls: true,
       image: {
         select: {
           cdn_key: true,
@@ -89,6 +90,7 @@ export async function getRecurringSketchGrid(
     id: s.id,
     url_slug: s.url_slug,
     site_rating: s.site_rating,
+    titleString: s.title,
     title: <ContentLink table="sketch" entry={s} />,
     subtitle: (
       <>
@@ -103,6 +105,7 @@ export async function getRecurringSketchGrid(
       </>
     ),
     image_cdnkey: s.image?.cdn_key,
+    video_urls: s.video_urls,
   }));
 
   return {

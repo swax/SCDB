@@ -62,6 +62,7 @@ export async function getEpisodeSketchGrid(
       url_slug: true,
       title: true,
       site_rating: true,
+      video_urls: true,
       image: {
         select: {
           cdn_key: true,
@@ -92,6 +93,7 @@ export async function getEpisodeSketchGrid(
     id: s.id,
     url_slug: s.url_slug,
     site_rating: s.site_rating,
+    titleString: s.title,
     title: <ContentLink table="sketch" entry={s} />,
     subtitle: s.season ? (
       <ContentLink table="season" entry={s.season} />
@@ -99,6 +101,7 @@ export async function getEpisodeSketchGrid(
       <></>
     ),
     image_cdnkey: s.image?.cdn_key,
+    video_urls: s.video_urls
   }));
 
   return {
