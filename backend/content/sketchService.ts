@@ -115,7 +115,6 @@ export async function getSketch(id: number) {
             },
           },
           role: true,
-          description: true,
           image: {
             select: {
               cdn_key: true,

@@ -12,6 +12,8 @@ import {
   AccordionSummary,
   Box,
   Chip,
+  ImageListItem,
+  ImageListItemBar,
   Stack,
   Table,
   TableBody,
@@ -45,6 +47,9 @@ export default async function SketchPage({ params }: ContentPageProps) {
 
   // Rendering
   const pageTitle = sketch.title + " - SketchTV.lol";
+
+  const imgWidth = 175;
+  const imgHeight = 175;
 
   return (
     <>
@@ -120,60 +125,73 @@ export default async function SketchPage({ params }: ContentPageProps) {
               </Typography>
             </AccordionSummary>
             <AccordionDetails>
-              <TableContainer>
-                <Table aria-label="simple table" size="small">
-                  <TableHead>
-                    <TableRow>
-                      <TableCell></TableCell>
-                      <TableCell>Character</TableCell>
-                      <TableCell>Actor</TableCell>
-                      <TableCell>Role</TableCell>
-                      <TableCell></TableCell>
-                    </TableRow>
-                  </TableHead>
-                  <TableBody>
-                    {sketch.sketch_casts.map((sketch_cast, i) => (
-                      <TableRow key={i}>
-                        <TableCell>
-                          {!!sketch_cast.image && (
-                            <Image
-                              alt={sketch_cast.character_name || "Unknown"}
-                              style={{ objectFit: "cover" }}
-                              src={`${s3url}/${sketch_cast.image.cdn_key}`}
-                              height={40}
-                              width={40}
-                            />
-                          )}
-                        </TableCell>
-                        <TableCell>
-                          {sketch_cast.character ? (
-                            <ContentLink
-                              mui
-                              table="character"
-                              entry={sketch_cast.character}
-                            />
-                          ) : (
-                            <>{sketch_cast.character_name || "Unknown"}</>
-                          )}
-                        </TableCell>
-                        <TableCell sx={{ whiteSpace: "nowrap" }}>
-                          {!!sketch_cast.person?.name && (
-                            <ContentLink
-                              mui
-                              table="person"
-                              entry={sketch_cast.person}
-                            />
-                          )}
-                        </TableCell>
-                        <TableCell>
-                          {enumNameToDisplayName(sketch_cast.role)}
-                        </TableCell>
-                        <TableCell>{sketch_cast.description}</TableCell>
-                      </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
-              </TableContainer>
+              <Box
+                className="sketch-grid"
+                style={{
+                  display: "flex",
+                  flexWrap: "wrap",
+                  gap: "12px",
+                }}
+              >
+                {sketch.sketch_casts.map((sketch_cast, i) => (
+                  <ContentLink
+                    key={i}
+                    mui
+                    table="character"
+                    entry={sketch_cast.character}
+                  >
+                    <ImageListItem>
+                      <Image
+                        alt={sketch_cast.character_name || ""}
+                        title={sketch_cast.character_name || ""}
+                        style={{
+                          objectFit: "cover",
+                          objectPosition: "50% 0",
+                          borderRadius: 8,
+                        }}
+                        src={
+                          sketch_cast.image?.cdn_key
+                            ? `${s3url}/${sketch_cast.image?.cdn_key}`
+                            : "/images/no-image.webp"
+                        }
+                        width={imgWidth}
+                        height={imgHeight}
+                      />
+                      <ImageListItemBar
+                        title={
+                          <>
+                            {sketch_cast.character ? (
+                              <ContentLink
+                                mui
+                                table="character"
+                                entry={sketch_cast.character}
+                              />
+                            ) : (
+                              <span title={sketch_cast.character_name || ""}>
+                                {sketch_cast.character_name || ""}
+                              </span>
+                            )}
+                          </>
+                        }
+                        subtitle={
+                          <>
+                            {!!sketch_cast.person && (
+                              <>
+                                <ContentLink
+                                  table="person"
+                                  entry={sketch_cast.person}
+                                />
+                                {" • "}
+                              </>
+                            )}
+                            {enumNameToDisplayName(sketch_cast.role)}
+                          </>
+                        }
+                      />
+                    </ImageListItem>
+                  </ContentLink>
+                ))}
+              </Box>
             </AccordionDetails>
           </Accordion>
         )}
@@ -269,78 +287,3 @@ export default async function SketchPage({ params }: ContentPageProps) {
     </>
   );
 }
-
-/*
-
-      <Box marginTop={1}>
-        <Stack direction="row" flexWrap="wrap" spacing={1} useFlexGap>
-          {SketchData.links.map((link, i) => (
-            <Chip
-              clickable
-              component="a"
-              href={link.url}
-              key={i}
-              label={link.text}
-              size="small"
-              target="_blank"
-              variant="outlined"
-            />
-          ))}
-        </Stack>
-      </Box>
-      <Box marginTop={2}>
-        <Rating name="half-rating" defaultValue={2.5} precision={0.5} />
-      </Box>
-      <Box sx={{ marginTop: 2 }}>
-  
-        <Accordion>
-          <AccordionSummary
-            expandIcon={<ExpandMoreIcon />}
-            aria-controls="panel3a-content"
-            id="panel3a-header"
-          >
-            <FormatQuoteIcon />
-            <Typography fontWeight="bold" marginLeft={1}>
-              Quotes
-            </Typography>
-          </AccordionSummary>
-          <AccordionDetails>
-            <TableContainer component={Paper}>
-              <Table aria-label="simple table">
-                <TableBody>
-                  {SketchData.quotes.map((quote, i) => (
-                    <TableRow key={i}>
-                      <TableCell>
-                        <Typography
-                          key={i}
-                          variant="body2"
-                          sx={{ whiteSpace: "pre-wrap" }}
-                        >
-                          {quote.text}
-                        </Typography>
-                      </TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </TableContainer>
-          </AccordionDetails>
-        </Accordion>
-        <Accordion>
-          <AccordionSummary
-            expandIcon={<ExpandMoreIcon />}
-            aria-controls="panel4a-content"
-            id="panel4a-header"
-          >
-            <StickyNote2Icon />
-            <Typography fontWeight="bold" marginLeft={1}>
-              Notes and Trivia
-            </Typography>
-          </AccordionSummary>
-          <AccordionDetails>
-            <Typography variant="body2" sx={{ whiteSpace: "pre-wrap" }}>
-              {SketchData.notesAndTrivia}
-            </Typography>
-          </AccordionDetails>
-        </Accordion>
-      </Box>*/

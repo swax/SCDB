@@ -307,7 +307,6 @@ model sketch_cast {
   person_id      Int?
   image_id       Int?
   sequence       Int
-  description    String?
   role           cast_role_type
   created_by_id  String
   created_at     DateTime       @default(now())
@@ -457,7 +456,7 @@ enum operation_type {
 }
 
 enum cast_role_type {
-  CastMember
+  Cast
   Guest
   Host
   Uncredited
