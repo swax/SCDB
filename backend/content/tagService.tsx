@@ -97,6 +97,7 @@ export async function getTagSketchGrid(
           url_slug: true,
           title: true,
           site_rating: true,
+          video_urls: true,
           image: {
             select: {
               cdn_key: true,
@@ -138,6 +139,7 @@ export async function getTagSketchGrid(
     id: sc.sketch.id,
     url_slug: sc.sketch.url_slug,
     site_rating: sc.sketch.site_rating,
+    titleString: sc.sketch.title,
     title: <ContentLink table="sketch" entry={sc.sketch} />,
     subtitle: (
       <>
@@ -152,6 +154,7 @@ export async function getTagSketchGrid(
       </>
     ),
     image_cdnkey: sc.sketch.image?.cdn_key,
+    video_urls: sc.sketch.video_urls,
   }));
 
   return {

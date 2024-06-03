@@ -111,6 +111,7 @@ export async function getPersonSketchCastGrid(
           url_slug: true,
           title: true,
           site_rating: true,
+          video_urls: true,
           image: {
             select: {
               cdn_key: true,
@@ -157,6 +158,7 @@ export async function getPersonSketchCastGrid(
     id: sc.sketch.id,
     url_slug: sc.sketch.url_slug,
     site_rating: sc.sketch.site_rating,
+    titleString: sc.sketch.title,
     title: <ContentLink table="sketch" entry={sc.sketch} />,
     subtitle: (
       <>
@@ -181,6 +183,7 @@ export async function getPersonSketchCastGrid(
       </>
     ),
     image_cdnkey: sc.image?.cdn_key || sc.sketch.image?.cdn_key,
+    video_urls: sc.sketch.video_urls,
   }));
 
   return {
@@ -205,6 +208,7 @@ export async function getPersonSketchCreditGrid(
           url_slug: true,
           title: true,
           site_rating: true,
+          video_urls: true,
           image: {
             select: {
               cdn_key: true,
@@ -246,6 +250,7 @@ export async function getPersonSketchCreditGrid(
     id: sc.sketch.id,
     url_slug: sc.sketch.url_slug,
     site_rating: sc.sketch.site_rating,
+    titleString: sc.sketch.title,
     title: <ContentLink table="sketch" entry={sc.sketch} />,
     subtitle: (
       <>
@@ -260,6 +265,7 @@ export async function getPersonSketchCreditGrid(
       </>
     ),
     image_cdnkey: sc.sketch.image?.cdn_key,
+    video_urls: sc.sketch.video_urls,
   }));
 
   return {

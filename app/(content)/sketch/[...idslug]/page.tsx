@@ -75,8 +75,8 @@ export default async function SketchPage({ params }: ContentPageProps) {
       </Box>
       <VideoHero
         title={sketch.title}
-        previewImgCdnKey={sketch.image?.cdn_key}
-        videoEmbedUrl={sketch.video_urls[0]}
+        image_cdn_key={sketch.image?.cdn_key}
+        videoUrls={sketch.video_urls}
       />
       {!!sketch.recurring_sketch && (
         <Typography variant="subtitle1">
