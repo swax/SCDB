@@ -48,8 +48,8 @@ export default async function SketchPage({ params }: ContentPageProps) {
   // Rendering
   const pageTitle = sketch.title + " - SketchTV.lol";
 
-  const imgWidth = 175;
-  const imgHeight = 175;
+  const imgWidth = 160;
+  const imgHeight = 160;
 
   return (
     <>
@@ -134,13 +134,12 @@ export default async function SketchPage({ params }: ContentPageProps) {
                 }}
               >
                 {sketch.sketch_casts.map((sketch_cast, i) => (
-                  <ContentLink
-                    key={i}
-                    mui
-                    table="character"
-                    entry={sketch_cast.character}
-                  >
-                    <ImageListItem>
+                  <ImageListItem key={i}>
+                    <ContentLink
+                      mui
+                      table="character"
+                      entry={sketch_cast.character}
+                    >
                       <Image
                         alt={sketch_cast.character_name || ""}
                         title={sketch_cast.character_name || ""}
@@ -157,39 +156,39 @@ export default async function SketchPage({ params }: ContentPageProps) {
                         width={imgWidth}
                         height={imgHeight}
                       />
-                      <ImageListItemBar
-                        title={
-                          <>
-                            {sketch_cast.character ? (
+                    </ContentLink>
+                    <ImageListItemBar
+                      title={
+                        <>
+                          {sketch_cast.character ? (
+                            <ContentLink
+                              mui
+                              table="character"
+                              entry={sketch_cast.character}
+                            />
+                          ) : (
+                            <span title={sketch_cast.character_name || ""}>
+                              {sketch_cast.character_name || ""}
+                            </span>
+                          )}
+                        </>
+                      }
+                      subtitle={
+                        <>
+                          {!!sketch_cast.person && (
+                            <>
                               <ContentLink
-                                mui
-                                table="character"
-                                entry={sketch_cast.character}
+                                table="person"
+                                entry={sketch_cast.person}
                               />
-                            ) : (
-                              <span title={sketch_cast.character_name || ""}>
-                                {sketch_cast.character_name || ""}
-                              </span>
-                            )}
-                          </>
-                        }
-                        subtitle={
-                          <>
-                            {!!sketch_cast.person && (
-                              <>
-                                <ContentLink
-                                  table="person"
-                                  entry={sketch_cast.person}
-                                />
-                                {" • "}
-                              </>
-                            )}
-                            {enumNameToDisplayName(sketch_cast.role)}
-                          </>
-                        }
-                      />
-                    </ImageListItem>
-                  </ContentLink>
+                              {" • "}
+                            </>
+                          )}
+                          {enumNameToDisplayName(sketch_cast.role)}
+                        </>
+                      }
+                    />
+                  </ImageListItem>
                 ))}
               </Box>
             </AccordionDetails>

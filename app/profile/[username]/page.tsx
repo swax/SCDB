@@ -1,6 +1,9 @@
 import authOptions from "@/app/api/auth/[...nextauth]/authOptions";
 import { getChangelog } from "@/backend/mgmt/changelogService";
-import { getProfile } from "@/backend/user/profileService";
+import {
+  getProfile,
+  getProfileSketchGrid,
+} from "@/backend/user/profileService";
 import { getServerSession } from "next-auth";
 import { notFound } from "next/navigation";
 import ProfileClientPage from "./page.client";
@@ -18,6 +21,15 @@ export default async function ProfilePage({
     notFound();
   }
 
+  // Sketch grid
+  async function getSketchData(page: number) {
+    "use server";
+    return await getProfileSketchGrid(profile!.id, page);
+  }
+
+  const sketchData = await getSketchData(1);
+
+  // Changelog
   const page = 1;
   const rowsPerPage = 5;
 
@@ -36,6 +48,8 @@ export default async function ProfilePage({
       changelog={changelog}
       page={page}
       rowsPerPage={rowsPerPage}
+      initialSketchData={sketchData}
+      getSketchData={getSketchData}
     />
   );
 }

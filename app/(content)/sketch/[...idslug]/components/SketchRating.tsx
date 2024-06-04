@@ -15,16 +15,16 @@ import { useEffect, useState } from "react";
 import { getRating, saveRating } from "../actions/ratingActions";
 
 const labels: { [index: string]: string } = {
-  1: "1. The worst",
-  2: "2. Bad",
-  3: "3. Poor",
-  4: "4. Subpar",
-  5: "5. Meh",
-  6: "6. Ok",
-  7: "7. Good: Would rewatch",
-  8: "8. Great",
-  9: "9. Excellent",
-  10: "10. Outstanding. A Classic!",
+  1: "1. Poor: Lacks any coherent humor or appeal, failing completely to engage or amuse the audience.",
+  2: "2. Weak: This sketch has few redeeming qualities, with humor that falls flat and performances that don't deliver.",
+  3: "3. Below Average: Lacks consistent laughs, with uneven pacing or humor that doesn't quite land.",
+  4: "4. Average: An ordinary sketch with some humor, but it struggles to leave a lasting impression.",
+  5: "5. Above Average: Decent overall with enough humor to keep it engaging, but not particularly memorable.",
+  6: "6. Good: Solidly entertaining with some great moments, though it may lack some flair to make it standout.",
+  7: "7. Very Good: This sketch has notable humor and creativity, making it a strong and enjoyable watch.",
+  8: "8. Great: Very entertaining with consistent laughs and clever writing that impresses and delights.",
+  9: "9. Excellent: Exceptionally funny and well-crafted, this sketch captures perfect comedic timing and strong performances.",
+  10: "10. Masterpiece: This sketch is a comedic gem, delivering unparalleled laughter and originality that's unforgettable.",
 };
 
 function getLabelText(value: number) {
@@ -103,8 +103,6 @@ export default function SketchRating({
       <AccordionDetails>
         <Box
           sx={{
-            display: "flex",
-            alignItems: "center",
             marginLeft: 1,
           }}
         >
@@ -124,7 +122,7 @@ export default function SketchRating({
               <StarIcon style={{ opacity: 0.55 }} fontSize="inherit" />
             }
           />
-          {!!labelValue && <Box sx={{ ml: 2 }}>{labelValue}</Box>}
+          <Box style={{ height: "40px" }}>{labelValue}</Box>
         </Box>
       </AccordionDetails>
     </Accordion>
