@@ -1,12 +1,19 @@
 "use client";
 
+import SketchGrid from "@/app/(content)/SketchGrid";
 import ChangeLogTable from "@/app/changelog/components/ChangeLogTable";
 import MuiNextLink from "@/app/components/MuiNextLink";
 import { GetChangelogResponse } from "@/backend/mgmt/changelogService";
 import { GetProfileResponse } from "@/backend/user/profileService";
 import { allowedToChangeRole } from "@/shared/roleUtils";
 import { ServiceResponse } from "@/shared/serviceResponse";
+import { SketchGridData } from "@/shared/sketchGridBase";
+import DifferenceIcon from "@mui/icons-material/Difference";
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import {
+  Accordion,
+  AccordionDetails,
+  AccordionSummary,
   Box,
   Button,
   MenuItem,
@@ -25,6 +32,8 @@ interface ProfileClientPageProps {
   changelog: GetChangelogResponse;
   page: number;
   rowsPerPage: number;
+  initialSketchData: SketchGridData;
+  getSketchData: (page: number) => Promise<SketchGridData>;
 }
 
 export default function ProfileClientPage({
@@ -34,6 +43,8 @@ export default function ProfileClientPage({
   changelog,
   page,
   rowsPerPage,
+  initialSketchData,
+  getSketchData,
 }: ProfileClientPageProps) {
   // Constants
   const showModOptions =
@@ -74,9 +85,15 @@ export default function ProfileClientPage({
   }
 
   // Rendering
+  const pageTitle = profile.username + " - SketchTV.lol";
+
   return (
     <Box>
-      <h1>{profile.username}</h1>
+      <title>{pageTitle}</title>
+      <Box mb={4}>
+        <Typography variant="h4">{profile.username}</Typography>
+        <Typography variant="subtitle1">Role: {profile.role}</Typography>
+      </Box>
 
       <Box mt={2}>
         {editRole ? (
@@ -115,9 +132,6 @@ export default function ProfileClientPage({
           </>
         ) : (
           <>
-            <Typography variant="body1" sx={{ display: "inline" }}>
-              Role: {profile.role}
-            </Typography>
             {showModOptions && (
               <Button
                 sx={{ display: "inline", ml: 2 }}
@@ -155,21 +169,36 @@ export default function ProfileClientPage({
         </Box>
       )}
 
-      <h2>Favorite Sketches</h2>
-      <p>....</p>
-
-      <h2>Latest Edits</h2>
-      <ChangeLogTable
-        changelog={changelog}
-        page={page}
-        rowsPerPage={rowsPerPage}
-        profilePage={true}
+      <SketchGrid
+        initialData={initialSketchData}
+        getData={getSketchData}
+        title="Rated Sketches"
       />
-      <Box mt={2}>
-        <MuiNextLink href={`/changelog?username=${profile.username}`}>
-          See full change history
-        </MuiNextLink>
-      </Box>
+      <Accordion>
+        <AccordionSummary
+          expandIcon={<ExpandMoreIcon />}
+          aria-controls="sketches-content"
+          id="sketches-header"
+        >
+          <DifferenceIcon />
+          <Typography fontWeight="bold" marginLeft={1}>
+            Latest Edits
+          </Typography>
+        </AccordionSummary>
+        <AccordionDetails>
+          <ChangeLogTable
+            changelog={changelog}
+            page={page}
+            rowsPerPage={rowsPerPage}
+            profilePage={true}
+          />
+          <Box mt={2}>
+            <MuiNextLink href={`/changelog?username=${profile.username}`}>
+              See full change history
+            </MuiNextLink>
+          </Box>
+        </AccordionDetails>
+      </Accordion>
     </Box>
   );
 }
