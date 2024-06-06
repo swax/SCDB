@@ -59,9 +59,15 @@ const personOrm: TableOrm = {
       optional: true,
     },
     {
-      label: "Deathday",
+      label: "Death",
       column: "death_date",
       type: "date",
+      optional: true,
+    },
+    {
+      label: "Link URLs",
+      column: "link_urls",
+      type: "list",
       optional: true,
     },
   ],

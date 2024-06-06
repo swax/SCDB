@@ -62,6 +62,8 @@ export async function getTag(id: number) {
       id: true,
       url_slug: true,
       name: true,
+      description: true,
+      link_urls: true,
       category: {
         select: {
           id: true,

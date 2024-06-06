@@ -35,6 +35,7 @@ export async function getRecurringSketch(id: number) {
       url_slug: true,
       title: true,
       description: true,
+      link_urls: true,
     },
   });
 }

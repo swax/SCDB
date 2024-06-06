@@ -11,6 +11,7 @@ import {
   tryGetContent,
 } from "../../contentBase";
 import { ContentLink } from "@/app/components/ContentLink";
+import LinksPanel from "@/app/components/LinksPanel";
 
 export async function generateStaticParams() {
   const episodes = await getEpisodesList({ page: 1, pageSize: 1000 });
@@ -50,6 +51,7 @@ export default async function EpisodePage({ params }: ContentPageProps) {
         </Typography>
       </Box>
       <SketchGrid initialData={sketchData} getData={getSketchData} />
+      <LinksPanel link_urls={episode.link_urls} />
       <DateGeneratedFooter />
     </>
   );

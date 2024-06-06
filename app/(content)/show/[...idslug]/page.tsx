@@ -25,6 +25,7 @@ import {
   DateGeneratedFooter,
   tryGetContent,
 } from "../../contentBase";
+import LinksPanel from "@/app/components/LinksPanel";
 
 export async function generateStaticParams() {
   const shows = await getShowsList({ page: 1, pageSize: 1000 });
@@ -97,6 +98,7 @@ export default async function ShowPage({ params }: ContentPageProps) {
       )}
 
       <SketchGrid initialData={sketchData} getData={getSketchData} />
+      <LinksPanel link_urls={show.link_urls} />
       <DateGeneratedFooter />
     </>
   );

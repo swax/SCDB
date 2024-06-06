@@ -1,25 +1,18 @@
+import DescriptionPanel from "@/app/components/DescriptionPanel";
+import MuiNextLink from "@/app/components/MuiNextLink";
 import {
   getRecurringSketch,
   getRecurringSketchGrid,
   getRecurringSketchList,
 } from "@/backend/content/recurringSketch";
-import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
-import NotesIcon from "@mui/icons-material/Notes";
-import {
-  Accordion,
-  AccordionDetails,
-  AccordionSummary,
-  Box,
-  Typography,
-} from "@mui/material";
-import Markdown from "react-markdown";
+import { Box, Typography } from "@mui/material";
 import SketchGrid from "../../SketchGrid";
 import {
   ContentPageProps,
   DateGeneratedFooter,
   tryGetContent,
 } from "../../contentBase";
-import MuiNextLink from "@/app/components/MuiNextLink";
+import LinksPanel from "@/app/components/LinksPanel";
 
 export async function generateStaticParams() {
   const recurringSketches = await getRecurringSketchList({
@@ -63,24 +56,9 @@ export default async function RecurringSketchPage({
           </MuiNextLink>
         </Typography>
       </Box>
-      {Boolean(recurringSketch.description) && (
-        <Accordion defaultExpanded>
-          <AccordionSummary
-            expandIcon={<ExpandMoreIcon />}
-            aria-controls="description-content"
-            id="description-header"
-          >
-            <NotesIcon />
-            <Typography fontWeight="bold" marginLeft={1}>
-              Description
-            </Typography>
-          </AccordionSummary>
-          <AccordionDetails>
-            <Markdown>{recurringSketch.description}</Markdown>
-          </AccordionDetails>
-        </Accordion>
-      )}
+      <DescriptionPanel description={recurringSketch.description} />
       <SketchGrid initialData={sketchData} getData={getSketchData} />
+      <LinksPanel link_urls={recurringSketch.link_urls} />
       <DateGeneratedFooter />
     </>
   );

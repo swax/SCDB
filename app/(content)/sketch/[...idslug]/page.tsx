@@ -1,11 +1,11 @@
 import { ContentLink } from "@/app/components/ContentLink";
+import DescriptionPanel from "@/app/components/DescriptionPanel";
 import { getSketch, getSketchList } from "@/backend/content/sketchService";
 import s3url from "@/shared/cdnHost";
 import { enumNameToDisplayName } from "@/shared/utilities";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import GroupsIcon from "@mui/icons-material/Groups";
 import LocalOfferIcon from "@mui/icons-material/LocalOffer";
-import NotesIcon from "@mui/icons-material/Notes";
 import {
   Accordion,
   AccordionDetails,
@@ -24,7 +24,6 @@ import {
   Typography,
 } from "@mui/material";
 import Image from "next/image";
-import Markdown from "react-markdown";
 import {
   ContentPageProps,
   DateGeneratedFooter,
@@ -32,6 +31,7 @@ import {
 } from "../../contentBase";
 import SketchRating from "./components/SketchRating";
 import VideoHero from "./components/VideoHero";
+import LinksPanel from "@/app/components/LinksPanel";
 
 export async function generateStaticParams() {
   const sketches = await getSketchList({ page: 1, pageSize: 1000 });
@@ -48,8 +48,8 @@ export default async function SketchPage({ params }: ContentPageProps) {
   // Rendering
   const pageTitle = sketch.title + " - SketchTV.lol";
 
-  const imgWidth = 160;
-  const imgHeight = 160;
+  const imgWidth = 150;
+  const imgHeight = 150;
 
   return (
     <>
@@ -95,23 +95,7 @@ export default async function SketchPage({ params }: ContentPageProps) {
       )}
       <Box sx={{ marginTop: 2 }}>
         <SketchRating sketchId={sketch.id} siteRating={sketch.site_rating} />
-        {Boolean(sketch.description) && (
-          <Accordion defaultExpanded>
-            <AccordionSummary
-              expandIcon={<ExpandMoreIcon />}
-              aria-controls="description-content"
-              id="description-header"
-            >
-              <NotesIcon />
-              <Typography fontWeight="bold" marginLeft={1}>
-                Description
-              </Typography>
-            </AccordionSummary>
-            <AccordionDetails>
-              <Markdown>{sketch.description}</Markdown>
-            </AccordionDetails>
-          </Accordion>
-        )}
+        <DescriptionPanel description={sketch.description} />
         {Boolean(sketch.sketch_casts.length) && (
           <Accordion defaultExpanded>
             <AccordionSummary
@@ -137,8 +121,8 @@ export default async function SketchPage({ params }: ContentPageProps) {
                   <ImageListItem key={i}>
                     <ContentLink
                       mui
-                      table="character"
-                      entry={sketch_cast.character}
+                      table={sketch_cast.character ? "character" : "person"}
+                      entry={sketch_cast.character || sketch_cast.person}
                     >
                       <Image
                         alt={sketch_cast.character_name || ""}
@@ -282,6 +266,7 @@ export default async function SketchPage({ params }: ContentPageProps) {
           </Accordion>
         )}
       </Box>
+      <LinksPanel link_urls={sketch.link_urls} />
       <DateGeneratedFooter />
     </>
   );

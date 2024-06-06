@@ -11,6 +11,8 @@ import {
   DateGeneratedFooter,
   tryGetContent,
 } from "../../contentBase";
+import DescriptionPanel from "@/app/components/DescriptionPanel";
+import LinksPanel from "@/app/components/LinksPanel";
 
 export async function generateStaticParams() {
   const tag = await getTagsList({ page: 1, pageSize: 1000 });
@@ -42,7 +44,9 @@ export default async function TagPage({ params }: ContentPageProps) {
           <ContentLink mui table="category" entry={tag.category} />
         </Typography>
       </Box>
+      <DescriptionPanel description={tag.description} />
       <SketchGrid initialData={sketchData} getData={getSketchData} />
+      <LinksPanel link_urls={tag.link_urls} />
       <DateGeneratedFooter />
     </>
   );

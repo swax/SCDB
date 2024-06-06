@@ -44,6 +44,7 @@ export async function getPerson(id: number) {
       description: true,
       birth_date: true,
       death_date: true,
+      link_urls: true,
       character: {
         select: {
           id: true,

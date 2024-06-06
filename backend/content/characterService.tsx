@@ -35,6 +35,7 @@ export async function getCharacter(id: number) {
       url_slug: true,
       name: true,
       description: true,
+      link_urls: true,
       person: {
         select: {
           id: true,

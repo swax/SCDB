@@ -29,6 +29,7 @@ export async function getEpisode(id: number) {
       url_slug: true,
       number: true,
       air_date: true,
+      link_urls: true,
       season: {
         select: {
           id: true,
