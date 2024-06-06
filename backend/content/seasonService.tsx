@@ -29,6 +29,7 @@ export async function getSeason(id: number) {
       url_slug: true,
       year: true,
       number: true,
+      link_urls: true,
       show: {
         select: {
           id: true,

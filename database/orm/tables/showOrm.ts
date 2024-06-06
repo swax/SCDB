@@ -17,6 +17,12 @@ const showOrm: TableOrm = {
       optional: true,
     },
     {
+      label: "Link URLs",
+      column: "link_urls",
+      type: "list",
+      optional: true,
+    },
+    {
       label: "URL Slug",
       column: "url_slug",
       type: "slug",

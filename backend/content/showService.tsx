@@ -34,6 +34,7 @@ export async function getShow(id: number) {
       id: true,
       url_slug: true,
       title: true,
+      link_urls: true,
       seasons: {
         select: {
           id: true,

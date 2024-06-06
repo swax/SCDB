@@ -123,6 +123,7 @@ model character {
   name           String             @unique @db.VarChar(100)
   description    String?
   person_id      Int?               @unique
+  link_urls      String[]
   review_status  review_status_type @default(NeedsReview)
   created_by_id  String
   created_at     DateTime           @default(now())
@@ -146,6 +147,7 @@ model episode {
   title          String?            @db.VarChar(100)
   description    String?
   season_id      Int
+  link_urls      String[]
   review_status  review_status_type @default(NeedsReview)
   created_by_id  String
   created_at     DateTime           @default(now())
@@ -169,6 +171,7 @@ model person {
   birth_date     DateTime?          @db.Date
   death_date     DateTime?          @db.Date
   gender         gender_type
+  link_urls      String[]
   review_status  review_status_type @default(NeedsReview)
   created_by_id  String
   created_at     DateTime           @default(now())
@@ -222,6 +225,7 @@ model recurring_sketch {
   lookup_slug    String             @unique @db.VarChar(100)
   title          String             @db.VarChar(100)
   description    String?
+  link_urls      String[]
   show_id        Int
   review_status  review_status_type @default(NeedsReview)
   created_by_id  String
@@ -246,6 +250,7 @@ model season {
   year           Int
   description    String?
   show_id        Int
+  link_urls      String[]
   review_status  review_status_type @default(NeedsReview)
   created_by_id  String
   created_at     DateTime           @default(now())
@@ -267,6 +272,7 @@ model show {
   url_slug       String             @unique @db.VarChar(100)
   title          String             @unique @db.VarChar(100)
   description    String?
+  link_urls      String[]
   review_status  review_status_type @default(NeedsReview)
   created_by_id  String
   created_at     DateTime           @default(now())
@@ -370,6 +376,7 @@ model sketch {
   season_id           Int?
   episode_id          Int?
   recurring_sketch_id Int?
+  link_urls           String[]
   review_status       review_status_type @default(NeedsReview)
   created_by_id       String
   created_at          DateTime           @default(now())
@@ -413,6 +420,8 @@ model tag {
   name           String             @db.VarChar(100)
   url_slug       String             @db.VarChar(100)
   lookup_slug    String             @unique @db.VarChar(100)
+  description    String?
+  link_urls      String[]
   category_id    Int
   review_status  review_status_type @default(NeedsReview)
   created_by_id  String

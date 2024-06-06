@@ -11,6 +11,19 @@ const tagOrm: TableOrm = {
       type: "string",
     },
     {
+      label: "Description",
+      column: "description",
+      type: "string",
+      multiline: true,
+      optional: true,
+    },
+    {
+      label: "Link URLs",
+      column: "link_urls",
+      type: "list",
+      optional: true,
+    },
+    {
       label: "Category",
       column: "category_id",
       type: "lookup",

@@ -20,6 +20,7 @@ import {
   DateGeneratedFooter,
   tryGetContent,
 } from "../../contentBase";
+import LinksPanel from "@/app/components/LinksPanel";
 
 export async function generateStaticParams() {
   const poeple = await getPersonList({ page: 1, pageSize: 1000 });
@@ -113,6 +114,7 @@ export default async function PersonPage({ params }: ContentPageProps) {
         getData={getSketchCreditData}
         title="Credits"
       />
+      <LinksPanel link_urls={person.link_urls} />
       <DateGeneratedFooter />
     </>
   );

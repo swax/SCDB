@@ -26,6 +26,12 @@ const recurringSketch: TableOrm = {
       optional: true,
     },
     {
+      label: "Link URLs",
+      column: "link_urls",
+      type: "list",
+      optional: true,
+    },
+    {
       label: "Lookup Slug",
       column: "lookup_slug",
       type: "string",

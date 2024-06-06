@@ -20,6 +20,8 @@ import {
   DateGeneratedFooter,
   tryGetContent,
 } from "../../contentBase";
+import LinksPanel from "@/app/components/LinksPanel";
+import DescriptionPanel from "@/app/components/DescriptionPanel";
 
 export async function generateStaticParams() {
   const characters = await getCharacterList({ page: 1, pageSize: 1000 });
@@ -41,7 +43,7 @@ export default async function CharacterPage({ params }: ContentPageProps) {
 
   // Rendering
   const pageTitle = character.name + " - SketchTV.lol";
-  
+
   return (
     <>
       <title>{pageTitle}</title>
@@ -56,24 +58,12 @@ export default async function CharacterPage({ params }: ContentPageProps) {
           </Typography>
         )}
       </Box>
-      {Boolean(character.description) && (
-        <Accordion defaultExpanded>
-          <AccordionSummary
-            expandIcon={<ExpandMoreIcon />}
-            aria-controls="about-content"
-            id="about-header"
-          >
-            <NotesIcon />
-            <Typography fontWeight="bold" marginLeft={1}>
-              About
-            </Typography>
-          </AccordionSummary>
-          <AccordionDetails>
-            <Markdown>{character.description}</Markdown>
-          </AccordionDetails>
-        </Accordion>
-      )}
+      
+      <DescriptionPanel description={character.description} title="About" />
+
       <SketchGrid initialData={sketchData} getData={getSketchData} />
+
+      <LinksPanel link_urls={character.link_urls} />
 
       <DateGeneratedFooter />
     </>
