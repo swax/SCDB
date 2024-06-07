@@ -1,27 +1,18 @@
 import { ContentLink } from "@/app/components/ContentLink";
+import DescriptionPanel from "@/app/components/DescriptionPanel";
+import LinksPanel from "@/app/components/LinksPanel";
 import {
   getCharacter,
   getCharacterList,
   getCharacterSketchGrid,
 } from "@/backend/content/characterService";
-import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
-import NotesIcon from "@mui/icons-material/Notes";
-import {
-  Accordion,
-  AccordionDetails,
-  AccordionSummary,
-  Box,
-  Typography,
-} from "@mui/material";
-import Markdown from "react-markdown";
+import { Box, Typography } from "@mui/material";
 import SketchGrid from "../../SketchGrid";
 import {
   ContentPageProps,
   DateGeneratedFooter,
   tryGetContent,
 } from "../../contentBase";
-import LinksPanel from "@/app/components/LinksPanel";
-import DescriptionPanel from "@/app/components/DescriptionPanel";
 
 export async function generateStaticParams() {
   const characters = await getCharacterList({ page: 1, pageSize: 1000 });
@@ -47,7 +38,7 @@ export default async function CharacterPage({ params }: ContentPageProps) {
   return (
     <>
       <title>{pageTitle}</title>
-      <Box mb={4}>
+      <Box mt={4} mb={4}>
         <Typography variant="h4">{character.name}</Typography>
         <Typography variant="subtitle1">The Character</Typography>
         {!!character.person && (
@@ -58,7 +49,7 @@ export default async function CharacterPage({ params }: ContentPageProps) {
           </Typography>
         )}
       </Box>
-      
+
       <DescriptionPanel description={character.description} title="About" />
 
       <SketchGrid initialData={sketchData} getData={getSketchData} />

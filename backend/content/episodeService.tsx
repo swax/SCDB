@@ -102,7 +102,7 @@ export async function getEpisodeSketchGrid(
       <></>
     ),
     image_cdnkey: s.image?.cdn_key,
-    video_urls: s.video_urls
+    video_urls: s.video_urls,
   }));
 
   return {

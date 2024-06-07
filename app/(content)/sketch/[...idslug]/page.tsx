@@ -54,7 +54,7 @@ export default async function SketchPage({ params }: ContentPageProps) {
   return (
     <>
       <title>{pageTitle}</title>
-      <Box mb={2}>
+      <Box mt={3} mb={2}>
         <Typography variant="h4">{sketch.title}</Typography>
         <Typography variant="subtitle1">
           <ContentLink mui table="show" entry={sketch.show} />

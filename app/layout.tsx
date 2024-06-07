@@ -1,12 +1,9 @@
 import { Container } from "@mui/material";
 import type { Metadata, Viewport } from "next";
-import { Inter } from "next/font/google";
-import { NextAuthProvider } from "./providers/NextAuthProvider";
-import ResponsiveAppBar from "./header/ResponsiveAppBar";
-import ThemeRegistry from "./providers/ThemeRegistry";
 import "./globals.css";
-
-const inter = Inter({ subsets: ["latin"] });
+import ResponsiveAppBar from "./header/ResponsiveAppBar";
+import { NextAuthProvider } from "./providers/NextAuthProvider";
+import ThemeRegistry from "./providers/ThemeRegistry";
 
 export const metadata: Metadata = {
   title: "SketchTV.lol",

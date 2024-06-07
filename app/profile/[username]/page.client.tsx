@@ -53,7 +53,7 @@ export default function ProfileClientPage({
   return (
     <Box>
       <title>{pageTitle}</title>
-      <Box mb={4}>
+      <Box mt={4} mb={4}>
         <Typography variant="h4">{profile.username}</Typography>
         <Typography variant="subtitle1">Role: {profile.role}</Typography>
       </Box>

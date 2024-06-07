@@ -52,7 +52,7 @@ export default async function ShowPage({ params }: ContentPageProps) {
   return (
     <>
       <title>{pageTitle}</title>
-      <Box mb={4}>
+      <Box mt={4} mb={4}>
         <Typography variant="h4">{show.title}</Typography>
         <Typography variant="subtitle1" color="textSecondary">
           <MuiNextLink href={"/shows"}>Show</MuiNextLink>

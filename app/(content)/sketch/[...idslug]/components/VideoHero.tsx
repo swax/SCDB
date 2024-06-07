@@ -1,4 +1,4 @@
-"use client"
+"use client";
 
 import VideoPlayer from "@/app/components/VideoPlayer";
 import s3url from "@/shared/cdnHost";
