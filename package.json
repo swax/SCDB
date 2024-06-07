@@ -8,6 +8,7 @@
     "lint:next": "next lint",
     "lint:more": "npx eslint .",
     "prettier:write": "npx prettier --write .",
+    "analyze": "set ANALYZE=true && npm run build:release",
     "build:release": "next build",
     "run:release": "next start",
     "db:push": "npx dotenv -e .env.local -- prisma db push",
@@ -19,20 +20,21 @@
     "schema": "database/schema.prisma"
   },
   "dependencies": {
-    "@auth/prisma-adapter": "2.1.0",
-    "@aws-sdk/client-s3": "3.577.0",
-    "@aws-sdk/s3-presigned-post": "3.577.0",
+    "@auth/prisma-adapter": "2.2.0",
+    "@aws-sdk/client-s3": "3.592.0",
+    "@aws-sdk/s3-presigned-post": "3.592.0",
     "@emotion/react": "11.11.4",
     "@emotion/styled": "11.11.5",
     "@fontsource/roboto": "5.0.13",
     "@hello-pangea/dnd": "16.6.0",
-    "@mui/icons-material": "5.15.18",
-    "@mui/material": "5.15.18",
-    "@mui/x-data-grid": "7.5.0",
-    "@mui/x-date-pickers": "7.5.0",
-    "@prisma/client": "5.14.0",
-    "@types/node": "20.12.12",
-    "@types/react": "18.3.2",
+    "@mui/icons-material": "5.15.19",
+    "@mui/material": "5.15.19",
+    "@mui/x-data-grid": "7.6.2",
+    "@mui/x-date-pickers": "7.6.2",
+    "@next/bundle-analyzer": "14.2.3",
+    "@prisma/client": "5.15.0",
+    "@types/node": "20.14.2",
+    "@types/react": "18.3.3",
     "@types/react-dom": "18.3.0",
     "eslint-config-next": "14.2.3",
     "luxon": "3.4.4",
@@ -47,14 +49,14 @@
     "uuid": "9.0.1"
   },
   "devDependencies": {
-    "@eslint/js": "9.3.0",
+    "@eslint/js": "9.4.0",
     "@types/luxon": "3.4.2",
     "@types/uuid": "9.0.8",
     "dotenv-cli": "7.4.2",
     "eslint": "8.57.0",
-    "prettier": "3.2.5",
-    "prisma": "5.14.0",
+    "prettier": "3.3.1",
+    "prisma": "5.15.0",
     "typescript": "5.4.5",
-    "typescript-eslint": "7.9.0"
+    "typescript-eslint": "7.12.0"
   }
 }

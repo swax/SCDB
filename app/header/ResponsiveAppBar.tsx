@@ -1,6 +1,6 @@
 "use client";
 
-import { Stack, Tooltip } from "@mui/material";
+import { Divider, Stack, Tooltip } from "@mui/material";
 import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
@@ -10,18 +10,53 @@ import MenuItem from "@mui/material/MenuItem";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import Image from "next/image";
-import { MouseEvent, useState } from "react";
+import { MouseEvent, useMemo, useState } from "react";
 import DiscordIcon from "./DiscordIcon";
 import EditViewButton from "./EditViewButton";
 import InvalidateCacheButton from "./InvalidateCacheButton";
 import LoginButton from "./LoginButton";
 import MuiNextLink from "../components/MuiNextLink";
+import { usePathname } from "next/navigation";
 
-const pages = ["Categories", "Characters", "People", "Shows", "Sketches"];
+const pages = [
+  {
+    label: "Categories",
+    color: "#FED73E",
+  },
+  {
+    label: "Characters",
+    color: "#FF7341",
+  },
+  {
+    label: "People",
+    color: "#FF3584",
+  },
+  {
+    label: "Shows",
+    color: "#47FF66",
+  },
+  {
+    label: "Sketches",
+    color: "#2ABFFF",
+  },
+];
 
 function ResponsiveAppBar() {
   // Hooks
+  const pathname = usePathname();
   const [anchorElNav, setAnchorElNav] = useState<null | HTMLElement>(null);
+
+  const dividerColor = useMemo(() => {
+    const path = pathname.toLowerCase();
+
+    for (const page of pages) {
+      if (path.startsWith(`/${page.label.substring(0, 2).toLowerCase()}`)) {
+        return page.color;
+      }
+    }
+
+    return undefined;
+  }, [pathname]);
 
   // Event handlers
   function handleOpenNavMenu(event: MouseEvent<HTMLElement>) {
@@ -83,23 +118,23 @@ function ResponsiveAppBar() {
               display: { xs: "block", md: "none" },
             }}
           >
-            {pages.map((page) => (
-              <MenuItem key={page}>
+            {pages.map((page, i) => (
+              <MenuItem key={i}>
                 <MuiNextLink
-                  href={`/${page.toLowerCase()}`}
+                  href={`/${page.label.toLowerCase()}`}
                   underline="none"
                   onClick={handleCloseNavMenu}
                 >
                   <Typography
                     textAlign="center"
                     sx={{
-                      color: "white",
+                      color: page.color,
                       fontFamily: funFont,
                       fontWeight: "bold",
                       fontSize: "1.0rem",
                     }}
                   >
-                    {page}
+                    {page.label}
                   </Typography>
                 </MuiNextLink>
               </MenuItem>
@@ -107,17 +142,17 @@ function ResponsiveAppBar() {
           </Menu>
         </Box>
         <Box sx={{ flexGrow: 1, display: { xs: "none", sm: "flex" } }}>
-          {pages.map((page) => (
-            <MuiNextLink key={page} href={`/${page.toLowerCase()}`}>
+          {pages.map((page, i) => (
+            <MuiNextLink key={i} href={`/${page.label.toLowerCase()}`}>
               <Button
                 sx={{
-                  color: "white",
+                  color: page.color,
                   fontFamily: funFont,
                   fontWeight: "bold",
                   fontSize: "1.0rem",
                 }}
               >
-                {page}
+                {page.label}
               </Button>
             </MuiNextLink>
           ))}
@@ -139,6 +174,7 @@ function ResponsiveAppBar() {
           <LoginButton />
         </Stack>
       </Toolbar>
+      <Divider sx={{ bgcolor: dividerColor }} />
     </AppBar>
   );
 }

@@ -192,7 +192,7 @@ async function writeFieldChanges(
 
   const columnFields = fields.filter((field) => field.column);
 
-  for (let field of columnFields) {
+  for (const field of columnFields) {
     // TODO: Validate columns are in master config for fields and lookups
     /* if (!allowedColumns.includes(field.column!)) {
         throw new Error(`Column ${field.column} not allowed`);
@@ -291,7 +291,7 @@ async function writeMappingChanges(
     [table.name + "_id"]: id,
   };
 
-  for (let field of table.fields) {
+  for (const field of table.fields) {
     if (field.type != "mapping") {
       continue;
     }
@@ -302,7 +302,7 @@ async function writeMappingChanges(
       throw new Error(`Edit mapping on ${mappingTable?.name} not allowed`);
     }
 
-    for (let removedId of mappingTable.removeIds || []) {
+    for (const removedId of mappingTable.removeIds || []) {
       // Delete
       await dynamicPrisma[mappingTable.name].delete({
         where: {
@@ -314,7 +314,7 @@ async function writeMappingChanges(
 
     // For each id/row
     let index = 0;
-    for (let mappingId of mappingTable.ids || []) {
+    for (const mappingId of mappingTable.ids || []) {
       if (
         mappingId < 0 ||
         mappingTable.resequence ||

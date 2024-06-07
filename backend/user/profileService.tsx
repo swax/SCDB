@@ -85,7 +85,7 @@ export async function getProfileSketchGrid(
       user_id: id,
       NOT: {
         rating_value: null,
-      }
+      },
     },
   });
 

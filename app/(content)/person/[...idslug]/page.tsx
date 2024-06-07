@@ -60,7 +60,7 @@ export default async function PersonPage({ params }: ContentPageProps) {
   return (
     <>
       <title>{pageTitle}</title>
-      <Box mb={4}>
+      <Box mt={4} mb={4}>
         <Typography variant="h4">{person.name}</Typography>
         <Typography variant="subtitle1">The Person</Typography>
         {!!person.character && (
@@ -72,41 +72,44 @@ export default async function PersonPage({ params }: ContentPageProps) {
         )}
       </Box>
       {/* birth, death, age */}
-      <Box sx={{ display: "flex", gap: 2 }}>
-        {!!birthDate && (
-          <Typography variant="subtitle1">
-            B. {birthDate.toLocaleDateString()}
-          </Typography>
-        )}
-        {!!deathDate && (
-          <Typography variant="subtitle1">
-            D. {deathDate.toLocaleDateString()}
-          </Typography>
-        )}
-        {!!person.age && (
-          <Typography variant="subtitle1">Age: {person.age}</Typography>
-        )}
-      </Box>
-
-      <ImageList
-        sx={{ display: "flex", flexWrap: "nowrap", gap: 8, padding: 1 }}
-        cols={2.5}
-      >
-        {person.person_images.map((person_image, i) => (
-          <ImageListItem key={i}>
-            <Image
-              alt={person_image.description || person.name}
-              style={{ objectFit: "cover", borderRadius: 8 }}
-              src={`${s3url}/${person_image.image.cdn_key}`}
-              width={imgWidth}
-              height={imgHeight}
-            />
-            {!!person_image.description && (
-              <ImageListItemBar subtitle={person_image.description} />
-            )}
-          </ImageListItem>
-        ))}
-      </ImageList>
+      {(!!birthDate || !!deathDate || !!person.age) && (
+        <Box sx={{ display: "flex", gap: 2 }}>
+          {!!birthDate && (
+            <Typography variant="subtitle1">
+              B. {birthDate.toLocaleDateString()}
+            </Typography>
+          )}
+          {!!deathDate && (
+            <Typography variant="subtitle1">
+              D. {deathDate.toLocaleDateString()}
+            </Typography>
+          )}
+          {!!person.age && (
+            <Typography variant="subtitle1">Age: {person.age}</Typography>
+          )}
+        </Box>
+      )}
+      {!!person.person_images.length && (
+        <ImageList
+          sx={{ display: "flex", flexWrap: "nowrap", gap: 8, padding: 1 }}
+          cols={2.5}
+        >
+          {person.person_images.map((person_image, i) => (
+            <ImageListItem key={i}>
+              <Image
+                alt={person_image.description || person.name}
+                style={{ objectFit: "cover", borderRadius: 8 }}
+                src={`${s3url}/${person_image.image.cdn_key}`}
+                width={imgWidth}
+                height={imgHeight}
+              />
+              {!!person_image.description && (
+                <ImageListItemBar subtitle={person_image.description} />
+              )}
+            </ImageListItem>
+          ))}
+        </ImageList>
+      )}
       <Typography variant="subtitle1">{person.description}</Typography>
       <SketchGrid initialData={sketchCastData} getData={getSketchCastData} />
       <SketchGrid

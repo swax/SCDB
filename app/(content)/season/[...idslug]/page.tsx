@@ -51,7 +51,7 @@ export default async function SeasonPage({ params }: ContentPageProps) {
   return (
     <>
       <title>{pageTitle}</title>
-      <Box mb={4}>
+      <Box mt={4} mb={4}>
         <Typography variant="h4">
           Season {season.number} ({season.year})
         </Typography>

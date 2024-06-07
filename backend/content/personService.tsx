@@ -163,7 +163,7 @@ export async function getPersonSketchCastGrid(
     title: <ContentLink table="sketch" entry={sc.sketch} />,
     subtitle: (
       <>
-        {!!sc.character ? (
+        {sc.character ? (
           <>
             <ContentLink table="character" entry={sc.character} />
             {" • "}
