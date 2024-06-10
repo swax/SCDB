@@ -1,7 +1,11 @@
 import { ContentLink } from "@/app/components/ContentLink";
 import { ListSearchParms, getBaseFindParams } from "./listHelper";
 import prisma from "@/database/prisma";
-import { SKETCH_PAGE_SIZE, SketchGridData } from "@/shared/sketchGridBase";
+import {
+  SKETCH_PAGE_SIZE,
+  SketchGridData,
+  selectSketch,
+} from "@/shared/sketchGridBase";
 
 export async function getTagsList(searchParams: ListSearchParms) {
   const baseFindParams = getBaseFindParams(searchParams);
@@ -95,30 +99,7 @@ export async function getTagSketchGrid(
     select: {
       sketch: {
         select: {
-          id: true,
-          url_slug: true,
-          title: true,
-          site_rating: true,
-          video_urls: true,
-          image: {
-            select: {
-              cdn_key: true,
-            },
-          },
-          show: {
-            select: {
-              title: true,
-              id: true,
-              url_slug: true,
-            },
-          },
-          season: {
-            select: {
-              year: true,
-              id: true,
-              url_slug: true,
-            },
-          },
+          ...selectSketch,
         },
       },
     },
