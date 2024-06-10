@@ -1,7 +1,11 @@
 import { ContentLink } from "@/app/components/ContentLink";
 import prisma from "@/database/prisma";
 import { getRoleRank } from "@/shared/roleUtils";
-import { SKETCH_PAGE_SIZE, SketchGridData } from "@/shared/sketchGridBase";
+import {
+  SKETCH_PAGE_SIZE,
+  SketchGridData,
+  selectSketch,
+} from "@/shared/sketchGridBase";
 import { user_role_type } from "@prisma/client";
 
 export interface GetProfileResponse {
@@ -44,30 +48,7 @@ export async function getProfileSketchGrid(
     select: {
       sketch: {
         select: {
-          id: true,
-          url_slug: true,
-          title: true,
-          site_rating: true,
-          video_urls: true,
-          image: {
-            select: {
-              cdn_key: true,
-            },
-          },
-          show: {
-            select: {
-              title: true,
-              id: true,
-              url_slug: true,
-            },
-          },
-          season: {
-            select: {
-              year: true,
-              id: true,
-              url_slug: true,
-            },
-          },
+          ...selectSketch,
         },
       },
     },

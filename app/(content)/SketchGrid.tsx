@@ -24,12 +24,14 @@ interface SketchGridProps {
   initialData: SketchGridData;
   getData: (page: number) => Promise<SketchGridData>;
   title?: string;
+  icon?: React.ReactNode;
 }
 
 export default function SketchGrid({
   initialData,
   getData,
   title,
+  icon,
 }: SketchGridProps) {
   // Hooks
   const [data, setData] = useState(initialData);
@@ -66,10 +68,18 @@ export default function SketchGrid({
         aria-controls="sketches-content"
         id="sketches-header"
       >
-        <LiveTvIcon />
-        <Typography fontWeight="bold" marginLeft={1}>
-          {data.totalCount} {title || "Sketches"}
-        </Typography>
+        <Box
+          sx={{
+            display: "flex",
+            alignItems: "center",
+          }}
+        >
+          {icon || <LiveTvIcon />}
+          <Typography fontWeight="bold" marginLeft={1} variant="h6">
+            {data.totalCount >= 0 ? data.totalCount.toString() : ""}{" "}
+            {title || "Sketches"}
+          </Typography>
+        </Box>
       </AccordionSummary>
       <AccordionDetails>
         <div

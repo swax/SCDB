@@ -1,4 +1,8 @@
-import { SKETCH_PAGE_SIZE, SketchGridData } from "@/shared/sketchGridBase";
+import {
+  SKETCH_PAGE_SIZE,
+  SketchGridData,
+  selectSketch,
+} from "@/shared/sketchGridBase";
 import { ListSearchParms, getBaseFindParams } from "./listHelper";
 import prisma from "@/database/prisma";
 import { ContentLink } from "@/app/components/ContentLink";
@@ -59,23 +63,7 @@ export async function getEpisodeSketchGrid(
       episode_id: id,
     },
     select: {
-      id: true,
-      url_slug: true,
-      title: true,
-      site_rating: true,
-      video_urls: true,
-      image: {
-        select: {
-          cdn_key: true,
-        },
-      },
-      season: {
-        select: {
-          id: true,
-          url_slug: true,
-          year: true,
-        },
-      },
+      ...selectSketch,
     },
     orderBy: {
       site_rating: "desc",

@@ -1,5 +1,9 @@
 import prisma from "@/database/prisma";
-import { SKETCH_PAGE_SIZE, SketchGridData } from "@/shared/sketchGridBase";
+import {
+  SKETCH_PAGE_SIZE,
+  SketchGridData,
+  selectSketch,
+} from "@/shared/sketchGridBase";
 import { ListSearchParms, getBaseFindParams } from "./listHelper";
 import { ContentLink } from "@/app/components/ContentLink";
 
@@ -49,30 +53,7 @@ export async function getRecurringSketchGrid(
       recurring_sketch_id: id,
     },
     select: {
-      id: true,
-      url_slug: true,
-      title: true,
-      site_rating: true,
-      video_urls: true,
-      image: {
-        select: {
-          cdn_key: true,
-        },
-      },
-      show: {
-        select: {
-          id: true,
-          url_slug: true,
-          title: true,
-        },
-      },
-      season: {
-        select: {
-          id: true,
-          url_slug: true,
-          year: true,
-        },
-      },
+      ...selectSketch,
     },
     orderBy: {
       site_rating: "desc",
