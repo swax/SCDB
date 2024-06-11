@@ -1,5 +1,5 @@
 import { getRoleRank } from "@/shared/roleUtils";
-import TheaterComedyIcon from "@mui/icons-material/TheaterComedy";
+import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import {
   Box,
   Button,
@@ -57,7 +57,7 @@ export default function LoginButton() {
         onClick={handleClick_accountMenu}
       >
         <Tooltip title="Account Options">
-          <TheaterComedyIcon />
+          <AccountCircleIcon />
         </Tooltip>
       </IconButton>
       <Menu
