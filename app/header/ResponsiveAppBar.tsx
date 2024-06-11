@@ -165,8 +165,9 @@ function ResponsiveAppBar() {
             <IconButton
               aria-label="Discord Link"
               aria-controls="menu-appbar"
-              href="https://discord.gg/"
+              href="https://discord.gg/UKE8gSYp"
               color="inherit"
+              target="_blank"
             >
               <DiscordIcon />
             </IconButton>
