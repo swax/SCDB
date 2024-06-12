@@ -11,6 +11,7 @@ export async function getSketchList(searchParams: ListSearchParms) {
       id: true,
       title: true,
       url_slug: true,
+      site_rating: true,
       show: {
         select: {
           title: true,

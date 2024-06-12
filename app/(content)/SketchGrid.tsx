@@ -88,7 +88,6 @@ export default function SketchGrid({
             display: "flex",
             flexWrap: "wrap",
             gap: "12px",
-            justifyContent: "center",
           }}
         >
           {data.sketches.map((sketch, i) => (
