@@ -4,7 +4,7 @@ import {
 } from "@/backend/content/homeService";
 import SketchGrid from "./(content)/SketchGrid";
 import { Box, Typography } from "@mui/material";
-import TrendingUpIcon from '@mui/icons-material/TrendingUp';
+import TrendingUpIcon from "@mui/icons-material/TrendingUp";
 
 export default async function HomePage() {
   // Data fetching

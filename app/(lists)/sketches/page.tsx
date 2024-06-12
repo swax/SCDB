@@ -17,6 +17,7 @@ export default async function SketchesPage(props: ListPageProps) {
     show__title: sketch.show.title,
     season__year: sketch.season?.year,
     url_slug: sketch.url_slug,
+    site_rating: sketch.site_rating,
   }));
 
   // Rendering

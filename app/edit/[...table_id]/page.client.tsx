@@ -313,6 +313,7 @@ export default function EditClientPage({ table, id }: EditClientPageProps) {
             color="warning"
             sx={{
               mr: 1,
+              backgroundColor: "black",
               // wtf is it so hard to color the border of a select?
               "& .MuiOutlinedInput-notchedOutline": {
                 borderColor: reviewStatusBorderColor,

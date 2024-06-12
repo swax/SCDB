@@ -16,6 +16,7 @@ interface BaseDataGridProps {
   rows: any[];
   searchParams: ListSearchParms;
   totalRowCount: number;
+  toolbar?: React.ReactNode;
 }
 
 export default function BaseDataGrid({
@@ -24,6 +25,7 @@ export default function BaseDataGrid({
   rows,
   searchParams,
   totalRowCount,
+  toolbar,
 }: BaseDataGridProps) {
   // Hooks
   const router = useRouter();
@@ -88,6 +90,15 @@ export default function BaseDataGrid({
     router.push(url);
   }
 
+  function CustomToolbar() {
+    return (
+      <GridToolbarContainer>
+        <GridToolbarFilterButton />
+        {toolbar}
+      </GridToolbarContainer>
+    );
+  }
+
   // Rendering
   const {
     page,
@@ -149,13 +160,5 @@ export default function BaseDataGrid({
       sortingMode="server"
       sx={{ border: "none" }}
     />
-  );
-}
-
-function CustomToolbar() {
-  return (
-    <GridToolbarContainer>
-      <GridToolbarFilterButton />
-    </GridToolbarContainer>
   );
 }

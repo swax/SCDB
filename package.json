@@ -12,6 +12,7 @@
     "build:release": "next build",
     "run:release": "next start",
     "db:push": "npx dotenv -e .env.local -- prisma db push",
+    "db:backup": "npx dotenv -e .env.local -- node database/backup.mjs",
     "updates:check": "npm-check-updates",
     "updates:apply": "npm-check-updates -u && npm install",
     "postinstall": "npx prisma generate"

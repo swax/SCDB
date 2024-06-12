@@ -97,7 +97,7 @@ const sketchOrm: TableOrm = {
             optional: true,
           },
           {
-            label: "Recurring Character",
+            label: "Character Page",
             column: "character_id",
             type: "lookup",
             lookup: {
@@ -105,6 +105,7 @@ const sketchOrm: TableOrm = {
               labelColumn: "name",
             },
             optional: true,
+            helperText: "(Optional: If character has their own page)",
           },
           {
             label: "Actor",
