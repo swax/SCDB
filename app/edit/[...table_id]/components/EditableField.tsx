@@ -1,4 +1,4 @@
-import { FieldOrm } from "@/database/orm/ormTypes";
+import { FieldOrm, FieldOrmValueType } from "@/database/orm/ormTypes";
 import { Box, MenuItem, Select, TextField } from "@mui/material";
 import { $Enums } from "@prisma/client";
 import MappingTableEditor from "./MappingTableEditor";
@@ -15,7 +15,11 @@ interface EditableFieldProps {
   index: number;
   inTable: boolean;
   loading: boolean;
-  setFieldValue: (field: FieldOrm, index: number, value: any) => void;
+  setFieldValue: (
+    field: FieldOrm,
+    index: number,
+    value: FieldOrmValueType,
+  ) => void;
   setDirty: () => void;
 }
 
@@ -93,12 +97,12 @@ export default function EditableField({
           label={inTable ? "" : field.label}
           onChange={(e) => handleChange_enumField(field, index, e.target.value)}
           size="small"
-          value={(field.values?.[index] || "") as string}
+          value={field.values?.[index] || ""}
         >
           <MenuItem value="none">
             <i>Select...</i>
           </MenuItem>
-          {Object.keys(($Enums as any)[field.enum!]).map((value, i) => (
+          {Object.keys(($Enums as any)[field.enum]).map((value, i) => (
             <MenuItem key={i} value={value}>
               {value}
             </MenuItem>

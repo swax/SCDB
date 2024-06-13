@@ -53,8 +53,6 @@ export default function LookupField({
   const comboBoxId = "combo-box-" + useId();
 
   useDebounce2(
-    // TODO: Not sure how to fix this warning
-    // eslint-disable-next-line @typescript-eslint/no-misused-promises
     async () => {
       const valueWithPrefix = field.lookup.prefixValue
         ? field.lookup.prefixValue + " " + inputValue
@@ -93,7 +91,7 @@ export default function LookupField({
 
   // Event Handlers
   /** User input change, searching */
-  function handleInputChange(event: any, value: string) {
+  function handleInputChange(event: React.SyntheticEvent, value: string) {
     setInputValue(value);
     setLoading(true);
     setOptions([]);

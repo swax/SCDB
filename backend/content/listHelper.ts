@@ -2,7 +2,7 @@ export interface ListSearchParms {
   page: number;
   pageSize: number;
   sortField?: string;
-  sortDir?: "asc" | "desc";
+  sortDir?: "asc" | "desc" | null;
   filterField?: string;
   filterValue?: string;
   filterOp?: string;

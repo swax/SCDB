@@ -26,6 +26,7 @@ import {
   tryGetContent,
 } from "../../contentBase";
 import LinksPanel from "@/app/components/LinksPanel";
+import DescriptionPanel from "@/app/components/DescriptionPanel";
 
 export async function generateStaticParams() {
   const shows = await getShowsList({ page: 1, pageSize: 1000 });
@@ -58,12 +59,14 @@ export default async function ShowPage({ params }: ContentPageProps) {
           <MuiNextLink href={"/shows"}>Show</MuiNextLink>
         </Typography>
       </Box>
+      <DescriptionPanel description={show.description} />
+      <SketchGrid initialData={sketchData} getData={getSketchData} />
       {!!show.seasons.length && (
         <Accordion defaultExpanded>
           <AccordionSummary
             expandIcon={<ExpandMoreIcon />}
-            aria-controls="about-content"
-            id="about-header"
+            aria-controls="seasons-content"
+            id="seasons-header"
           >
             <FormatListNumberedIcon />
             <Typography fontWeight="bold" marginLeft={1}>
@@ -96,8 +99,6 @@ export default async function ShowPage({ params }: ContentPageProps) {
           </AccordionDetails>
         </Accordion>
       )}
-
-      <SketchGrid initialData={sketchData} getData={getSketchData} />
       <LinksPanel link_urls={show.link_urls} />
       <DateGeneratedFooter />
     </>

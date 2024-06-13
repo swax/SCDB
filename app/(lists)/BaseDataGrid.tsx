@@ -10,23 +10,23 @@ import {
 } from "@mui/x-data-grid";
 import { useRouter } from "next/navigation";
 
-interface BaseDataGridProps {
+interface BaseDataGridProps<T> {
   basePath: string;
   columns: GridColDef[];
-  rows: any[];
+  rows: T[];
   searchParams: ListSearchParms;
   totalRowCount: number;
   toolbar?: React.ReactNode;
 }
 
-export default function BaseDataGrid({
+export default function BaseDataGrid<T>({
   basePath,
   columns,
   rows,
   searchParams,
   totalRowCount,
   toolbar,
-}: BaseDataGridProps) {
+}: BaseDataGridProps<T>) {
   // Hooks
   const router = useRouter();
 
@@ -46,7 +46,7 @@ export default function BaseDataGrid({
     } else {
       const { field, sort } = sortModel[0];
       searchParams.sortField = field;
-      searchParams.sortDir = sort as any;
+      searchParams.sortDir = sort;
     }
 
     buildAndPushUrl();
@@ -61,8 +61,11 @@ export default function BaseDataGrid({
       const { field, value, operator } = filterModel.items[0];
 
       // if value is a date set it to the just the date component of the iso string
-      const cleanVal =
-        value instanceof Date ? value.toISOString().split("T")[0] : value;
+      const cleanVal = !value
+        ? undefined
+        : value instanceof Date
+          ? value.toISOString().split("T")[0]
+          : `${value}`;
 
       searchParams.filterField = field;
       searchParams.filterValue = cleanVal;
