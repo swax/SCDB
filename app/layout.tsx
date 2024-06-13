@@ -8,7 +8,7 @@ import ThemeRegistry from "./providers/ThemeRegistry";
 
 export const metadata: Metadata = {
   title: "SketchTV.lol",
-  description: "Sketch Comedy Database",
+  description: "The Sketch Comedy Database",
 };
 
 export const viewport: Viewport = {

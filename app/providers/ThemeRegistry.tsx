@@ -25,6 +25,7 @@ export default function ThemeRegistry(props: {
   const [{ cache, flush }] = React.useState(() => {
     const cache = createCache(options);
     cache.compat = true;
+    // eslint-disable-next-line @typescript-eslint/unbound-method
     const prevInsert = cache.insert;
     let inserted: string[] = [];
     cache.insert = (...args) => {

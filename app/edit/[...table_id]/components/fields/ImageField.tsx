@@ -22,7 +22,6 @@ interface ImageFieldProps {
 export default function ImageField({
   field,
   index,
-  inTable,
   loading,
   setFieldValue,
   tableName,

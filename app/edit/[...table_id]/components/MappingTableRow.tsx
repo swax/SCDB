@@ -1,7 +1,11 @@
 import { Draggable } from "@hello-pangea/dnd";
 import { TableRow, TableCell, IconButton, Box } from "@mui/material";
 import EditableField from "./EditableField";
-import { FieldOrm, MappingTableOrm } from "@/database/orm/ormTypes";
+import {
+  FieldOrm,
+  FieldOrmValueType,
+  MappingTableOrm,
+} from "@/database/orm/ormTypes";
 import dragdropStyles from "./dragdrop.module.css";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
@@ -14,7 +18,11 @@ interface MappingTableRowProps {
   mappedIndex: number;
   mappedId: number;
   loading: boolean;
-  setFieldValue: (field: FieldOrm, index: number, value: any) => void;
+  setFieldValue: (
+    field: FieldOrm,
+    index: number,
+    value: FieldOrmValueType,
+  ) => void;
   setDirty: () => void;
   handleClick_openEditMappingDialog: (mappingRowIndex: number) => void;
   handleClick_deleteMappingRow: (mappedIndex: number) => void;
@@ -72,9 +80,13 @@ export default function MappingTableRow({
       );
     }
 
-    return (
-      <Box sx={{ marginTop: inTable ? 0 : 3, color }}>{`${value || ""}`}</Box>
-    );
+    const valueStr = Array.isArray(value)
+      ? value.join(", ")
+      : value instanceof Date
+        ? value.toLocaleString()
+        : value || "";
+        
+    return <Box sx={{ marginTop: inTable ? 0 : 3, color }}>{valueStr}</Box>;
   }
 
   return (

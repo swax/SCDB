@@ -42,7 +42,7 @@ export default function LinksPanel({
             </Typography>
           </AccordionSummary>
           <AccordionDetails>
-            {domainAndUrls.map(([domain, url], index) => (
+            {domainAndUrls.map(([, url], index) => (
               <Box key={index}>
                 <MuiNextLink href={url} target="_blank" rel="noreferrer">
                   {url}

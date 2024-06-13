@@ -96,6 +96,8 @@ export type FieldOrm =
   | ListFieldOrm
   | ImageFieldOrm;
 
+export type FieldOrmValueType = NonNullable<FieldOrm["values"]>[number];
+
 // TODO: Maybe rename to 'Row' would make more sense?
 export type TableOrm = {
   /** Name of the table in Postgres */

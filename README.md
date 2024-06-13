@@ -2,24 +2,26 @@
 
 The code behind [www.SketchTV.lol](https://www.sketchtv.lol). If you find this useful, please give back by adding your favorite sketch!
 
-### Technologies 
+### Technologies
 
 - Frontend
-  - React
+  - RSC (React Server Components)
+  - Server Actions
   - MUI
 - Backend
   - Next.js 14
   - App Router
   - NextAuth.js
-  - ISR
+  - ISR (Incremental Static Regeneration)
   - AWS S3
 - Database
   - Prisma
-  - Postgres 
+  - Postgres
   - SQL Triggers and Functions
 - Other
   - TypeScript
   - ESLint
+  - A light configuration based CMS that dynamically builds editor pages
 
 ### Contributing
 

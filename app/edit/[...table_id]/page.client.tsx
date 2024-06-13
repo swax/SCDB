@@ -1,7 +1,12 @@
 "use client";
 
 import { useForceUpdate } from "@/app/hooks/useForceUpdate";
-import { FieldOrm, SlugFieldOrm, TableOrm } from "@/database/orm/ormTypes";
+import {
+  FieldOrm,
+  FieldOrmValueType,
+  SlugFieldOrm,
+  TableOrm,
+} from "@/database/orm/ormTypes";
 import { getEditUrl } from "@/shared/urls";
 import {
   capitalizeFirstLetter,
@@ -139,7 +144,11 @@ export default function EditClientPage({ table, id }: EditClientPageProps) {
   }
 
   // Helpers
-  function setFieldValue(field: FieldOrm, index: number, value: any) {
+  function setFieldValue(
+    field: FieldOrm,
+    index: number,
+    value: FieldOrmValueType,
+  ) {
     field.values ||= [];
     field.values[index] = value;
 

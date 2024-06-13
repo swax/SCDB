@@ -59,6 +59,7 @@ export default async function SeasonPage({ params }: ContentPageProps) {
           <ContentLink mui table="show" entry={season.show} />
         </Typography>
       </Box>
+      <SketchGrid initialData={sketchData} getData={getSketchData} />
       {!!season.episodes.length && (
         <Accordion defaultExpanded>
           <AccordionSummary
@@ -101,8 +102,6 @@ export default async function SeasonPage({ params }: ContentPageProps) {
           </AccordionDetails>
         </Accordion>
       )}
-
-      <SketchGrid initialData={sketchData} getData={getSketchData} />
       <LinksPanel link_urls={season.link_urls} />
       <DateGeneratedFooter />
     </>

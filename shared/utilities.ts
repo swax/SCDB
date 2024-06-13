@@ -14,10 +14,9 @@ export function slugifyForUrl(str: string) {
   });
 }
 
-export function resolveTemplateVars(
+export function resolveTemplateVars<T>(
   templateString: string,
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  mappedVar: Record<string, any>,
+  mappedVar: Record<string, T>,
 ) {
   const pattern = new RegExp(`\\$\\{([^}]+)\\}`, "g");
 
@@ -34,12 +33,7 @@ export function resolveTemplateVars(
   return success ? resolvedString : null;
 }
 
-function valueFromString(
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  obj: any,
-  path: string,
-  defaultValue?: string,
-) {
+function valueFromString(obj: any, path: string, defaultValue?: string) {
   if (!path) {
     return obj;
   }
