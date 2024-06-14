@@ -441,7 +441,10 @@ model tag {
 
 model image {
   id            Int      @id @default(autoincrement())
-  cdn_key       String   @unique
+  // Removed unique constraint, same image can be uploaded by different people 
+  // Don't even need this table, can just have image_key fields on tables directly, and view to merge them if needed
+  // Maybe want this table if we want to store dimensions, hash, etc..
+  cdn_key       String
   created_by_id String
   created_at    DateTime @default(now())
 

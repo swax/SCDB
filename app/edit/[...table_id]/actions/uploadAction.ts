@@ -18,7 +18,7 @@ const _fileSizeLimitMb = 5;
 export async function getPresignedUploadUrl(
   uploadType: "images",
   tableName: string,
-  fileName: string,
+  fileHash: string,
   fileType: string,
   fileSize: number,
 ) {
@@ -30,10 +30,8 @@ export async function getPresignedUploadUrl(
     _validateFile(fileType, fileSize);
 
     // Build aws key
-    const miniUserId = user.id.substring(0, 6);
-    const guid = uuidv4().substring(0, 4);
-    const slugName = slugify(fileName, { lower: true });
-    const uploadFileName = `${miniUserId}_${guid}_${slugName}`;
+    const fileExt = fileType.split("/")[1];
+    const uploadFileName = `${fileHash}.${fileExt}`;
 
     const awsKey = `${uploadType}/${tableName}/${uploadFileName}`;
 
