@@ -130,11 +130,15 @@ export async function getPersonSketchCastGrid(
     take: SKETCH_PAGE_SIZE,
   });
 
-  const totalCount = await prisma.sketch_cast.count({
-    where: {
-      person_id: id,
-    },
-  });
+  // Need to do raw sql here because prisma can't do count(distinct)
+  const distinctCount = (await prisma.$queryRaw`
+    SELECT COUNT(DISTINCT sketch_id) 
+    FROM sketch_cast 
+    WHERE person_id = ${id}`) as {
+    count: number;
+  }[];
+
+  const totalCount = Number(distinctCount[0].count);
 
   const sketches = dbResults.map((sc) => ({
     id: sc.sketch.id,
@@ -147,13 +151,16 @@ export async function getPersonSketchCastGrid(
         {sc.character ? (
           <>
             <ContentLink table="character" entry={sc.character} />
-            {" • "}
           </>
         ) : sc.character_name ? (
-          <>{`${sc.character_name} • `}</>
+          <>{sc.character_name}</>
         ) : (
           <></>
         )}
+      </>
+    ),
+    show: (
+      <>
         <ContentLink table="show" entry={sc.sketch.show} />{" "}
         {!!sc.sketch.season && (
           <>
@@ -168,8 +175,39 @@ export async function getPersonSketchCastGrid(
     video_urls: sc.sketch.video_urls,
   }));
 
+  // Some people are in a sketch multiple times as different characters, combine them
+  const sketchesMap = new Map<number, (typeof sketches)[0]>();
+
+  sketches.forEach((sketch) => {
+    const existingSketch = sketchesMap.get(sketch.id);
+    if (existingSketch) {
+      existingSketch.subtitle = (
+        <>
+          {existingSketch.subtitle}
+          {" / "}
+          {sketch.subtitle}
+        </>
+      );
+    } else {
+      sketchesMap.set(sketch.id, sketch);
+    }
+  });
+
+  // Iterate sketch map and append show to subtitle
+  sketchesMap.forEach((sketch) => {
+    sketch.subtitle = (
+      <>
+        {sketch.subtitle}
+        {" • "}
+        {sketch.show}
+      </>
+    );
+  });
+
   return {
-    sketches,
+    sketches: Array.from(sketchesMap.values()).sort(
+      (a, b) => (b.site_rating || 0) - (a.site_rating || 0),
+    ),
     totalCount,
     totalPages: Math.ceil(totalCount / SKETCH_PAGE_SIZE),
   };

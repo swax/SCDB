@@ -45,6 +45,58 @@ export default async function SketchPage({ params }: ContentPageProps) {
   // Data fetching
   const sketch = await tryGetContent("sketch", params, getSketch);
 
+  type castMemberType = (typeof sketch.sketch_casts)[number];
+  type combinedCastMemberType = castMemberType & {
+    title: JSX.Element;
+    tooltip: string;
+  };
+
+  // Combine cast members that are the same person/image - just the characters are different
+  // ie in a sketch Taran Killam plays a character that is both Vin Diesel and Thumper, same picture
+  const combinedCastMembers: combinedCastMemberType[] = [];
+
+  for (const castMember of sketch.sketch_casts) {
+    let combinedCastMember = combinedCastMembers.find(
+      (ccm) =>
+        castMember.person &&
+        ccm.person?.id === castMember.person.id &&
+        ccm.image?.cdn_key === castMember.image?.cdn_key,
+    );
+
+    if (combinedCastMember) {
+      const title = getCastMemberTitle(castMember);
+      combinedCastMember.tooltip += " / " + (castMember.character_name || "");
+      combinedCastMember.title = (
+        <>
+          {combinedCastMember.title}
+          {" / "}
+          <br />
+          {title}
+        </>
+      );
+    } else {
+      combinedCastMember = {
+        ...castMember,
+        tooltip: castMember.character_name || "",
+        title: getCastMemberTitle(castMember),
+      };
+      combinedCastMembers.push(combinedCastMember);
+    }
+  }
+
+  // Helper functions
+  function getCastMemberTitle(castMember: castMemberType) {
+    return (
+      <>
+        {castMember.character ? (
+          <ContentLink mui table="character" entry={castMember.character} />
+        ) : (
+          <span>{castMember.character_name || ""}</span>
+        )}
+      </>
+    );
+  }
+  
   // Rendering
   const pageTitle = sketch.title + " - SketchTV.lol";
 
@@ -117,24 +169,24 @@ export default async function SketchPage({ params }: ContentPageProps) {
                   gap: "12px",
                 }}
               >
-                {sketch.sketch_casts.map((sketch_cast, i) => (
+                {combinedCastMembers.map((castMember, i) => (
                   <ImageListItem key={i}>
                     <ContentLink
                       mui
-                      table={sketch_cast.character ? "character" : "person"}
-                      entry={sketch_cast.character || sketch_cast.person}
+                      table={castMember.character ? "character" : "person"}
+                      entry={castMember.character || castMember.person}
                     >
                       <Image
-                        alt={sketch_cast.character_name || ""}
-                        title={sketch_cast.character_name || ""}
+                        alt={castMember.character_name || ""}
+                        title={castMember.character_name || ""}
                         style={{
                           objectFit: "cover",
                           objectPosition: "50% 0",
                           borderRadius: 8,
                         }}
                         src={
-                          sketch_cast.image?.cdn_key
-                            ? `${s3url}/${sketch_cast.image?.cdn_key}`
+                          castMember.image?.cdn_key
+                            ? `${s3url}/${castMember.image?.cdn_key}`
                             : "/images/no-image.webp"
                         }
                         width={imgWidth}
@@ -143,32 +195,20 @@ export default async function SketchPage({ params }: ContentPageProps) {
                     </ContentLink>
                     <ImageListItemBar
                       title={
-                        <>
-                          {sketch_cast.character ? (
-                            <ContentLink
-                              mui
-                              table="character"
-                              entry={sketch_cast.character}
-                            />
-                          ) : (
-                            <span title={sketch_cast.character_name || ""}>
-                              {sketch_cast.character_name || ""}
-                            </span>
-                          )}
-                        </>
+                        <Box title={castMember.tooltip}>{castMember.title}</Box>
                       }
                       subtitle={
                         <>
-                          {!!sketch_cast.person && (
+                          {!!castMember.person && (
                             <>
                               <ContentLink
                                 table="person"
-                                entry={sketch_cast.person}
+                                entry={castMember.person}
                               />
                               {" • "}
                             </>
                           )}
-                          {enumNameToDisplayName(sketch_cast.role)}
+                          {enumNameToDisplayName(castMember.role)}
                         </>
                       }
                     />

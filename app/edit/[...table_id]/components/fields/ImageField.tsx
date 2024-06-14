@@ -5,6 +5,7 @@ import { Button, Stack } from "@mui/material";
 import Image from "next/image";
 import { useState } from "react";
 import { getPresignedUploadUrl } from "../../actions/uploadAction";
+import { fileToShortHash } from "@/shared/utilities";
 
 interface ImageFieldProps {
   field: ImageFieldOrm;
@@ -43,11 +44,13 @@ export default function ImageField({
     setUploading(true);
 
     for (const file of Array.from(e.target.files || [])) {
+      const shortHash = await fileToShortHash(file);
+
       // Get presigned URL so client can upload directly to S3
       const reponse = await getPresignedUploadUrl(
         "images",
         tableName,
-        file.name,
+        shortHash,
         file.type,
         file.size,
       );

@@ -84,3 +84,12 @@ export function capitalizeFirstLetter(string: string) {
 export function enumNameToDisplayName(enumName: string) {
   return enumName.replace(/([A-Z])/g, " $1").trim();
 }
+
+export async function fileToShortHash(file: File) {
+  const hash = await crypto.subtle.digest("SHA-256", await file.arrayBuffer());
+  const hashArray = Array.from(new Uint8Array(hash));
+  const hashHex = hashArray
+    .map((b) => b.toString(16).padStart(2, "0"))
+    .join("");
+  return hashHex.substring(0, 8);
+}
