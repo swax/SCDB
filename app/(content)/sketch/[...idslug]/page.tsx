@@ -1,6 +1,8 @@
 import { ContentLink } from "@/app/components/ContentLink";
 import DescriptionPanel from "@/app/components/DescriptionPanel";
+import LinksPanel from "@/app/components/LinksPanel";
 import { getSketch, getSketchList } from "@/backend/content/sketchService";
+import { getStaticPageCount } from "@/shared/ProcessEnv";
 import s3url from "@/shared/cdnHost";
 import { enumNameToDisplayName } from "@/shared/utilities";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
@@ -31,10 +33,12 @@ import {
 } from "../../contentBase";
 import SketchRating from "./components/SketchRating";
 import VideoHero from "./components/VideoHero";
-import LinksPanel from "@/app/components/LinksPanel";
 
 export async function generateStaticParams() {
-  const sketches = await getSketchList({ page: 1, pageSize: 1000 });
+  const sketches = await getSketchList({
+    page: 1,
+    pageSize: getStaticPageCount(),
+  });
 
   return sketches.list.map((sketch) => ({
     idslug: [sketch.id.toString(), sketch.url_slug],
@@ -96,7 +100,7 @@ export default async function SketchPage({ params }: ContentPageProps) {
       </>
     );
   }
-  
+
   // Rendering
   const pageTitle = sketch.title + " - SketchTV.lol";
 

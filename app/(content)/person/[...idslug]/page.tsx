@@ -1,10 +1,12 @@
 import { ContentLink } from "@/app/components/ContentLink";
+import LinksPanel from "@/app/components/LinksPanel";
 import {
   getPerson,
   getPersonList,
   getPersonSketchCastGrid,
   getPersonSketchCreditGrid,
 } from "@/backend/content/personService";
+import { getStaticPageCount } from "@/shared/ProcessEnv";
 import s3url from "@/shared/cdnHost";
 import {
   Box,
@@ -20,10 +22,12 @@ import {
   DateGeneratedFooter,
   tryGetContent,
 } from "../../contentBase";
-import LinksPanel from "@/app/components/LinksPanel";
 
 export async function generateStaticParams() {
-  const poeple = await getPersonList({ page: 1, pageSize: 1000 });
+  const poeple = await getPersonList({
+    page: 1,
+    pageSize: getStaticPageCount(),
+  });
 
   return poeple.list.map((person) => ({
     idslug: [person.id.toString(), person.url_slug],

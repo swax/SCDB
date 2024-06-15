@@ -1,8 +1,11 @@
+import { ContentLink } from "@/app/components/ContentLink";
+import LinksPanel from "@/app/components/LinksPanel";
 import {
   getEpisode,
   getEpisodeSketchGrid,
   getEpisodesList,
 } from "@/backend/content/episodeService";
+import { getStaticPageCount } from "@/shared/ProcessEnv";
 import { Box, Typography } from "@mui/material";
 import SketchGrid from "../../SketchGrid";
 import {
@@ -10,11 +13,12 @@ import {
   DateGeneratedFooter,
   tryGetContent,
 } from "../../contentBase";
-import { ContentLink } from "@/app/components/ContentLink";
-import LinksPanel from "@/app/components/LinksPanel";
 
 export async function generateStaticParams() {
-  const episodes = await getEpisodesList({ page: 1, pageSize: 1000 });
+  const episodes = await getEpisodesList({
+    page: 1,
+    pageSize: getStaticPageCount(),
+  });
 
   return episodes.list.map((episode) => ({
     idslug: [episode.id.toString(), episode.url_slug],

@@ -1,9 +1,11 @@
 import { ContentLink } from "@/app/components/ContentLink";
+import LinksPanel from "@/app/components/LinksPanel";
 import {
   getSeason,
   getSeasonSketchGrid,
   getSeasonsList,
 } from "@/backend/content/seasonService";
+import { getStaticPageCount } from "@/shared/ProcessEnv";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import FormatListNumberedIcon from "@mui/icons-material/FormatListNumbered";
 import {
@@ -24,10 +26,12 @@ import {
   DateGeneratedFooter,
   tryGetContent,
 } from "../../contentBase";
-import LinksPanel from "@/app/components/LinksPanel";
 
 export async function generateStaticParams() {
-  const seasons = await getSeasonsList({ page: 1, pageSize: 1000 });
+  const seasons = await getSeasonsList({
+    page: 1,
+    pageSize: getStaticPageCount(),
+  });
 
   return seasons.list.map((season) => ({
     idslug: [season.id.toString(), season.url_slug],
