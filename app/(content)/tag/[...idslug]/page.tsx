@@ -1,9 +1,12 @@
 import { ContentLink } from "@/app/components/ContentLink";
+import DescriptionPanel from "@/app/components/DescriptionPanel";
+import LinksPanel from "@/app/components/LinksPanel";
 import {
   getTag,
   getTagSketchGrid,
   getTagsList,
 } from "@/backend/content/tagService";
+import { getStaticPageCount } from "@/shared/ProcessEnv";
 import { Box, Typography } from "@mui/material";
 import SketchGrid from "../../SketchGrid";
 import {
@@ -11,11 +14,9 @@ import {
   DateGeneratedFooter,
   tryGetContent,
 } from "../../contentBase";
-import DescriptionPanel from "@/app/components/DescriptionPanel";
-import LinksPanel from "@/app/components/LinksPanel";
 
 export async function generateStaticParams() {
-  const tag = await getTagsList({ page: 1, pageSize: 1000 });
+  const tag = await getTagsList({ page: 1, pageSize: getStaticPageCount() });
 
   return tag.list.map((tag) => ({
     idslug: [tag.id.toString(), tag.url_slug],

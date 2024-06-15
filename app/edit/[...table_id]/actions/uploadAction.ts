@@ -10,8 +10,6 @@ import { contentResponse } from "@/shared/serviceResponse";
 import { S3Client } from "@aws-sdk/client-s3";
 import { createPresignedPost } from "@aws-sdk/s3-presigned-post";
 import { user_role_type } from "@prisma/client";
-import slugify from "slugify";
-import { v4 as uuidv4 } from "uuid";
 
 const _fileSizeLimitMb = 5;
 

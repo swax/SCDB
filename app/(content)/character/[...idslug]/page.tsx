@@ -6,6 +6,7 @@ import {
   getCharacterList,
   getCharacterSketchGrid,
 } from "@/backend/content/characterService";
+import { getStaticPageCount } from "@/shared/ProcessEnv";
 import { Box, Typography } from "@mui/material";
 import SketchGrid from "../../SketchGrid";
 import {
@@ -15,7 +16,10 @@ import {
 } from "../../contentBase";
 
 export async function generateStaticParams() {
-  const characters = await getCharacterList({ page: 1, pageSize: 1000 });
+  const characters = await getCharacterList({
+    page: 1,
+    pageSize: getStaticPageCount(),
+  });
 
   return characters.list.map((character) => ({
     idslug: [character.id.toString(), character.url_slug],

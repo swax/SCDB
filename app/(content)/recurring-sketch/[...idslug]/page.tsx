@@ -1,10 +1,12 @@
 import DescriptionPanel from "@/app/components/DescriptionPanel";
+import LinksPanel from "@/app/components/LinksPanel";
 import MuiNextLink from "@/app/components/MuiNextLink";
 import {
   getRecurringSketch,
   getRecurringSketchGrid,
   getRecurringSketchList,
 } from "@/backend/content/recurringSketch";
+import { getStaticPageCount } from "@/shared/ProcessEnv";
 import { Box, Typography } from "@mui/material";
 import SketchGrid from "../../SketchGrid";
 import {
@@ -12,12 +14,11 @@ import {
   DateGeneratedFooter,
   tryGetContent,
 } from "../../contentBase";
-import LinksPanel from "@/app/components/LinksPanel";
 
 export async function generateStaticParams() {
   const recurringSketches = await getRecurringSketchList({
     page: 1,
-    pageSize: 1000,
+    pageSize: getStaticPageCount(),
   });
 
   return recurringSketches.list.map((recurringSketch) => ({

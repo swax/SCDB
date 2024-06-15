@@ -52,7 +52,9 @@ export async function getTagsByCategoryList(
     },
   });
 
-  const count = await prisma.tag.count();
+  const count = await prisma.tag.count({
+    ...baseFindParams,
+  });
 
   return { list, count };
 }

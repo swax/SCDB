@@ -1,6 +1,6 @@
 "use client";
 
-import { Divider, Stack, Tooltip } from "@mui/material";
+import { Divider, LinearProgress, Stack, Tooltip } from "@mui/material";
 import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
@@ -10,13 +10,14 @@ import MenuItem from "@mui/material/MenuItem";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import Image from "next/image";
+import { usePathname } from "next/navigation";
 import { MouseEvent, useMemo, useState } from "react";
+import MuiNextLink from "../components/MuiNextLink";
+import { usePageLoadingHook } from "../hooks/pageLoadingHook";
 import DiscordIcon from "./DiscordIcon";
 import EditViewButton from "./EditViewButton";
 import InvalidateCacheButton from "./InvalidateCacheButton";
 import LoginButton from "./LoginButton";
-import MuiNextLink from "../components/MuiNextLink";
-import { usePathname } from "next/navigation";
 
 const pages = [
   {
@@ -43,6 +44,8 @@ const pages = [
 
 function ResponsiveAppBar() {
   // Hooks
+  const pageLoading = usePageLoadingHook();
+
   const pathname = usePathname();
   const [anchorElNav, setAnchorElNav] = useState<null | HTMLElement>(null);
 
@@ -119,24 +122,22 @@ function ResponsiveAppBar() {
             }}
           >
             {pages.map((page, i) => (
-              <MenuItem key={i}>
-                <MuiNextLink
-                  href={`/${page.label.toLowerCase()}`}
-                  underline="none"
-                  onClick={handleCloseNavMenu}
+              <MenuItem
+                key={i}
+                component={"a"}
+                href={`/${page.label.toLowerCase()}`}
+              >
+                <Typography
+                  textAlign="center"
+                  sx={{
+                    color: page.color,
+                    fontFamily: funFont,
+                    fontWeight: "bold",
+                    fontSize: "1.0rem",
+                  }}
                 >
-                  <Typography
-                    textAlign="center"
-                    sx={{
-                      color: page.color,
-                      fontFamily: funFont,
-                      fontWeight: "bold",
-                      fontSize: "1.0rem",
-                    }}
-                  >
-                    {page.label}
-                  </Typography>
-                </MuiNextLink>
+                  {page.label}
+                </Typography>
               </MenuItem>
             ))}
           </Menu>
@@ -175,7 +176,20 @@ function ResponsiveAppBar() {
           <LoginButton />
         </Stack>
       </Toolbar>
-      <Divider sx={{ bgcolor: dividerColor }} />
+
+      {pageLoading ? (
+        <LinearProgress
+          sx={{
+            bgcolor: dividerColor,
+            height: "1px",
+            "& .MuiLinearProgress-bar": {
+              backgroundColor: "whitesmoke",
+            },
+          }}
+        />
+      ) : (
+        <Divider sx={{ bgcolor: dividerColor, height: "1px" }} />
+      )}
     </AppBar>
   );
 }

@@ -105,7 +105,8 @@ export default function SketchGrid({
                       bottom: "2px",
                     }}
                     fontSize="large"
-                    onClick={(e) => {
+                    // Capute prevents pageLoadingHook from triggering
+                    onClickCapture={(e) => {
                       e.stopPropagation();
                       e.preventDefault();
                       setPlayVideoUrls(sketch.video_urls);

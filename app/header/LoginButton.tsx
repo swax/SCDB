@@ -13,7 +13,6 @@ import {
 import { user_role_type } from "@prisma/client";
 import { signIn, signOut, useSession } from "next-auth/react";
 import { useState } from "react";
-import MuiNextLink from "../components/MuiNextLink";
 
 export default function LoginButton() {
   // Hooks
@@ -52,11 +51,8 @@ export default function LoginButton() {
 
   return (
     <Box>
-      <IconButton
-        aria-label="Account Options"
-        onClick={handleClick_accountMenu}
-      >
-        <Tooltip title="Account Options">
+      <IconButton aria-label="Account Menu" onClick={handleClick_accountMenu}>
+        <Tooltip title="Account Menu">
           <AccountCircleIcon />
         </Tooltip>
       </IconButton>
@@ -66,33 +62,21 @@ export default function LoginButton() {
         onClose={handleClick_closeMenu}
         open={Boolean(anchorEl)}
       >
-        <MenuItem>
-          <MuiNextLink
-            color="inherit"
-            href={`/profile/${session.user.username}`}
-            underline="none"
-          >
-            {session.user.username}
-          </MuiNextLink>
+        <MenuItem component={"a"} href={`/profile/${session.user.username}`}>
+          {session.user.username}
         </MenuItem>
-        <MenuItem>
-          <MuiNextLink color="inherit" href="/account" underline="none">
-            My Account
-          </MuiNextLink>
+        <MenuItem component={"a"} href={"/account"}>
+          My Account
         </MenuItem>
 
         <Divider />
         {showReviewMenuItem && (
-          <MenuItem>
-            <MuiNextLink color="inherit" href="/review" underline="none">
-              Review
-            </MuiNextLink>
+          <MenuItem component={"a"} href={"/review"}>
+            Review
           </MenuItem>
         )}
-        <MenuItem>
-          <MuiNextLink color="inherit" href="/changelog" underline="none">
-            Changelog
-          </MuiNextLink>
+        <MenuItem component={"a"} href={"/changelog"}>
+          Changelog
         </MenuItem>
         <Divider />
         <MenuItem onClick={() => void signOut()}>Logout</MenuItem>

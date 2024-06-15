@@ -1,10 +1,13 @@
 import { ContentLink } from "@/app/components/ContentLink";
+import DescriptionPanel from "@/app/components/DescriptionPanel";
+import LinksPanel from "@/app/components/LinksPanel";
 import MuiNextLink from "@/app/components/MuiNextLink";
 import {
   getShow,
   getShowSketchGrid,
   getShowsList,
 } from "@/backend/content/showService";
+import { getStaticPageCount } from "@/shared/ProcessEnv";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import FormatListNumberedIcon from "@mui/icons-material/FormatListNumbered";
 import {
@@ -25,11 +28,9 @@ import {
   DateGeneratedFooter,
   tryGetContent,
 } from "../../contentBase";
-import LinksPanel from "@/app/components/LinksPanel";
-import DescriptionPanel from "@/app/components/DescriptionPanel";
 
 export async function generateStaticParams() {
-  const shows = await getShowsList({ page: 1, pageSize: 1000 });
+  const shows = await getShowsList({ page: 1, pageSize: getStaticPageCount() });
 
   return shows.list.map((show) => ({
     idslug: [show.id.toString(), show.url_slug],
