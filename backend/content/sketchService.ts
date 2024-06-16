@@ -224,3 +224,26 @@ export async function getRating(userId: string, sketchId: number) {
     siteRating: sketchRating?.site_rating || null,
   });
 }
+
+export async function getSketchSitemap() {
+  // Get sketch count
+  const count = await prisma.sketch.count();
+
+  if (count > 50_000) {
+    throw new Error(
+      "Google has a 50,000 url sitemap limit, we need to implement multiple sitemaps",
+    );
+  }
+
+  // Get all the sketch urls
+  const list = await prisma.sketch.findMany({
+    select: {
+      id: true,
+      url_slug: true,
+    },
+  });
+
+  return list.map((sketch) => ({
+    url: `https://www.sketchtv.lol/sketch/${sketch.id}/${sketch.url_slug}`,
+  }));
+}
