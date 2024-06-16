@@ -5,6 +5,9 @@ import {
 import SketchGrid from "./(content)/SketchGrid";
 import { Box, Typography } from "@mui/material";
 import TrendingUpIcon from "@mui/icons-material/TrendingUp";
+import { DateGeneratedFooter } from "./(content)/contentBase";
+
+export const revalidate = 10;
 
 export default async function HomePage() {
   // Data fetching
@@ -48,6 +51,7 @@ export default async function HomePage() {
           Help us grow by creating an account and adding your favorite sketches!
         </Typography>
       </Box>
+      <DateGeneratedFooter />
     </>
   );
 }

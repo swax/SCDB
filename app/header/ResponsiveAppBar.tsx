@@ -16,7 +16,7 @@ import MuiNextLink from "../components/MuiNextLink";
 import { usePageLoadingHook } from "../hooks/pageLoadingHook";
 import DiscordIcon from "./DiscordIcon";
 import EditViewButton from "./EditViewButton";
-import InvalidateCacheButton from "./InvalidateCacheButton";
+import RevalidateCacheButton from "./InvalidateCacheButton";
 import LoginButton from "./LoginButton";
 
 const pages = [
@@ -160,7 +160,7 @@ function ResponsiveAppBar() {
         </Box>
 
         <Stack direction={"row"} sx={{ flexGrow: 0 }}>
-          <InvalidateCacheButton />
+          <RevalidateCacheButton />
           <EditViewButton />
           <Tooltip title={`Discuss on Discord`}>
             <IconButton

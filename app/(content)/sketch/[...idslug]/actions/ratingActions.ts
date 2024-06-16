@@ -10,7 +10,7 @@ export async function saveRating(sketchId: number, rating: number | null) {
 
     const response = sketchService.saveRating(user.id, sketchId, rating);
 
-    revalidateContent("sketch", sketchId); // Invalidates page cache so the updated rating will show
+    revalidateContent("sketch", sketchId); // Revalidates page cache so the updated rating will show
 
     return response;
   });

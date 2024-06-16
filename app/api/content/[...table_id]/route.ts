@@ -9,7 +9,7 @@ interface TabelIdParams {
 
 /**
  * This will get and cache the content.
- * Updated content won't be returned without the path being invalidated.
+ * Updated content won't be returned without the path being revalidated.
  */
 export async function GET(req: Request, { params }: TabelIdParams) {
   const [table, id] = params.table_id;

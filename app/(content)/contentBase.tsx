@@ -38,7 +38,7 @@ export async function tryGetContent<T extends { url_slug: string }>(
 }
 
 export function revalidateContent(table: string, id: number) {
-  revalidatePath(`/${table}/${id}`); // Invalidates page cache
+  revalidatePath(`/${table}/${id}`); // Revalidates page cache
 }
 
 /**
