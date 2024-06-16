@@ -74,7 +74,7 @@ function ResponsiveAppBar() {
   const funFont = `"Comic Sans MS", "Comic Neue", "Chalkboard", "Segoe Print", "Kristen ITC", "Caveat", sans-serif`;
 
   return (
-    <AppBar position="static">
+    <AppBar position="sticky">
       <Toolbar disableGutters variant="dense">
         <MuiNextLink href="/" sx={{ flexGrow: 0 }}>
           <Image
