@@ -215,6 +215,9 @@ export default async function SketchPage({ params }: ContentPageProps) {
                           {enumNameToDisplayName(castMember.role)}
                         </>
                       }
+                      sx={{
+                        width: imgWidth,
+                      }}
                     />
                   </ImageListItem>
                 ))}

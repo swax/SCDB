@@ -109,22 +109,24 @@ export async function getCharacterSketchGrid(
     titleString: sc.sketch.title,
     title: <ContentLink table="sketch" entry={sc.sketch} />,
     subtitle: (
-      <>
+      <div style={{ display: "flex", flexWrap: "wrap" }}>
         {!!sc.person && (
-          <>
+          <span>
             <ContentLink table="person" entry={sc.person} />
-            {" • "}
-          </>
+            {"\u00A0•\u00A0"}
+          </span>
         )}
-        <ContentLink table="show" entry={sc.sketch.show} />{" "}
-        {!!sc.sketch.season && (
-          <>
-            {"("}
-            <ContentLink table="season" entry={sc.sketch.season} />
-            {")"}
-          </>
-        )}
-      </>
+        <span>
+          <ContentLink table="show" entry={sc.sketch.show} />{" "}
+          {!!sc.sketch.season && (
+            <>
+              {"("}
+              <ContentLink table="season" entry={sc.sketch.season} />
+              {")"}
+            </>
+          )}
+        </span>
+      </div>
     ),
     image_cdnkey: sc.image?.cdn_key || sc.sketch.image?.cdn_key,
     video_urls: sc.sketch.video_urls,

@@ -161,6 +161,9 @@ export default function SketchGrid({
                   </div>
                 }
                 subtitle={sketch.subtitle}
+                sx={{
+                  width: imgWidth,
+                }}
               />
             </ImageListItem>
           ))}

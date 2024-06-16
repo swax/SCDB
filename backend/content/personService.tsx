@@ -153,7 +153,7 @@ export async function getPersonSketchCastGrid(
             <ContentLink table="character" entry={sc.character} />
           </>
         ) : sc.character_name ? (
-          <>{sc.character_name}</>
+          <span>{sc.character_name}</span>
         ) : (
           <></>
         )}
@@ -184,7 +184,7 @@ export async function getPersonSketchCastGrid(
       existingSketch.subtitle = (
         <>
           {existingSketch.subtitle}
-          {" / "}
+          {"\u00A0/\u00A0"}
           {sketch.subtitle}
         </>
       );
@@ -196,11 +196,11 @@ export async function getPersonSketchCastGrid(
   // Iterate sketch map and append show to subtitle
   sketchesMap.forEach((sketch) => {
     sketch.subtitle = (
-      <>
+      <div style={{ display: "flex", flexWrap: "wrap" }}>
         {sketch.subtitle}
-        {" • "}
-        {sketch.show}
-      </>
+        {"\u00A0•\u00A0"}
+        <span>{sketch.show}</span>
+      </div>
     );
   });
 

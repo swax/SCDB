@@ -108,7 +108,10 @@ export default async function PersonPage({ params }: ContentPageProps) {
                 height={imgHeight}
               />
               {!!person_image.description && (
-                <ImageListItemBar subtitle={person_image.description} />
+                <ImageListItemBar
+                  subtitle={person_image.description}
+                  sx={{ width: imgWidth }}
+                />
               )}
             </ImageListItem>
           ))}
