@@ -18,6 +18,11 @@ const authOptions = {
     GoogleProvider({
       clientId: ProcessEnv.GOOGLE_CLIENT_ID,
       clientSecret: ProcessEnv.GOOGLE_CLIENT_SECRET,
+      authorization: {
+        params: {
+          prompt: "consent",
+        },
+      },
     }),
   ],
   // Using jwt for sessions prevents many calls to the database per request
