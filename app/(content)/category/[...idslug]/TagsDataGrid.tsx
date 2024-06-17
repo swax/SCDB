@@ -3,7 +3,7 @@
 import { ContentLink } from "@/app/components/ContentLink";
 import { ListSearchParms } from "@/backend/content/listHelper";
 import { GridColDef, GridRenderCellParams } from "@mui/x-data-grid";
-import BaseDataGrid from "../../BaseDataGrid";
+import BaseDataGrid from "../../../(lists)/BaseDataGrid";
 
 interface TagsDataGridProps {
   basePath: string;
