@@ -33,11 +33,13 @@ function getLabelText(value: number) {
 
 interface SketchRatingProps {
   sketchId: number;
+  slug: string;
   siteRating: number | null;
 }
 
 export default function SketchRating({
   sketchId,
+  slug,
   siteRating: initialSiteRating,
 }: SketchRatingProps) {
   // Hooks
@@ -66,7 +68,7 @@ export default function SketchRating({
     setCanEdit(false);
     setUserRating(newValue); // Optimistic update
 
-    const response = await saveRating(sketchId, newValue);
+    const response = await saveRating(sketchId, slug, newValue);
 
     setCanEdit(true);
 

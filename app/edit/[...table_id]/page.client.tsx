@@ -37,9 +37,14 @@ import EditableField from "./components/EditableField";
 interface EditClientPageProps {
   table: TableOrm;
   id: number;
+  slug: string;
 }
 
-export default function EditClientPage({ table, id }: EditClientPageProps) {
+export default function EditClientPage({
+  table,
+  id,
+  slug,
+}: EditClientPageProps) {
   // Hooks
   const [loading, setLoading] = useState(false);
   const forceUpdate = useForceUpdate();
@@ -87,7 +92,7 @@ export default function EditClientPage({ table, id }: EditClientPageProps) {
 
     setLoading(true);
 
-    const response = await editAction(table, id);
+    const response = await editAction(table, id, slug);
 
     if (response.error || !response.content) {
       alert(response.error || "Unknown error");
@@ -95,7 +100,7 @@ export default function EditClientPage({ table, id }: EditClientPageProps) {
       return;
     }
 
-    const rowId = response.content;
+    const rowId = response.content.rowId;
 
     if (!id) {
       setCreatedRowId(rowId);
@@ -113,7 +118,7 @@ export default function EditClientPage({ table, id }: EditClientPageProps) {
 
     setLoading(true);
 
-    const response = await deleteAction(table, id);
+    const response = await deleteAction(table, id, slug);
 
     if (response.error) {
       alert(response.error);

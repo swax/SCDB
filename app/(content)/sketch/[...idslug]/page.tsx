@@ -34,6 +34,8 @@ import {
 import SketchRating from "./components/SketchRating";
 import VideoHero from "./components/VideoHero";
 
+export const revalidate = 30;
+
 export async function generateStaticParams() {
   const sketches = await getSketchList({
     page: 1,
@@ -150,7 +152,11 @@ export default async function SketchPage({ params }: ContentPageProps) {
         </Typography>
       )}
       <Box sx={{ marginTop: 2 }}>
-        <SketchRating sketchId={sketch.id} siteRating={sketch.site_rating} />
+        <SketchRating
+          sketchId={sketch.id}
+          slug={sketch.url_slug}
+          siteRating={sketch.site_rating}
+        />
         <DescriptionPanel description={sketch.description} />
         {Boolean(sketch.sketch_casts.length) && (
           <Accordion defaultExpanded>

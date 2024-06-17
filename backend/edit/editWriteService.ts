@@ -53,7 +53,7 @@ export async function writeFieldValues(
   }
 
   // Sanitization
-  updateSlugs(table);
+  const newSlug = updateSlugs(table);
   removeUnmodifiedFields(table);
 
   // Validation
@@ -81,7 +81,7 @@ export async function writeFieldValues(
     },
   });
 
-  return contentResponse(rowId);
+  return contentResponse({ rowId, newSlug });
 }
 
 function validateRequiredFields(fields: FieldOrm[]) {
@@ -175,9 +175,13 @@ function updateSlugs(table: TableOrm) {
     return;
   }
 
+  const newSlug = slugifyForUrl(derivedFromField.values[0].toString());
+
   slugField.values = [];
-  slugField.values[0] = slugifyForUrl(derivedFromField.values[0].toString());
+  slugField.values[0] = newSlug;
   slugField.modified = [true];
+
+  return newSlug;
 }
 
 async function writeFieldChanges(

@@ -37,8 +37,15 @@ export async function tryGetContent<T extends { url_slug: string }>(
   return content;
 }
 
-export function revalidateContent(table: string, id: number) {
-  revalidatePath(`/${table}/${id}`); // Revalidates page cache
+export function revalidateContent(table: string, id: number, slug: string) {
+  // For some reason table/id seems to work in prod, but table, id, slug is required for local release run
+  // Ideally we want just table/id in case the slug changes
+  // According the docs revalidate only supports the full path, not partial paths
+  revalidatePath(`/${table}/${id}`);
+
+  if (slug) {
+    revalidatePath(`/${table}/${id}/${slug}`);
+  }
 }
 
 /**

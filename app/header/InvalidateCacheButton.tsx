@@ -5,7 +5,7 @@ import { user_role_type } from "@prisma/client";
 import { useSession } from "next-auth/react";
 import { usePathname } from "next/navigation";
 import { useMemo } from "react";
-import { revalidate, revalidateAll } from "./revalidateAction";
+import { revalidate, revalidateRoot } from "./revalidateAction";
 
 /** Used to break the cache when doing active development */
 export default function RevalidateCacheButton() {
@@ -13,7 +13,7 @@ export default function RevalidateCacheButton() {
   const path = usePathname();
   const { data: session } = useSession();
 
-  const { enabled, table, id } = useMemo(() => {
+  const { enabled, table, id, slug } = useMemo(() => {
     const pathParts = path.split("/");
 
     // A valid cached path that can be revalidated has the from "/<table>/<id>/<slug>"
@@ -25,22 +25,22 @@ export default function RevalidateCacheButton() {
       session?.user &&
       getRoleRank(session.user.role) >= getRoleRank(user_role_type.Moderator);
 
-    const table = validPath ? pathParts[1] : null;
-    const id = validPath ? parseInt(pathParts[2]) : null;
+    const [, table, id, slug] = pathParts;
 
     return {
       enabled,
       table,
-      id,
+      id: parseInt(id),
+      slug,
     };
   }, [session, path]);
 
   // Event handlers
   async function revalidateCacheButton_click() {
     if (table && id) {
-      await revalidate(table, id);
+      await revalidate(table, id, slug);
     } else {
-      await revalidateAll();
+      await revalidateRoot();
     }
 
     window.location.reload();
