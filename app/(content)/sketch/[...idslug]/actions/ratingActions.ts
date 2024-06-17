@@ -4,7 +4,11 @@ import { revalidateContent } from "@/app/(content)/contentBase";
 import { catchServiceErrors, getLoggedInUser } from "@/backend/actionHelper";
 import * as sketchService from "@/backend/content/sketchService";
 
-export async function saveRating(sketchId: number, slug: string, rating: number | null) {
+export async function saveRating(
+  sketchId: number,
+  slug: string,
+  rating: number | null,
+) {
   return catchServiceErrors(async () => {
     const user = await getLoggedInUser();
 

@@ -1,10 +1,24 @@
-import { ContentPageProps, tryGetContent } from "@/app/(content)/contentBase";
+import {
+  ContentPageProps,
+  DateGeneratedFooter,
+  tryGetContent,
+} from "@/app/(content)/contentBase";
+import MuiNextLink from "@/app/components/MuiNextLink";
 import { getCategory } from "@/backend/content/categoryService";
 import { getTagsByCategoryList } from "@/backend/content/tagService";
 import { Box, Typography } from "@mui/material";
-import { ListPageProps, parseSearchParams } from "../../baseListTypes";
+import {
+  ListPageProps,
+  getCachedList,
+  parseSearchParams,
+} from "../../baseListTypes";
 import TagsDataGrid from "./TagsDataGrid";
-import MuiNextLink from "@/app/components/MuiNextLink";
+
+// This page is a cross between a 'tag list' page and a 'category content' page
+
+// TODO: Should probably move this page to the content folder
+
+// Can't put a revalidate on this page because then search params won't work
 
 /** A combination of a list page and a content page because the url has an id/slug */
 export default async function CategoryPage(
@@ -14,8 +28,16 @@ export default async function CategoryPage(
   const searchParams = parseSearchParams(props.searchParams);
 
   // Fetch data
+
+  // This is this only tryGetContent that isn't cached at the page level
   const category = await tryGetContent("category", props.params, getCategory);
-  const tags = await getTagsByCategoryList(category.id, searchParams);
+
+  // When any tag is updated, all category tag list pages will be revalidated
+  // Not the most 'efficient', but the generic edit pages are set to revalidate tags with table names
+  const tags = await getCachedList(`tag`, getTagsByCategoryList)(
+    searchParams,
+    category.id,
+  );
 
   const rows = tags.list.map((tag) => ({
     id: tag.id,
@@ -42,6 +64,7 @@ export default async function CategoryPage(
         rows={rows}
         totalRowCount={tags.count}
       />
+      <DateGeneratedFooter dataDate={tags.dateGenerated} />
     </>
   );
 }

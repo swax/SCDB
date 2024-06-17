@@ -1,5 +1,5 @@
 import { Box, Typography } from "@mui/material";
-import { revalidatePath } from "next/cache";
+import { revalidatePath, revalidateTag } from "next/cache";
 import { notFound, redirect } from "next/navigation";
 import "server-only";
 
@@ -46,6 +46,9 @@ export function revalidateContent(table: string, id: number, slug: string) {
   if (slug) {
     revalidatePath(`/${table}/${id}/${slug}`);
   }
+
+  // Revalidate the associated list page for the content, default is 5 minutes as well
+  revalidateTag(`${table}-list`);
 }
 
 /**
@@ -83,14 +86,16 @@ export async function fetchCachedContent<T extends { url_slug: string } | null>(
   }
 }
 
-export function DateGeneratedFooter() {
+export function DateGeneratedFooter({ dataDate }: { dataDate?: Date }) {
   return (
     <Box mt={4}>
       <Typography
         variant="caption"
         sx={{ fontStyle: "italic", color: "DimGrey" }}
       >
-        Page Generated: {new Date().toLocaleString()}
+        {dataDate
+          ? `Data Generated: ${new Date(dataDate).toLocaleString()}`
+          : `Page Generated: ${new Date().toLocaleString()}`}
       </Typography>
     </Box>
   );

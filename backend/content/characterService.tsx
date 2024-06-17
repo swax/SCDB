@@ -26,7 +26,7 @@ export async function getCharacterList(searchParams: ListSearchParms) {
 
   const count = await prisma.character.count();
 
-  return { list, count };
+  return { list, count, dateGenerated: new Date() };
 }
 
 export async function getCharacter(id: number) {

@@ -1,5 +1,10 @@
+import { DateGeneratedFooter } from "@/app/(content)/contentBase";
 import { getPersonList } from "@/backend/content/personService";
-import { ListPageProps, parseSearchParams } from "../baseListTypes";
+import {
+  ListPageProps,
+  getCachedList,
+  parseSearchParams,
+} from "../baseListTypes";
 import PeopleDataGrid from "./PeopleDataGrid";
 
 export default async function PeoplePage(props: ListPageProps) {
@@ -7,14 +12,15 @@ export default async function PeoplePage(props: ListPageProps) {
   const searchParams = parseSearchParams(props.searchParams);
 
   // Data
-  const people = await getPersonList(searchParams);
+  const people = await getCachedList("person", getPersonList)(searchParams);
 
   const rows = people.list.map((person) => ({
     id: person.id,
     name: person.name,
     age: person.age,
-    birth_date: person.birth_date,
-    death_date: person.death_date,
+    // Deserialization from the cache leaves the dates as strings
+    birth_date: person.birth_date && new Date(person.birth_date),
+    death_date: person.death_date && new Date(person.death_date),
     url_slug: person.url_slug,
     sketch_casts___count: person._count.sketch_casts,
   }));
@@ -28,6 +34,7 @@ export default async function PeoplePage(props: ListPageProps) {
         rows={rows}
         totalRowCount={people.count}
       />
+      <DateGeneratedFooter dataDate={people.dateGenerated} />
     </>
   );
 }

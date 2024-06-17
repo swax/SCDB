@@ -1,5 +1,10 @@
+import { DateGeneratedFooter } from "@/app/(content)/contentBase";
 import { getRecurringSketchList } from "@/backend/content/recurringSketch";
-import { ListPageProps, parseSearchParams } from "../baseListTypes";
+import {
+  ListPageProps,
+  getCachedList,
+  parseSearchParams,
+} from "../baseListTypes";
 import RecurringSketchesDataGrid from "./RecurringSketchesDataGrid";
 
 export default async function RecurringSketchesPage(props: ListPageProps) {
@@ -7,7 +12,10 @@ export default async function RecurringSketchesPage(props: ListPageProps) {
   const searchParams = parseSearchParams(props.searchParams);
 
   // Data
-  const recurringSketches = await getRecurringSketchList(searchParams);
+  const recurringSketches = await getCachedList(
+    "recurring-sketch",
+    getRecurringSketchList,
+  )(searchParams);
 
   const rows = recurringSketches.list.map((recurringSketch) => ({
     id: recurringSketch.id,
@@ -25,6 +33,7 @@ export default async function RecurringSketchesPage(props: ListPageProps) {
         rows={rows}
         totalRowCount={recurringSketches.count}
       />
+      <DateGeneratedFooter dataDate={recurringSketches.dateGenerated} />
     </>
   );
 }
