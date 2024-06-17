@@ -27,6 +27,8 @@ import {
   tryGetContent,
 } from "../../contentBase";
 
+export const revalidate = 300; // 5 minutes
+
 export async function generateStaticParams() {
   const seasons = await getSeasonsList({
     page: 1,

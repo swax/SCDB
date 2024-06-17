@@ -7,7 +7,7 @@ import { Box, Typography } from "@mui/material";
 import TrendingUpIcon from "@mui/icons-material/TrendingUp";
 import { DateGeneratedFooter } from "./(content)/contentBase";
 
-export const revalidate = 10;
+export const revalidate = 300; // 5 minutes
 
 export default async function HomePage() {
   // Data fetching

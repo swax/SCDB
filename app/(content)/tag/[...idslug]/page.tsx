@@ -15,6 +15,8 @@ import {
   tryGetContent,
 } from "../../contentBase";
 
+export const revalidate = 300; // 5 minutes
+
 export async function generateStaticParams() {
   const tag = await getTagsList({ page: 1, pageSize: getStaticPageCount() });
 
