@@ -11,7 +11,7 @@ import {
   ListPageProps,
   getCachedList,
   parseSearchParams,
-} from "../../baseListTypes";
+} from "../../../(lists)/baseListTypes";
 import TagsDataGrid from "./TagsDataGrid";
 
 // This page is a cross between a 'tag list' page and a 'category content' page

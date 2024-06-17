@@ -13,7 +13,7 @@ import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { MouseEvent, useMemo, useState } from "react";
 import MuiNextLink from "../components/MuiNextLink";
-import { usePageLoadingHook } from "../hooks/pageLoadingHook";
+import usePageLoading from "../hooks/usePageLoading";
 import DiscordIcon from "./DiscordIcon";
 import EditViewButton from "./EditViewButton";
 import RevalidateCacheButton from "./InvalidateCacheButton";
@@ -44,7 +44,7 @@ const pages = [
 
 function ResponsiveAppBar() {
   // Hooks
-  const pageLoading = usePageLoadingHook();
+  const pageLoading = usePageLoading();
 
   const pathname = usePathname();
   const [anchorElNav, setAnchorElNav] = useState<null | HTMLElement>(null);

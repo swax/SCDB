@@ -2,11 +2,10 @@ import { usePathname } from "next/navigation";
 import { useRef, useState, useEffect } from "react";
 
 /**
- * Hook that listens for click on an anchor element
- * When it happens return true
+ * Hook that listens for click on an anchor element, when that happens return true
  * In the case of a soft navigation, once the new path is set, clear the loading status
  */
-export function usePageLoadingHook() {
+export default function usePageLoading() {
   const path = usePathname();
   const currentPath = useRef(path);
   const [pageLoading, setPageLoading] = useState(false);
@@ -28,11 +27,13 @@ export function usePageLoadingHook() {
     }
   }, [path]);
 
-  function handleGlobalClick(event: any) {
-    const anchor = event.target.closest("a");
+  function handleGlobalClick(event: MouseEvent) {
+    if (event.target instanceof Element) {
+      const anchor = event.target.closest("a");
 
-    if (anchor) {
-      setPageLoading(true);
+      if (anchor) {
+        setPageLoading(true);
+      }
     }
   }
 

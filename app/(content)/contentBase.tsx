@@ -88,11 +88,8 @@ export async function fetchCachedContent<T extends { url_slug: string } | null>(
 
 export function DateGeneratedFooter({ dataDate }: { dataDate?: Date }) {
   return (
-    <Box mt={4}>
-      <Typography
-        variant="caption"
-        sx={{ fontStyle: "italic", color: "DimGrey" }}
-      >
+    <Box mt={6}>
+      <Typography variant="caption" sx={{ fontStyle: "italic", color: "#333" }}>
         {dataDate
           ? `Data Generated: ${new Date(dataDate).toLocaleString()}`
           : `Page Generated: ${new Date().toLocaleString()}`}
