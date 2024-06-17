@@ -1,5 +1,10 @@
+import { DateGeneratedFooter } from "@/app/(content)/contentBase";
 import { getShowsList } from "@/backend/content/showService";
-import { ListPageProps, parseSearchParams } from "../baseListTypes";
+import {
+  ListPageProps,
+  getCachedList,
+  parseSearchParams,
+} from "../baseListTypes";
 import ShowsDataGrid from "./ShowsDataGrid";
 
 export default async function CategoriesPage(props: ListPageProps) {
@@ -7,7 +12,7 @@ export default async function CategoriesPage(props: ListPageProps) {
   const searchParams = parseSearchParams(props.searchParams);
 
   // Data
-  const shows = await getShowsList(searchParams);
+  const shows = await getCachedList("show", getShowsList)(searchParams);
 
   const rows = shows.list.map((show) => ({
     id: show.id,
@@ -25,6 +30,7 @@ export default async function CategoriesPage(props: ListPageProps) {
         rows={rows}
         totalRowCount={shows.count}
       />
+      <DateGeneratedFooter dataDate={shows.dateGenerated} />
     </>
   );
 }

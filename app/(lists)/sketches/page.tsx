@@ -1,7 +1,12 @@
+import { DateGeneratedFooter } from "@/app/(content)/contentBase";
 import MuiNextLink from "@/app/components/MuiNextLink";
 import { getSketchList } from "@/backend/content/sketchService";
 import { Button } from "@mui/material";
-import { ListPageProps, parseSearchParams } from "../baseListTypes";
+import {
+  ListPageProps,
+  getCachedList,
+  parseSearchParams,
+} from "../baseListTypes";
 import SketchDataGrid from "./SketchDataGrid";
 
 export default async function SketchesPage(props: ListPageProps) {
@@ -9,7 +14,7 @@ export default async function SketchesPage(props: ListPageProps) {
   const searchParams = parseSearchParams(props.searchParams);
 
   // Data
-  const sketches = await getSketchList(searchParams);
+  const sketches = await getCachedList("sketch", getSketchList)(searchParams);
 
   const rows = sketches.list.map((sketch) => ({
     id: sketch.id,
@@ -32,6 +37,7 @@ export default async function SketchesPage(props: ListPageProps) {
       <MuiNextLink href="/edit/sketch">
         <Button>Add Sketch</Button>
       </MuiNextLink>
+      <DateGeneratedFooter dataDate={sketches.dateGenerated} />
     </>
   );
 }

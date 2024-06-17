@@ -26,7 +26,7 @@ export async function getShowsList(searchParams: ListSearchParms) {
 
   const count = await prisma.show.count();
 
-  return { list, count };
+  return { list, count, dateGenerated: new Date() };
 }
 
 export async function getShow(id: number) {

@@ -1,11 +1,11 @@
 import { ContentLink } from "@/app/components/ContentLink";
-import { ListSearchParms, getBaseFindParams } from "./listHelper";
 import prisma from "@/database/prisma";
 import {
   SKETCH_PAGE_SIZE,
   SketchGridData,
   selectSketch,
 } from "@/shared/sketchGridBase";
+import { ListSearchParms, getBaseFindParams } from "./listHelper";
 
 export async function getTagsList(searchParams: ListSearchParms) {
   const baseFindParams = getBaseFindParams(searchParams);
@@ -25,9 +25,14 @@ export async function getTagsList(searchParams: ListSearchParms) {
 }
 
 export async function getTagsByCategoryList(
-  categoryId: number,
   searchParams: ListSearchParms,
+  categoryId?: number,
 ) {
+  // Needs to be an optional param to fit the caching function
+  if (!categoryId) {
+    throw new Error("getTagsByCategoryList: categoryId is required");
+  }
+
   const baseFindParams = getBaseFindParams(searchParams);
 
   if (baseFindParams.where) {
@@ -56,7 +61,7 @@ export async function getTagsByCategoryList(
     ...baseFindParams,
   });
 
-  return { list, count };
+  return { list, count, dateGenerated: new Date() };
 }
 
 export async function getTag(id: number) {

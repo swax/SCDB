@@ -20,7 +20,7 @@ export async function getCategoriesList(searchParams: ListSearchParms) {
 
   const count = await prisma.category.count();
 
-  return { list, count };
+  return { list, count, dateGenerated: new Date() };
 }
 
 export async function getCategory(id: number) {

@@ -1,5 +1,10 @@
+import { DateGeneratedFooter } from "@/app/(content)/contentBase";
 import { getCharacterList } from "@/backend/content/characterService";
-import { ListPageProps, parseSearchParams } from "../baseListTypes";
+import {
+  ListPageProps,
+  getCachedList,
+  parseSearchParams,
+} from "../baseListTypes";
 import CharacterDataGrid from "./CharacterDataGrid";
 
 export default async function CharactersPage(props: ListPageProps) {
@@ -7,7 +12,10 @@ export default async function CharactersPage(props: ListPageProps) {
   const searchParams = parseSearchParams(props.searchParams);
 
   // Data
-  const characters = await getCharacterList(searchParams);
+  const characters = await getCachedList(
+    "character",
+    getCharacterList,
+  )(searchParams);
 
   const rows = characters.list.map((character) => ({
     id: character.id,
@@ -25,6 +33,7 @@ export default async function CharactersPage(props: ListPageProps) {
         rows={rows}
         totalRowCount={characters.count}
       />
+      <DateGeneratedFooter dataDate={characters.dateGenerated} />
     </>
   );
 }

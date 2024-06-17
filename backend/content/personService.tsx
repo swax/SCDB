@@ -33,7 +33,7 @@ export async function getPersonList(searchParams: ListSearchParms) {
     age: getAge(person.birth_date, person.death_date),
   }));
 
-  return { list, count };
+  return { list, count, dateGenerated: new Date() };
 }
 
 export async function getPerson(id: number) {

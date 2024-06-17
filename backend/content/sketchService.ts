@@ -29,7 +29,7 @@ export async function getSketchList(searchParams: ListSearchParms) {
   // get total count
   const count = await prisma.sketch.count();
 
-  return { list, count };
+  return { list, count, dateGenerated: new Date() };
 }
 
 export async function getSketch(id: number) {

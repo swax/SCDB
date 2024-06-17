@@ -26,7 +26,7 @@ export async function getRecurringSketchList(searchParams: ListSearchParms) {
 
   const count = await prisma.recurring_sketch.count();
 
-  return { list, count };
+  return { list, count, dateGenerated: new Date() };
 }
 
 export async function getRecurringSketch(id: number) {
