@@ -34,7 +34,7 @@ import {
 import SketchRating from "./components/SketchRating";
 import VideoHero from "./components/VideoHero";
 
-export const revalidate = 30;
+export const revalidate = 300; // 5 minutes
 
 export async function generateStaticParams() {
   const sketches = await getSketchList({

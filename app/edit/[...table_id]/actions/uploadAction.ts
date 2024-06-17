@@ -28,8 +28,9 @@ export async function getPresignedUploadUrl(
     _validateFile(fileType, fileSize);
 
     // Build aws key
+    const userTag = user.id.substring(0, 6);
     const fileExt = fileType.split("/")[1];
-    const uploadFileName = `${fileHash}.${fileExt}`;
+    const uploadFileName = `${userTag}_${fileHash}.${fileExt}`;
 
     const awsKey = `${uploadType}/${tableName}/${uploadFileName}`;
 
