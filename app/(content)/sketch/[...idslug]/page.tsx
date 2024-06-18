@@ -158,6 +158,7 @@ export default async function SketchPage({ params }: ContentPageProps) {
           siteRating={sketch.site_rating}
         />
         <DescriptionPanel description={sketch.description} />
+        <DescriptionPanel description={sketch.notes} title="Notes" />
         {Boolean(sketch.sketch_casts.length) && (
           <Accordion defaultExpanded>
             <AccordionSummary

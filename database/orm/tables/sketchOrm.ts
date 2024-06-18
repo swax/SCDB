@@ -66,6 +66,13 @@ const sketchOrm: TableOrm = {
       optional: true,
     },
     {
+      label: "Notes",
+      column: "notes",
+      type: "string",
+      multiline: true,
+      optional: true,
+    },
+    {
       label: "Recurring Sketch",
       column: "recurring_sketch_id",
       type: "lookup",

@@ -5,6 +5,7 @@ import { user_role_type } from "@prisma/client";
 import { useSession } from "next-auth/react";
 import { useState } from "react";
 import saveUsername from "./actions/saveAction";
+import MuiNextLink from "../components/MuiNextLink";
 
 interface AccountClientPageProps {
   id: string;
@@ -54,7 +55,11 @@ export default function AccountClientPage(account: AccountClientPageProps) {
           Email: {account.email}
         </Typography>
         <Typography variant="body2" color="textSecondary">
-          Note: Your account is linked to your Google account.
+          Note: Your account is{" "}
+          <MuiNextLink href="https://myaccount.google.com/connections">
+            linked
+          </MuiNextLink>{" "}
+          to your Google account.
         </Typography>
         <Box mt={4}>
           {editUsername || !username ? (
@@ -109,11 +114,13 @@ export default function AccountClientPage(account: AccountClientPageProps) {
             Role: {account.role}
           </Typography>
         </Box>
-        <Box mt={8}>
+        {/* Need to split profile from user table for this to work
+         <Box mt={8}>
           <Button color="error" variant="outlined">
             Delete Account
           </Button>
         </Box>
+        */}
       </Box>
     </Container>
   );

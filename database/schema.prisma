@@ -372,6 +372,7 @@ model sketch {
   video_urls          String[]
   image_id            Int?
   description         String?
+  notes               String?
   site_rating         Float?
   show_id             Int
   season_id           Int?
