@@ -73,21 +73,28 @@ function ResponsiveAppBar() {
   // Rendering
   const funFont = `"Comic Sans MS", "Comic Neue", "Chalkboard", "Segoe Print", "Kristen ITC", "Caveat", sans-serif`;
 
+  const LogoHomeLink = (
+    <MuiNextLink href="/">
+      <Image
+        alt="SketchTV.lol"
+        style={{ objectFit: "cover" }}
+        src={`/images/logo2dark.webp`}
+        width={90}
+        height={45}
+      />
+    </MuiNextLink>
+  );
+
   return (
     <AppBar position="sticky">
       <Toolbar disableGutters variant="dense">
-        <MuiNextLink href="/" sx={{ flexGrow: 0 }}>
-          <Image
-            alt="SketchTV.lol"
-            style={{ objectFit: "cover" }}
-            src={`/images/logo2dark.webp`}
-            width={90}
-            height={45}
-          />
-        </MuiNextLink>
+        {/* Desktop left corner logo */}
+        <Box sx={{ flexGrow: 0, display: { xs: "none", sm: "block" } }}>
+          {LogoHomeLink}
+        </Box>
 
         {/* Hamburger Menu */}
-        <Box sx={{ flexGrow: 1, display: { xs: "flex", sm: "none" } }}>
+        <Box sx={{ flexGrow: 0, display: { xs: "flex", sm: "none" } }}>
           <IconButton
             aria-label="Account of current user"
             aria-controls="menu-appbar"
@@ -121,6 +128,7 @@ function ResponsiveAppBar() {
               display: { xs: "block", md: "none" },
             }}
           >
+            {/* Hamburger menu items */}
             {pages.map((page, i) => (
               <MenuItem
                 key={i}
@@ -142,6 +150,8 @@ function ResponsiveAppBar() {
             ))}
           </Menu>
         </Box>
+
+        {/* Main header navigation links for desktop */}
         <Box sx={{ flexGrow: 1, display: { xs: "none", sm: "flex" } }}>
           {pages.map((page, i) => (
             <MuiNextLink key={i} href={`/${page.label.toLowerCase()}`}>
@@ -159,7 +169,19 @@ function ResponsiveAppBar() {
           ))}
         </Box>
 
-        <Stack direction={"row"} sx={{ flexGrow: 0 }}>
+        {/* Centered logo on mobile */}
+        <Box
+          sx={{
+            flexGrow: 1,
+            display: { xs: "block", sm: "none" },
+            textAlign: "center",
+          }}
+        >
+          {LogoHomeLink}
+        </Box>
+
+        {/* Right side header icons */}
+        <Stack direction={"row"}>
           <RevalidateCacheButton />
           <EditViewButton />
           <Tooltip title={`Discuss on Discord`}>

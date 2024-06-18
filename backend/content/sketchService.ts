@@ -42,6 +42,7 @@ export async function getSketch(id: number) {
       url_slug: true,
       title: true,
       description: true,
+      notes: true,
       link_urls: true,
       site_rating: true,
       image: {
