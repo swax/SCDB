@@ -1,4 +1,5 @@
 import { ContentLink } from "@/app/components/ContentLink";
+import DateGeneratedFooter from "@/app/components/DateGeneratedFooter";
 import LinksPanel from "@/app/components/LinksPanel";
 import {
   getPerson,
@@ -17,11 +18,7 @@ import {
 } from "@mui/material";
 import Image from "next/image";
 import SketchGrid from "../../SketchGrid";
-import {
-  ContentPageProps,
-  DateGeneratedFooter,
-  tryGetContent,
-} from "../../contentBase";
+import { ContentPageProps, tryGetContent } from "../../contentBase";
 
 export const revalidate = 300; // 5 minutes
 

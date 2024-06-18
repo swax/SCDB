@@ -1,4 +1,4 @@
-import { DateGeneratedFooter } from "@/app/(content)/contentBase";
+import DateGeneratedFooter from "@/app/components/DateGeneratedFooter";
 import MuiNextLink from "@/app/components/MuiNextLink";
 import { getSketchList } from "@/backend/content/sketchService";
 import { Button } from "@mui/material";

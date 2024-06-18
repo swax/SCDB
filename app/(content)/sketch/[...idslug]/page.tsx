@@ -1,4 +1,5 @@
 import { ContentLink } from "@/app/components/ContentLink";
+import DateGeneratedFooter from "@/app/components/DateGeneratedFooter";
 import DescriptionPanel from "@/app/components/DescriptionPanel";
 import LinksPanel from "@/app/components/LinksPanel";
 import { getSketch, getSketchList } from "@/backend/content/sketchService";
@@ -26,11 +27,7 @@ import {
   Typography,
 } from "@mui/material";
 import Image from "next/image";
-import {
-  ContentPageProps,
-  DateGeneratedFooter,
-  tryGetContent,
-} from "../../contentBase";
+import { ContentPageProps, tryGetContent } from "../../contentBase";
 import SketchRating from "./components/SketchRating";
 import VideoHero from "./components/VideoHero";
 
@@ -224,6 +221,9 @@ export default async function SketchPage({ params }: ContentPageProps) {
                       }
                       sx={{
                         width: imgWidth,
+                        "& .MuiImageListItemBar-subtitle": {
+                          whiteSpace: "wrap",
+                        },
                       }}
                     />
                   </ImageListItem>

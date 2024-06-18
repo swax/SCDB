@@ -1,5 +1,6 @@
 "use client";
 
+import HelpIcon from "@mui/icons-material/Help";
 import { Divider, LinearProgress, Stack, Tooltip } from "@mui/material";
 import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
@@ -14,10 +15,9 @@ import { usePathname } from "next/navigation";
 import { MouseEvent, useMemo, useState } from "react";
 import MuiNextLink from "../components/MuiNextLink";
 import usePageLoading from "../hooks/usePageLoading";
+import AccountMenu from "./AccountMenu";
 import DiscordIcon from "./DiscordIcon";
 import EditViewButton from "./EditViewButton";
-import RevalidateCacheButton from "./InvalidateCacheButton";
-import LoginButton from "./LoginButton";
 
 const pages = [
   {
@@ -77,7 +77,7 @@ function ResponsiveAppBar() {
     <MuiNextLink href="/">
       <Image
         alt="SketchTV.lol"
-        style={{ objectFit: "cover" }}
+        style={{ objectFit: "cover", marginTop: "4px" }}
         src={`/images/logo2dark.webp`}
         width={90}
         height={45}
@@ -94,7 +94,7 @@ function ResponsiveAppBar() {
         </Box>
 
         {/* Hamburger Menu */}
-        <Box sx={{ flexGrow: 0, display: { xs: "flex", sm: "none" } }}>
+        <Box sx={{ flexGrow: 1, display: { xs: "flex", sm: "none" } }}>
           <IconButton
             aria-label="Account of current user"
             aria-controls="menu-appbar"
@@ -172,17 +172,17 @@ function ResponsiveAppBar() {
         {/* Centered logo on mobile */}
         <Box
           sx={{
-            flexGrow: 1,
             display: { xs: "block", sm: "none" },
-            textAlign: "center",
+            position: "absolute",
+            left: "50%",
+            transform: "translateX(-50%)",
           }}
         >
           {LogoHomeLink}
         </Box>
 
         {/* Right side header icons */}
-        <Stack direction={"row"}>
-          <RevalidateCacheButton />
+        <Stack direction={"row"} sx={{ marginRight: 1 }}>
           <EditViewButton />
           <Tooltip title={`Discuss on Discord`}>
             <IconButton
@@ -195,7 +195,17 @@ function ResponsiveAppBar() {
               <DiscordIcon />
             </IconButton>
           </Tooltip>
-          <LoginButton />
+          <AccountMenu />
+          <Tooltip title={`Help`}>
+            <IconButton
+              aria-label="Help"
+              aria-controls="menu-appbar"
+              href="/help"
+              color="inherit"
+            >
+              <HelpIcon />
+            </IconButton>
+          </Tooltip>
         </Stack>
       </Toolbar>
 

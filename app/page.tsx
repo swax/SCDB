@@ -5,7 +5,7 @@ import {
 import SketchGrid from "./(content)/SketchGrid";
 import { Box, Typography } from "@mui/material";
 import TrendingUpIcon from "@mui/icons-material/TrendingUp";
-import { DateGeneratedFooter } from "./(content)/contentBase";
+import DateGeneratedFooter from "@/app/components/DateGeneratedFooter";
 
 export const revalidate = 300; // 5 minutes
 
