@@ -1,4 +1,3 @@
-import { Box, Typography } from "@mui/material";
 import { revalidatePath, revalidateTag } from "next/cache";
 import { notFound, redirect } from "next/navigation";
 import "server-only";
@@ -84,16 +83,4 @@ export async function fetchCachedContent<T extends { url_slug: string } | null>(
   if (slug !== content.url_slug) {
     redirect(`/${route}/${id}/${content.url_slug}`);
   }
-}
-
-export function DateGeneratedFooter({ dataDate }: { dataDate?: Date }) {
-  return (
-    <Box mt={6}>
-      <Typography variant="caption" sx={{ fontStyle: "italic", color: "#333" }}>
-        {dataDate
-          ? `Data Generated: ${new Date(dataDate).toLocaleString()}`
-          : `Page Generated: ${new Date().toLocaleString()}`}
-      </Typography>
-    </Box>
-  );
 }

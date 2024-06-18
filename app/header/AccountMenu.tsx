@@ -1,8 +1,8 @@
 import { getRoleRank } from "@/shared/roleUtils";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
+import LoginIcon from "@mui/icons-material/Login";
 import {
   Box,
-  Button,
   CircularProgress,
   Divider,
   IconButton,
@@ -14,7 +14,7 @@ import { user_role_type } from "@prisma/client";
 import { signIn, signOut, useSession } from "next-auth/react";
 import { useState } from "react";
 
-export default function LoginButton() {
+export default function AccountMenu() {
   // Hooks
   const { data: session, status } = useSession();
   const [anchorEl, setAnchorEl] = useState<Nullable<Element>>(null);
@@ -39,9 +39,11 @@ export default function LoginButton() {
 
   if (status == "unauthenticated" || !session) {
     return (
-      <Button onClick={() => void signIn("google", { prompt: "login" })}>
-        Login
-      </Button>
+      <Tooltip title={`Login with Google`}>
+        <IconButton onClick={() => void signIn("google", { prompt: "login" })}>
+          <LoginIcon />
+        </IconButton>
+      </Tooltip>
     );
   }
 

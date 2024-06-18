@@ -1,4 +1,5 @@
 import { ContentLink } from "@/app/components/ContentLink";
+import DateGeneratedFooter from "@/app/components/DateGeneratedFooter";
 import DescriptionPanel from "@/app/components/DescriptionPanel";
 import LinksPanel from "@/app/components/LinksPanel";
 import MuiNextLink from "@/app/components/MuiNextLink";
@@ -23,13 +24,7 @@ import {
   Typography,
 } from "@mui/material";
 import SketchGrid from "../../SketchGrid";
-import {
-  ContentPageProps,
-  DateGeneratedFooter,
-  tryGetContent,
-} from "../../contentBase";
-
-export const revalidate = 300; // 5 minutes
+import { ContentPageProps, tryGetContent } from "../../contentBase";
 
 export async function generateStaticParams() {
   const shows = await getShowsList({ page: 1, pageSize: getStaticPageCount() });

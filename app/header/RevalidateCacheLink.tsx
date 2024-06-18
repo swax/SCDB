@@ -1,14 +1,15 @@
+"use client";
+
 import { getRoleRank } from "@/shared/roleUtils";
-import LoopIcon from "@mui/icons-material/Loop";
-import { IconButton, Tooltip } from "@mui/material";
 import { user_role_type } from "@prisma/client";
 import { useSession } from "next-auth/react";
 import { usePathname } from "next/navigation";
 import { useMemo } from "react";
+import MuiNextLink from "../components/MuiNextLink";
 import { revalidate, revalidateRoot } from "./revalidateAction";
 
 /** Used to break the cache when doing active development */
-export default function RevalidateCacheButton() {
+export default function RevalidateCacheLink() {
   // Hooks
   const path = usePathname();
   const { data: session } = useSession();
@@ -52,15 +53,13 @@ export default function RevalidateCacheButton() {
   }
 
   return (
-    <Tooltip title={`Revalidate Cache. Moderator Only`}>
-      <IconButton
-        aria-label="Revalidate Cache"
-        aria-controls="menu-appbar"
-        color="inherit"
-        onClick={() => void revalidateCacheButton_click()}
-      >
-        <LoopIcon />
-      </IconButton>
-    </Tooltip>
+    <MuiNextLink
+      href={""}
+      onClick={() => void revalidateCacheButton_click()}
+      sx={{ color: "dimgrey" }}
+      title={`Revalidate Cache. Moderator Only`}
+    >
+      Revalidate Page
+    </MuiNextLink>
   );
 }

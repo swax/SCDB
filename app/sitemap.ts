@@ -15,11 +15,11 @@ export function generateSitemaps() {
   return [{ id: 0 }];
 }
 
-export default async function sitemap({
-  id,
-}: {
-  id: number;
-}): Promise<MetadataRoute.Sitemap> {
+/** 
+ * This does take an id parameter that matches the above, 
+ * but it's not need until there are over 50,000 items in the sitemap 
+ */
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   return await getCachedSiteMap();
 }
 
@@ -27,6 +27,6 @@ const getCachedSiteMap = unstable_cache(
   async () => getSketchSitemap(),
   ["sitemap"],
   {
-    revalidate: 10 * 60,
+    revalidate: 10 * 60, // 10 minutes
   },
 );

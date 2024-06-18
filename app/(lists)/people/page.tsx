@@ -1,4 +1,4 @@
-import { DateGeneratedFooter } from "@/app/(content)/contentBase";
+import DateGeneratedFooter from "@/app/components/DateGeneratedFooter";
 import { getPersonList } from "@/backend/content/personService";
 import {
   ListPageProps,

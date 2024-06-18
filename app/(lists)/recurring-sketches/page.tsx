@@ -1,4 +1,4 @@
-import { DateGeneratedFooter } from "@/app/(content)/contentBase";
+import DateGeneratedFooter from "@/app/components/DateGeneratedFooter";
 import { getRecurringSketchList } from "@/backend/content/recurringSketch";
 import {
   ListPageProps,
