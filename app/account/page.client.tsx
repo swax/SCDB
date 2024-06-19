@@ -1,11 +1,12 @@
 "use client";
 
+import { showAndLogError } from "@/shared/utilities";
 import { Box, Button, Container, TextField, Typography } from "@mui/material";
 import { user_role_type } from "@prisma/client";
 import { useSession } from "next-auth/react";
 import { useState } from "react";
-import saveUsername from "./actions/saveAction";
 import MuiNextLink from "../components/MuiNextLink";
+import saveUsername from "./actions/saveAction";
 
 interface AccountClientPageProps {
   id: string;
@@ -32,7 +33,7 @@ export default function AccountClientPage(account: AccountClientPageProps) {
     const response = await saveUsername(username);
 
     if (response.error) {
-      alert(response.error);
+      showAndLogError(response.error);
       setSaving(false);
       return;
     }

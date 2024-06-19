@@ -1,5 +1,6 @@
 "use client";
 
+import { showAndLogError } from "@/shared/utilities";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import StarIcon from "@mui/icons-material/Star";
 import {
@@ -73,7 +74,7 @@ export default function SketchRating({
     setCanEdit(true);
 
     if (response.error || !response.content) {
-      alert(response.error);
+      showAndLogError(response.error);
       setUserRating(oldValue);
       return;
     }

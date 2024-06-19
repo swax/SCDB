@@ -117,6 +117,7 @@ export default function MappingTableRow({
               {mappingTable.inline ? (
                 <EditableField
                   tableName={mappingTable.name}
+                  tableRowCreated={true}
                   field={mappedField}
                   index={mappedIndex}
                   inTable={true}

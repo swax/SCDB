@@ -11,6 +11,7 @@ import StringField from "./fields/StringField";
 
 interface EditableFieldProps {
   tableName: string;
+  tableRowCreated: boolean;
   field: FieldOrm;
   index: number;
   inTable: boolean;
@@ -25,6 +26,7 @@ interface EditableFieldProps {
 
 export default function EditableField({
   tableName,
+  tableRowCreated,
   field,
   index,
   inTable,
@@ -128,13 +130,23 @@ export default function EditableField({
           setFieldValue={setFieldValue}
         />
       )}
-      {field.type === "mapping" && (
+      {field.type === "mapping" && tableRowCreated && (
         <MappingTableEditor
           label={field.label}
           mappingTable={field.mappingTable}
           setFieldValue={setFieldValue}
           setDirty={setDirty}
           loading={loading}
+        />
+      )}
+      {field.type === "mapping" && !tableRowCreated && (
+        <TextField
+          disabled
+          fullWidth
+          label={field.label}
+          size="small"
+          value={`${field.label} can be added after creating the ${tableName}`}
+          variant="outlined"
         />
       )}
     </Box>

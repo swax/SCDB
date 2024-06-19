@@ -198,6 +198,7 @@ export default function MappingTableEditor({
             <Box key={i}>
               <EditableField
                 tableName={mappingTable.name}
+                tableRowCreated={true}
                 field={field}
                 index={editMappingRowIndex!}
                 inTable={false}

@@ -15,9 +15,9 @@ export function generateSitemaps() {
   return [{ id: 0 }];
 }
 
-/** 
- * This does take an id parameter that matches the above, 
- * but it's not need until there are over 50,000 items in the sitemap 
+/**
+ * This does take an id parameter that matches the above,
+ * but it's not need until there are over 50,000 items in the sitemap
  */
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   return await getCachedSiteMap();

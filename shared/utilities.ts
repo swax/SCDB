@@ -93,3 +93,8 @@ export async function fileToShortHash(file: File) {
     .join("");
   return hashHex.substring(0, 8);
 }
+
+export function showAndLogError(error: any) {
+  console.error("showAndLogError: " + error);
+  alert(error.message || error);
+}
