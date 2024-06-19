@@ -1,5 +1,5 @@
 import { Draggable } from "@hello-pangea/dnd";
-import { TableRow, TableCell, IconButton, Box } from "@mui/material";
+import { TableRow, TableCell, IconButton, Box, Tooltip } from "@mui/material";
 import EditableField from "./EditableField";
 import {
   FieldOrm,
@@ -131,25 +131,31 @@ export default function MappingTableRow({
             </TableCell>
           ))}
           <TableCell sx={{ whiteSpace: "nowrap" }}>
-            <IconButton aria-label="Drag Row" {...draggable.dragHandleProps}>
-              <DragIndicatorIcon />
-            </IconButton>
+            <Tooltip title="Drag to Rearrange">
+              <IconButton aria-label="Drag Row" {...draggable.dragHandleProps}>
+                <DragIndicatorIcon />
+              </IconButton>
+            </Tooltip>
             {!mappingTable.inline && (
+              <Tooltip title="Edit">
+                <IconButton
+                  aria-label="edit"
+                  onClick={() => handleClick_openEditMappingDialog(mappedIndex)}
+                  size="small"
+                >
+                  <EditIcon />
+                </IconButton>
+              </Tooltip>
+            )}
+            <Tooltip title="Delete">
               <IconButton
-                aria-label="edit"
-                onClick={() => handleClick_openEditMappingDialog(mappedIndex)}
+                aria-label="delete"
+                onClick={() => handleClick_deleteMappingRow(mappedIndex)}
                 size="small"
               >
-                <EditIcon />
+                <DeleteIcon />
               </IconButton>
-            )}
-            <IconButton
-              aria-label="delete"
-              onClick={() => handleClick_deleteMappingRow(mappedIndex)}
-              size="small"
-            >
-              <DeleteIcon />
-            </IconButton>
+            </Tooltip>
           </TableCell>
         </TableRow>
       )}
