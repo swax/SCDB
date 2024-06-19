@@ -110,8 +110,10 @@ export default function MappingTableEditor({
     // Reorder the values in each of the fields, as they match the order of the ids
     for (const mappedField of mappingTable.fields) {
       const fieldValues: FieldOrmValueType[] = mappedField.values || [];
-
       moveElementInArray(fieldValues, source.index, destination.index);
+
+      const modified = mappedField.modified || [];
+      moveElementInArray(modified, source.index, destination.index);
 
       if (mappedField.type === "lookup") {
         mappedField.lookup.labelValues ||= [];
