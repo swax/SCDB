@@ -175,7 +175,7 @@ function ResponsiveAppBar() {
             display: { xs: "block", sm: "none" },
             position: "absolute",
             left: "50%",
-            transform: "translateX(-50%)",
+            transform: "translateX(-100%)",
           }}
         >
           {LogoHomeLink}

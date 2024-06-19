@@ -12,6 +12,7 @@ import {
   capitalizeFirstLetter,
   fillHolesWithNullInPlace,
   resolveTemplateVars,
+  showAndLogError,
   slugifyForUrl,
 } from "@/shared/utilities";
 import AddIcon from "@mui/icons-material/Add";
@@ -27,7 +28,7 @@ import {
   Typography,
 } from "@mui/material";
 import { review_status_type } from "@prisma/client";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useBeforeUnload, useEffectOnce } from "react-use";
 import deleteAction from "./actions/deleteAction";
 import editAction from "./actions/editAction";
@@ -45,6 +46,16 @@ export default function EditClientPage({
   id,
   slug,
 }: EditClientPageProps) {
+  /*
+   * HACK: This page modifies the table object directly during the editing process
+   * It works fine, but for some reason, after a server action runs, the table object is reset to its original state
+   * This ensures that the table object is never modified by React/Next after the client page loads
+   * To see this happen, remove this code and then add a new sketch with just the title set to 'xyz'
+   * Then click save and you will get an error message, after the error message, the page will reset and title field cleared
+   * This also fixes a strange bug where after save, all the fields would blank out briefly
+   */
+  table = useMemo(() => ({ ...table }), []);
+
   // Hooks
   const [loading, setLoading] = useState(false);
   const forceUpdate = useForceUpdate();
@@ -95,7 +106,7 @@ export default function EditClientPage({
     const response = await editAction(table, id, slug);
 
     if (response.error || !response.content) {
-      alert(response.error || "Unknown error");
+      showAndLogError(response.error || "Unknown error");
       setLoading(false);
       return;
     }
@@ -121,7 +132,7 @@ export default function EditClientPage({
     const response = await deleteAction(table, id, slug);
 
     if (response.error) {
-      alert(response.error);
+      showAndLogError(response.error);
       setLoading(false);
     } else {
       window.location.href = getEditUrl(table.name);
@@ -140,7 +151,7 @@ export default function EditClientPage({
     const response = await updateReviewStatus(table, id, newStatus);
 
     if (response.error) {
-      alert(response.error);
+      showAndLogError(response.error);
     } else {
       setReviewStatus(newStatus);
     }
@@ -298,6 +309,7 @@ export default function EditClientPage({
         <Box key={i}>
           <EditableField
             tableName={table.name}
+            tableRowCreated={table.operation == "update"}
             field={field}
             index={0}
             inTable={false}

@@ -88,6 +88,7 @@ export default function ListField({
         </Box>
       ))}
       <Button
+        color={!field.optional && !list.length ? "error" : "primary"}
         disabled={loading}
         onClick={() => handleClick_add(field)}
         size="small"

@@ -1,5 +1,6 @@
 import { GetProfileResponse } from "@/backend/user/profileService";
 import { ServiceResponse } from "@/shared/serviceResponse";
+import { showAndLogError } from "@/shared/utilities";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import ShieldIcon from "@mui/icons-material/Shield";
 import {
@@ -46,7 +47,7 @@ export default function ModPanel({ profile }: ModPanelProps) {
     const response = await serverAction();
 
     if (response.error) {
-      alert(response.error);
+      showAndLogError(response.error);
       setSaving(false);
     } else {
       window.location.reload();

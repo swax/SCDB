@@ -312,7 +312,7 @@ model sketch_cast {
   character_name String? // Used for one-off characters, otherwise use character_id, a trigger syncs the name if the id is set
   character_id   Int?
   person_id      Int?
-  image_id       Int?
+  image_id       Int
   sequence       Int
   role           cast_role_type
   created_by_id  String
@@ -370,7 +370,7 @@ model sketch {
   url_slug            String             @unique @db.VarChar(100)
   lookup_slug         String             @unique @db.VarChar(100)
   video_urls          String[]
-  image_id            Int?
+  image_id            Int
   description         String?
   notes               String?
   site_rating         Float?

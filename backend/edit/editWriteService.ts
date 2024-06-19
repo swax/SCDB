@@ -53,11 +53,17 @@ export async function writeFieldValues(
   }
 
   // Sanitization
+  const operation = id ? operation_type.UPDATE : operation_type.INSERT;
   const newSlug = updateSlugs(table);
-  removeUnmodifiedFields(table);
+
+  if (operation == operation_type.UPDATE) {
+    removeUnmodifiedFields(table);
+  }
+
+  sanitizeListFields(table.fields);
 
   // Validation
-  validateRequiredFields(table.fields);
+  validateRequiredFields(table.fields, operation);
 
   // Write the changes
   const rowId = await writeFieldChanges(
@@ -74,7 +80,7 @@ export async function writeFieldValues(
   await prisma.audit.create({
     data: {
       changed_by_id: user.id,
-      operation: id ? operation_type.UPDATE : operation_type.INSERT,
+      operation,
       table_name: table.name,
       row_id: rowId.toString(),
       modified_fields: table.fields,
@@ -84,12 +90,34 @@ export async function writeFieldValues(
   return contentResponse({ rowId, newSlug });
 }
 
-function validateRequiredFields(fields: FieldOrm[]) {
+/** Filter out empty list values */
+function sanitizeListFields(fields: FieldOrm[]) {
+  for (const field of fields) {
+    if (field.type == "list") {
+      if (field.values) {
+        for (let i = 0; i < field.values.length; i++) {
+          field.values[i] = field.values[i]?.filter((v) => v) || null;
+        }
+      }
+    }
+  }
+}
+
+function validateRequiredFields(fields: FieldOrm[], operation: operation_type) {
   const errors: string[] = [];
 
   for (const field of fields) {
     if (field.column) {
-      if (!field.optional && !field.values?.[0] && field.modified?.[0]) {
+      let noValue = !field.values?.[0];
+      if (!noValue && field.type == "list") {
+        noValue = field.values?.[0]?.length == 0;
+      }
+
+      if (
+        noValue &&
+        !field.optional &&
+        (field.modified?.[0] || operation == operation_type.INSERT)
+      ) {
         errors.push(`Field '${field.column}' is required`);
       }
     }
@@ -298,6 +326,10 @@ async function writeMappingChanges(
   for (const field of table.fields) {
     if (field.type != "mapping") {
       continue;
+    }
+
+    if (!id || id <= 0) {
+      throw new Error("Create entry before mapping data to it");
     }
 
     const mappingTable = field.mappingTable;

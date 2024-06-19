@@ -1,11 +1,11 @@
-import { FieldOrm, ImageFieldOrm } from "@/database/orm/ormTypes";
 import { useForceUpdate } from "@/app/hooks/useForceUpdate";
+import { FieldOrm, ImageFieldOrm } from "@/database/orm/ormTypes";
 import s3url from "@/shared/cdnHost";
+import { fileToShortHash, showAndLogError } from "@/shared/utilities";
 import { Button, Stack } from "@mui/material";
 import Image from "next/image";
 import { useState } from "react";
 import { getPresignedUploadUrl } from "../../actions/uploadAction";
-import { fileToShortHash } from "@/shared/utilities";
 
 interface ImageFieldProps {
   field: ImageFieldOrm;
@@ -56,7 +56,7 @@ export default function ImageField({
       );
 
       if (reponse.error || !reponse.content) {
-        alert(reponse.error || "Unknown error");
+        showAndLogError(reponse.error || "Unknown error");
         setUploading(false);
         return;
       }
@@ -100,9 +100,10 @@ export default function ImageField({
   // Rendering
   const cdnKey = field.values?.[index] || "";
   const imgUrl = `${s3url}/${cdnKey}`;
+  const showRequiredHighlight = !field.optional && !cdnKey;
 
   return (
-    <Stack direction="row" spacing={2}>
+    <Stack direction="row" spacing={2} sx={{ alignItems: "center" }}>
       {cdnKey && (
         <a href={imgUrl} rel="noreferrer" target="_blank">
           <Image
@@ -115,7 +116,16 @@ export default function ImageField({
           />
         </a>
       )}
-      <Button component="label" disabled={loading || uploading}>
+      <Button
+        component={"label" /* Must be a label for upload link to work*/}
+        disabled={loading || uploading}
+        color={showRequiredHighlight ? "error" : "primary"}
+        sx={{
+          border: showRequiredHighlight
+            ? "1px solid #f44336"
+            : "1px solid lightblue",
+        }}
+      >
         {uploading ? "Uploading..." : cdnKey ? "Change Image" : "Upload Image"}
         <input
           accept="image/*"
