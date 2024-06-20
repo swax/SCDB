@@ -58,7 +58,7 @@ export default async function EpisodePage({ params }: ContentPageProps) {
       </Box>
       <SketchGrid initialData={sketchData} getData={getSketchData} />
       <LinksPanel link_urls={episode.link_urls} />
-      <DateGeneratedFooter />
+      <DateGeneratedFooter genDate={new Date()} type="page" />
     </>
   );
 }

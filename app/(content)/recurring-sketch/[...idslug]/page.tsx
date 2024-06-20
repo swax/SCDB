@@ -60,7 +60,7 @@ export default async function RecurringSketchPage({
       <DescriptionPanel description={recurringSketch.description} />
       <SketchGrid initialData={sketchData} getData={getSketchData} />
       <LinksPanel link_urls={recurringSketch.link_urls} />
-      <DateGeneratedFooter />
+      <DateGeneratedFooter genDate={new Date()} type="page" />
     </>
   );
 }

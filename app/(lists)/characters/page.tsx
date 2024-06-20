@@ -36,7 +36,7 @@ export default async function CharactersPage(props: ListPageProps) {
         rows={rows}
         totalRowCount={characters.count}
       />
-      <DateGeneratedFooter dataDate={characters.dateGenerated} />
+      <DateGeneratedFooter genDate={characters.dateGenerated} type="data" />
     </>
   );
 }

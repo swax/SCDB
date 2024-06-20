@@ -56,7 +56,6 @@ export default function RevalidateCacheLink() {
     <MuiNextLink
       href={""}
       onClick={() => void revalidateCacheButton_click()}
-      sx={{ color: "dimgrey" }}
       title={`Revalidate Cache. Moderator Only`}
     >
       Revalidate Page

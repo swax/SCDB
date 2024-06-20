@@ -109,7 +109,7 @@ export default async function SeasonPage({ params }: ContentPageProps) {
         </Accordion>
       )}
       <LinksPanel link_urls={season.link_urls} />
-      <DateGeneratedFooter />
+      <DateGeneratedFooter genDate={new Date()} type="page" />
     </>
   );
 }

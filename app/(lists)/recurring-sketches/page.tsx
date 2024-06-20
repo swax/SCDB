@@ -36,7 +36,10 @@ export default async function RecurringSketchesPage(props: ListPageProps) {
         rows={rows}
         totalRowCount={recurringSketches.count}
       />
-      <DateGeneratedFooter dataDate={recurringSketches.dateGenerated} />
+      <DateGeneratedFooter
+        genDate={recurringSketches.dateGenerated}
+        type="data"
+      />
     </>
   );
 }

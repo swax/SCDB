@@ -55,7 +55,7 @@ export default async function HomePage() {
           Help us grow by creating an account and adding your favorite sketches!
         </Typography>
       </Box>
-      <DateGeneratedFooter />
+      <DateGeneratedFooter genDate={new Date()} type="page" />
     </>
   );
 }

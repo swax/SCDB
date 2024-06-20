@@ -32,6 +32,7 @@ import Image from "next/image";
 import { ContentPageProps, tryGetContent } from "../../contentBase";
 import SketchRating from "./components/SketchRating";
 import VideoHero from "./components/VideoHero";
+import { buildSketchMetaDescription } from "./sketchPageMeta";
 
 export const revalidate = 300; // 5 minutes
 
@@ -104,6 +105,7 @@ export default async function SketchPage({ params }: ContentPageProps) {
 
   // Rendering
   const pageTitle = buildPageTitle(sketch.title);
+  const metaDescription = buildSketchMetaDescription(sketch);
 
   const imgWidth = 150;
   const imgHeight = 150;
@@ -111,6 +113,7 @@ export default async function SketchPage({ params }: ContentPageProps) {
   return (
     <>
       <title>{pageTitle}</title>
+      <meta name="description" content={metaDescription} />
       <Box mt={3} mb={2}>
         <Typography variant="h4">{sketch.title}</Typography>
         <Typography variant="subtitle1">
@@ -352,7 +355,7 @@ export default async function SketchPage({ params }: ContentPageProps) {
         )}
       </Box>
       <LinksPanel link_urls={sketch.link_urls} />
-      <DateGeneratedFooter />
+      <DateGeneratedFooter genDate={new Date()} type="page" />
     </>
   );
 }

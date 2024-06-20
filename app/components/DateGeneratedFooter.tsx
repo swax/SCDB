@@ -1,18 +1,70 @@
+"use client";
+
 import { Box, Typography } from "@mui/material";
-import "server-only";
+import { useEffect, useState } from "react";
 import RevalidateCacheLink from "../header/RevalidateCacheLink";
 
-export default function DateGeneratedFooter({ dataDate }: { dataDate?: Date }) {
+/**
+ * Diagnostic information at the bottom of the page that can be seen by clicking, but
+ * we don't want to show it by default so it isn't indexed or shown in search results.
+ */
+export default function DateGeneratedFooter({
+  genDate,
+  type,
+}: {
+  genDate: Date;
+  type: "page" | "data";
+}) {
+  // Hooks
+  const [display, setDisplay] = useState(false);
+  const [metaDescription, setMetaDescription] = useState("");
+
+  useEffect(() => {
+    // Rendering
+    const description = document
+      .querySelector('meta[name="description"]')
+      ?.getAttribute("content");
+
+    setMetaDescription(description || "Not set");
+  }, []);
+
+  // Rendering
   return (
-    <Box mt={6}>
-      <Typography variant="caption" sx={{ fontStyle: "italic", color: "#333" }}>
-        {dataDate
-          ? `Data Generated: ${new Date(dataDate).toLocaleString()}`
-          : `Page Generated: ${new Date().toLocaleString()}`}
-        <span style={{ marginLeft: 8 }}>
-          <RevalidateCacheLink />
-        </span>
-      </Typography>
-    </Box>
+    <>
+      {/* Click above line to hide info */}
+      <Box
+        onClick={() => setDisplay(false)}
+        sx={{
+          height: "24px",
+          marginTop: 6,
+        }}
+      ></Box>
+
+      {/* Click below line to show info */}
+      <Box
+        onClick={() => setDisplay(true)}
+        sx={{
+          borderTop: "1px solid #222",
+          height: "24px",
+          margin: "auto",
+          width: "10%",
+        }}
+      ></Box>
+
+      {/* The info */}
+      {display && (
+        <Box sx={{ fontStyle: "italic", color: "gray", textAlign: "center" }}>
+          <Typography variant="caption">
+            Meta: {metaDescription}
+            <br />
+            {type == "data"
+              ? `Data Generated: ${new Date(genDate).toLocaleString()}`
+              : `Page Generated: ${new Date().toLocaleString()}`}
+            <br />
+            <RevalidateCacheLink />
+          </Typography>
+        </Box>
+      )}
+    </>
   );
 }

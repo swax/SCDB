@@ -60,7 +60,7 @@ export default async function CharacterPage({ params }: ContentPageProps) {
 
       <LinksPanel link_urls={character.link_urls} />
 
-      <DateGeneratedFooter />
+      <DateGeneratedFooter genDate={new Date()} type="page" />
     </>
   );
 }
