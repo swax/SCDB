@@ -85,8 +85,12 @@ export default function MappingTableRow({
       : value instanceof Date
         ? value.toLocaleString()
         : value || "";
-
-    return <Box sx={{ marginTop: inTable ? 0 : 3, color }}>{valueStr}</Box>;
+        
+    return (
+      <Box sx={{ marginTop: inTable ? 0 : 3, color, whiteSpace: "pre-line" }}>
+        {valueStr}
+      </Box>
+    );
   }
 
   return (

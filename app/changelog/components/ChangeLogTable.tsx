@@ -3,6 +3,7 @@
 import MuiNextLink from "@/app/components/MuiNextLink";
 import { GetChangelogResponse } from "@/backend/mgmt/changelogService";
 import {
+  Box,
   Table,
   TableBody,
   TableCell,
@@ -80,107 +81,111 @@ export default function ChangeLogTable({
   const bodyCellStyle = { whiteSpace: "nowrap", verticalAlign: "top" };
 
   return (
-    <Table size="small">
-      <TableHead>
-        <TableRow>
-          <TableCell sx={headCellStyle}>Date</TableCell>
-          {!profilePage && <TableCell sx={headCellStyle}>Changed by</TableCell>}
-          <TableCell sx={headCellStyle}>Table</TableCell>
-          <TableCell sx={headCellStyle}>Row ID</TableCell>
-          <TableCell sx={headCellStyle}>Operation</TableCell>
-          <TableCell sx={headCellStyle}>Fields</TableCell>
-        </TableRow>
-      </TableHead>
-      <TableBody>
-        {changelog.entries.map((entry) => (
-          <TableRow key={entry.id}>
-            <TableCell sx={bodyCellStyle}>
-              {entry.changed_at.toLocaleString()}
-            </TableCell>
+    <Box sx={{ overflowX: "auto" }}>
+      <Table size="small">
+        <TableHead>
+          <TableRow>
+            <TableCell sx={headCellStyle}>Date</TableCell>
             {!profilePage && (
+              <TableCell sx={headCellStyle}>Changed by</TableCell>
+            )}
+            <TableCell sx={headCellStyle}>Table</TableCell>
+            <TableCell sx={headCellStyle}>Row ID</TableCell>
+            <TableCell sx={headCellStyle}>Operation</TableCell>
+            <TableCell sx={headCellStyle}>Fields</TableCell>
+          </TableRow>
+        </TableHead>
+        <TableBody>
+          {changelog.entries.map((entry) => (
+            <TableRow key={entry.id}>
+              <TableCell sx={bodyCellStyle}>
+                {entry.changed_at.toLocaleString()}
+              </TableCell>
+              {!profilePage && (
+                <TableCell sx={bodyCellStyle}>
+                  <MuiNextLink
+                    href={buildHref(
+                      1,
+                      rowsPerPage,
+                      entry.changed_by.username,
+                      table,
+                      rowId,
+                    )}
+                  >
+                    {entry.changed_by.username}
+                  </MuiNextLink>
+                </TableCell>
+              )}
               <TableCell sx={bodyCellStyle}>
                 <MuiNextLink
                   href={buildHref(
                     1,
                     rowsPerPage,
-                    entry.changed_by.username,
-                    table,
-                    rowId,
+                    username,
+                    entry.table_name,
+                    undefined,
                   )}
                 >
-                  {entry.changed_by.username}
+                  {entry.table_name}
                 </MuiNextLink>
               </TableCell>
-            )}
-            <TableCell sx={bodyCellStyle}>
-              <MuiNextLink
-                href={buildHref(
-                  1,
-                  rowsPerPage,
-                  username,
-                  entry.table_name,
-                  undefined,
-                )}
-              >
-                {entry.table_name}
-              </MuiNextLink>
-            </TableCell>
-            <TableCell sx={bodyCellStyle}>
-              <MuiNextLink
-                href={buildHref(
-                  1,
-                  rowsPerPage,
-                  username,
-                  entry.table_name,
-                  entry.row_id,
-                )}
-              >
-                {entry.row_id}
-              </MuiNextLink>
-            </TableCell>
-            <TableCell sx={bodyCellStyle}>
-              <MuiNextLink
-                href={buildHref(
-                  1,
-                  rowsPerPage,
-                  username,
-                  entry.table_name,
-                  undefined,
-                  entry.operation,
-                )}
-              >
-                {entry.operation}
-              </MuiNextLink>
-            </TableCell>
-            <TableCell sx={{ verticalAlign: "top" }}>
-              <pre style={{ fontSize: 12, margin: 0 }}>{entry.summary}</pre>
-            </TableCell>
-          </TableRow>
-        ))}
-      </TableBody>
-      {!profilePage && (
-        <TableFooter>
-          <TableRow>
-            <TablePagination
-              rowsPerPageOptions={[10, 25, 100]}
-              colSpan={10}
-              count={changelog.total}
-              rowsPerPage={rowsPerPage}
-              page={page - 1}
-              slotProps={{
-                select: {
-                  inputProps: {
-                    "aria-label": "rows per page",
+              <TableCell sx={bodyCellStyle}>
+                <MuiNextLink
+                  href={buildHref(
+                    1,
+                    rowsPerPage,
+                    username,
+                    entry.table_name,
+                    entry.row_id,
+                  )}
+                >
+                  {entry.row_id}
+                </MuiNextLink>
+              </TableCell>
+              <TableCell sx={bodyCellStyle}>
+                <MuiNextLink
+                  href={buildHref(
+                    1,
+                    rowsPerPage,
+                    username,
+                    entry.table_name,
+                    undefined,
+                    entry.operation,
+                  )}
+                >
+                  {entry.operation}
+                </MuiNextLink>
+              </TableCell>
+              <TableCell sx={{ verticalAlign: "top" }}>
+                <pre style={{ fontSize: 12, margin: 0 }}>{entry.summary}</pre>
+              </TableCell>
+            </TableRow>
+          ))}
+        </TableBody>
+        {!profilePage && (
+          <TableFooter>
+            <TableRow>
+              <TablePagination
+                rowsPerPageOptions={[10, 25, 100]}
+                colSpan={10}
+                count={changelog.total}
+                rowsPerPage={rowsPerPage}
+                page={page - 1}
+                slotProps={{
+                  select: {
+                    inputProps: {
+                      "aria-label": "rows per page",
+                    },
+                    native: true,
                   },
-                  native: true,
-                },
-              }}
-              onPageChange={handleChangePage}
-              onRowsPerPageChange={handleChangeRowsPerPage}
-            />
-          </TableRow>
-        </TableFooter>
-      )}
-    </Table>
+                }}
+                onPageChange={handleChangePage}
+                onRowsPerPageChange={handleChangeRowsPerPage}
+              />
+            </TableRow>
+          </TableFooter>
+        )}
+      </Table>
+    </Box>
   );
 }

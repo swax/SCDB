@@ -67,6 +67,7 @@ export default function ListField({
             error={hasError}
             fullWidth
             key={listIndex}
+            minRows={field.multiline ? 2 : 1}
             onChange={(e) =>
               handleChange_field(field, index, listIndex, e.target.value)
             }
