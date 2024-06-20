@@ -1,6 +1,6 @@
 "use client";
 
-import HelpIcon from "@mui/icons-material/Help";
+import InfoIcon from '@mui/icons-material/Info';
 import { Divider, LinearProgress, Stack, Tooltip } from "@mui/material";
 import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
@@ -196,14 +196,14 @@ function ResponsiveAppBar() {
             </IconButton>
           </Tooltip>
           <AccountMenu />
-          <Tooltip title={`Help`}>
+          <Tooltip title={`About`}>
             <IconButton
-              aria-label="Help"
+              aria-label="About"
               aria-controls="menu-appbar"
-              href="/help"
+              href="/about"
               color="inherit"
             >
-              <HelpIcon />
+              <InfoIcon />
             </IconButton>
           </Tooltip>
         </Stack>

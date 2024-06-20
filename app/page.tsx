@@ -41,13 +41,14 @@ export default async function HomePage() {
           title="Latest Sketches"
         />
       </Box>
-      <Box mt={2}>
+      <Box mt={6} className="about-page">
         <Typography
           variant="subtitle1"
           color="textSecondary"
           textAlign={"center"}
         >
-          SketchTV.lol is a free database of sketch comedy. <br />
+          SketchTV.lol is a free database of sketch comedy. More info{" "}
+          <a href="/about">here</a>.<br />
           Help us grow by creating an account and adding your favorite sketches!
         </Typography>
       </Box>
