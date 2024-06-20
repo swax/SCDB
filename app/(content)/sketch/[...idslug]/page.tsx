@@ -7,6 +7,7 @@ import { getStaticPageCount } from "@/shared/ProcessEnv";
 import s3url from "@/shared/cdnHost";
 import { enumNameToDisplayName } from "@/shared/utilities";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import FormatQuoteIcon from "@mui/icons-material/FormatQuote";
 import GroupsIcon from "@mui/icons-material/Groups";
 import LocalOfferIcon from "@mui/icons-material/LocalOffer";
 import {
@@ -17,6 +18,7 @@ import {
   Chip,
   ImageListItem,
   ImageListItemBar,
+  Paper,
   Stack,
   Table,
   TableBody,
@@ -227,6 +229,31 @@ export default async function SketchPage({ params }: ContentPageProps) {
                       }}
                     />
                   </ImageListItem>
+                ))}
+              </Box>
+            </AccordionDetails>
+          </Accordion>
+        )}
+        {Boolean(sketch.sketch_quotes.length) && (
+          <Accordion defaultExpanded>
+            <AccordionSummary
+              expandIcon={<ExpandMoreIcon />}
+              aria-controls="quote-content"
+              id="quote-header"
+            >
+              <FormatQuoteIcon />
+              <Typography fontWeight="bold" marginLeft={1}>
+                Quotes
+              </Typography>
+            </AccordionSummary>
+            <AccordionDetails>
+              <Box>
+                {sketch.sketch_quotes.map((quote, i) => (
+                  <Paper key={i} elevation={3} sx={{ marginBottom: 1, padding: 1 }}>
+                    <Typography variant="body2" sx={{ whiteSpace: "pre-line" }}>
+                      {quote.quote}
+                    </Typography>
+                  </Paper>
                 ))}
               </Box>
             </AccordionDetails>

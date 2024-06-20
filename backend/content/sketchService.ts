@@ -81,6 +81,14 @@ export async function getSketch(id: number) {
           title: true,
         },
       },
+      sketch_quotes: {
+        select: {
+          quote: true,
+        },
+        orderBy: {
+          sequence: "asc",
+        },
+      },
       sketch_tags: {
         select: {
           tag: {

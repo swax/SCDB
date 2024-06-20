@@ -82,6 +82,8 @@ model User {
   sketch_cast_modified        sketch_cast[]      @relation("SketchCastModified")
   sketch_credits_created      sketch_credit[]    @relation("SketchCreditsCreated")
   sketch_credits_modified     sketch_credit[]    @relation("SketchCreditsModified")
+  sketch_quotes_created       sketch_quote[]     @relation("SketchQuotesCreated")
+  sketch_quotes_modified      sketch_quote[]     @relation("SketchQuotesModified")
   sketch_tags_created         sketch_tag[]       @relation("SketchTagsCreated")
   sketch_tags_modified        sketch_tag[]       @relation("SketchTagsModified")
   categories_created          category[]         @relation("CategoriesCreated")
@@ -364,6 +366,21 @@ model sketch_tag {
   @@unique([sketch_id, tag_id])
 }
 
+model sketch_quote {
+  id             Int      @id @default(autoincrement())
+  sketch_id      Int
+  quote          String
+  sequence       Int
+  created_by_id  String
+  created_at     DateTime @default(now())
+  modified_by_id String
+  modified_at    DateTime @default(now())
+
+  created_by  User   @relation("SketchQuotesCreated", fields: [created_by_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  modified_by User   @relation("SketchQuotesModified", fields: [modified_by_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  sketch      sketch @relation(fields: [sketch_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+}
+
 model sketch {
   id                  Int                @id @default(autoincrement())
   title               String             @db.VarChar(100)
@@ -391,6 +408,7 @@ model sketch {
   user_ratings     sketch_rating[]
   sketch_casts     sketch_cast[]
   sketch_credits   sketch_credit[]
+  sketch_quotes    sketch_quote[]
   sketch_tags      sketch_tag[]
   show             show              @relation(fields: [show_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
   season           season?           @relation(fields: [season_id], references: [id], onDelete: NoAction, onUpdate: NoAction)

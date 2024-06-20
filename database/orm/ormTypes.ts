@@ -76,6 +76,7 @@ export type StringFieldOrm = BaseFieldOrm & {
 
 export type ListFieldOrm = BaseFieldOrm & {
   type: "list";
+  multiline?: boolean;
   values?: Nullable<string[]>[];
 };
 

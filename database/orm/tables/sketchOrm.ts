@@ -166,6 +166,24 @@ const sketchOrm: TableOrm = {
       },
     },
     {
+      label: "Quotes",
+      type: "mapping",
+      mappingTable: {
+        name: "sketch_quote",
+        navProp: "sketch_quotes",
+        label: "Quotes",
+        fields: [
+          {
+            label: "Quote",
+            column: "quote",
+            type: "string",
+            multiline: true,
+            fillWidth: true,
+          },
+        ],
+      },
+    },
+    {
       label: "Tags",
       type: "mapping",
       mappingTable: {
