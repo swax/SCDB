@@ -9,3 +9,7 @@
 .sketch-grid a:hover {
   text-decoration: underline;
 }
+
+.about-page a {
+  color: lightblue;
+}
