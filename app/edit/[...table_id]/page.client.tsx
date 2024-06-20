@@ -2,10 +2,10 @@
 
 import { useForceUpdate } from "@/app/hooks/useForceUpdate";
 import {
-  FieldOrm,
-  FieldOrmValueType,
-  SlugFieldOrm,
-  TableOrm,
+  FieldCms,
+  FieldCmsValueType,
+  SlugFieldCms,
+  TableCms,
 } from "@/database/orm/ormTypes";
 import { getEditUrl } from "@/shared/urls";
 import {
@@ -36,7 +36,7 @@ import { updateReviewStatus } from "./actions/reviewAction";
 import EditableField from "./components/EditableField";
 
 interface EditClientPageProps {
-  table: TableOrm;
+  table: TableCms;
   id: number;
   slug: string;
 }
@@ -161,9 +161,9 @@ export default function EditClientPage({
 
   // Helpers
   function setFieldValue(
-    field: FieldOrm,
+    field: FieldCms,
     index: number,
-    value: FieldOrmValueType,
+    value: FieldCmsValueType,
   ) {
     field.values ||= [];
     field.values[index] = value;
@@ -200,7 +200,7 @@ export default function EditClientPage({
     updateLookupSearchPrefixes(table, index);
   }
 
-  function updateSlugField(slugField: SlugFieldOrm, index: number) {
+  function updateSlugField(slugField: SlugFieldCms, index: number) {
     slugField.values ||= [];
 
     const originalValue = slugField.values[index] || "";
@@ -220,7 +220,7 @@ export default function EditClientPage({
     setFieldValue(slugField, index, newValue);
   }
 
-  function updateLookupSearchPrefixes(table: TableOrm, index: number) {
+  function updateLookupSearchPrefixes(table: TableCms, index: number) {
     table.fields.forEach((lookupField) => {
       if (lookupField.type == "lookup" && lookupField.lookup.prefixTemplate) {
         lookupField.lookup.prefixValue = getTemplateValue(
@@ -231,7 +231,7 @@ export default function EditClientPage({
     });
   }
 
-  function updateTemplateField(templateField: FieldOrm, index: number) {
+  function updateTemplateField(templateField: FieldCms, index: number) {
     const originalValue = templateField.values?.[index] || "";
 
     const newValue = getTemplateValue(templateField.templates || [], index);

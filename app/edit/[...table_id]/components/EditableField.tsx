@@ -1,4 +1,4 @@
-import { FieldOrm, FieldOrmValueType } from "@/database/orm/ormTypes";
+import { FieldCms, FieldCmsValueType } from "@/database/orm/ormTypes";
 import { Box, MenuItem, Select, TextField } from "@mui/material";
 import { $Enums } from "@prisma/client";
 import MappingTableEditor from "./MappingTableEditor";
@@ -12,14 +12,14 @@ import StringField from "./fields/StringField";
 interface EditableFieldProps {
   tableName: string;
   tableRowCreated: boolean;
-  field: FieldOrm;
+  field: FieldCms;
   index: number;
   inTable: boolean;
   loading: boolean;
   setFieldValue: (
-    field: FieldOrm,
+    field: FieldCms,
     index: number,
-    value: FieldOrmValueType,
+    value: FieldCmsValueType,
   ) => void;
   setDirty: () => void;
 }
@@ -36,7 +36,7 @@ export default function EditableField({
 }: EditableFieldProps) {
   // Event Handlers
   function handleChange_enumField(
-    field: FieldOrm,
+    field: FieldCms,
     index: number,
     value: Nullable<string>,
   ) {

@@ -1,5 +1,5 @@
 import { useForceUpdate } from "@/app/hooks/useForceUpdate";
-import { FieldOrm, ImageFieldOrm } from "@/database/orm/ormTypes";
+import { FieldCms, ImageFieldCms } from "@/database/orm/ormTypes";
 import s3url from "@/shared/cdnHost";
 import { fileToShortHash, showAndLogError } from "@/shared/utilities";
 import { Button, Stack } from "@mui/material";
@@ -8,12 +8,12 @@ import { useState } from "react";
 import { getPresignedUploadUrl } from "../../actions/uploadAction";
 
 interface ImageFieldProps {
-  field: ImageFieldOrm;
+  field: ImageFieldCms;
   index: number;
   inTable: boolean;
   loading: boolean;
   setFieldValue: (
-    field: FieldOrm,
+    field: FieldCms,
     index: number,
     value: Nullable<string>,
   ) => void;

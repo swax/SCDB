@@ -2,9 +2,9 @@ import { Draggable } from "@hello-pangea/dnd";
 import { TableRow, TableCell, IconButton, Box, Tooltip } from "@mui/material";
 import EditableField from "./EditableField";
 import {
-  FieldOrm,
-  FieldOrmValueType,
-  MappingTableOrm,
+  FieldCms,
+  FieldCmsValueType,
+  MappingTableCms,
 } from "@/database/orm/ormTypes";
 import dragdropStyles from "./dragdrop.module.css";
 import DeleteIcon from "@mui/icons-material/Delete";
@@ -14,14 +14,14 @@ import s3url from "@/shared/cdnHost";
 import Image from "next/image";
 
 interface MappingTableRowProps {
-  mappingTable: MappingTableOrm;
+  mappingTable: MappingTableCms;
   mappedIndex: number;
   mappedId: number;
   loading: boolean;
   setFieldValue: (
-    field: FieldOrm,
+    field: FieldCms,
     index: number,
-    value: FieldOrmValueType,
+    value: FieldCmsValueType,
   ) => void;
   setDirty: () => void;
   handleClick_openEditMappingDialog: (mappingRowIndex: number) => void;
@@ -39,7 +39,7 @@ export default function MappingTableRow({
   handleClick_deleteMappingRow,
 }: MappingTableRowProps) {
   // Rendering
-  function renderViewField(field: FieldOrm, index: number, inTable = false) {
+  function renderViewField(field: FieldCms, index: number, inTable = false) {
     let color: string | undefined;
     let value = field.values?.[index];
 
@@ -85,7 +85,7 @@ export default function MappingTableRow({
       : value instanceof Date
         ? value.toLocaleString()
         : value || "";
-        
+
     return (
       <Box sx={{ marginTop: inTable ? 0 : 3, color, whiteSpace: "pre-line" }}>
         {valueStr}

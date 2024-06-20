@@ -1,6 +1,6 @@
-import { TableOrm } from "../ormTypes";
+import { TableCms } from "../ormTypes";
 
-const sketchOrm: TableOrm = {
+const sketchCms: TableCms = {
   name: "sketch",
   label: "Sketch",
   title: [
@@ -231,4 +231,4 @@ const sketchOrm: TableOrm = {
   ],
 };
 
-export default sketchOrm;
+export default sketchCms;

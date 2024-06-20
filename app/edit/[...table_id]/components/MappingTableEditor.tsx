@@ -1,7 +1,7 @@
 import {
-  FieldOrm,
-  FieldOrmValueType,
-  MappingTableOrm,
+  FieldCms,
+  FieldCmsValueType,
+  MappingTableCms,
 } from "@/database/orm/ormTypes";
 import { moveElementInArray } from "@/shared/utilities";
 import { DragDropContext, DropResult, Droppable } from "@hello-pangea/dnd";
@@ -25,12 +25,12 @@ import MappingTableRow from "./MappingTableRow";
 
 interface MappingTableEditorProps {
   label: string;
-  mappingTable: MappingTableOrm;
+  mappingTable: MappingTableCms;
   loading: boolean;
   setFieldValue: (
-    field: FieldOrm,
+    field: FieldCms,
     index: number,
-    value: FieldOrmValueType,
+    value: FieldCmsValueType,
   ) => void;
   setDirty: () => void;
 }
@@ -109,7 +109,7 @@ export default function MappingTableEditor({
 
     // Reorder the values in each of the fields, as they match the order of the ids
     for (const mappedField of mappingTable.fields) {
-      const fieldValues: FieldOrmValueType[] = mappedField.values || [];
+      const fieldValues: FieldCmsValueType[] = mappedField.values || [];
       moveElementInArray(fieldValues, source.index, destination.index);
 
       const modified = mappedField.modified || [];

@@ -1,4 +1,4 @@
-import { StringFieldOrm } from "@/database/orm/ormTypes";
+import { StringFieldCms } from "@/database/orm/ormTypes";
 import prisma from "@/database/prisma";
 import { allowedToChangeRole, getRoleRank } from "@/shared/roleUtils";
 import { operation_type, user_role_type } from "@prisma/client";
@@ -52,7 +52,7 @@ export async function saveRole(
           label: "role",
           values: [newRole],
         },
-      ] satisfies StringFieldOrm[],
+      ] satisfies StringFieldCms[],
     },
   });
 }
@@ -99,7 +99,7 @@ export async function saveModNote(
           label: "mod_note",
           values: [modNote],
         },
-      ] satisfies StringFieldOrm[],
+      ] satisfies StringFieldCms[],
     },
   });
 }

@@ -1,6 +1,6 @@
-import { TableOrm } from "../ormTypes";
+import { TableCms } from "../ormTypes";
 
-const personOrm: TableOrm = {
+const personCms: TableCms = {
   name: "person",
   label: "Person",
   title: ["${name}"],
@@ -73,4 +73,4 @@ const personOrm: TableOrm = {
   ],
 };
 
-export default personOrm;
+export default personCms;

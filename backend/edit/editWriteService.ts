@@ -7,13 +7,13 @@ import {
   user_role_type,
 } from "@prisma/client";
 import {
-  FieldOrm,
-  ImageFieldOrm,
-  MappingFieldOrm,
-  SlugFieldOrm,
-  TableOrm,
+  FieldCms,
+  ImageFieldCms,
+  MappingFieldCms,
+  SlugFieldCms,
+  TableCms,
 } from "../../database/orm/ormTypes";
-import sketchDatabaseOrm from "../../database/orm/sketchDatabaseOrm";
+import sketchDatabaseCms from "../../database/orm/sketchDatabaseOrm";
 import { validateRoleAtLeast } from "../actionHelper";
 import { SessionUser } from "next-auth";
 
@@ -21,16 +21,16 @@ const allowedColumnsByTable: { [key: string]: string[] } = {};
 const allowedMappingsByTable: { [key: string]: string[] } = {};
 
 /** Perserves type information in the result */
-function isMappingField(e: FieldOrm): e is MappingFieldOrm {
+function isMappingField(e: FieldCms): e is MappingFieldCms {
   return e.type === "mapping";
 }
 
-Object.keys(sketchDatabaseOrm).forEach((table) => {
-  allowedColumnsByTable[table] = sketchDatabaseOrm[table].fields
+Object.keys(sketchDatabaseCms).forEach((table) => {
+  allowedColumnsByTable[table] = sketchDatabaseCms[table].fields
     .filter((field) => field.column)
     .map((field) => field.column!);
 
-  allowedMappingsByTable[table] = sketchDatabaseOrm[table].fields
+  allowedMappingsByTable[table] = sketchDatabaseCms[table].fields
     .filter(isMappingField)
     .map((field) => field.mappingTable.name);
 });
@@ -40,7 +40,7 @@ Object.keys(sketchDatabaseOrm).forEach((table) => {
  */
 export async function writeFieldValues(
   user: SessionUser,
-  table: TableOrm,
+  table: TableCms,
   id: number,
 ) {
   validateRoleAtLeast(user.role, user_role_type.Editor);
@@ -91,7 +91,7 @@ export async function writeFieldValues(
 }
 
 /** Filter out empty list values */
-function sanitizeListFields(fields: FieldOrm[]) {
+function sanitizeListFields(fields: FieldCms[]) {
   for (const field of fields) {
     if (field.type == "list") {
       if (field.values) {
@@ -103,7 +103,7 @@ function sanitizeListFields(fields: FieldOrm[]) {
   }
 }
 
-function validateRequiredFields(fields: FieldOrm[], operation: operation_type) {
+function validateRequiredFields(fields: FieldCms[], operation: operation_type) {
   const errors: string[] = [];
 
   for (const field of fields) {
@@ -151,7 +151,7 @@ function validateRequiredFields(fields: FieldOrm[], operation: operation_type) {
  * Filter unmodified fields because we're going to save this object to the database
  * as an audit of what changed, as well as use it to 'replay' changes from db checkpoints if needed
  */
-function removeUnmodifiedFields(table: TableOrm) {
+function removeUnmodifiedFields(table: TableCms) {
   table.fields = table.fields.filter(
     (field) => field.modified?.[0] || field.type == "mapping",
   );
@@ -187,8 +187,8 @@ function removeUnmodifiedFields(table: TableOrm) {
   }
 }
 
-function updateSlugs(table: TableOrm) {
-  const slugField = table.fields.find((f) => f.type == "slug") as SlugFieldOrm;
+function updateSlugs(table: TableCms) {
+  const slugField = table.fields.find((f) => f.type == "slug") as SlugFieldCms;
   if (!slugField) {
     return;
   }
@@ -216,7 +216,7 @@ async function writeFieldChanges(
   userid: string,
   tableName: string,
   rowId: number,
-  fields: FieldOrm[],
+  fields: FieldCms[],
   index: number,
   mappingTableRelation?: object,
 ) {
@@ -280,7 +280,7 @@ async function writeFieldChanges(
 }
 
 async function writeImageField(
-  field: ImageFieldOrm,
+  field: ImageFieldCms,
   index: number,
   userid: string,
   dataParams: any,
@@ -313,7 +313,7 @@ async function writeImageField(
 
 async function writeMappingChanges(
   userid: string,
-  table: TableOrm,
+  table: TableCms,
   id: number,
 ) {
   const dynamicPrisma = prisma as any;
@@ -372,7 +372,7 @@ async function writeMappingChanges(
 
 export async function deleteRow(
   user: SessionUser,
-  table: TableOrm,
+  table: TableCms,
   rowId: number,
 ) {
   const dynamicPrisma = prisma as any;

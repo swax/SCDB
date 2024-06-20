@@ -1,13 +1,13 @@
-import { FieldOrm, NumberFieldOrm } from "@/database/orm/ormTypes";
+import { FieldCms, NumberFieldCms } from "@/database/orm/ormTypes";
 import { useForceUpdate } from "@/app/hooks/useForceUpdate";
 import { TextField } from "@mui/material";
 
 interface NumberFieldProps {
-  field: NumberFieldOrm;
+  field: NumberFieldCms;
   index: number;
   inTable: boolean;
   loading: boolean;
-  setFieldValue: (field: FieldOrm, index: number, value: number) => void;
+  setFieldValue: (field: FieldCms, index: number, value: number) => void;
 }
 
 export default function NumberField({
@@ -26,7 +26,7 @@ export default function NumberField({
 
   // Event Handlers
   function handleChange_field(
-    field: NumberFieldOrm,
+    field: NumberFieldCms,
     index: number,
     value: string,
   ) {

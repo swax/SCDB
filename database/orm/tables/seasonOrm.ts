@@ -1,6 +1,6 @@
-import { TableOrm } from "../ormTypes";
+import { TableCms } from "../ormTypes";
 
-const seasonOrm: TableOrm = {
+const seasonCms: TableCms = {
   name: "season",
   label: "Season",
   title: ["Season ${number} - ${show.title} ${year}"],
@@ -51,4 +51,4 @@ const seasonOrm: TableOrm = {
   ],
 };
 
-export default seasonOrm;
+export default seasonCms;

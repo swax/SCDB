@@ -1,6 +1,6 @@
-import { TableOrm } from "../ormTypes";
+import { TableCms } from "../ormTypes";
 
-const recurringSketch: TableOrm = {
+const recurringSketch: TableCms = {
   name: "recurring_sketch",
   label: "Recurring Sketch",
   title: ["${title} - ${show.title}"],

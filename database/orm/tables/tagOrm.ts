@@ -1,6 +1,6 @@
-import { TableOrm } from "../ormTypes";
+import { TableCms } from "../ormTypes";
 
-const tagOrm: TableOrm = {
+const tagCms: TableCms = {
   name: "tag",
   label: "Tag",
   title: ["${name}"],
@@ -47,4 +47,4 @@ const tagOrm: TableOrm = {
   ],
 };
 
-export default tagOrm;
+export default tagCms;

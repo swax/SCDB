@@ -1,11 +1,11 @@
-import { FieldOrm } from "@/database/orm/ormTypes";
+import { FieldCms } from "@/database/orm/ormTypes";
 import prisma from "@/database/prisma";
 import { operation_type } from "@prisma/client";
 
 interface ChangelogEntry {
   id: number;
   changed_at: Date;
-  modified_fields: FieldOrm[];
+  modified_fields: FieldCms[];
   table_name: string;
   row_id: string;
   operation: string;

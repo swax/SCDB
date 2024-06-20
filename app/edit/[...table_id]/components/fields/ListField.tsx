@@ -1,14 +1,14 @@
-import { FieldOrm, ListFieldOrm } from "@/database/orm/ormTypes";
+import { FieldCms, ListFieldCms } from "@/database/orm/ormTypes";
 import { useForceUpdate } from "@/app/hooks/useForceUpdate";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { Box, Button, IconButton, TextField, Typography } from "@mui/material";
 
 interface ListFieldProps {
-  field: ListFieldOrm;
+  field: ListFieldCms;
   index: number;
   inTable: boolean;
   loading: boolean;
-  setFieldValue: (field: FieldOrm, index: number, value: string[]) => void;
+  setFieldValue: (field: FieldCms, index: number, value: string[]) => void;
 }
 
 export default function ListField({
@@ -28,7 +28,7 @@ export default function ListField({
 
   // Event Handlers
   function handleChange_field(
-    field: ListFieldOrm,
+    field: ListFieldCms,
     index: number,
     valueIndex: number,
     value: string,
@@ -40,7 +40,7 @@ export default function ListField({
     forceUpdate();
   }
 
-  function handleClick_add(field: ListFieldOrm) {
+  function handleClick_add(field: ListFieldCms) {
     list.push("");
 
     setFieldValue(field, index, list);
@@ -48,7 +48,7 @@ export default function ListField({
     forceUpdate();
   }
 
-  function handleClick_delete(field: ListFieldOrm, listIndex: number) {
+  function handleClick_delete(field: ListFieldCms, listIndex: number) {
     list.splice(listIndex, 1);
 
     setFieldValue(field, index, list);

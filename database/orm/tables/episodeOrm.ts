@@ -1,6 +1,6 @@
-import { TableOrm } from "../ormTypes";
+import { TableCms } from "../ormTypes";
 
-const episodeOrm: TableOrm = {
+const episodeCms: TableCms = {
   name: "episode",
   label: "Episode",
   title: ["Episode ${number} - ${season.lookup_slug}"],
@@ -58,4 +58,4 @@ const episodeOrm: TableOrm = {
   ],
 };
 
-export default episodeOrm;
+export default episodeCms;
