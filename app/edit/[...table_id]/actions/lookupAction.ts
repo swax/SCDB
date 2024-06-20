@@ -2,7 +2,7 @@
 
 import { catchServiceErrors } from "@/backend/actionHelper";
 import lookupTermsInTable from "@/backend/edit/lookupService";
-import { LookupFieldCms } from "@/database/orm/ormTypes";
+import { LookupFieldCms } from "@/backend/cms/cmsTypes";
 import { contentResponse } from "@/shared/serviceResponse";
 
 export default async function lookupAction(

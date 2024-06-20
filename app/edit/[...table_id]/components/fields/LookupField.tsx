@@ -1,6 +1,6 @@
 import useDebounce2 from "@/app/hooks/useDebounce2";
 import { LookupFieldOption } from "@/backend/edit/lookupService";
-import { LookupFieldCms } from "@/database/orm/ormTypes";
+import { LookupFieldCms } from "@/backend/cms/cmsTypes";
 import { getEditUrl } from "@/shared/urls";
 import { fillHolesWithNullInPlace } from "@/shared/utilities";
 import OpenInNewIcon from "@mui/icons-material/OpenInNew";

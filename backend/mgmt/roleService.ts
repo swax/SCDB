@@ -1,4 +1,4 @@
-import { StringFieldCms } from "@/database/orm/ormTypes";
+import { StringFieldCms } from "@/backend/cms/cmsTypes";
 import prisma from "@/database/prisma";
 import { allowedToChangeRole, getRoleRank } from "@/shared/roleUtils";
 import { operation_type, user_role_type } from "@prisma/client";

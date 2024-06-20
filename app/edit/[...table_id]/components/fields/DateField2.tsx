@@ -1,4 +1,4 @@
-import { DateFieldCms, FieldCms } from "@/database/orm/ormTypes";
+import { DateFieldCms, FieldCms } from "@/backend/cms/cmsTypes";
 import { DateField, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterLuxon } from "@mui/x-date-pickers/AdapterLuxon";
 import { DateTime } from "luxon";

@@ -1,28 +1,20 @@
-import { TableCms } from "../ormTypes";
+import { TableCms } from "../cmsTypes";
 
-const recurringSketch: TableCms = {
-  name: "recurring_sketch",
-  label: "Recurring Sketch",
-  title: ["${title} - ${show.title}"],
+const tagCms: TableCms = {
+  name: "tag",
+  label: "Tag",
+  title: ["${name}"],
   fields: [
     {
-      label: "Title",
-      column: "title",
+      label: "Name",
+      column: "name",
       type: "string",
-    },
-    {
-      label: "Show",
-      column: "show_id",
-      type: "lookup",
-      lookup: {
-        table: "show",
-        labelColumn: "title",
-      },
     },
     {
       label: "Description",
       column: "description",
       type: "string",
+      multiline: true,
       optional: true,
     },
     {
@@ -32,10 +24,19 @@ const recurringSketch: TableCms = {
       optional: true,
     },
     {
+      label: "Category",
+      column: "category_id",
+      type: "lookup",
+      lookup: {
+        table: "category",
+        labelColumn: "name",
+      },
+    },
+    {
       label: "Lookup Slug",
       column: "lookup_slug",
       type: "string",
-      templates: ["${show.title}: ${title}"],
+      templates: ["${category.name} / ${name}"],
     },
     {
       label: "URL Slug",
@@ -46,4 +47,4 @@ const recurringSketch: TableCms = {
   ],
 };
 
-export default recurringSketch;
+export default tagCms;

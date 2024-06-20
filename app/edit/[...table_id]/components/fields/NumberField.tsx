@@ -1,4 +1,4 @@
-import { FieldCms, NumberFieldCms } from "@/database/orm/ormTypes";
+import { FieldCms, NumberFieldCms } from "@/backend/cms/cmsTypes";
 import { useForceUpdate } from "@/app/hooks/useForceUpdate";
 import { TextField } from "@mui/material";
 

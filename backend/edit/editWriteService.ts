@@ -12,8 +12,8 @@ import {
   MappingFieldCms,
   SlugFieldCms,
   TableCms,
-} from "../../database/orm/ormTypes";
-import sketchDatabaseCms from "../../database/orm/sketchDatabaseOrm";
+} from "../cms/cmsTypes";
+import sketchDatabaseCms from "../cms/sketchDatabaseCms";
 import { validateRoleAtLeast } from "../actionHelper";
 import { SessionUser } from "next-auth";
 

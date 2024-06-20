@@ -1,5 +1,5 @@
 import { useForceUpdate } from "@/app/hooks/useForceUpdate";
-import { FieldCms, ImageFieldCms } from "@/database/orm/ormTypes";
+import { FieldCms, ImageFieldCms } from "@/backend/cms/cmsTypes";
 import s3url from "@/shared/cdnHost";
 import { fileToShortHash, showAndLogError } from "@/shared/utilities";
 import { Button, Stack } from "@mui/material";

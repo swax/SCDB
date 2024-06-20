@@ -5,7 +5,7 @@ import {
   getLoggedInUser,
   validateRoleAtLeast,
 } from "@/backend/actionHelper";
-import { TableCms } from "@/database/orm/ormTypes";
+import { TableCms } from "@/backend/cms/cmsTypes";
 import { review_status_type, user_role_type } from "@prisma/client";
 
 export async function updateReviewStatus(

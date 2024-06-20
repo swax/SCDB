@@ -1,7 +1,7 @@
 import prisma from "@/database/prisma";
 import { contentResponse } from "@/shared/serviceResponse";
-import { FieldCms, LookupFieldCms } from "../../database/orm/ormTypes";
-import sketchDatabaseCms from "../../database/orm/sketchDatabaseOrm";
+import { FieldCms, LookupFieldCms } from "../cms/cmsTypes";
+import sketchDatabaseCms from "../cms/sketchDatabaseCms";
 
 export interface LookupFieldOption {
   id: number;
