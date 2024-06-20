@@ -249,7 +249,11 @@ export default async function SketchPage({ params }: ContentPageProps) {
             <AccordionDetails>
               <Box>
                 {sketch.sketch_quotes.map((quote, i) => (
-                  <Paper key={i} elevation={3} sx={{ marginBottom: 1, padding: 1 }}>
+                  <Paper
+                    key={i}
+                    elevation={3}
+                    sx={{ marginBottom: 1, padding: 1 }}
+                  >
                     <Typography variant="body2" sx={{ whiteSpace: "pre-line" }}>
                       {quote.quote}
                     </Typography>

@@ -1,6 +1,6 @@
-import { TableOrm } from "../ormTypes";
+import { TableCms } from "../ormTypes";
 
-const categoryOrm: TableOrm = {
+const categoryCms: TableCms = {
   name: "category",
   label: "Category",
   title: ["${name}"],
@@ -19,4 +19,4 @@ const categoryOrm: TableOrm = {
   ],
 };
 
-export default categoryOrm;
+export default categoryCms;

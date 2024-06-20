@@ -2,20 +2,20 @@ import prisma from "@/database/prisma";
 import { getRoleRank } from "@/shared/roleUtils";
 import { user_role_type } from "@prisma/client";
 import { notFound } from "next/navigation";
-import { FieldOrm, TableOrm } from "../../database/orm/ormTypes";
-import sketchDatabaseOrm from "../../database/orm/sketchDatabaseOrm";
+import { FieldCms, TableCms } from "../../database/orm/ormTypes";
+import sketchDatabaseCms from "../../database/orm/sketchDatabaseOrm";
 
-export function findAndBuildTableOrm(table: string) {
-  const tableOrm = sketchDatabaseOrm[table];
+export function findAndBuildTableCms(table: string) {
+  const tableCms = sketchDatabaseCms[table];
 
-  if (!tableOrm) {
+  if (!tableCms) {
     notFound();
   }
 
-  return structuredClone(tableOrm);
+  return structuredClone(tableCms);
 }
 
-export async function getTableOrm(
+export async function getTableCms(
   table: string,
   id: number,
   role?: user_role_type,
@@ -23,22 +23,22 @@ export async function getTableOrm(
   // Replace - with _
   table = table.replace("-", "_");
 
-  const tableOrm = findAndBuildTableOrm(table);
+  const tableCms = findAndBuildTableCms(table);
 
-  tableOrm.operation = id ? "update" : "create";
+  tableCms.operation = id ? "update" : "create";
 
   const includeReviewStatus =
     getRoleRank(role) >= getRoleRank(user_role_type.Moderator);
 
   if (id) {
-    await setFieldValues(tableOrm, id, includeReviewStatus);
+    await setFieldValues(tableCms, id, includeReviewStatus);
   }
 
-  return tableOrm;
+  return tableCms;
 }
 
 export async function setFieldValues(
-  table: TableOrm,
+  table: TableCms,
   id: number,
   includeReviewStatus: boolean,
 ) {
@@ -65,14 +65,14 @@ export async function setFieldValues(
   }
 
   // Map values from the db to the orm
-  mapDatabaseToOrm(dbResult, table.fields);
+  mapDatabaseToCms(dbResult, table.fields);
 
   if (dbResult.review_status) {
     table.reviewStatus = dbResult.review_status;
   }
 }
 
-function addFieldsToSelect(table: Omit<TableOrm, "title">, selectParams: any) {
+function addFieldsToSelect(table: Omit<TableCms, "title">, selectParams: any) {
   // Add fields to the select
   table.fields.forEach((field) => {
     if (field.type === "mapping") {
@@ -110,7 +110,7 @@ function addFieldsToSelect(table: Omit<TableOrm, "title">, selectParams: any) {
   });
 }
 
-function mapDatabaseToOrm(dbResult: any, fields: FieldOrm[]) {
+function mapDatabaseToCms(dbResult: any, fields: FieldCms[]) {
   Object.entries(dbResult).forEach(([dbKey, dbValue]) => {
     fields.forEach((field) => {
       if (field.type == "image") {
@@ -135,7 +135,7 @@ function mapDatabaseToOrm(dbResult: any, fields: FieldOrm[]) {
           field.mappingTable.ids ||= [];
           dbValue.forEach((subResult) => {
             field.mappingTable.ids?.push(subResult.id);
-            mapDatabaseToOrm(subResult, mappingFields);
+            mapDatabaseToCms(subResult, mappingFields);
           });
         }
       }

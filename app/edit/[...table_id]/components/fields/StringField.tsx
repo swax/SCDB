@@ -1,13 +1,13 @@
-import { FieldOrm, StringFieldOrm } from "@/database/orm/ormTypes";
+import { FieldCms, StringFieldCms } from "@/database/orm/ormTypes";
 import { useForceUpdate } from "@/app/hooks/useForceUpdate";
 import { TextField } from "@mui/material";
 
 interface StringFieldProps {
-  field: StringFieldOrm;
+  field: StringFieldCms;
   index: number;
   inTable: boolean;
   loading: boolean;
-  setFieldValue: (field: FieldOrm, index: number, value: string) => void;
+  setFieldValue: (field: FieldCms, index: number, value: string) => void;
 }
 
 export default function StringField({
@@ -26,7 +26,7 @@ export default function StringField({
 
   // Event Handlers
   function handleChange_field(
-    field: StringFieldOrm,
+    field: StringFieldCms,
     index: number,
     value: string,
   ) {

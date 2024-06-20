@@ -1,27 +1,27 @@
-import characterOrm from "./tables/characterOrm";
-import episodeOrm from "./tables/episodeOrm";
-import personOrm from "./tables/personOrm";
-import seasonOrm from "./tables/seasonOrm";
-import showOrm from "./tables/showOrm";
-import sketchOrm from "./tables/sketchOrm";
-import { DatabaseOrm } from "./ormTypes";
-import categoryOrm from "./tables/categoryOrm";
-import tagOrm from "./tables/tagOrm";
+import characterCms from "./tables/characterOrm";
+import episodeCms from "./tables/episodeOrm";
+import personCms from "./tables/personOrm";
+import seasonCms from "./tables/seasonOrm";
+import showCms from "./tables/showOrm";
+import sketchCms from "./tables/sketchOrm";
+import { DatabaseCms } from "./ormTypes";
+import categoryCms from "./tables/categoryOrm";
+import tagCms from "./tables/tagOrm";
 import recurringSketch from "./tables/recurringSketchOrm";
 import "server-only";
 
-const sketchDatabaseOrm: DatabaseOrm = {
-  character: characterOrm,
-  episode: episodeOrm,
-  season: seasonOrm,
-  person: personOrm,
-  show: showOrm,
-  sketch: sketchOrm,
-  tag: tagOrm,
-  category: categoryOrm,
+const sketchDatabaseCms: DatabaseCms = {
+  character: characterCms,
+  episode: episodeCms,
+  season: seasonCms,
+  person: personCms,
+  show: showCms,
+  sketch: sketchCms,
+  tag: tagCms,
+  category: categoryCms,
   recurring_sketch: recurringSketch,
 };
 
-Object.freeze(sketchDatabaseOrm); // Doesn't seem to prevent modification like it should
+Object.freeze(sketchDatabaseCms); // Doesn't seem to prevent modification like it should
 
-export default sketchDatabaseOrm;
+export default sketchDatabaseCms;

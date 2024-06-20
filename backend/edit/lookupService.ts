@@ -1,7 +1,7 @@
 import prisma from "@/database/prisma";
 import { contentResponse } from "@/shared/serviceResponse";
-import { FieldOrm, LookupFieldOrm } from "../../database/orm/ormTypes";
-import sketchDatabaseOrm from "../../database/orm/sketchDatabaseOrm";
+import { FieldCms, LookupFieldCms } from "../../database/orm/ormTypes";
+import sketchDatabaseCms from "../../database/orm/sketchDatabaseOrm";
 
 export interface LookupFieldOption {
   id: number;
@@ -11,8 +11,8 @@ export interface LookupFieldOption {
 }
 
 function validateFieldWithLookup(
-  fields: FieldOrm[],
-  lookupField: LookupFieldOrm["lookup"],
+  fields: FieldCms[],
+  lookupField: LookupFieldCms["lookup"],
 ): boolean {
   return fields.some(
     (field) =>
@@ -26,10 +26,10 @@ function validateFieldWithLookup(
 
 export default async function lookupTermsInTable(
   searchString: string,
-  lookupField: LookupFieldOrm["lookup"],
+  lookupField: LookupFieldCms["lookup"],
 ) {
-  const allowedLookup = Object.keys(sketchDatabaseOrm).some((table) =>
-    validateFieldWithLookup(sketchDatabaseOrm[table].fields, lookupField),
+  const allowedLookup = Object.keys(sketchDatabaseCms).some((table) =>
+    validateFieldWithLookup(sketchDatabaseCms[table].fields, lookupField),
   );
 
   if (!allowedLookup) {

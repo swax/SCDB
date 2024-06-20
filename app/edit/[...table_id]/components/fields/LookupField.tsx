@@ -1,6 +1,6 @@
 import useDebounce2 from "@/app/hooks/useDebounce2";
 import { LookupFieldOption } from "@/backend/edit/lookupService";
-import { LookupFieldOrm } from "@/database/orm/ormTypes";
+import { LookupFieldCms } from "@/database/orm/ormTypes";
 import { getEditUrl } from "@/shared/urls";
 import { fillHolesWithNullInPlace } from "@/shared/utilities";
 import OpenInNewIcon from "@mui/icons-material/OpenInNew";
@@ -15,11 +15,11 @@ import { SyntheticEvent, useId, useState } from "react";
 import lookupAction from "../../actions/lookupAction";
 
 interface LookupFieldProps {
-  field: LookupFieldOrm;
+  field: LookupFieldCms;
   index: number;
   inTable: boolean;
   setFieldValue: (
-    field: LookupFieldOrm,
+    field: LookupFieldCms,
     index: number,
     value: number | null,
   ) => void;

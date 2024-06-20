@@ -1,15 +1,15 @@
-import { DateFieldOrm, FieldOrm } from "@/database/orm/ormTypes";
+import { DateFieldCms, FieldCms } from "@/database/orm/ormTypes";
 import { DateField, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterLuxon } from "@mui/x-date-pickers/AdapterLuxon";
 import { DateTime } from "luxon";
 import { useState } from "react";
 
 interface DateField2Props {
-  field: DateFieldOrm;
+  field: DateFieldCms;
   index: number;
   inTable: boolean;
   loading: boolean;
-  setFieldValue: (field: FieldOrm, index: number, value: Date | null) => void;
+  setFieldValue: (field: FieldCms, index: number, value: Date | null) => void;
 }
 
 /** '2' because DateField is used by MUI already */

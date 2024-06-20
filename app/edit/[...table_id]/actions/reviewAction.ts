@@ -5,11 +5,11 @@ import {
   getLoggedInUser,
   validateRoleAtLeast,
 } from "@/backend/actionHelper";
-import { TableOrm } from "@/database/orm/ormTypes";
+import { TableCms } from "@/database/orm/ormTypes";
 import { review_status_type, user_role_type } from "@prisma/client";
 
 export async function updateReviewStatus(
-  table: TableOrm,
+  table: TableCms,
   id: number,
   reviewStatus: review_status_type,
 ) {

@@ -1,6 +1,6 @@
 import { review_status_type } from "@prisma/client";
 
-export type BaseFieldOrm = {
+export type BaseFieldCms = {
   label: string;
   column?: string;
   helperText?: string;
@@ -16,18 +16,18 @@ export type BaseFieldOrm = {
   // For mapping table types there can be more than one value
 };
 
-export type DateFieldOrm = BaseFieldOrm & {
+export type DateFieldCms = BaseFieldCms & {
   type: "date";
   values?: Nullable<Date>[];
 };
 
-export type EnumFieldOrm = BaseFieldOrm & {
+export type EnumFieldCms = BaseFieldCms & {
   type: "enum";
   enum: string;
   values?: Nullable<string>[];
 };
 
-export type LookupFieldOrm = BaseFieldOrm & {
+export type LookupFieldCms = BaseFieldCms & {
   type: "lookup";
   values?: Nullable<number>[];
   lookup: {
@@ -41,13 +41,13 @@ export type LookupFieldOrm = BaseFieldOrm & {
 };
 
 /** The column should be set to the id of the image field */
-export type ImageFieldOrm = BaseFieldOrm & {
+export type ImageFieldCms = BaseFieldCms & {
   type: "image";
   navProp: string;
   values?: Nullable<string>[];
 };
 
-export type MappingTableOrm = Omit<TableOrm, "title"> & {
+export type MappingTableCms = Omit<TableCms, "title"> & {
   navProp: string;
   /** Undefined or false if a separate dialog is used to edit the mapped fields. Useful for with many fields. */
   inline?: boolean;
@@ -56,51 +56,51 @@ export type MappingTableOrm = Omit<TableOrm, "title"> & {
   resequence?: boolean;
 };
 
-export type MappingFieldOrm = BaseFieldOrm & {
+export type MappingFieldCms = BaseFieldCms & {
   type: "mapping";
   values?: Nullable<number>[];
-  mappingTable: MappingTableOrm;
+  mappingTable: MappingTableCms;
 };
 
-export type SlugFieldOrm = BaseFieldOrm & {
+export type SlugFieldCms = BaseFieldCms & {
   type: "slug";
   derivedFrom: string;
   values?: Nullable<string>[];
 };
 
-export type StringFieldOrm = BaseFieldOrm & {
+export type StringFieldCms = BaseFieldCms & {
   type: "string";
   multiline?: boolean;
   values?: Nullable<string>[];
 };
 
-export type ListFieldOrm = BaseFieldOrm & {
+export type ListFieldCms = BaseFieldCms & {
   type: "list";
   multiline?: boolean;
   values?: Nullable<string[]>[];
 };
 
-export type NumberFieldOrm = BaseFieldOrm & {
+export type NumberFieldCms = BaseFieldCms & {
   type: "number";
   // Maybe do int vs float here
   values?: Nullable<number>[];
 };
 
-export type FieldOrm =
-  | DateFieldOrm
-  | EnumFieldOrm
-  | LookupFieldOrm
-  | MappingFieldOrm
-  | SlugFieldOrm
-  | StringFieldOrm
-  | NumberFieldOrm
-  | ListFieldOrm
-  | ImageFieldOrm;
+export type FieldCms =
+  | DateFieldCms
+  | EnumFieldCms
+  | LookupFieldCms
+  | MappingFieldCms
+  | SlugFieldCms
+  | StringFieldCms
+  | NumberFieldCms
+  | ListFieldCms
+  | ImageFieldCms;
 
-export type FieldOrmValueType = NonNullable<FieldOrm["values"]>[number];
+export type FieldCmsValueType = NonNullable<FieldCms["values"]>[number];
 
 // TODO: Maybe rename to 'Row' would make more sense?
-export type TableOrm = {
+export type TableCms = {
   /** Name of the table in Postgres */
   name: string;
   /** Name of the table in the UI */
@@ -108,10 +108,10 @@ export type TableOrm = {
   /** Title used for the webpage */
   title: string[];
   operation?: "create" | "update";
-  fields: FieldOrm[];
+  fields: FieldCms[];
   reviewStatus?: review_status_type;
 };
 
-export type DatabaseOrm = {
-  [key: string]: TableOrm;
+export type DatabaseCms = {
+  [key: string]: TableCms;
 };

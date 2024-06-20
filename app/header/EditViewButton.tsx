@@ -18,7 +18,7 @@ export default function EditViewButton() {
   const editMode = pathname.startsWith("/edit");
   const table = editMode ? pathParts[2] : pathParts[1];
 
-  // Should match tables in sketchDatabaseOrm
+  // Should match tables in sketchDatabaseCms
   const validTables = [
     "character",
     "episode",

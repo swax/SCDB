@@ -1,4 +1,4 @@
-import { StringFieldOrm } from "@/database/orm/ormTypes";
+import { StringFieldCms } from "@/database/orm/ormTypes";
 import prisma from "@/database/prisma";
 import { operation_type } from "@prisma/client";
 
@@ -45,7 +45,7 @@ export async function saveUsername(id: string, username: string) {
           label: "username",
           values: [username],
         },
-      ] satisfies StringFieldOrm[],
+      ] satisfies StringFieldCms[],
     },
   });
 }

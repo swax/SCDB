@@ -1,5 +1,5 @@
 import authOptions from "@/app/api/auth/[...nextauth]/authOptions";
-import { getTableOrm } from "@/backend/edit/editReadService";
+import { getTableCms } from "@/backend/edit/editReadService";
 import { getServerSession } from "next-auth";
 import EditClientPage from "./page.client";
 import { getChangelog } from "@/backend/mgmt/changelogService";
@@ -19,7 +19,7 @@ export default async function EditTablePage({ params }: EditTablePageProps) {
 
   const session = await getServerSession(authOptions);
 
-  const table = await getTableOrm(tableName, numId, session?.user.role);
+  const table = await getTableCms(tableName, numId, session?.user.role);
 
   // TODO: Get changes since last reviewed
   const changelog = id
