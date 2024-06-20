@@ -6,7 +6,7 @@ import {
   FieldCmsValueType,
   SlugFieldCms,
   TableCms,
-} from "@/database/orm/ormTypes";
+} from "@/backend/cms/cmsTypes";
 import { getEditUrl } from "@/shared/urls";
 import {
   capitalizeFirstLetter,

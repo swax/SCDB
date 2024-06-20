@@ -1,4 +1,4 @@
-import { FieldCms } from "@/database/orm/ormTypes";
+import { FieldCms } from "@/backend/cms/cmsTypes";
 import prisma from "@/database/prisma";
 import { operation_type } from "@prisma/client";
 

@@ -1,4 +1,4 @@
-import { FieldCms, ListFieldCms } from "@/database/orm/ormTypes";
+import { FieldCms, ListFieldCms } from "@/backend/cms/cmsTypes";
 import { useForceUpdate } from "@/app/hooks/useForceUpdate";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { Box, Button, IconButton, TextField, Typography } from "@mui/material";

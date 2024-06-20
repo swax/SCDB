@@ -2,8 +2,8 @@ import prisma from "@/database/prisma";
 import { getRoleRank } from "@/shared/roleUtils";
 import { user_role_type } from "@prisma/client";
 import { notFound } from "next/navigation";
-import { FieldCms, TableCms } from "../../database/orm/ormTypes";
-import sketchDatabaseCms from "../../database/orm/sketchDatabaseOrm";
+import { FieldCms, TableCms } from "../cms/cmsTypes";
+import sketchDatabaseCms from "../cms/sketchDatabaseCms";
 
 export function findAndBuildTableCms(table: string) {
   const tableCms = sketchDatabaseCms[table];
@@ -64,7 +64,7 @@ export async function setFieldValues(
     notFound();
   }
 
-  // Map values from the db to the orm
+  // Map values from the db to the cms
   mapDatabaseToCms(dbResult, table.fields);
 
   if (dbResult.review_status) {

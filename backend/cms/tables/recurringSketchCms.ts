@@ -1,10 +1,15 @@
-import { TableCms } from "../ormTypes";
+import { TableCms } from "../cmsTypes";
 
-const seasonCms: TableCms = {
-  name: "season",
-  label: "Season",
-  title: ["Season ${number} - ${show.title} ${year}"],
+const recurringSketch: TableCms = {
+  name: "recurring_sketch",
+  label: "Recurring Sketch",
+  title: ["${title} - ${show.title}"],
   fields: [
+    {
+      label: "Title",
+      column: "title",
+      type: "string",
+    },
     {
       label: "Show",
       column: "show_id",
@@ -13,16 +18,6 @@ const seasonCms: TableCms = {
         table: "show",
         labelColumn: "title",
       },
-    },
-    {
-      label: "Year",
-      column: "year",
-      type: "number",
-    },
-    {
-      label: "Season Number",
-      column: "number",
-      type: "number",
     },
     {
       label: "Description",
@@ -40,7 +35,7 @@ const seasonCms: TableCms = {
       label: "Lookup Slug",
       column: "lookup_slug",
       type: "string",
-      templates: ["${show.title} ${year}: S${number}"],
+      templates: ["${show.title}: ${title}"],
     },
     {
       label: "URL Slug",
@@ -51,4 +46,4 @@ const seasonCms: TableCms = {
   ],
 };
 
-export default seasonCms;
+export default recurringSketch;

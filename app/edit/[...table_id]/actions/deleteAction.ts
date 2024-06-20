@@ -3,7 +3,7 @@
 import { revalidateContent } from "@/app/(content)/contentBase";
 import { catchServiceErrors, getLoggedInUser } from "@/backend/actionHelper";
 import { deleteRow } from "@/backend/edit/editWriteService";
-import { TableCms } from "@/database/orm/ormTypes";
+import { TableCms } from "@/backend/cms/cmsTypes";
 
 export default async function deleteAction(
   table: TableCms,

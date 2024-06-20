@@ -1,4 +1,4 @@
-import { FieldCms, FieldCmsValueType } from "@/database/orm/ormTypes";
+import { FieldCms, FieldCmsValueType } from "@/backend/cms/cmsTypes";
 import { Box, MenuItem, Select, TextField } from "@mui/material";
 import { $Enums } from "@prisma/client";
 import MappingTableEditor from "./MappingTableEditor";

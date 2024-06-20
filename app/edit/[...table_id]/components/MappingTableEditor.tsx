@@ -2,7 +2,7 @@ import {
   FieldCms,
   FieldCmsValueType,
   MappingTableCms,
-} from "@/database/orm/ormTypes";
+} from "@/backend/cms/cmsTypes";
 import { moveElementInArray } from "@/shared/utilities";
 import { DragDropContext, DropResult, Droppable } from "@hello-pangea/dnd";
 import {

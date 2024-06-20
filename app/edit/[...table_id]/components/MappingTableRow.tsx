@@ -5,7 +5,7 @@ import {
   FieldCms,
   FieldCmsValueType,
   MappingTableCms,
-} from "@/database/orm/ormTypes";
+} from "@/backend/cms/cmsTypes";
 import dragdropStyles from "./dragdrop.module.css";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";

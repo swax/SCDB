@@ -1,4 +1,4 @@
-import { TableCms } from "../ormTypes";
+import { TableCms } from "../cmsTypes";
 
 const episodeCms: TableCms = {
   name: "episode",
