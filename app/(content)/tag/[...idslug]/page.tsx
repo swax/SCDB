@@ -48,7 +48,7 @@ export default async function TagPage({ params }: ContentPageProps) {
       <DescriptionPanel description={tag.description} />
       <SketchGrid initialData={sketchData} getData={getSketchData} />
       <LinksPanel link_urls={tag.link_urls} />
-      <DateGeneratedFooter />
+      <DateGeneratedFooter genDate={new Date()} type="page" />
     </>
   );
 }

@@ -125,7 +125,7 @@ export default async function PersonPage({ params }: ContentPageProps) {
         title="Credits"
       />
       <LinksPanel link_urls={person.link_urls} />
-      <DateGeneratedFooter />
+      <DateGeneratedFooter genDate={new Date()} type="page" />
     </>
   );
 }

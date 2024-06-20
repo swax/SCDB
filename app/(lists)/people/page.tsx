@@ -37,7 +37,7 @@ export default async function PeoplePage(props: ListPageProps) {
         rows={rows}
         totalRowCount={people.count}
       />
-      <DateGeneratedFooter dataDate={people.dateGenerated} />
+      <DateGeneratedFooter genDate={people.dateGenerated} type="data" />
     </>
   );
 }

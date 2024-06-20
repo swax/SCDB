@@ -62,7 +62,7 @@ export default async function CategoryPage(
         rows={rows}
         totalRowCount={tags.count}
       />
-      <DateGeneratedFooter dataDate={tags.dateGenerated} />
+      <DateGeneratedFooter genDate={tags.dateGenerated} type="data" />
     </>
   );
 }

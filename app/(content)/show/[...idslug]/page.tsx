@@ -99,7 +99,7 @@ export default async function ShowPage({ params }: ContentPageProps) {
         </Accordion>
       )}
       <LinksPanel link_urls={show.link_urls} />
-      <DateGeneratedFooter />
+      <DateGeneratedFooter genDate={new Date()} type="page" />
     </>
   );
 }

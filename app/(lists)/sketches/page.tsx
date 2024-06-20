@@ -40,7 +40,7 @@ export default async function SketchesPage(props: ListPageProps) {
       <MuiNextLink href="/edit/sketch">
         <Button>Add Sketch</Button>
       </MuiNextLink>
-      <DateGeneratedFooter dataDate={sketches.dateGenerated} />
+      <DateGeneratedFooter genDate={sketches.dateGenerated} type="data" />
     </>
   );
 }

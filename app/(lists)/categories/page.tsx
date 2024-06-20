@@ -36,7 +36,7 @@ export default async function CategoriesPage(props: ListPageProps) {
         rows={rows}
         totalRowCount={categories.count}
       />
-      <DateGeneratedFooter dataDate={categories.dateGenerated} />
+      <DateGeneratedFooter genDate={categories.dateGenerated} type="data" />
     </>
   );
 }
