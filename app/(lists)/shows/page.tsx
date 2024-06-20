@@ -1,5 +1,6 @@
 import DateGeneratedFooter from "@/app/components/DateGeneratedFooter";
 import { getShowsList } from "@/backend/content/showService";
+import { buildPageTitle } from "@/shared/utilities";
 import {
   ListPageProps,
   getCachedList,
@@ -22,9 +23,11 @@ export default async function CategoriesPage(props: ListPageProps) {
   }));
 
   // Rendering
+  const pageTitle = buildPageTitle("Shows");
+
   return (
     <>
-      <title>Shows - SketchTV.lol</title>
+      <title>{pageTitle}</title>
       <ShowsDataGrid
         searchParams={searchParams}
         rows={rows}

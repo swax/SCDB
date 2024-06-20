@@ -98,3 +98,13 @@ export function showAndLogError(error: any) {
   console.error("showAndLogError: " + error);
   alert(error.message || error);
 }
+
+export function buildPageTitle(subtitle?: string) {
+  const siteName = "SketchTV.lol";
+
+  if (!subtitle) {
+    return siteName;
+  }
+
+  return subtitle + " | " + siteName;
+}

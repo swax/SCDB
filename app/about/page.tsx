@@ -1,10 +1,16 @@
+import { buildPageTitle } from "@/shared/utilities";
 import { Box } from "@mui/material";
 import Markdown from "react-markdown";
 
 export default function HelpPage() {
+  // Rendering
+  const pageTitle = buildPageTitle("About");
+
   return (
-    <Box className="about-page" sx={{ marginTop: 4 }}>
-      <Markdown>{`
+    <>
+      <title>{pageTitle}</title>
+      <Box className="about-page" sx={{ marginTop: 4 }}>
+        <Markdown>{`
       
 SketchTV.lol is a website where we're building a database of comdedy sketches.
 There's no place on the internet that catalogs sketches to make them easy to find by category, person, year, etc...
@@ -28,8 +34,11 @@ We have a [Discord server](https://discord.gg/UKE8gSYp) as well if you want to t
   * The face of the character should be framed so that the face is in the upper half of the image with some margin on the sides
     * ![image](/images/cast-img-framing.jpg) 
 * After saving changes the update should be immediate, but it can take up to 5 minutes for related pages to be updated
+* To edit a sketch, click the pencil icon in the upper right
+* To view a sketch after saving, click the eye icon in the upper right
   
 `}</Markdown>
-    </Box>
+      </Box>
+    </>
   );
 }

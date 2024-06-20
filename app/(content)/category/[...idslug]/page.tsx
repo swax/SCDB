@@ -3,6 +3,7 @@ import DateGeneratedFooter from "@/app/components/DateGeneratedFooter";
 import MuiNextLink from "@/app/components/MuiNextLink";
 import { getCategory } from "@/backend/content/categoryService";
 import { getTagsByCategoryList } from "@/backend/content/tagService";
+import { buildPageTitle } from "@/shared/utilities";
 import { Box, Typography } from "@mui/material";
 import {
   ListPageProps,
@@ -44,7 +45,7 @@ export default async function CategoryPage(
   }));
 
   // Rendering
-  const pageTitle = category.name + " - SketchTV.lol";
+  const pageTitle = buildPageTitle(category.name);
 
   return (
     <>

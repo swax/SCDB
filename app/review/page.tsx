@@ -1,5 +1,6 @@
 import { getRowsToReview } from "@/backend/mgmt/reviewService";
 import { getEditUrl } from "@/shared/urls";
+import { buildPageTitle } from "@/shared/utilities";
 import {
   Table,
   TableBody,
@@ -23,9 +24,12 @@ export default async function ReviewPage({
   const rowsToReview = await getRowsToReview(rowCount);
 
   // Rendering
+  const pageTitle = buildPageTitle("Review");
+
   return (
     <>
-      <h1>Review </h1>
+      <title>{pageTitle}</title>
+      <h1>Review</h1>
       <h5>
         Only mods can review. Mods cannot review their own changes.
         Flagged/oldest rows that need review are shown first.

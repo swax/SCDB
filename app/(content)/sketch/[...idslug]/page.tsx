@@ -5,7 +5,7 @@ import LinksPanel from "@/app/components/LinksPanel";
 import { getSketch, getSketchList } from "@/backend/content/sketchService";
 import { getStaticPageCount } from "@/shared/ProcessEnv";
 import s3url from "@/shared/cdnHost";
-import { enumNameToDisplayName } from "@/shared/utilities";
+import { buildPageTitle, enumNameToDisplayName } from "@/shared/utilities";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import FormatQuoteIcon from "@mui/icons-material/FormatQuote";
 import GroupsIcon from "@mui/icons-material/Groups";
@@ -103,7 +103,7 @@ export default async function SketchPage({ params }: ContentPageProps) {
   }
 
   // Rendering
-  const pageTitle = sketch.title + " - SketchTV.lol";
+  const pageTitle = buildPageTitle(sketch.title);
 
   const imgWidth = 150;
   const imgHeight = 150;

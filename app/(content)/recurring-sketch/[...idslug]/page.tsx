@@ -8,6 +8,7 @@ import {
   getRecurringSketchList,
 } from "@/backend/content/recurringSketch";
 import { getStaticPageCount } from "@/shared/ProcessEnv";
+import { buildPageTitle } from "@/shared/utilities";
 import { Box, Typography } from "@mui/material";
 import SketchGrid from "../../SketchGrid";
 import { ContentPageProps, tryGetContent } from "../../contentBase";
@@ -43,7 +44,7 @@ export default async function RecurringSketchPage({
   const sketchData = await getSketchData(1);
 
   // Rendering
-  const pageTitle = recurringSketch.title + " - SketchTV.lol";
+  const pageTitle = buildPageTitle(recurringSketch.title);
 
   return (
     <>

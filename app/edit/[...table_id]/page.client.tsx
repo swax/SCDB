@@ -9,6 +9,7 @@ import {
 } from "@/backend/cms/cmsTypes";
 import { getEditUrl } from "@/shared/urls";
 import {
+  buildPageTitle,
   capitalizeFirstLetter,
   fillHolesWithNullInPlace,
   resolveTemplateVars,
@@ -296,12 +297,13 @@ export default function EditClientPage({
   let rowTitle = getTemplateValue(table.title, 0);
   const tableName = capitalizeFirstLetter(table.label);
   rowTitle ||= tableName;
-  const pageTitle = rowTitle + " - SketchTV.lol";
-  const addOrUpdate = table.operation == "update" ? "Edit " : "Add ";
+
+  const addOrUpdate = table.operation == "update" ? "Edit" : "Add";
+  const pageTitle = buildPageTitle(`${addOrUpdate} ${rowTitle}`);
 
   return (
     <>
-      <title>{addOrUpdate + pageTitle}</title>
+      <title>{pageTitle}</title>
       <Typography variant="h5">{addOrUpdate + tableName}</Typography>
 
       {/* Render fields */}

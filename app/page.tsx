@@ -1,11 +1,12 @@
+import DateGeneratedFooter from "@/app/components/DateGeneratedFooter";
 import {
   getLatestSketchGrid,
   getTrendingSketchGrid,
 } from "@/backend/content/homeService";
-import SketchGrid from "./(content)/SketchGrid";
-import { Box, Typography } from "@mui/material";
+import { buildPageTitle } from "@/shared/utilities";
 import TrendingUpIcon from "@mui/icons-material/TrendingUp";
-import DateGeneratedFooter from "@/app/components/DateGeneratedFooter";
+import { Box, Typography } from "@mui/material";
+import SketchGrid from "./(content)/SketchGrid";
 
 export const revalidate = 300; // 5 minutes
 
@@ -25,9 +26,11 @@ export default async function HomePage() {
   const trendingSketchData = await getTrendingSketchData(1);
 
   // Rendering
+  const pageTitle = buildPageTitle();
+
   return (
     <>
-      <title>SketchTV.lol</title>
+      <title>{pageTitle}</title>
       <Box mt={2}>
         <SketchGrid
           initialData={trendingSketchData}

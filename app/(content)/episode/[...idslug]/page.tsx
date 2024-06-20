@@ -7,6 +7,7 @@ import {
   getEpisodesList,
 } from "@/backend/content/episodeService";
 import { getStaticPageCount } from "@/shared/ProcessEnv";
+import { buildPageTitle } from "@/shared/utilities";
 import { Box, Typography } from "@mui/material";
 import SketchGrid from "../../SketchGrid";
 import { ContentPageProps, tryGetContent } from "../../contentBase";
@@ -36,7 +37,9 @@ export default async function EpisodePage({ params }: ContentPageProps) {
   const sketchData = await getSketchData(1);
 
   // Rendering
-  const pageTitle = `Episode ${episode.number} - ${episode.season.lookup_slug} - SketchTV.lol`;
+  const pageTitle = buildPageTitle(
+    `Episode ${episode.number} - ${episode.season.lookup_slug}`,
+  );
 
   return (
     <>

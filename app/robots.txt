@@ -1,4 +1,3 @@
 User-Agent: *
 Allow: /
-Disallow: /private/
 Sitemap: https://www.sketchtv.lol/sitemap/0.xml

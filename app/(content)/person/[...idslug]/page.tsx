@@ -9,6 +9,7 @@ import {
 } from "@/backend/content/personService";
 import { getStaticPageCount } from "@/shared/ProcessEnv";
 import s3url from "@/shared/cdnHost";
+import { buildPageTitle } from "@/shared/utilities";
 import {
   Box,
   ImageList,
@@ -58,7 +59,7 @@ export default async function PersonPage({ params }: ContentPageProps) {
   const deathDate = person.death_date ? new Date(person.death_date) : null;
 
   // Rendering
-  const pageTitle = person.name + " - SketchTV.lol";
+  const pageTitle = buildPageTitle(person.name);
 
   return (
     <>

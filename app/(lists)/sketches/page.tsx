@@ -8,6 +8,7 @@ import {
   parseSearchParams,
 } from "../baseListTypes";
 import SketchDataGrid from "./SketchDataGrid";
+import { buildPageTitle } from "@/shared/utilities";
 
 export default async function SketchesPage(props: ListPageProps) {
   // URL params
@@ -26,9 +27,11 @@ export default async function SketchesPage(props: ListPageProps) {
   }));
 
   // Rendering
+  const pageTitle = buildPageTitle("Sketches");
+
   return (
     <>
-      <title>Sketches - SketchTV.lol</title>
+      <title>{pageTitle}</title>
       <SketchDataGrid
         searchParams={searchParams}
         rows={rows}

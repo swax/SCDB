@@ -4,6 +4,7 @@ import {
   getProfile,
   getProfileSketchGrid,
 } from "@/backend/user/profileService";
+import { buildPageTitle } from "@/shared/utilities";
 import { getServerSession } from "next-auth";
 import { notFound } from "next/navigation";
 import ProfileClientPage from "./page.client";
@@ -42,16 +43,21 @@ export default async function ProfilePage({
   });
 
   // Rendering
+  const pageTitle = buildPageTitle(profile.username);
+
   return (
-    <ProfileClientPage
-      profile={profile}
-      sessionRole={session?.user.role}
-      sessionUsername={session?.user.username}
-      changelog={changelog}
-      page={page}
-      rowsPerPage={rowsPerPage}
-      initialSketchData={sketchData}
-      getSketchData={getSketchData}
-    />
+    <>
+      <title>{pageTitle}</title>
+      <ProfileClientPage
+        profile={profile}
+        sessionRole={session?.user.role}
+        sessionUsername={session?.user.username}
+        changelog={changelog}
+        page={page}
+        rowsPerPage={rowsPerPage}
+        initialSketchData={sketchData}
+        getSketchData={getSketchData}
+      />
+    </>
   );
 }

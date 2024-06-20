@@ -2,6 +2,7 @@ import authOptions from "@/app/api/auth/[...nextauth]/authOptions";
 import { getAccount } from "@/backend/user/accountService";
 import { getServerSession } from "next-auth";
 import AccountClientPage from "./page.client";
+import { buildPageTitle } from "@/shared/utilities";
 
 export default async function AccountPage() {
   const session = await getServerSession(authOptions);
@@ -16,5 +17,13 @@ export default async function AccountPage() {
     return <div>Account not found</div>;
   }
 
-  return <AccountClientPage {...account} />;
+  // Rendering
+  const pageTitle = buildPageTitle("My Account");
+
+  return (
+    <>
+      <title>{pageTitle}</title>
+      <AccountClientPage {...account} />
+    </>
+  );
 }
