@@ -8,6 +8,7 @@ import {
   getTagsList,
 } from "@/backend/content/tagService";
 import { getStaticPageCount } from "@/shared/ProcessEnv";
+import { buildPageTitle } from "@/shared/utilities";
 import { Box, Typography } from "@mui/material";
 import SketchGrid from "../../SketchGrid";
 import { ContentPageProps, tryGetContent } from "../../contentBase";
@@ -33,7 +34,7 @@ export default async function TagPage({ params }: ContentPageProps) {
   const sketchData = await getSketchData(1);
 
   // Rendering
-  const pageTitle = tag.name + " - SketchTV.lol";
+  const pageTitle = buildPageTitle(tag.name);
 
   return (
     <>

@@ -6,6 +6,7 @@ import {
   parseSearchParams,
 } from "../baseListTypes";
 import RecurringSketchesDataGrid from "./RecurringSketchesDataGrid";
+import { buildPageTitle } from "@/shared/utilities";
 
 export default async function RecurringSketchesPage(props: ListPageProps) {
   // URL params
@@ -25,9 +26,11 @@ export default async function RecurringSketchesPage(props: ListPageProps) {
   }));
 
   // Rendering
+  const pageTitle = buildPageTitle("Recurring Sketches");
+
   return (
     <>
-      <title>Recurring Sketches - SketchTV.lol</title>
+      <title>{pageTitle}</title>
       <RecurringSketchesDataGrid
         searchParams={searchParams}
         rows={rows}

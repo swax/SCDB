@@ -1,5 +1,6 @@
 import DateGeneratedFooter from "@/app/components/DateGeneratedFooter";
 import { getCharacterList } from "@/backend/content/characterService";
+import { buildPageTitle } from "@/shared/utilities";
 import {
   ListPageProps,
   getCachedList,
@@ -25,9 +26,11 @@ export default async function CharactersPage(props: ListPageProps) {
   }));
 
   // Rendering
+  const pageTitle = buildPageTitle("Characters");
+
   return (
     <>
-      <title>Characters - SketchTV.lol</title>
+      <title>{pageTitle}</title>
       <CharacterDataGrid
         searchParams={searchParams}
         rows={rows}

@@ -8,6 +8,7 @@ import {
   getCharacterSketchGrid,
 } from "@/backend/content/characterService";
 import { getStaticPageCount } from "@/shared/ProcessEnv";
+import { buildPageTitle } from "@/shared/utilities";
 import { Box, Typography } from "@mui/material";
 import SketchGrid from "../../SketchGrid";
 import { ContentPageProps, tryGetContent } from "../../contentBase";
@@ -36,7 +37,7 @@ export default async function CharacterPage({ params }: ContentPageProps) {
   const sketchData = await getSketchData(1);
 
   // Rendering
-  const pageTitle = character.name + " - SketchTV.lol";
+  const pageTitle = buildPageTitle(character.name);
 
   return (
     <>

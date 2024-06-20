@@ -1,5 +1,6 @@
-import { getChangelog } from "@/backend/mgmt/changelogService";
 import ChangeLogTable from "@/app/changelog/components/ChangeLogTable";
+import { getChangelog } from "@/backend/mgmt/changelogService";
+import { buildPageTitle } from "@/shared/utilities";
 
 export default async function Changelog({
   searchParams,
@@ -28,8 +29,11 @@ export default async function Changelog({
   });
 
   // Rendering
+  const pageTitle = buildPageTitle("Changelog");
+
   return (
     <>
+      <title>{pageTitle}</title>
       <h1>Changelog</h1>
       <ChangeLogTable
         changelog={changelog}

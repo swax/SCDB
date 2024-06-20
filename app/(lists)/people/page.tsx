@@ -6,6 +6,7 @@ import {
   parseSearchParams,
 } from "../baseListTypes";
 import PeopleDataGrid from "./PeopleDataGrid";
+import { buildPageTitle } from "@/shared/utilities";
 
 export default async function PeoplePage(props: ListPageProps) {
   // URL params
@@ -26,9 +27,11 @@ export default async function PeoplePage(props: ListPageProps) {
   }));
 
   // Rendering
+  const pageTitle = buildPageTitle("People");
+
   return (
     <>
-      <title>People - SketchTV.lol</title>
+      <title>{pageTitle}</title>
       <PeopleDataGrid
         searchParams={searchParams}
         rows={rows}

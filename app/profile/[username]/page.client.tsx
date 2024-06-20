@@ -5,6 +5,7 @@ import ChangeLogTable from "@/app/changelog/components/ChangeLogTable";
 import MuiNextLink from "@/app/components/MuiNextLink";
 import { GetChangelogResponse } from "@/backend/mgmt/changelogService";
 import { GetProfileResponse } from "@/backend/user/profileService";
+import { allowedToChangeRole } from "@/shared/roleUtils";
 import { SketchGridData } from "@/shared/sketchGridBase";
 import DifferenceIcon from "@mui/icons-material/Difference";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
@@ -17,7 +18,6 @@ import {
 } from "@mui/material";
 import { user_role_type } from "@prisma/client";
 import ModPanel from "./ModPanel";
-import { allowedToChangeRole } from "@/shared/roleUtils";
 
 interface ProfileClientPageProps {
   profile: GetProfileResponse;
@@ -48,11 +48,8 @@ export default function ProfileClientPage({
     allowedToChangeRole(profile.role, sessionRole);
 
   // Rendering
-  const pageTitle = profile.username + " - SketchTV.lol";
-
   return (
     <Box>
-      <title>{pageTitle}</title>
       <Box mt={4} mb={4}>
         <Typography variant="h4">{profile.username}</Typography>
         <Typography variant="subtitle1">Role: {profile.role}</Typography>

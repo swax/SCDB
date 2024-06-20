@@ -23,6 +23,7 @@ import {
 } from "@mui/material";
 import SketchGrid from "../../SketchGrid";
 import { ContentPageProps, tryGetContent } from "../../contentBase";
+import { buildPageTitle } from "@/shared/utilities";
 
 export const revalidate = 300; // 5 minutes
 
@@ -49,7 +50,9 @@ export default async function SeasonPage({ params }: ContentPageProps) {
   const sketchData = await getSketchData(1);
 
   // Rendering
-  const pageTitle = `Season ${season.number} - ${season.show.title} ${season.year} - SketchTV.lol`;
+  const pageTitle = buildPageTitle(
+    `Season ${season.number} - ${season.show.title} ${season.year}`,
+  );
 
   return (
     <>

@@ -6,6 +6,7 @@ import {
   parseSearchParams,
 } from "../baseListTypes";
 import CategoriesDataGrid from "./CategoriesDataGrid";
+import { buildPageTitle } from "@/shared/utilities";
 
 export default async function CategoriesPage(props: ListPageProps) {
   // URL params
@@ -25,9 +26,11 @@ export default async function CategoriesPage(props: ListPageProps) {
   }));
 
   // Rendering
+  const pageTitle = buildPageTitle("Categories");
+
   return (
     <>
-      <title>Categories - SketchTV.lol</title>
+      <title>{pageTitle}</title>
       <CategoriesDataGrid
         searchParams={searchParams}
         rows={rows}

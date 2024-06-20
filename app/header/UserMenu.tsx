@@ -14,7 +14,7 @@ import { user_role_type } from "@prisma/client";
 import { signIn, signOut, useSession } from "next-auth/react";
 import { useState } from "react";
 
-export default function AccountMenu() {
+export default function UserMenu() {
   // Hooks
   const { data: session, status } = useSession();
   const [anchorEl, setAnchorEl] = useState<Nullable<Element>>(null);
@@ -53,8 +53,8 @@ export default function AccountMenu() {
 
   return (
     <Box>
-      <IconButton aria-label="Account Menu" onClick={handleClick_accountMenu}>
-        <Tooltip title="Account Menu">
+      <IconButton aria-label="User Menu" onClick={handleClick_accountMenu}>
+        <Tooltip title="User Menu">
           <AccountCircleIcon />
         </Tooltip>
       </IconButton>

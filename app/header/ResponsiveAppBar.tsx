@@ -15,7 +15,7 @@ import { usePathname } from "next/navigation";
 import { MouseEvent, useMemo, useState } from "react";
 import MuiNextLink from "../components/MuiNextLink";
 import usePageLoading from "../hooks/usePageLoading";
-import AccountMenu from "./AccountMenu";
+import UserMenu from "./UserMenu";
 import DiscordIcon from "./DiscordIcon";
 import EditViewButton from "./EditViewButton";
 
@@ -195,7 +195,7 @@ function ResponsiveAppBar() {
               <DiscordIcon />
             </IconButton>
           </Tooltip>
-          <AccountMenu />
+          <UserMenu />
           <Tooltip title={`About`}>
             <IconButton
               aria-label="About"

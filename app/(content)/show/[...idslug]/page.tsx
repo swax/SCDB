@@ -25,6 +25,7 @@ import {
 } from "@mui/material";
 import SketchGrid from "../../SketchGrid";
 import { ContentPageProps, tryGetContent } from "../../contentBase";
+import { buildPageTitle } from "@/shared/utilities";
 
 export async function generateStaticParams() {
   const shows = await getShowsList({ page: 1, pageSize: getStaticPageCount() });
@@ -46,7 +47,7 @@ export default async function ShowPage({ params }: ContentPageProps) {
   const sketchData = await getSketchData(1);
 
   // Rendering
-  const pageTitle = show.title + " - SketchTV.lol";
+  const pageTitle = buildPageTitle(show.title);
 
   return (
     <>
