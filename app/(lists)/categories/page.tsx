@@ -1,12 +1,18 @@
 import DateGeneratedFooter from "@/app/components/DateGeneratedFooter";
 import { getCategoriesList } from "@/backend/content/categoryService";
+import { buildPageTitle } from "@/shared/utilities";
+import { Metadata } from "next";
 import {
   ListPageProps,
   getCachedList,
   parseSearchParams,
 } from "../baseListTypes";
 import CategoriesDataGrid from "./CategoriesDataGrid";
-import { buildPageTitle } from "@/shared/utilities";
+
+export const metadata: Metadata = {
+  title: buildPageTitle("Categories"),
+  description: "A filterable list of comedy sketches by category",
+};
 
 export default async function CategoriesPage(props: ListPageProps) {
   // URL params
@@ -26,11 +32,8 @@ export default async function CategoriesPage(props: ListPageProps) {
   }));
 
   // Rendering
-  const pageTitle = buildPageTitle("Categories");
-
   return (
     <>
-      <title>{pageTitle}</title>
       <CategoriesDataGrid
         searchParams={searchParams}
         rows={rows}

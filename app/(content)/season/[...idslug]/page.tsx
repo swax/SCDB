@@ -7,6 +7,7 @@ import {
   getSeasonsList,
 } from "@/backend/content/seasonService";
 import { getStaticPageCount } from "@/shared/ProcessEnv";
+import { buildPageTitle } from "@/shared/utilities";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import FormatListNumberedIcon from "@mui/icons-material/FormatListNumbered";
 import {
@@ -21,9 +22,29 @@ import {
   TableRow,
   Typography,
 } from "@mui/material";
+import { Metadata } from "next";
+import { cache } from "react";
 import SketchGrid from "../../SketchGrid";
 import { ContentPageProps, tryGetContent } from "../../contentBase";
-import { buildPageTitle } from "@/shared/utilities";
+
+const getRequestCachedSeason = cache(async (id: number) => getSeason(id));
+
+export async function generateMetadata({
+  params,
+}: ContentPageProps): Promise<Metadata> {
+  const id = parseInt(params.idslug[0]);
+
+  const season = await getRequestCachedSeason(id);
+
+  return season
+    ? {
+        title: buildPageTitle(
+          `Season ${season.number} - ${season.show.title} ${season.year}`,
+        ),
+        description: `Comedy sketches from the ${season.year} ${season.show.title} season ${season.number}`,
+      }
+    : {};
+}
 
 export const revalidate = 300; // 5 minutes
 
@@ -40,7 +61,7 @@ export async function generateStaticParams() {
 
 export default async function SeasonPage({ params }: ContentPageProps) {
   // Data fetching
-  const season = await tryGetContent("season", params, getSeason);
+  const season = await tryGetContent("season", params, getRequestCachedSeason);
 
   async function getSketchData(page: number) {
     "use server";
@@ -50,13 +71,8 @@ export default async function SeasonPage({ params }: ContentPageProps) {
   const sketchData = await getSketchData(1);
 
   // Rendering
-  const pageTitle = buildPageTitle(
-    `Season ${season.number} - ${season.show.title} ${season.year}`,
-  );
-
   return (
     <>
-      <title>{pageTitle}</title>
       <Box mt={4} mb={4}>
         <Typography variant="h4">
           Season {season.number} ({season.year})

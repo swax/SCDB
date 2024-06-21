@@ -1,14 +1,20 @@
 import DateGeneratedFooter from "@/app/components/DateGeneratedFooter";
 import MuiNextLink from "@/app/components/MuiNextLink";
 import { getSketchList } from "@/backend/content/sketchService";
+import { buildPageTitle } from "@/shared/utilities";
 import { Button } from "@mui/material";
+import { Metadata } from "next";
 import {
   ListPageProps,
   getCachedList,
   parseSearchParams,
 } from "../baseListTypes";
 import SketchDataGrid from "./SketchDataGrid";
-import { buildPageTitle } from "@/shared/utilities";
+
+export const metadata: Metadata = {
+  title: buildPageTitle("Sketches"),
+  description: "A filterable list of comedy sketches",
+};
 
 export default async function SketchesPage(props: ListPageProps) {
   // URL params
@@ -27,11 +33,8 @@ export default async function SketchesPage(props: ListPageProps) {
   }));
 
   // Rendering
-  const pageTitle = buildPageTitle("Sketches");
-
   return (
     <>
-      <title>{pageTitle}</title>
       <SketchDataGrid
         searchParams={searchParams}
         rows={rows}

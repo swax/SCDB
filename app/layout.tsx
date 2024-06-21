@@ -8,7 +8,8 @@ import ThemeRegistry from "./providers/ThemeRegistry";
 
 export const metadata: Metadata = {
   title: "SketchTV.lol",
-  description: "The Sketch Comedy Database",
+  description:
+    "The Sketch Comedy Database. Discover new and trending comedy sketches here!",
 };
 
 export const viewport: Viewport = {

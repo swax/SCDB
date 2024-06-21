@@ -1,6 +1,12 @@
 import ChangeLogTable from "@/app/changelog/components/ChangeLogTable";
 import { getChangelog } from "@/backend/mgmt/changelogService";
 import { buildPageTitle } from "@/shared/utilities";
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: buildPageTitle("Changelog"),
+  description: "View the latest changes made to the site",
+};
 
 export default async function Changelog({
   searchParams,
@@ -29,11 +35,8 @@ export default async function Changelog({
   });
 
   // Rendering
-  const pageTitle = buildPageTitle("Changelog");
-
   return (
     <>
-      <title>{pageTitle}</title>
       <h1>Changelog</h1>
       <ChangeLogTable
         changelog={changelog}

@@ -3,7 +3,6 @@ import {
   getLatestSketchGrid,
   getTrendingSketchGrid,
 } from "@/backend/content/homeService";
-import { buildPageTitle } from "@/shared/utilities";
 import TrendingUpIcon from "@mui/icons-material/TrendingUp";
 import { Box, Typography } from "@mui/material";
 import SketchGrid from "./(content)/SketchGrid";
@@ -26,11 +25,8 @@ export default async function HomePage() {
   const trendingSketchData = await getTrendingSketchData(1);
 
   // Rendering
-  const pageTitle = buildPageTitle();
-
   return (
     <>
-      <title>{pageTitle}</title>
       <Box mt={2}>
         <SketchGrid
           initialData={trendingSketchData}

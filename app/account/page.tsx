@@ -1,8 +1,14 @@
 import authOptions from "@/app/api/auth/[...nextauth]/authOptions";
 import { getAccount } from "@/backend/user/accountService";
+import { buildPageTitle } from "@/shared/utilities";
+import { Metadata } from "next";
 import { getServerSession } from "next-auth";
 import AccountClientPage from "./page.client";
-import { buildPageTitle } from "@/shared/utilities";
+
+export const metadata: Metadata = {
+  title: buildPageTitle("My Account"),
+  description: "My SketchTV.lol account",
+};
 
 export default async function AccountPage() {
   const session = await getServerSession(authOptions);
@@ -18,11 +24,8 @@ export default async function AccountPage() {
   }
 
   // Rendering
-  const pageTitle = buildPageTitle("My Account");
-
   return (
     <>
-      <title>{pageTitle}</title>
       <AccountClientPage {...account} />
     </>
   );

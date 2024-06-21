@@ -1,7 +1,5 @@
-import { getSketch } from "@/backend/content/sketchService";
 import "server-only";
-
-type sketchType = Exclude<Awaited<ReturnType<typeof getSketch>>, null>;
+import { sketchType } from "./sketchTypes";
 
 /**
  * Way over engineered, but aggregates the sketch description, cast, and title to build the meta description

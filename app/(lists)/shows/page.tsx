@@ -1,12 +1,18 @@
 import DateGeneratedFooter from "@/app/components/DateGeneratedFooter";
 import { getShowsList } from "@/backend/content/showService";
 import { buildPageTitle } from "@/shared/utilities";
+import { Metadata } from "next";
 import {
   ListPageProps,
   getCachedList,
   parseSearchParams,
 } from "../baseListTypes";
 import ShowsDataGrid from "./ShowsDataGrid";
+
+export const metadata: Metadata = {
+  title: buildPageTitle("Shows"),
+  description: "A filterable list of sketch comedy shows",
+};
 
 export default async function CategoriesPage(props: ListPageProps) {
   // URL params
@@ -23,11 +29,8 @@ export default async function CategoriesPage(props: ListPageProps) {
   }));
 
   // Rendering
-  const pageTitle = buildPageTitle("Shows");
-
   return (
     <>
-      <title>{pageTitle}</title>
       <ShowsDataGrid
         searchParams={searchParams}
         rows={rows}

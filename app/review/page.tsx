@@ -8,7 +8,13 @@ import {
   TableHead,
   TableRow,
 } from "@mui/material";
+import { Metadata } from "next";
 import MuiNextLink from "../components/MuiNextLink";
+
+export const metadata: Metadata = {
+  title: buildPageTitle("Review"),
+  description: "Review the latest changes made to the site by users",
+};
 
 export default async function ReviewPage({
   searchParams,
@@ -24,11 +30,8 @@ export default async function ReviewPage({
   const rowsToReview = await getRowsToReview(rowCount);
 
   // Rendering
-  const pageTitle = buildPageTitle("Review");
-
   return (
     <>
-      <title>{pageTitle}</title>
       <h1>Review</h1>
       <h5>
         Only mods can review. Mods cannot review their own changes.

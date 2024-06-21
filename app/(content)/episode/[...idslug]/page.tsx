@@ -9,8 +9,33 @@ import {
 import { getStaticPageCount } from "@/shared/ProcessEnv";
 import { buildPageTitle } from "@/shared/utilities";
 import { Box, Typography } from "@mui/material";
+import { Metadata } from "next";
+import { cache } from "react";
 import SketchGrid from "../../SketchGrid";
 import { ContentPageProps, tryGetContent } from "../../contentBase";
+
+const getRequestCachedEpisode = cache(async (id: number) => getEpisode(id));
+
+export async function generateMetadata({
+  params,
+}: ContentPageProps): Promise<Metadata> {
+  const id = parseInt(params.idslug[0]);
+
+  const episode = await getRequestCachedEpisode(id);
+
+  return episode
+    ? {
+        title: buildPageTitle(
+          `Episode ${episode.number} - ${episode.season.lookup_slug}`,
+        ),
+        description:
+          `Comedy sketches from episode ${episode.number} of ${episode.season.lookup_slug}` +
+          (episode.air_date
+            ? ` aired on ${episode.air_date.toLocaleDateString()}`
+            : ""),
+      }
+    : {};
+}
 
 export const revalidate = 300; // 5 minutes
 
@@ -27,7 +52,11 @@ export async function generateStaticParams() {
 
 export default async function EpisodePage({ params }: ContentPageProps) {
   // Data fetching
-  const episode = await tryGetContent("episode", params, getEpisode);
+  const episode = await tryGetContent(
+    "episode",
+    params,
+    getRequestCachedEpisode,
+  );
 
   async function getSketchData(page: number) {
     "use server";
@@ -37,13 +66,8 @@ export default async function EpisodePage({ params }: ContentPageProps) {
   const sketchData = await getSketchData(1);
 
   // Rendering
-  const pageTitle = buildPageTitle(
-    `Episode ${episode.number} - ${episode.season.lookup_slug}`,
-  );
-
   return (
     <>
-      <title>{pageTitle}</title>
       <Box mt={4} mb={4}>
         <Typography variant="h4">Episode {episode.number}</Typography>
         <Typography variant="subtitle1">

@@ -1,12 +1,18 @@
 import DateGeneratedFooter from "@/app/components/DateGeneratedFooter";
 import { getPersonList } from "@/backend/content/personService";
+import { buildPageTitle } from "@/shared/utilities";
+import { Metadata } from "next";
 import {
   ListPageProps,
   getCachedList,
   parseSearchParams,
 } from "../baseListTypes";
 import PeopleDataGrid from "./PeopleDataGrid";
-import { buildPageTitle } from "@/shared/utilities";
+
+export const metadata: Metadata = {
+  title: buildPageTitle("People"),
+  description: "A filterable list of comedy sketches by person",
+};
 
 export default async function PeoplePage(props: ListPageProps) {
   // URL params
@@ -27,11 +33,8 @@ export default async function PeoplePage(props: ListPageProps) {
   }));
 
   // Rendering
-  const pageTitle = buildPageTitle("People");
-
   return (
     <>
-      <title>{pageTitle}</title>
       <PeopleDataGrid
         searchParams={searchParams}
         rows={rows}

@@ -1,14 +1,17 @@
 import { buildPageTitle } from "@/shared/utilities";
 import { Box } from "@mui/material";
+import { Metadata } from "next";
 import Markdown from "react-markdown";
+
+export const metadata: Metadata = {
+  title: buildPageTitle("About"),
+  description: "About the SketchTV.lol website",
+};
 
 export default function HelpPage() {
   // Rendering
-  const pageTitle = buildPageTitle("About");
-
   return (
     <>
-      <title>{pageTitle}</title>
       <Box className="about-page" sx={{ marginTop: 4 }}>
         <Markdown>{`
       
