@@ -1,6 +1,5 @@
 import { ContentLink } from "@/app/components/ContentLink";
 import prisma from "@/database/prisma";
-import { getRoleRank } from "@/shared/roleUtils";
 import {
   SKETCH_PAGE_SIZE,
   SketchGridData,
@@ -17,9 +16,8 @@ export interface GetProfileResponse {
 
 export async function getProfile(
   username: string,
-  sessionRole?: user_role_type,
-) {
-  return (await prisma.user.findUnique({
+): Promise<GetProfileResponse | null> {
+  return await prisma.user.findUnique({
     where: {
       username,
     },
@@ -27,11 +25,9 @@ export async function getProfile(
       id: true,
       username: true,
       role: true,
-      mod_note:
-        sessionRole &&
-        getRoleRank(sessionRole) >= getRoleRank(user_role_type.Moderator),
+      mod_note: true,
     },
-  })) satisfies GetProfileResponse | null;
+  });
 }
 
 export async function getProfileSketchGrid(

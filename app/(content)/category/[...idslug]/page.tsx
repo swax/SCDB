@@ -1,3 +1,8 @@
+/**
+ * This page is a cross between a 'tag list' page and a 'category content' page
+ * Can't put a revalidate on this page because then search params won't work
+ */
+
 import { ContentPageProps, tryGetContent } from "@/app/(content)/contentBase";
 import DateGeneratedFooter from "@/app/components/DateGeneratedFooter";
 import MuiNextLink from "@/app/components/MuiNextLink";
@@ -5,6 +10,8 @@ import { getCategory } from "@/backend/content/categoryService";
 import { getTagsByCategoryList } from "@/backend/content/tagService";
 import { buildPageTitle } from "@/shared/utilities";
 import { Box, Typography } from "@mui/material";
+import { Metadata } from "next";
+import { cache } from "react";
 import {
   ListPageProps,
   getCachedList,
@@ -12,11 +19,22 @@ import {
 } from "../../../(lists)/baseListTypes";
 import TagsDataGrid from "./TagsDataGrid";
 
-// This page is a cross between a 'tag list' page and a 'category content' page
+const getRequestCachedCategory = cache(async (id: number) => getCategory(id));
 
-// TODO: Should probably move this page to the content folder
+export async function generateMetadata({
+  params,
+}: ContentPageProps): Promise<Metadata> {
+  const id = parseInt(params.idslug[0]);
 
-// Can't put a revalidate on this page because then search params won't work
+  const category = await getRequestCachedCategory(id);
+
+  return category
+    ? {
+        title: buildPageTitle(category.name),
+        description: `Comedy sketches featuring ${category.name}`,
+      }
+    : {};
+}
 
 /** A combination of a list page and a content page because the url has an id/slug */
 export default async function CategoryPage(
@@ -28,7 +46,11 @@ export default async function CategoryPage(
   // Fetch data
 
   // This is this only tryGetContent that isn't cached at the page level
-  const category = await tryGetContent("category", props.params, getCategory);
+  const category = await tryGetContent(
+    "category",
+    props.params,
+    getRequestCachedCategory,
+  );
 
   // When any tag is updated, all category tag list pages will be revalidated
   // Not the most 'efficient', but the generic edit pages are set to revalidate tags with table names
@@ -45,11 +67,8 @@ export default async function CategoryPage(
   }));
 
   // Rendering
-  const pageTitle = buildPageTitle(category.name);
-
   return (
     <>
-      <title>{pageTitle}</title>
       <Box mt={4} mb={4}>
         <Typography variant="h4">{category.name}</Typography>
         <Typography variant="subtitle1" color="textSecondary">

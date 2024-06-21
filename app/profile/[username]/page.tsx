@@ -4,24 +4,53 @@ import {
   getProfile,
   getProfileSketchGrid,
 } from "@/backend/user/profileService";
+import { getRoleRank } from "@/shared/roleUtils";
 import { buildPageTitle } from "@/shared/utilities";
+import { user_role_type } from "@prisma/client";
+import { Metadata } from "next";
 import { getServerSession } from "next-auth";
 import { notFound } from "next/navigation";
+import { cache } from "react";
 import ProfileClientPage from "./page.client";
+
+interface ProfilePageProps {
+  params: { username: string };
+}
+
+const getRequestCachedProfile = cache(async (username: string) =>
+  getProfile(username),
+);
+
+export async function generateMetadata({
+  params,
+}: ProfilePageProps): Promise<Metadata> {
+  const profile = await getRequestCachedProfile(params.username);
+
+  return profile
+    ? {
+        title: buildPageTitle(`${profile.username}'s Profile`),
+        description: `The profile for ${profile.username} on SketchTV.lol`,
+      }
+    : {};
+}
 
 export const revalidate = 10;
 
-export default async function ProfilePage({
-  params,
-}: {
-  params: { username: string };
-}) {
+export default async function ProfilePage({ params }: ProfilePageProps) {
   const session = await getServerSession(authOptions);
 
-  const profile = await getProfile(params.username, session?.user.role);
+  const profile = await getRequestCachedProfile(params.username);
 
   if (!profile) {
     notFound();
+  }
+
+  // Hide mod note from client if user is less than a moderator
+  if (
+    !session?.user.role ||
+    getRoleRank(session.user.role) < getRoleRank(user_role_type.Moderator)
+  ) {
+    profile.mod_note = null;
   }
 
   // Sketch grid
@@ -43,11 +72,8 @@ export default async function ProfilePage({
   });
 
   // Rendering
-  const pageTitle = buildPageTitle(profile.username);
-
   return (
     <>
-      <title>{pageTitle}</title>
       <ProfileClientPage
         profile={profile}
         sessionRole={session?.user.role}

@@ -40,6 +40,13 @@ export async function getRecurringSketch(id: number) {
       title: true,
       description: true,
       link_urls: true,
+      show: {
+        select: {
+          title: true,
+          id: true,
+          url_slug: true,
+        },
+      },
     },
   });
 }

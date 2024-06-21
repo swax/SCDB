@@ -10,8 +10,27 @@ import {
 import { getStaticPageCount } from "@/shared/ProcessEnv";
 import { buildPageTitle } from "@/shared/utilities";
 import { Box, Typography } from "@mui/material";
+import { Metadata } from "next";
+import { cache } from "react";
 import SketchGrid from "../../SketchGrid";
 import { ContentPageProps, tryGetContent } from "../../contentBase";
+
+const getRequestCachedCharacter = cache(async (id: number) => getCharacter(id));
+
+export async function generateMetadata({
+  params,
+}: ContentPageProps): Promise<Metadata> {
+  const id = parseInt(params.idslug[0]);
+
+  const character = await getRequestCachedCharacter(id);
+
+  return character
+    ? {
+        title: buildPageTitle(character.name),
+        description: `Comedy sketches featuring the character ${character.name}`,
+      }
+    : {};
+}
 
 export const revalidate = 300; // 5 minutes
 
@@ -27,7 +46,11 @@ export async function generateStaticParams() {
 }
 
 export default async function CharacterPage({ params }: ContentPageProps) {
-  const character = await tryGetContent("character", params, getCharacter);
+  const character = await tryGetContent(
+    "character",
+    params,
+    getRequestCachedCharacter,
+  );
 
   async function getSketchData(page: number) {
     "use server";
@@ -37,11 +60,8 @@ export default async function CharacterPage({ params }: ContentPageProps) {
   const sketchData = await getSketchData(1);
 
   // Rendering
-  const pageTitle = buildPageTitle(character.name);
-
   return (
     <>
-      <title>{pageTitle}</title>
       <Box mt={4} mb={4}>
         <Typography variant="h4">{character.name}</Typography>
         <Typography variant="subtitle1">The Character</Typography>

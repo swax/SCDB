@@ -1,12 +1,18 @@
 import DateGeneratedFooter from "@/app/components/DateGeneratedFooter";
 import { getRecurringSketchList } from "@/backend/content/recurringSketch";
+import { buildPageTitle } from "@/shared/utilities";
+import { Metadata } from "next";
 import {
   ListPageProps,
   getCachedList,
   parseSearchParams,
 } from "../baseListTypes";
 import RecurringSketchesDataGrid from "./RecurringSketchesDataGrid";
-import { buildPageTitle } from "@/shared/utilities";
+
+export const metadata: Metadata = {
+  title: buildPageTitle("Recurring Sketches"),
+  description: "A filterable list of recurring sketches",
+};
 
 export default async function RecurringSketchesPage(props: ListPageProps) {
   // URL params
@@ -26,11 +32,8 @@ export default async function RecurringSketchesPage(props: ListPageProps) {
   }));
 
   // Rendering
-  const pageTitle = buildPageTitle("Recurring Sketches");
-
   return (
     <>
-      <title>{pageTitle}</title>
       <RecurringSketchesDataGrid
         searchParams={searchParams}
         rows={rows}

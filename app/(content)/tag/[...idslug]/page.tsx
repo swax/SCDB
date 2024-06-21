@@ -10,8 +10,27 @@ import {
 import { getStaticPageCount } from "@/shared/ProcessEnv";
 import { buildPageTitle } from "@/shared/utilities";
 import { Box, Typography } from "@mui/material";
+import { Metadata } from "next";
+import { cache } from "react";
 import SketchGrid from "../../SketchGrid";
 import { ContentPageProps, tryGetContent } from "../../contentBase";
+
+const getRequestCachedTag = cache(async (id: number) => getTag(id));
+
+export async function generateMetadata({
+  params,
+}: ContentPageProps): Promise<Metadata> {
+  const id = parseInt(params.idslug[0]);
+
+  const tag = await getRequestCachedTag(id);
+
+  return tag
+    ? {
+        title: buildPageTitle(tag.name),
+        description: `Comedy sketches tagged with ${tag.name}`,
+      }
+    : {};
+}
 
 export const revalidate = 300; // 5 minutes
 
@@ -24,7 +43,7 @@ export async function generateStaticParams() {
 }
 
 export default async function TagPage({ params }: ContentPageProps) {
-  const tag = await tryGetContent("tag", params, getTag);
+  const tag = await tryGetContent("tag", params, getRequestCachedTag);
 
   async function getSketchData(page: number) {
     "use server";
@@ -34,11 +53,8 @@ export default async function TagPage({ params }: ContentPageProps) {
   const sketchData = await getSketchData(1);
 
   // Rendering
-  const pageTitle = buildPageTitle(tag.name);
-
   return (
     <>
-      <title>{pageTitle}</title>
       <Box mt={4} mb={4}>
         <Typography variant="h4">{tag.name}</Typography>
         <Typography variant="subtitle1">

@@ -1,3 +1,4 @@
+import { ContentLink } from "@/app/components/ContentLink";
 import DateGeneratedFooter from "@/app/components/DateGeneratedFooter";
 import DescriptionPanel from "@/app/components/DescriptionPanel";
 import LinksPanel from "@/app/components/LinksPanel";
@@ -10,8 +11,31 @@ import {
 import { getStaticPageCount } from "@/shared/ProcessEnv";
 import { buildPageTitle } from "@/shared/utilities";
 import { Box, Typography } from "@mui/material";
+import { Metadata } from "next";
+import { cache } from "react";
 import SketchGrid from "../../SketchGrid";
 import { ContentPageProps, tryGetContent } from "../../contentBase";
+
+const getRequestCachedRecurringSketch = cache(async (id: number) =>
+  getRecurringSketch(id),
+);
+
+export async function generateMetadata({
+  params,
+}: ContentPageProps): Promise<Metadata> {
+  const id = parseInt(params.idslug[0]);
+
+  const recurringSketch = await getRequestCachedRecurringSketch(id);
+
+  return recurringSketch
+    ? {
+        title: buildPageTitle(
+          `${recurringSketch.title} - ${recurringSketch.show.title} Recurring`,
+        ),
+        description: `Comedy sketches in the '${recurringSketch.title}' series on ${recurringSketch.show.title}`,
+      }
+    : {};
+}
 
 export const revalidate = 300; // 5 minutes
 
@@ -33,7 +57,7 @@ export default async function RecurringSketchPage({
   const recurringSketch = await tryGetContent(
     "recurring-sketch",
     params,
-    getRecurringSketch,
+    getRequestCachedRecurringSketch,
   );
 
   async function getSketchData(page: number) {
@@ -44,17 +68,16 @@ export default async function RecurringSketchPage({
   const sketchData = await getSketchData(1);
 
   // Rendering
-  const pageTitle = buildPageTitle(recurringSketch.title);
-
   return (
     <>
-      <title>{pageTitle}</title>
       <Box mt={4} mb={4}>
         <Typography variant="h4">{recurringSketch.title}</Typography>
         <Typography variant="subtitle1" color="textSecondary">
           <MuiNextLink href={"/recurring-sketches"}>
             Recurring Sketch
           </MuiNextLink>
+          {" on "}
+          <ContentLink mui table="show" entry={recurringSketch.show} />
         </Typography>
       </Box>
       <DescriptionPanel description={recurringSketch.description} />

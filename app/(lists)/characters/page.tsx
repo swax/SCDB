@@ -1,12 +1,18 @@
 import DateGeneratedFooter from "@/app/components/DateGeneratedFooter";
 import { getCharacterList } from "@/backend/content/characterService";
 import { buildPageTitle } from "@/shared/utilities";
+import { Metadata } from "next";
 import {
   ListPageProps,
   getCachedList,
   parseSearchParams,
 } from "../baseListTypes";
 import CharacterDataGrid from "./CharacterDataGrid";
+
+export const metadata: Metadata = {
+  title: buildPageTitle("Characters"),
+  description: "A filterable list of comedy sketches by character",
+};
 
 export default async function CharactersPage(props: ListPageProps) {
   // URL params
@@ -26,11 +32,8 @@ export default async function CharactersPage(props: ListPageProps) {
   }));
 
   // Rendering
-  const pageTitle = buildPageTitle("Characters");
-
   return (
     <>
-      <title>{pageTitle}</title>
       <CharacterDataGrid
         searchParams={searchParams}
         rows={rows}

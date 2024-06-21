@@ -17,9 +17,28 @@ import {
   ImageListItemBar,
   Typography,
 } from "@mui/material";
+import { Metadata } from "next";
 import Image from "next/image";
+import { cache } from "react";
 import SketchGrid from "../../SketchGrid";
 import { ContentPageProps, tryGetContent } from "../../contentBase";
+
+const getRequestCachedPerson = cache(async (id: number) => getPerson(id));
+
+export async function generateMetadata({
+  params,
+}: ContentPageProps): Promise<Metadata> {
+  const id = parseInt(params.idslug[0]);
+
+  const person = await getRequestCachedPerson(id);
+
+  return person
+    ? {
+        title: buildPageTitle(person.name),
+        description: `Comedy sketches featuring the person ${person.name}`,
+      }
+    : {};
+}
 
 export const revalidate = 300; // 5 minutes
 
@@ -36,7 +55,7 @@ export async function generateStaticParams() {
 
 export default async function PersonPage({ params }: ContentPageProps) {
   // Data fetching
-  const person = await tryGetContent("person", params, getPerson);
+  const person = await tryGetContent("person", params, getRequestCachedPerson);
 
   async function getSketchCastData(page: number) {
     "use server";
@@ -59,11 +78,8 @@ export default async function PersonPage({ params }: ContentPageProps) {
   const deathDate = person.death_date ? new Date(person.death_date) : null;
 
   // Rendering
-  const pageTitle = buildPageTitle(person.name);
-
   return (
     <>
-      <title>{pageTitle}</title>
       <Box mt={4} mb={4}>
         <Typography variant="h4">{person.name}</Typography>
         <Typography variant="subtitle1">The Person</Typography>
