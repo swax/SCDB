@@ -4,7 +4,7 @@ import fs from "fs";
 
 dotenv.config();
 
-const pgUri = process.env.DATABASE_URL;
+const pgUri = process.env.DIRECT_URL;
 const backupDir = "./database/backups";
 const date = new Date().toISOString().slice(0, 10); // YYYY-MM-DD format
 
@@ -17,12 +17,14 @@ if (!fs.existsSync(backupDir)) {
 // TODO: Move account, session, and user tables to 'sec' schema
 
 const publicBackup = false;
+const dataOnly = false;
 const pubCmd = publicBackup ? "-T account -T session -T user" : ""; // Leave out account, session and user tables
 const pubSuffix = publicBackup ? "public" : "sensitive";
 const filename = `${backupDir}/backup-${date}-${pubSuffix}.sql`;
+const dataParam = dataOnly ? "--data-only" : "";
 
 // Dump the public schema
-const command = `pg_dump -n public ${pubCmd} --data-only ${pgUri} > ${filename}`;
+const command = `pg_dump -n public ${pubCmd} ${dataParam} ${pgUri} > ${filename}`;
 
 console.log("Starting backup...");
 

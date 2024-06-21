@@ -14,32 +14,47 @@ export default function HelpPage() {
     <>
       <Box className="about-page" sx={{ marginTop: 4 }}>
         <Markdown>{`
-      
-SketchTV.lol is a website where we're building a database of comdedy sketches.
-There's no place on the internet that catalogs sketches to make them easy to find by category, person, year, etc...
+### About
 
-Some shows like Human Giant seem to be impossible to find anywhere. 
-Others are hidden in various large streaming sites, let's help people find them to enjoy again!
+SketchTV.lol is all about building a database of comedy sketches. 
+There's no place on the internet that catalogs individual sketches to make them easy to find by category, person, year, etc...
 
-Help us grow by creating an account and adding your favorite sketches!
-This site was created by [@swax](https://x.com/swax) an open source software engineer as a fun side project.
-We have a [Discord server](https://discord.gg/UKE8gSYp) as well if you want to talk about sketches, improving the site, or anything else!
-      
+Some sketches seem to be impossible to find anywhere. 
+Others are hidden on various large streaming sites, let's help people find them to enjoy again.
+
+Create an account to add your favorite sketches.
+We have a [Discord server](https://discord.gg/UKE8gSYp) as well if you want to collaborate;
+like trying to find and add sketches with a particular theme.
+
 ### Adding a Sketch
 
 * Once you've logged in there is a link at the bottom of the [sketch list](/sketches) page to add a new sketch
 * Red fields on the form are required
 * There is a 'create' link in the show, season, character, etc.. drop downs to create those respective entries
+
+### Adding Images
+
 * Sketch image
   * Try to pick an image with the most characters in it
 * Cast images
   * You can use the , and . keys to move the video frame by frame on YouTube to get the best screenshot
   * The face of the character should be framed so that the face is in the upper half of the image with some margin on the sides
     * ![image](/images/cast-img-framing.jpg) 
-* After saving changes the update should be immediate, but it can take up to 5 minutes for related pages to be updated
+
+### Saving Changes
+
+* After saving, the page update should be immediately. It can take up to 5 minutes for linked pages to be updated
 * To edit a sketch, click the pencil icon in the upper right
 * To view a sketch after saving, click the eye icon in the upper right
   
+### Credits
+
+This site was created by [@swax](https://x.com/swax) as a fun open source side project.
+      
+The source code is available on [GitHub](https://github.com/swax/SCDB). 
+Discord is where we discuss new feature ideas and bug fixes. 
+It's also a great resource for learning how to build a full stack web application with Next.js, Prisma, and PostgreSQL.
+
 `}</Markdown>
       </Box>
     </>

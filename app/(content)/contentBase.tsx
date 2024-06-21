@@ -49,38 +49,3 @@ export function revalidateContent(table: string, id: number, slug: string) {
   // Revalidate the associated list page for the content, default is 5 minutes as well
   revalidateTag(`${table}-list`);
 }
-
-/**
- * Deprecated for the more direct, simple and type safe version above
- * Usage:
- *   type SketchType = PromiseReturnType<typeof getContentFuncs.sketch>;
- *   const sketch = await fetchContent<SketchType>("sketch", params);
- */
-export async function fetchCachedContent<T extends { url_slug: string } | null>(
-  route: string,
-  params: ContentPageParams,
-) {
-  const [id, slug] = params.idslug;
-
-  const res = await fetch(
-    process.env["NEXTAUTH_URL"] + `/api/content/${route}/${id}`,
-  );
-
-  if (!res.ok) {
-    if (res.status === 404) {
-      notFound();
-    }
-    // This will activate the closest `error.js` Error Boundary
-    throw new Error("Failed to fetch data");
-  }
-
-  const content = (await res.json()) as T;
-
-  if (!content) {
-    notFound();
-  }
-
-  if (slug !== content.url_slug) {
-    redirect(`/${route}/${id}/${content.url_slug}`);
-  }
-}

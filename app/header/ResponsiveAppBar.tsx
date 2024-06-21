@@ -15,9 +15,9 @@ import { usePathname } from "next/navigation";
 import { MouseEvent, useMemo, useState } from "react";
 import MuiNextLink from "../components/MuiNextLink";
 import usePageLoading from "../hooks/usePageLoading";
-import UserMenu from "./UserMenu";
 import DiscordIcon from "./DiscordIcon";
 import EditViewButton from "./EditViewButton";
+import UserMenu from "./UserMenu";
 
 const pages = [
   {
@@ -195,7 +195,6 @@ function ResponsiveAppBar() {
               <DiscordIcon />
             </IconButton>
           </Tooltip>
-          <UserMenu />
           <Tooltip title={`About`}>
             <IconButton
               aria-label="About"
@@ -206,6 +205,7 @@ function ResponsiveAppBar() {
               <InfoIcon />
             </IconButton>
           </Tooltip>
+          <UserMenu />
         </Stack>
       </Toolbar>
 

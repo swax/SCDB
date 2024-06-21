@@ -75,12 +75,14 @@ export default function ProfileClientPage({
           </Typography>
         </AccordionSummary>
         <AccordionDetails>
-          <ChangeLogTable
-            changelog={changelog}
-            page={page}
-            rowsPerPage={rowsPerPage}
-            profilePage={true}
-          />
+          <Box sx={{ overflowX: "auto" }}>
+            <ChangeLogTable
+              changelog={changelog}
+              page={page}
+              rowsPerPage={rowsPerPage}
+              profilePage={true}
+            />
+          </Box>
           <Box mt={2}>
             <MuiNextLink href={`/changelog?username=${profile.username}`}>
               See full change history

@@ -48,8 +48,8 @@ export default async function ReviewPage({
           </TableRow>
         </TableHead>
         <TableBody>
-          {rowsToReview.map((row) => (
-            <TableRow key={row.row_id}>
+          {rowsToReview.map((row, i) => (
+            <TableRow key={i}>
               <TableCell>
                 <MuiNextLink href={getEditUrl(row.table_name, row.row_id)}>
                   {row.table_name}/{row.row_id}
