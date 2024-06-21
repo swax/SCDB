@@ -4,8 +4,9 @@ import {
   getTrendingSketchGrid,
 } from "@/backend/content/homeService";
 import TrendingUpIcon from "@mui/icons-material/TrendingUp";
-import { Box, Typography } from "@mui/material";
+import { Box, Paper, Typography } from "@mui/material";
 import SketchGrid from "./(content)/SketchGrid";
+import MuiNextLink from "./components/MuiNextLink";
 
 export const revalidate = 300; // 5 minutes
 
@@ -27,6 +28,21 @@ export default async function HomePage() {
   // Rendering
   return (
     <>
+      {/* Beta announcement */}
+      <Paper
+        elevation={3}
+        sx={{
+          marginTop: 2,
+          padding: 0.5,
+          textAlign: "center",
+        }}
+      >
+        <Typography variant="subtitle2">
+          🚧 This site is in beta. Please{" "}
+          <MuiNextLink href="/about">add</MuiNextLink> your favorite sketches!
+          🚧
+        </Typography>
+      </Paper>
       <Box mt={2}>
         <SketchGrid
           initialData={trendingSketchData}

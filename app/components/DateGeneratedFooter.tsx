@@ -1,5 +1,6 @@
 "use client";
 
+import { capitalizeFirstLetter } from "@/shared/utilities";
 import { Box, Typography } from "@mui/material";
 import { useEffect, useState } from "react";
 import RevalidateCacheLink from "../header/RevalidateCacheLink";
@@ -29,6 +30,8 @@ export default function DateGeneratedFooter({
   }, []);
 
   // Rendering
+  const dateStr = new Date(genDate).toLocaleString();
+
   return (
     <>
       {/* Click above line to hide info */}
@@ -57,9 +60,7 @@ export default function DateGeneratedFooter({
           <Typography variant="caption">
             Meta: {metaDescription}
             <br />
-            {type == "data"
-              ? `Data Generated: ${new Date(genDate).toLocaleString()}`
-              : `Page Generated: ${new Date().toLocaleString()}`}
+            {`${capitalizeFirstLetter(type)} Generated: ${dateStr}`}
             <br />
             <RevalidateCacheLink />
           </Typography>

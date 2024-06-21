@@ -1,9 +1,10 @@
 import authOptions from "@/app/api/auth/[...nextauth]/authOptions";
+import ChangeLogTable from "@/app/changelog/components/ChangeLogTable";
 import { getTableCms } from "@/backend/edit/editReadService";
+import { getChangelog } from "@/backend/mgmt/changelogService";
+import { Box } from "@mui/material";
 import { getServerSession } from "next-auth";
 import EditClientPage from "./page.client";
-import { getChangelog } from "@/backend/mgmt/changelogService";
-import ChangeLogTable from "@/app/changelog/components/ChangeLogTable";
 
 interface EditTablePageProps {
   params: {
@@ -38,13 +39,15 @@ export default async function EditTablePage({ params }: EditTablePageProps) {
       {changelog && Boolean(changelog.entries.length) && (
         <>
           <h4>Recent Changes:</h4>
-          <ChangeLogTable
-            changelog={changelog}
-            page={1}
-            rowsPerPage={25}
-            table={tableName}
-            rowId={id}
-          />
+          <Box sx={{ overflowX: "auto" }}>
+            <ChangeLogTable
+              changelog={changelog}
+              page={1}
+              rowsPerPage={25}
+              table={tableName}
+              rowId={id}
+            />
+          </Box>
         </>
       )}
     </>
