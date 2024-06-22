@@ -1,6 +1,6 @@
 import prisma from "@/database/prisma";
-import { ListSearchParms, getBaseFindParams } from "./listHelper";
 import { contentResponse } from "@/shared/serviceResponse";
+import { ListSearchParms, getBaseFindParams } from "./listHelper";
 
 export async function getSketchList(searchParams: ListSearchParms) {
   const baseFindParams = getBaseFindParams(searchParams);
@@ -249,10 +249,13 @@ export async function getSketchSitemap() {
     select: {
       id: true,
       url_slug: true,
+      // Not perfect as mapping changes aren't counted, and rating changes are counted
+      modified_at: true,
     },
   });
 
   return list.map((sketch) => ({
     url: `https://www.sketchtv.lol/sketch/${sketch.id}/${sketch.url_slug}`,
+    lastModified: sketch.modified_at.toISOString().split("T")[0],
   }));
 }

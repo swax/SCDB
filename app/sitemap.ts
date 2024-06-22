@@ -11,14 +11,11 @@ import { unstable_cache } from "next/cache";
 
 export const dynamic = "force-dynamic";
 
+/* After 50,000 urls this can be used to split the sitemap into multiple files
 export function generateSitemaps() {
   return [{ id: 0 }];
-}
+} */
 
-/**
- * This does take an id parameter that matches the above,
- * but it's not need until there are over 50,000 items in the sitemap
- */
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   return await getCachedSiteMap();
 }
