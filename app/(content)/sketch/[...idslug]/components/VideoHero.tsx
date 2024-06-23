@@ -3,7 +3,7 @@
 import VideoPlayer from "@/app/components/VideoPlayer";
 import s3url from "@/shared/cdnHost";
 import PlayCircleFilledTwoToneIcon from "@mui/icons-material/PlayCircleFilledTwoTone";
-import { Box } from "@mui/material";
+import { Box, ButtonBase } from "@mui/material";
 import Image from "next/image";
 import { useState } from "react";
 
@@ -28,10 +28,12 @@ export default function VideoHero({
   return (
     <>
       {image_cdn_key ? (
-        <Box
+        <ButtonBase
+          aria-controls="video-player-overlay"
+          aria-haspopup="true"
+          aria-label="Play Video"
           onClick={() => setPlayVideoUrls(videoUrls)}
           style={{
-            cursor: videoUrls ? "pointer" : "default",
             overflow: "hidden",
             width: imgWidth,
             height: imgHeight,
@@ -41,8 +43,8 @@ export default function VideoHero({
           {!!videoUrls && (
             <PlayCircleFilledTwoToneIcon
               sx={{
-                position: "absolute",
                 color: "white",
+                position: "absolute",
                 right: "2px",
                 bottom: "2px",
               }}
@@ -53,10 +55,11 @@ export default function VideoHero({
             alt={title}
             src={`${s3url}/${image_cdn_key}`}
             style={{ objectFit: "cover", borderRadius: 8 }}
+            priority
             width={imgWidth}
             height={imgHeight}
           />
-        </Box>
+        </ButtonBase>
       ) : (
         <Box>(No Preview Image)</Box>
       )}

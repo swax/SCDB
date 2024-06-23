@@ -16,7 +16,7 @@ import {
   Typography,
 } from "@mui/material";
 import Image from "next/image";
-import { useState } from "react";
+import { useId, useState } from "react";
 import { SketchGridData } from "../../shared/sketchGridBase";
 import { ContentLink } from "../components/ContentLink";
 import VideoPlayer from "../components/VideoPlayer";
@@ -35,6 +35,7 @@ export default function SketchGrid({
   icon,
 }: SketchGridProps) {
   // Hooks
+  const id = useId();
   const [data, setData] = useState(initialData);
   const [page, setPage] = useState(1);
   const [loading, setLoading] = useState(false);
@@ -66,8 +67,8 @@ export default function SketchGrid({
     <Accordion defaultExpanded>
       <AccordionSummary
         expandIcon={<ExpandMoreIcon />}
-        aria-controls="sketches-content"
-        id="sketches-header"
+        aria-controls={`sketches-content-${id}`}
+        id={`sketches-header-${id}`}
       >
         <Box
           sx={{
@@ -89,15 +90,17 @@ export default function SketchGrid({
       </AccordionSummary>
       <AccordionDetails>
         <ImageList
+          aria-label={title || "Sketches"}
           className="sketch-grid"
           style={{
             display: "flex",
             flexWrap: "wrap",
             gap: "12px",
+            margin: 0,
           }}
         >
           {data.sketches.map((sketch, i) => (
-            <ImageListItem key={i}>
+            <ImageListItem key={i} aria-label={sketch.titleString}>
               <ContentLink mui table="sketch" entry={sketch}>
                 <Box
                   sx={{ position: "relative" }}

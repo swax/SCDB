@@ -6,6 +6,7 @@ import {
   AccordionSummary,
   Typography,
 } from "@mui/material";
+import { useId } from "react";
 import Markdown from "react-markdown";
 
 export default function DescriptionPanel({
@@ -15,14 +16,18 @@ export default function DescriptionPanel({
   description?: Nullable<string>;
   title?: string;
 }) {
+  // Hooks
+  const id = useId();
+
+  // Rendering
   return (
     <>
       {!!description && (
         <Accordion defaultExpanded>
           <AccordionSummary
             expandIcon={<ExpandMoreIcon />}
-            aria-controls="description-content"
-            id="description-header"
+            aria-controls={`description-content-${id}`}
+            id={`description-header-${id}`}
           >
             <NotesIcon />
             <Typography

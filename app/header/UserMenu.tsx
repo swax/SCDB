@@ -31,16 +31,19 @@ export default function UserMenu() {
   // Rendering
   if (status == "loading") {
     return (
-      <IconButton>
-        <CircularProgress aria-label="Login Progress" size={16} />
+      <IconButton aria-label="Getting login status">
+        <CircularProgress size={16} />
       </IconButton>
     );
   }
 
   if (status == "unauthenticated" || !session) {
     return (
-      <Tooltip title={`Login with Google`}>
-        <IconButton onClick={() => void signIn("google", { prompt: "login" })}>
+      <Tooltip title="Login with Google">
+        <IconButton
+          aria-label="Login with Google"
+          onClick={() => void signIn("google", { prompt: "login" })}
+        >
           <LoginIcon />
         </IconButton>
       </Tooltip>

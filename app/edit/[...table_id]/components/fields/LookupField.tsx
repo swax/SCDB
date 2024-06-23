@@ -193,7 +193,7 @@ export default function LookupField({
                   <>
                     <Box sx={{ width: 16 }}></Box>
                     <IconButton
-                      aria-label="open"
+                      aria-label="Open Mapped Entry"
                       onClick={() => handleClick_openMappingRow(option)}
                       size="small"
                     >

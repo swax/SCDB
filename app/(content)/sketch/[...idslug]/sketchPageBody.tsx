@@ -113,23 +113,25 @@ export default function SketchPageBody({
             </AccordionSummary>
             <AccordionDetails>
               <ImageList
+                aria-label="Cast Members"
                 className="sketch-grid"
                 style={{
                   display: "flex",
                   flexWrap: "wrap",
                   gap: "12px",
+                  margin: 0,
                 }}
               >
                 {combinedCastMembers.map((castMember, i) => (
-                  <ImageListItem key={i}>
+                  <ImageListItem key={i} aria-label={castMember.tooltip}>
                     <ContentLink
                       mui
                       table={castMember.character ? "character" : "person"}
                       entry={castMember.character || castMember.person}
                     >
                       <Image
-                        alt={castMember.character_name || ""}
-                        title={castMember.character_name || ""}
+                        alt={castMember.tooltip}
+                        title={castMember.tooltip}
                         style={{
                           objectFit: "cover",
                           objectPosition: "50% 0",

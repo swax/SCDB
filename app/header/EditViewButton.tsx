@@ -39,7 +39,7 @@ export default function EditViewButton() {
     const viewPath = pathname.replace(/^\/edit/, "");
 
     return (
-      <Tooltip title={`View this page`}>
+      <Tooltip title="View this page">
         <IconButton aria-label="View Page" href={viewPath} color="inherit">
           <VisibilityIcon />
         </IconButton>
@@ -49,7 +49,7 @@ export default function EditViewButton() {
     const editPath = `/edit${pathname}`;
 
     return (
-      <Tooltip title={`Edit this page`}>
+      <Tooltip title="Edit this page">
         <IconButton aria-label="Edit Page" href={editPath} color="inherit">
           <EditIcon />
         </IconButton>
