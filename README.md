@@ -3,12 +3,15 @@
 The code behind [www.SketchTV.lol](https://www.sketchtv.lol).
 If you find this code useful, please give back by adding your favorite sketch!
 
+**All 100's lighthouse score!**
+
 ### Technologies
 
 - Frontend
   - React
   - MUI
   - Server Actions
+  - Accessibility / ARIA / a11y
 - Backend
   - Next.js 14
   - App Router
@@ -20,10 +23,13 @@ If you find this code useful, please give back by adding your favorite sketch!
   - Prisma
   - Postgres
   - SQL Triggers and Functions
-- Other
+- Development
+  - Next Turbopack
   - TypeScript
   - ESLint
-  - A light configuration based CMS that dynamically builds editor pages
+- Other
+  - A light/custom CMS for page editing
+  - Caching - ISR, React cache, unstable_cache, and prefetch
 
 ### Resources
 

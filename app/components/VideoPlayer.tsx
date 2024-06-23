@@ -1,6 +1,6 @@
 "use client";
 
-import { Backdrop } from "@mui/material";
+import { Backdrop, Box } from "@mui/material";
 import { useMemo } from "react";
 
 interface VideoPlayerProps {
@@ -59,6 +59,7 @@ export default function VideoPlayer({ videoUrls, onClose }: VideoPlayerProps) {
   // Rendering
   return (
     <Backdrop
+      aria-hidden={false}
       onClick={onClose}
       open={true}
       sx={{
@@ -67,39 +68,45 @@ export default function VideoPlayer({ videoUrls, onClose }: VideoPlayerProps) {
         zIndex: (theme) => theme.zIndex.drawer + 1,
       }}
     >
-      {provider == "tiktok" && (
-        <>
-          <blockquote
-            className="tiktok-embed"
-            data-video-id={cleanVideoUrl}
-            style={{
-              maxWidth: "605px",
-              minWidth: "325px",
-              background: "black",
-            }}
-          >
-            <section style={{ background: "black" }}></section>
-          </blockquote>
-          <script async src="https://www.tiktok.com/embed.js"></script>
-        </>
-      )}
+      <Box
+        id="video-player-overlay"
+        aria-label="Video Player Overlay"
+        role="dialog"
+      >
+        {provider == "tiktok" && (
+          <>
+            <blockquote
+              className="tiktok-embed"
+              data-video-id={cleanVideoUrl}
+              style={{
+                maxWidth: "605px",
+                minWidth: "325px",
+                background: "black",
+              }}
+            >
+              <section style={{ background: "black" }}></section>
+            </blockquote>
+            <script async src="https://www.tiktok.com/embed.js"></script>
+          </>
+        )}
 
-      {(provider == "youtube" ||
-        provider == "vimeo" ||
-        provider == "archive") && (
-        <iframe
-          allowFullScreen
-          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-          src={cleanVideoUrl}
-          style={{ border: "1px solid #222", background: "black" }}
-          width="800"
-          height="600"
-        ></iframe>
-      )}
+        {(provider == "youtube" ||
+          provider == "vimeo" ||
+          provider == "archive") && (
+          <iframe
+            allowFullScreen
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+            src={cleanVideoUrl}
+            style={{ border: "1px solid #222", background: "black" }}
+            width="800"
+            height="600"
+          ></iframe>
+        )}
 
-      {provider == "vimeo" && (
-        <script src="https://player.vimeo.com/api/player.js" async></script>
-      )}
+        {provider == "vimeo" && (
+          <script src="https://player.vimeo.com/api/player.js" async></script>
+        )}
+      </Box>
     </Backdrop>
   );
 }

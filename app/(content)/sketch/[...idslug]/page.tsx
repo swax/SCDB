@@ -60,7 +60,7 @@ export default async function SketchPage({ params }: ContentPageProps) {
 
     if (combinedCastMember) {
       const title = getCastMemberTitle(castMember);
-      combinedCastMember.tooltip += " / " + (castMember.character_name || "");
+      combinedCastMember.tooltip += " / " + getCastMemberTooltip(castMember);
       combinedCastMember.title = (
         <>
           {combinedCastMember.title}
@@ -72,7 +72,7 @@ export default async function SketchPage({ params }: ContentPageProps) {
     } else {
       combinedCastMember = {
         ...castMember,
-        tooltip: castMember.character_name || "",
+        tooltip: getCastMemberTooltip(castMember),
         title: getCastMemberTitle(castMember),
       };
       combinedCastMembers.push(combinedCastMember);
@@ -89,6 +89,12 @@ export default async function SketchPage({ params }: ContentPageProps) {
           <span>{castMember.character_name || ""}</span>
         )}
       </>
+    );
+  }
+
+  function getCastMemberTooltip(castMember: castMemberType) {
+    return (
+      castMember.character_name || castMember.person?.name || castMember.role
     );
   }
 

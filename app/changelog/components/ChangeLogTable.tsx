@@ -170,7 +170,7 @@ export default function ChangeLogTable({
               slotProps={{
                 select: {
                   inputProps: {
-                    "aria-label": "rows per page",
+                    "aria-label": "Rows per Page",
                   },
                   native: true,
                 },

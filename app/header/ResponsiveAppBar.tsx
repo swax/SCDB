@@ -78,7 +78,7 @@ function ResponsiveAppBar() {
       <Image
         alt="Home"
         style={{ objectFit: "cover", marginTop: "4px" }}
-        src={`/images/logo2dark.webp`}
+        src="/images/logo2dark.webp"
         priority
         width={90}
         height={45}
@@ -87,7 +87,7 @@ function ResponsiveAppBar() {
   );
 
   return (
-    <AppBar position="sticky">
+    <AppBar aria-label="Page Header" position="sticky">
       <Toolbar disableGutters variant="dense">
         {/* Desktop left corner logo */}
         <Box sx={{ flexGrow: 0, display: { xs: "none", sm: "block" } }}>
@@ -106,7 +106,7 @@ function ResponsiveAppBar() {
             <Image
               alt="Hamburger Menu"
               style={{ objectFit: "cover" }}
-              src={`/images/hamburger.webp`}
+              src="/images/hamburger.webp"
               priority
               width={32}
               height={32}
@@ -144,6 +144,7 @@ function ResponsiveAppBar() {
                 key={i}
                 component={MuiNextLink}
                 href={`/${page.label.toLowerCase()}`}
+                prefetch={false}
                 tabIndex={i + 1}
               >
                 <Typography
@@ -168,11 +169,16 @@ function ResponsiveAppBar() {
           component="nav"
           sx={{ flexGrow: 1, display: { xs: "none", sm: "flex" } }}
         >
+          {/*
+           * Set prefetch false for header links because these pages are dynamically rendered even though the actual tables are cached
+           * If you look in the Chrome dev tools when a page loads you'll see the X-Vercel-Cache is always MISS when trying to prefetch these pages
+           */}
           {pages.map((page, i) => (
             <Button
               component={MuiNextLink}
               href={`/${page.label.toLowerCase()}`}
               key={i}
+              prefetch={false}
               sx={{
                 color: page.color,
                 fontFamily: funFont,
@@ -200,7 +206,7 @@ function ResponsiveAppBar() {
         {/* Right side header icons */}
         <Stack direction={"row"} sx={{ marginRight: 1 }}>
           <EditViewButton />
-          <Tooltip title={`Discuss on Discord`}>
+          <Tooltip title="Discuss on Discord">
             <IconButton
               aria-label="Discord Link"
               href="https://discord.gg/UKE8gSYp"
@@ -210,7 +216,7 @@ function ResponsiveAppBar() {
               <DiscordIcon />
             </IconButton>
           </Tooltip>
-          <Tooltip title={`About`}>
+          <Tooltip title="About">
             <IconButton aria-label="About" href="/about" color="inherit">
               <InfoIcon />
             </IconButton>
@@ -230,7 +236,11 @@ function ResponsiveAppBar() {
           }}
         />
       ) : (
-        <Divider sx={{ bgcolor: dividerColor, height: "1px" }} />
+        <Divider
+          component={"div"}
+          role=""
+          sx={{ bgcolor: dividerColor, height: "1px" }}
+        />
       )}
     </AppBar>
   );

@@ -107,7 +107,7 @@ export default function ImageField({
       {cdnKey && (
         <a href={imgUrl} rel="noreferrer" target="_blank">
           <Image
-            alt="Alt text generated dynamically on view page"
+            alt="The Associated Image"
             height={75}
             src={imgUrl}
             style={{ objectFit: "cover" }}

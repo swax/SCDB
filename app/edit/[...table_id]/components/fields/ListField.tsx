@@ -80,7 +80,7 @@ export default function ListField({
             }
           />
           <IconButton
-            aria-label="delete"
+            aria-label="Delete Row"
             onClick={() => handleClick_delete(field, listIndex)}
             size="small"
           >

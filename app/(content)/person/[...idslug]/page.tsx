@@ -113,15 +113,22 @@ export default async function PersonPage({ params }: ContentPageProps) {
       )}
       {!!person.person_images.length && (
         <ImageList
-          sx={{ display: "flex", flexWrap: "nowrap", gap: 8, padding: 1 }}
+          aria-label="Person Images"
+          sx={{
+            display: "flex",
+            flexWrap: "nowrap",
+            gap: 8,
+            padding: 1,
+          }}
           cols={2.5}
         >
           {person.person_images.map((person_image, i) => (
-            <ImageListItem key={i}>
+            <ImageListItem key={i} aria-label={`Picture ${i}`}>
               <Image
                 alt={person_image.description || person.name}
                 style={{ objectFit: "cover", borderRadius: 8 }}
                 src={`${s3url}/${person_image.image.cdn_key}`}
+                priority={i == 0}
                 width={imgWidth}
                 height={imgHeight}
               />

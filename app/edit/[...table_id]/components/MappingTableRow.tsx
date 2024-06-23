@@ -66,7 +66,7 @@ export default function MappingTableRow({
         <>
           {cdnKey ? (
             <Image
-              alt="Alt text generated dynamically on view page"
+              alt="The Associated Image"
               height={50}
               src={`${s3url}/${cdnKey}`}
               style={{ objectFit: "cover" }}
@@ -143,7 +143,7 @@ export default function MappingTableRow({
             {!mappingTable.inline && (
               <Tooltip title="Edit">
                 <IconButton
-                  aria-label="edit"
+                  aria-label="Edit Row"
                   onClick={() => handleClick_openEditMappingDialog(mappedIndex)}
                   size="small"
                 >
@@ -153,7 +153,7 @@ export default function MappingTableRow({
             )}
             <Tooltip title="Delete">
               <IconButton
-                aria-label="delete"
+                aria-label="Delete Row"
                 onClick={() => handleClick_deleteMappingRow(mappedIndex)}
                 size="small"
               >
