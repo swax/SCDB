@@ -13,6 +13,7 @@ import {
   AccordionSummary,
   Box,
   Chip,
+  ImageList,
   ImageListItem,
   ImageListItemBar,
   Paper,
@@ -48,7 +49,7 @@ export default function SketchPageBody({
         <Typography component="h1" variant="h4">
           {sketch.title}
         </Typography>
-        <Typography variant="subtitle1">
+        <Typography component="div" variant="subtitle1">
           <ContentLink mui table="show" entry={sketch.show} />
 
           {!!sketch.season && (
@@ -111,7 +112,7 @@ export default function SketchPageBody({
               </Typography>
             </AccordionSummary>
             <AccordionDetails>
-              <Box
+              <ImageList
                 className="sketch-grid"
                 style={{
                   display: "flex",
@@ -182,7 +183,7 @@ export default function SketchPageBody({
                     />
                   </ImageListItem>
                 ))}
-              </Box>
+              </ImageList>
             </AccordionDetails>
           </Accordion>
         )}
@@ -308,7 +309,6 @@ export default function SketchPageBody({
                           {sketch_tag.tag.name}
                         </span>
                       }
-                      size="small"
                       variant="outlined"
                     />
                   </ContentLink>
