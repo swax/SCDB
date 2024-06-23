@@ -75,7 +75,12 @@ export default function SketchGrid({
           }}
         >
           {icon || <LiveTvIcon />}
-          <Typography fontWeight="bold" marginLeft={1} variant="h6">
+          <Typography
+            fontWeight="bold"
+            marginLeft={1}
+            component="h2"
+            variant="h6"
+          >
             {data.totalCount >= 0 ? data.totalCount.toString() : ""}{" "}
             {title || "Sketches"}
           </Typography>
@@ -149,18 +154,27 @@ export default function SketchGrid({
                 position="below"
                 title={
                   <div style={{ display: "flex", width: imgWidth }}>
-                    <div
-                      style={{
+                    <Box
+                      component="h3"
+                      sx={{
                         flex: "1",
+                        fontSize: "16px",
+                        fontWeight: 400,
+                        margin: 0,
                         overflow: "hidden",
                         textOverflow: "ellipsis",
                       }}
+                      title={sketch.titleString}
                     >
-                      <span title={sketch.titleString}>{sketch.title}</span>
-                    </div>
+                      {sketch.title}
+                    </Box>
                   </div>
                 }
-                subtitle={sketch.subtitle}
+                subtitle={
+                  <h4 style={{ margin: 0, fontWeight: 400 }}>
+                    {sketch.subtitle}
+                  </h4>
+                }
                 sx={{
                   width: imgWidth,
                 }}

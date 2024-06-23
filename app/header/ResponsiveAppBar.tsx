@@ -76,9 +76,10 @@ function ResponsiveAppBar() {
   const LogoHomeLink = (
     <MuiNextLink href="/">
       <Image
-        alt="SketchTV.lol"
+        alt="Home"
         style={{ objectFit: "cover", marginTop: "4px" }}
         src={`/images/logo2dark.webp`}
+        priority
         width={90}
         height={45}
       />
@@ -96,8 +97,8 @@ function ResponsiveAppBar() {
         {/* Hamburger Menu */}
         <Box sx={{ flexGrow: 1, display: { xs: "flex", sm: "none" } }}>
           <IconButton
-            aria-label="Account of current user"
-            aria-controls="menu-appbar"
+            aria-label="Hamburger Menu"
+            aria-controls="hamburger-menu"
             aria-haspopup="true"
             onClick={handleOpenNavMenu}
             color="inherit"
@@ -106,12 +107,21 @@ function ResponsiveAppBar() {
               alt="Hamburger Menu"
               style={{ objectFit: "cover" }}
               src={`/images/hamburger.webp`}
+              priority
               width={32}
               height={32}
             />
           </IconButton>
+          <div id="my-menu-container"></div> {/* Container for the menu */}
           <Menu
-            id="menu-appbar"
+            container={
+              typeof document !== "undefined"
+                ? document.getElementById("my-menu-container")
+                : null
+            } // Set the container for the menu
+            aria-label="primary navigation"
+            component="nav"
+            id="hamburger-menu"
             anchorEl={anchorElNav}
             anchorOrigin={{
               vertical: "bottom",
@@ -132,8 +142,9 @@ function ResponsiveAppBar() {
             {pages.map((page, i) => (
               <MenuItem
                 key={i}
-                component={"a"}
+                component={MuiNextLink}
                 href={`/${page.label.toLowerCase()}`}
+                tabIndex={i + 1}
               >
                 <Typography
                   textAlign="center"
@@ -152,20 +163,25 @@ function ResponsiveAppBar() {
         </Box>
 
         {/* Main header navigation links for desktop */}
-        <Box sx={{ flexGrow: 1, display: { xs: "none", sm: "flex" } }}>
+        <Box
+          aria-label="primary navigation"
+          component="nav"
+          sx={{ flexGrow: 1, display: { xs: "none", sm: "flex" } }}
+        >
           {pages.map((page, i) => (
-            <MuiNextLink key={i} href={`/${page.label.toLowerCase()}`}>
-              <Button
-                sx={{
-                  color: page.color,
-                  fontFamily: funFont,
-                  fontWeight: "bold",
-                  fontSize: "1.0rem",
-                }}
-              >
-                {page.label}
-              </Button>
-            </MuiNextLink>
+            <Button
+              component={MuiNextLink}
+              href={`/${page.label.toLowerCase()}`}
+              key={i}
+              sx={{
+                color: page.color,
+                fontFamily: funFont,
+                fontWeight: "bold",
+                fontSize: "1.0rem",
+              }}
+            >
+              {page.label}
+            </Button>
           ))}
         </Box>
 
@@ -187,7 +203,6 @@ function ResponsiveAppBar() {
           <Tooltip title={`Discuss on Discord`}>
             <IconButton
               aria-label="Discord Link"
-              aria-controls="menu-appbar"
               href="https://discord.gg/UKE8gSYp"
               color="inherit"
               target="_blank"
@@ -196,12 +211,7 @@ function ResponsiveAppBar() {
             </IconButton>
           </Tooltip>
           <Tooltip title={`About`}>
-            <IconButton
-              aria-label="About"
-              aria-controls="menu-appbar"
-              href="/about"
-              color="inherit"
-            >
+            <IconButton aria-label="About" href="/about" color="inherit">
               <InfoIcon />
             </IconButton>
           </Tooltip>

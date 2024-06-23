@@ -59,11 +59,16 @@ export default function ModPanel({ profile }: ModPanelProps) {
     <Accordion defaultExpanded>
       <AccordionSummary
         expandIcon={<ExpandMoreIcon />}
-        aria-controls="sketches-content"
-        id="sketches-header"
+        aria-controls="mod-content"
+        id="mod-header"
       >
         <ShieldIcon />
-        <Typography fontWeight="bold" marginLeft={1}>
+        <Typography
+          fontWeight="bold"
+          marginLeft={1}
+          component="h2"
+          variant="body1"
+        >
           Moderation
         </Typography>
       </AccordionSummary>

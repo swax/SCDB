@@ -53,13 +53,19 @@ export default function UserMenu() {
 
   return (
     <Box>
-      <IconButton aria-label="User Menu" onClick={handleClick_accountMenu}>
+      <IconButton
+        aria-label="User Menu"
+        aria-controls="user-menu"
+        aria-haspopup="true"
+        onClick={handleClick_accountMenu}
+      >
         <Tooltip title="User Menu">
           <AccountCircleIcon />
         </Tooltip>
       </IconButton>
       <Menu
         anchorEl={anchorEl}
+        id="user-menu"
         keepMounted
         onClose={handleClick_closeMenu}
         open={Boolean(anchorEl)}

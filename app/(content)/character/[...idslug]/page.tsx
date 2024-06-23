@@ -63,7 +63,9 @@ export default async function CharacterPage({ params }: ContentPageProps) {
   return (
     <>
       <Box mt={4} mb={4}>
-        <Typography variant="h4">{character.name}</Typography>
+        <Typography component="h1" variant="h4">
+          {character.name}
+        </Typography>
         <Typography variant="subtitle1">The Character</Typography>
         {!!character.person && (
           <Typography variant="subtitle2">

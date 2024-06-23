@@ -40,12 +40,7 @@ export default function EditViewButton() {
 
     return (
       <Tooltip title={`View this page`}>
-        <IconButton
-          aria-label="View Page"
-          aria-controls="menu-appbar"
-          href={viewPath}
-          color="inherit"
-        >
+        <IconButton aria-label="View Page" href={viewPath} color="inherit">
           <VisibilityIcon />
         </IconButton>
       </Tooltip>
@@ -55,12 +50,7 @@ export default function EditViewButton() {
 
     return (
       <Tooltip title={`Edit this page`}>
-        <IconButton
-          aria-label="Edit Page"
-          aria-controls="menu-appbar"
-          href={editPath}
-          color="inherit"
-        >
+        <IconButton aria-label="Edit Page" href={editPath} color="inherit">
           <EditIcon />
         </IconButton>
       </Tooltip>
