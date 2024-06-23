@@ -49,7 +49,7 @@ export default function AccountClientPage(account: AccountClientPageProps) {
   return (
     <Container>
       <Box mt={4}>
-        <Typography variant="h4" align="center">
+        <Typography component="h1" variant="h4" align="center">
           My Account
         </Typography>
         <Typography variant="body1" mt={4}>

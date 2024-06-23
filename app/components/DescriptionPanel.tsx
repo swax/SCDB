@@ -25,7 +25,12 @@ export default function DescriptionPanel({
             id="description-header"
           >
             <NotesIcon />
-            <Typography fontWeight="bold" marginLeft={1}>
+            <Typography
+              fontWeight="bold"
+              marginLeft={1}
+              component="h2"
+              variant="body1"
+            >
               {title || "Description"}
             </Typography>
           </AccordionSummary>

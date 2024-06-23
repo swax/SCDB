@@ -72,7 +72,7 @@ export default async function PersonPage({ params }: ContentPageProps) {
 
   // Constants
   const imgHeight = 300;
-  const imgWidth = imgHeight * (9 / 16);
+  const imgWidth = Math.floor(imgHeight * (9 / 16));
 
   const birthDate = person.birth_date ? new Date(person.birth_date) : null;
   const deathDate = person.death_date ? new Date(person.death_date) : null;
@@ -81,7 +81,9 @@ export default async function PersonPage({ params }: ContentPageProps) {
   return (
     <>
       <Box mt={4} mb={4}>
-        <Typography variant="h4">{person.name}</Typography>
+        <Typography component="h1" variant="h4">
+          {person.name}
+        </Typography>
         <Typography variant="subtitle1">The Person</Typography>
         {!!person.character && (
           <Typography variant="subtitle2">

@@ -69,7 +69,9 @@ export default async function ShowPage({ params }: ContentPageProps) {
   return (
     <>
       <Box mt={4} mb={4}>
-        <Typography variant="h4">{show.title}</Typography>
+        <Typography component="h1" variant="h4">
+          {show.title}
+        </Typography>
         <Typography variant="subtitle1" color="textSecondary">
           <MuiNextLink href={"/shows"}>Show</MuiNextLink>
         </Typography>
@@ -84,7 +86,12 @@ export default async function ShowPage({ params }: ContentPageProps) {
             id="seasons-header"
           >
             <FormatListNumberedIcon />
-            <Typography fontWeight="bold" marginLeft={1}>
+            <Typography
+              fontWeight="bold"
+              marginLeft={1}
+              component="h2"
+              variant="body1"
+            >
               Seasons
             </Typography>
           </AccordionSummary>

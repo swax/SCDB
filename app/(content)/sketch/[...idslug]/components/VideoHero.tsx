@@ -23,7 +23,7 @@ export default function VideoHero({
 
   // Rendering
   const imgWidth = 350;
-  const imgHeight = imgWidth * (9 / 16);
+  const imgHeight = Math.floor(imgWidth * (9 / 16));
 
   return (
     <>

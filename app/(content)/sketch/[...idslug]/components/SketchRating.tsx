@@ -91,8 +91,8 @@ export default function SketchRating({
     <Accordion>
       <AccordionSummary
         expandIcon={<ExpandMoreIcon />}
-        aria-controls="cast-content"
-        id="cast-header"
+        aria-controls="rating-content"
+        id="rating-header"
       >
         <Typography marginLeft={1}>Site Rating:</Typography>
         <StarIcon sx={{ color: "gold" }} />

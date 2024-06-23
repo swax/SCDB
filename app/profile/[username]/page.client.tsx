@@ -51,7 +51,9 @@ export default function ProfileClientPage({
   return (
     <Box>
       <Box mt={4} mb={4}>
-        <Typography variant="h4">{profile.username}</Typography>
+        <Typography component="h1" variant="h4">
+          {profile.username}
+        </Typography>
         <Typography variant="subtitle1">Role: {profile.role}</Typography>
       </Box>
 
@@ -66,11 +68,16 @@ export default function ProfileClientPage({
       <Accordion>
         <AccordionSummary
           expandIcon={<ExpandMoreIcon />}
-          aria-controls="sketches-content"
-          id="sketches-header"
+          aria-controls="edits-content"
+          id="edits-header"
         >
           <DifferenceIcon />
-          <Typography fontWeight="bold" marginLeft={1}>
+          <Typography
+            fontWeight="bold"
+            marginLeft={1}
+            component="h2"
+            variant="body1"
+          >
             Latest Edits
           </Typography>
         </AccordionSummary>

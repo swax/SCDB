@@ -70,7 +70,9 @@ export default async function CategoryPage(
   return (
     <>
       <Box mt={4} mb={4}>
-        <Typography variant="h4">{category.name}</Typography>
+        <Typography component="h1" variant="h4">
+          {category.name}
+        </Typography>
         <Typography variant="subtitle1" color="textSecondary">
           <MuiNextLink href={"/categories"}>Category</MuiNextLink>
         </Typography>

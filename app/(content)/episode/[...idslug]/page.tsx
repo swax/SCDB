@@ -69,7 +69,9 @@ export default async function EpisodePage({ params }: ContentPageProps) {
   return (
     <>
       <Box mt={4} mb={4}>
-        <Typography variant="h4">Episode {episode.number}</Typography>
+        <Typography component="h1" variant="h4">
+          Episode {episode.number}
+        </Typography>
         <Typography variant="subtitle1">
           <ContentLink mui table="show" entry={episode.season.show} /> -{" "}
           <ContentLink mui table="season" entry={episode.season}>

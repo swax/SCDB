@@ -45,7 +45,9 @@ export default function SketchPageBody({
   return (
     <>
       <Box mt={3} mb={2}>
-        <Typography variant="h4">{sketch.title}</Typography>
+        <Typography component="h1" variant="h4">
+          {sketch.title}
+        </Typography>
         <Typography variant="subtitle1">
           <ContentLink mui table="show" entry={sketch.show} />
 
@@ -99,7 +101,12 @@ export default function SketchPageBody({
               id="cast-header"
             >
               <GroupsIcon />
-              <Typography fontWeight="bold" marginLeft={1}>
+              <Typography
+                fontWeight="bold"
+                marginLeft={1}
+                component="h2"
+                variant="body1"
+              >
                 Cast
               </Typography>
             </AccordionSummary>
@@ -138,10 +145,22 @@ export default function SketchPageBody({
                     </ContentLink>
                     <ImageListItemBar
                       title={
-                        <Box title={castMember.tooltip}>{castMember.title}</Box>
+                        <Box
+                          component="h3"
+                          sx={{
+                            fontSize: "16px",
+                            fontWeight: 400,
+                            margin: 0,
+                            overflow: "hidden",
+                            textOverflow: "ellipsis",
+                          }}
+                          title={castMember.tooltip}
+                        >
+                          {castMember.title}
+                        </Box>
                       }
                       subtitle={
-                        <>
+                        <h4 style={{ margin: 0, fontWeight: 400 }}>
                           {!!castMember.person && (
                             <>
                               <ContentLink
@@ -152,7 +171,7 @@ export default function SketchPageBody({
                             </>
                           )}
                           {enumNameToDisplayName(castMember.role)}
-                        </>
+                        </h4>
                       }
                       sx={{
                         width: imgWidth,
@@ -175,7 +194,12 @@ export default function SketchPageBody({
               id="quote-header"
             >
               <FormatQuoteIcon />
-              <Typography fontWeight="bold" marginLeft={1}>
+              <Typography
+                fontWeight="bold"
+                marginLeft={1}
+                component="h2"
+                variant="body1"
+              >
                 Quotes
               </Typography>
             </AccordionSummary>
@@ -204,8 +228,13 @@ export default function SketchPageBody({
               id="credit-header"
             >
               <GroupsIcon />
-              <Typography fontWeight="bold" marginLeft={1}>
-                Credit
+              <Typography
+                fontWeight="bold"
+                marginLeft={1}
+                component="h2"
+                variant="body1"
+              >
+                Credits
               </Typography>
             </AccordionSummary>
             <AccordionDetails>
@@ -258,7 +287,12 @@ export default function SketchPageBody({
               id="tags-header"
             >
               <LocalOfferIcon />
-              <Typography fontWeight="bold" marginLeft={1}>
+              <Typography
+                fontWeight="bold"
+                marginLeft={1}
+                component="h2"
+                variant="body1"
+              >
                 Tags
               </Typography>
             </AccordionSummary>

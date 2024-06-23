@@ -37,7 +37,12 @@ export default function LinksPanel({
             id="links-header"
           >
             <LinkIcon />
-            <Typography fontWeight="bold" marginLeft={1}>
+            <Typography
+              fontWeight="bold"
+              marginLeft={1}
+              component="h2"
+              variant="body1"
+            >
               Links
             </Typography>
           </AccordionSummary>

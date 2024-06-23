@@ -74,7 +74,7 @@ export default async function SeasonPage({ params }: ContentPageProps) {
   return (
     <>
       <Box mt={4} mb={4}>
-        <Typography variant="h4">
+        <Typography component="h1" variant="h4">
           Season {season.number} ({season.year})
         </Typography>
         <Typography variant="subtitle1">
@@ -86,11 +86,16 @@ export default async function SeasonPage({ params }: ContentPageProps) {
         <Accordion defaultExpanded>
           <AccordionSummary
             expandIcon={<ExpandMoreIcon />}
-            aria-controls="about-content"
-            id="about-header"
+            aria-controls="episodes-content"
+            id="episodes-header"
           >
             <FormatListNumberedIcon />
-            <Typography fontWeight="bold" marginLeft={1}>
+            <Typography
+              fontWeight="bold"
+              marginLeft={1}
+              component="h2"
+              variant="body1"
+            >
               Episodes
             </Typography>
           </AccordionSummary>
