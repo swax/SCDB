@@ -9,6 +9,7 @@ import {
   AccordionDetails,
   AccordionSummary,
   Box,
+  ImageList,
   ImageListItem,
   ImageListItemBar,
   Pagination,
@@ -87,7 +88,7 @@ export default function SketchGrid({
         </Box>
       </AccordionSummary>
       <AccordionDetails>
-        <div
+        <ImageList
           className="sketch-grid"
           style={{
             display: "flex",
@@ -181,7 +182,7 @@ export default function SketchGrid({
               />
             </ImageListItem>
           ))}
-        </div>
+        </ImageList>
         {data.totalPages > 1 && (
           <Pagination
             count={data.totalPages}
