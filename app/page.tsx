@@ -38,7 +38,7 @@ export default async function HomePage() {
         }}
       >
         <Typography component="div" variant="subtitle2">
-          🚧 This site is in beta. Please{" "}
+          🚧 This site is in beta. Feel free to{" "}
           <MuiNextLink href="/about">add</MuiNextLink> your favorite sketches!
           🚧
         </Typography>

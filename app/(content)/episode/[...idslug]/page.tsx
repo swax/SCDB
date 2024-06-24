@@ -7,7 +7,7 @@ import {
   getEpisodesList,
 } from "@/backend/content/episodeService";
 import { getStaticPageCount } from "@/shared/ProcessEnv";
-import { buildPageTitle } from "@/shared/utilities";
+import { buildPageTitle, toNiceDate } from "@/shared/utilities";
 import { Box, Typography } from "@mui/material";
 import { Metadata } from "next";
 import { cache } from "react";
@@ -30,9 +30,7 @@ export async function generateMetadata({
         ),
         description:
           `Comedy sketches from episode ${episode.number} of ${episode.season.lookup_slug}` +
-          (episode.air_date
-            ? ` aired on ${episode.air_date.toLocaleDateString()}`
-            : ""),
+          (episode.air_date ? ` aired on ${toNiceDate(episode.air_date)}` : ""),
       }
     : {};
 }
@@ -78,9 +76,11 @@ export default async function EpisodePage({ params }: ContentPageProps) {
             Season {episode.season.number}
           </ContentLink>
         </Typography>
-        <Typography component="div" variant="subtitle1">
-          {episode.air_date?.toLocaleDateString()}
-        </Typography>
+        {!!episode.air_date && (
+          <Typography component="div" variant="subtitle1">
+            Air Date: {toNiceDate(episode.air_date)}
+          </Typography>
+        )}
       </Box>
       <SketchGrid initialData={sketchData} getData={getSketchData} />
       <LinksPanel link_urls={episode.link_urls} />

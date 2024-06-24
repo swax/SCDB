@@ -39,11 +39,10 @@ export default function SketchDataGrid({
         return <ContentLink mui entry={sketch} table="sketch" />;
       },
     },
-    { field: "site_rating", flex: 1, headerName: "Rating", type: "number" },
-    { field: "show__title", flex: 1, headerName: "Show", type: "string" },
+    { field: "site_rating", headerName: "Rating", type: "number" },
+    { field: "show__title", headerName: "Show", type: "string" },
     {
       field: "season__year",
-      flex: 1,
       headerName: "Year",
       type: "number",
       valueFormatter: (value?: number) => value?.toString(),

@@ -1,11 +1,12 @@
+import { ContentLink } from "@/app/components/ContentLink";
+import prisma from "@/database/prisma";
 import {
   SKETCH_PAGE_SIZE,
   SketchGridData,
   selectSketch,
 } from "@/shared/sketchGridBase";
+import { toNiceDate } from "@/shared/utilities";
 import { ListSearchParms, getBaseFindParams } from "./listHelper";
-import prisma from "@/database/prisma";
-import { ContentLink } from "@/app/components/ContentLink";
 
 export async function getSeasonsList(searchParams: ListSearchParms) {
   const baseFindParams = getBaseFindParams(searchParams);
@@ -102,7 +103,7 @@ export async function getSeasonSketchGrid(
     subtitle: s.episode ? (
       <ContentLink table="episode" entry={s.episode}>
         {s.episode.air_date
-          ? s.episode.air_date.toLocaleDateString()
+          ? toNiceDate(s.episode.air_date)
           : "Episode " + s.episode.number}
       </ContentLink>
     ) : (

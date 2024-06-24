@@ -4,6 +4,7 @@ import { ContentLink } from "@/app/components/ContentLink";
 import { ListSearchParms } from "@/backend/content/listHelper";
 import { GridColDef, GridRenderCellParams } from "@mui/x-data-grid";
 import BaseDataGrid from "../BaseDataGrid";
+import { toNiceDate } from "@/shared/utilities";
 
 interface PeopleDataGridProps {
   rows: {
@@ -47,12 +48,18 @@ export default function PeopleDataGrid({
       flex: 1,
       headerName: "Birth",
       type: "date",
+      valueFormatter: (value?: Date | string) => {
+        return value ? toNiceDate(value) : "";
+      },
     },
     {
       field: "death_date",
       flex: 1,
       headerName: "Death",
       type: "date",
+      valueFormatter: (value?: Date | string) => {
+        return value ? toNiceDate(value) : "";
+      },
     },
     {
       field: "sketch_casts___count",

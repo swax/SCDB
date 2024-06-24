@@ -1,6 +1,7 @@
 "use client";
 
 import InfoIcon from "@mui/icons-material/Info";
+import XIcon from "@mui/icons-material/X";
 import { Divider, LinearProgress, Stack, Tooltip } from "@mui/material";
 import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
@@ -112,14 +113,8 @@ function ResponsiveAppBar() {
               height={32}
             />
           </IconButton>
-          <div id="my-menu-container"></div> {/* Container for the menu */}
           <Menu
-            container={
-              typeof document !== "undefined"
-                ? document.getElementById("my-menu-container")
-                : null
-            } // Set the container for the menu
-            aria-label="primary navigation"
+            aria-label="Hamburger Menu"
             component="nav"
             id="hamburger-menu"
             anchorEl={anchorElNav}
@@ -206,7 +201,23 @@ function ResponsiveAppBar() {
         {/* Right side header icons */}
         <Stack direction={"row"} sx={{ marginRight: 1 }}>
           <EditViewButton />
-          <Tooltip title="Discuss on Discord">
+          <Tooltip
+            title="Follow on X/Twitter"
+            sx={{ display: { xs: "none", sm: "flex" } }}
+          >
+            <IconButton
+              aria-label="X/Twitter Link"
+              href="https://x.com/sketchtvlol"
+              color="inherit"
+              target="_blank"
+            >
+              <XIcon />
+            </IconButton>
+          </Tooltip>
+          <Tooltip
+            title="Discuss on Discord"
+            sx={{ display: { xs: "none", sm: "flex" } }}
+          >
             <IconButton
               aria-label="Discord Link"
               href="https://discord.gg/UKE8gSYp"

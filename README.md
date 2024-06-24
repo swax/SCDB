@@ -3,8 +3,6 @@
 The code behind [www.SketchTV.lol](https://www.sketchtv.lol).
 If you find this code useful, please give back by adding your favorite sketch!
 
-**All 100's lighthouse score!**
-
 ### Technologies
 
 - Frontend

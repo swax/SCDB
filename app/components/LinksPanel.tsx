@@ -4,11 +4,11 @@ import {
   Accordion,
   AccordionDetails,
   AccordionSummary,
-  Box,
+  Chip,
+  Stack,
 } from "@mui/material";
 import { useMemo } from "react";
 import AccordionHeader from "./AccordionHeader";
-import MuiNextLink from "./MuiNextLink";
 
 export default function LinksPanel({
   link_urls,
@@ -39,18 +39,21 @@ export default function LinksPanel({
             <AccordionHeader icon={<LinkIcon />}>Links</AccordionHeader>
           </AccordionSummary>
           <AccordionDetails>
-            {domainAndUrls.map(([, url], index) => (
-              <Box key={index}>
-                <MuiNextLink
+            <Stack direction={"row"} gap={1}>
+              {domainAndUrls.map(([domain, url], index) => (
+                <Chip
+                  clickable
+                  component={"a"}
                   href={url}
-                  target="_blank"
+                  key={index}
+                  label={domain}
                   rel="noreferrer"
-                  prefetch={false}
-                >
-                  {url}
-                </MuiNextLink>
-              </Box>
-            ))}
+                  target="_blank"
+                  title={url}
+                  variant="outlined"
+                />
+              ))}
+            </Stack>
           </AccordionDetails>
         </Accordion>
       )}

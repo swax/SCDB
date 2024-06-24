@@ -41,7 +41,8 @@ export default function usePageLoading() {
     if (event.target instanceof Element) {
       const anchor = event.target.closest("a");
 
-      if (anchor) {
+      // If anchor and has no target property then set to loading
+      if (anchor && !anchor.target) {
         setPageLoading(true);
       }
     }

@@ -20,7 +20,7 @@ export default function UserMenu() {
   const [anchorEl, setAnchorEl] = useState<Nullable<Element>>(null);
 
   // Event Handlers
-  function handleClick_accountMenu(event: React.MouseEvent) {
+  function handleClick_userMenu(event: React.MouseEvent) {
     setAnchorEl(event.currentTarget);
   }
 
@@ -60,7 +60,7 @@ export default function UserMenu() {
         aria-label="User Menu"
         aria-controls="user-menu"
         aria-haspopup="true"
-        onClick={handleClick_accountMenu}
+        onClick={handleClick_userMenu}
       >
         <Tooltip title="User Menu">
           <AccountCircleIcon />
@@ -68,6 +68,7 @@ export default function UserMenu() {
       </IconButton>
       <Menu
         anchorEl={anchorEl}
+        aria-label="User Menu"
         id="user-menu"
         keepMounted
         onClose={handleClick_closeMenu}

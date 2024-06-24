@@ -43,6 +43,7 @@ export default function MappingTableEditor({
   setDirty,
 }: MappingTableEditorProps) {
   // Hooks
+  const popupId = useId();
   const [showMappingDialog, setShowMappingDialog] = useState(false);
   const [editMappingRowIndex, setEditDialogMappingRowIndex] =
     useState<number>();
@@ -181,17 +182,20 @@ export default function MappingTableEditor({
         </Table>
       )}
       <Button
+        aria-controls={`mapping-row-dialog-${popupId}`}
+        aria-haspopup="true"
         disabled={loading}
         onClick={() => handleClick_addMappingRow()}
         size="small"
         sx={{ marginLeft: 2, marginTop: 2 }}
         variant="outlined"
       >
-        Add
+        Add {label}
       </Button>
 
       {/* Edit mappped field dialog */}
       <Dialog
+        id={`mapping-row-dialog-${popupId}`}
         fullWidth
         open={showMappingDialog}
         onClose={() => setShowMappingDialog(false)}

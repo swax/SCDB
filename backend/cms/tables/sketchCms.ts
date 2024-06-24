@@ -90,7 +90,7 @@ const sketchCms: TableCms = {
         label: "Cast",
         fields: [
           {
-            label: "",
+            label: "Thumbnail",
             column: "image_id",
             type: "image",
             navProp: "image",
@@ -172,6 +172,7 @@ const sketchCms: TableCms = {
         name: "sketch_quote",
         navProp: "sketch_quotes",
         label: "Quotes",
+        inline: true,
         fields: [
           {
             label: "Quote",

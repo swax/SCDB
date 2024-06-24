@@ -8,7 +8,7 @@ import {
   getSeasonsList,
 } from "@/backend/content/seasonService";
 import { getStaticPageCount } from "@/shared/ProcessEnv";
-import { buildPageTitle } from "@/shared/utilities";
+import { buildPageTitle, toNiceDate } from "@/shared/utilities";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import FormatListNumberedIcon from "@mui/icons-material/FormatListNumbered";
 import {
@@ -112,9 +112,7 @@ export default async function SeasonPage({ params }: ContentPageProps) {
                       </ContentLink>
                     </TableCell>
                     <TableCell>
-                      {episode.air_date
-                        ? episode.air_date.toLocaleDateString()
-                        : ""}
+                      {episode.air_date ? toNiceDate(episode.air_date) : ""}
                     </TableCell>
                     <TableCell>{episode._count.sketches}</TableCell>
                   </TableRow>
