@@ -2,6 +2,7 @@
 
 import SketchGrid from "@/app/(content)/SketchGrid";
 import ChangeLogTable from "@/app/changelog/components/ChangeLogTable";
+import AccordionHeader from "@/app/components/AccordionHeader";
 import MuiNextLink from "@/app/components/MuiNextLink";
 import { GetChangelogResponse } from "@/backend/mgmt/changelogService";
 import { GetProfileResponse } from "@/backend/user/profileService";
@@ -54,7 +55,9 @@ export default function ProfileClientPage({
         <Typography component="h1" variant="h4">
           {profile.username}
         </Typography>
-        <Typography variant="subtitle1">Role: {profile.role}</Typography>
+        <Typography component="div" variant="subtitle1">
+          Role: {profile.role}
+        </Typography>
       </Box>
 
       <SketchGrid
@@ -71,15 +74,9 @@ export default function ProfileClientPage({
           aria-controls="edits-content"
           id="edits-header"
         >
-          <DifferenceIcon />
-          <Typography
-            fontWeight="bold"
-            marginLeft={1}
-            component="h2"
-            variant="body1"
-          >
+          <AccordionHeader icon={<DifferenceIcon />}>
             Latest Edits
-          </Typography>
+          </AccordionHeader>
         </AccordionSummary>
         <AccordionDetails>
           <Box sx={{ overflowX: "auto" }}>
@@ -91,7 +88,10 @@ export default function ProfileClientPage({
             />
           </Box>
           <Box mt={2}>
-            <MuiNextLink href={`/changelog?username=${profile.username}`}>
+            <MuiNextLink
+              href={`/changelog?username=${profile.username}`}
+              prefetch={false}
+            >
               See full change history
             </MuiNextLink>
           </Box>

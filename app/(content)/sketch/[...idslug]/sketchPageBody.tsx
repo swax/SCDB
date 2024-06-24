@@ -1,3 +1,4 @@
+import AccordionHeader from "@/app/components/AccordionHeader";
 import { ContentLink } from "@/app/components/ContentLink";
 import DescriptionPanel from "@/app/components/DescriptionPanel";
 import LinksPanel from "@/app/components/LinksPanel";
@@ -77,7 +78,7 @@ export default function SketchPageBody({
         videoUrls={sketch.video_urls}
       />
       {!!sketch.recurring_sketch && (
-        <Typography variant="subtitle1">
+        <Typography component="div" variant="subtitle1">
           {"See more "}
           <ContentLink
             mui
@@ -101,15 +102,7 @@ export default function SketchPageBody({
               aria-controls="cast-content"
               id="cast-header"
             >
-              <GroupsIcon />
-              <Typography
-                fontWeight="bold"
-                marginLeft={1}
-                component="h2"
-                variant="body1"
-              >
-                Cast
-              </Typography>
+              <AccordionHeader icon={<GroupsIcon />}>Cast</AccordionHeader>
             </AccordionSummary>
             <AccordionDetails>
               <ImageList
@@ -196,15 +189,9 @@ export default function SketchPageBody({
               aria-controls="quote-content"
               id="quote-header"
             >
-              <FormatQuoteIcon />
-              <Typography
-                fontWeight="bold"
-                marginLeft={1}
-                component="h2"
-                variant="body1"
-              >
+              <AccordionHeader icon={<FormatQuoteIcon />}>
                 Quotes
-              </Typography>
+              </AccordionHeader>
             </AccordionSummary>
             <AccordionDetails>
               <Box>
@@ -214,7 +201,11 @@ export default function SketchPageBody({
                     elevation={3}
                     sx={{ marginBottom: 1, padding: 1 }}
                   >
-                    <Typography variant="body2" sx={{ whiteSpace: "pre-line" }}>
+                    <Typography
+                      component="div"
+                      variant="body2"
+                      sx={{ whiteSpace: "pre-line" }}
+                    >
                       {quote.quote}
                     </Typography>
                   </Paper>
@@ -230,15 +221,7 @@ export default function SketchPageBody({
               aria-controls="credit-content"
               id="credit-header"
             >
-              <GroupsIcon />
-              <Typography
-                fontWeight="bold"
-                marginLeft={1}
-                component="h2"
-                variant="body1"
-              >
-                Credits
-              </Typography>
+              <AccordionHeader icon={<GroupsIcon />}>Credits</AccordionHeader>
             </AccordionSummary>
             <AccordionDetails>
               <TableContainer>
@@ -289,15 +272,7 @@ export default function SketchPageBody({
               aria-controls="tags-content"
               id="tags-header"
             >
-              <LocalOfferIcon />
-              <Typography
-                fontWeight="bold"
-                marginLeft={1}
-                component="h2"
-                variant="body1"
-              >
-                Tags
-              </Typography>
+              <AccordionHeader icon={<LocalOfferIcon />}>Tags</AccordionHeader>
             </AccordionSummary>
             <AccordionDetails>
               <Stack direction="row" flexWrap="wrap" spacing={1} useFlexGap>

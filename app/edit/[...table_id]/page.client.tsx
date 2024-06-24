@@ -304,7 +304,9 @@ export default function EditClientPage({
   return (
     <>
       <title>{pageTitle}</title>
-      <Typography variant="h5">{addOrUpdate + tableName}</Typography>
+      <Typography component="h1" variant="h5">
+        {addOrUpdate + tableName}
+      </Typography>
 
       {/* Render fields */}
       {table.fields.map((field, i) => (

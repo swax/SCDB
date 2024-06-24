@@ -107,6 +107,7 @@ export default function ChangeLogTable({
                     table,
                     rowId,
                   )}
+                  prefetch={false}
                 >
                   {entry.changed_by.username}
                 </MuiNextLink>
@@ -121,6 +122,7 @@ export default function ChangeLogTable({
                   entry.table_name,
                   undefined,
                 )}
+                prefetch={false}
               >
                 {entry.table_name}
               </MuiNextLink>
@@ -134,6 +136,7 @@ export default function ChangeLogTable({
                   entry.table_name,
                   entry.row_id,
                 )}
+                prefetch={false}
               >
                 {entry.row_id}
               </MuiNextLink>
@@ -148,6 +151,7 @@ export default function ChangeLogTable({
                   undefined,
                   entry.operation,
                 )}
+                prefetch={false}
               >
                 {entry.operation}
               </MuiNextLink>

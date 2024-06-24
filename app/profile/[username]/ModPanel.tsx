@@ -1,3 +1,4 @@
+import AccordionHeader from "@/app/components/AccordionHeader";
 import { GetProfileResponse } from "@/backend/user/profileService";
 import { ServiceResponse } from "@/shared/serviceResponse";
 import { showAndLogError } from "@/shared/utilities";
@@ -12,7 +13,6 @@ import {
   MenuItem,
   Select,
   TextField,
-  Typography,
 } from "@mui/material";
 import { user_role_type } from "@prisma/client";
 import { useState } from "react";
@@ -62,15 +62,7 @@ export default function ModPanel({ profile }: ModPanelProps) {
         aria-controls="mod-content"
         id="mod-header"
       >
-        <ShieldIcon />
-        <Typography
-          fontWeight="bold"
-          marginLeft={1}
-          component="h2"
-          variant="body1"
-        >
-          Moderation
-        </Typography>
+        <AccordionHeader icon={<ShieldIcon />}>Moderation</AccordionHeader>
       </AccordionSummary>
       <AccordionDetails>
         {editRole ? (

@@ -73,8 +73,10 @@ export default async function CategoryPage(
         <Typography component="h1" variant="h4">
           {category.name}
         </Typography>
-        <Typography variant="subtitle1" color="textSecondary">
-          <MuiNextLink href={"/categories"}>Category</MuiNextLink>
+        <Typography component="div" variant="subtitle1" color="textSecondary">
+          <MuiNextLink href={"/categories"} prefetch={false}>
+            Category
+          </MuiNextLink>
         </Typography>
       </Box>
       <TagsDataGrid

@@ -40,7 +40,7 @@ export default async function SketchesPage(props: ListPageProps) {
         rows={rows}
         totalRowCount={sketches.count}
       />
-      <MuiNextLink href="/edit/sketch">
+      <MuiNextLink href="/edit/sketch" prefetch={false}>
         <Button>Add Sketch</Button>
       </MuiNextLink>
       <DateGeneratedFooter genDate={sketches.dateGenerated} type="data" />

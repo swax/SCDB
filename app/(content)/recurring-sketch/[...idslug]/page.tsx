@@ -74,8 +74,8 @@ export default async function RecurringSketchPage({
         <Typography component="h1" variant="h4">
           {recurringSketch.title}
         </Typography>
-        <Typography variant="subtitle1" color="textSecondary">
-          <MuiNextLink href={"/recurring-sketches"}>
+        <Typography component="div" variant="subtitle1" color="textSecondary">
+          <MuiNextLink href={"/recurring-sketches"} prefetch={false}>
             Recurring Sketch
           </MuiNextLink>
           {" on "}

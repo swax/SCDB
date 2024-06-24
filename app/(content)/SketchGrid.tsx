@@ -13,11 +13,11 @@ import {
   ImageListItem,
   ImageListItemBar,
   Pagination,
-  Typography,
 } from "@mui/material";
 import Image from "next/image";
 import { useId, useState } from "react";
 import { SketchGridData } from "../../shared/sketchGridBase";
+import AccordionHeader from "../components/AccordionHeader";
 import { ContentLink } from "../components/ContentLink";
 import VideoPlayer from "../components/VideoPlayer";
 
@@ -70,23 +70,10 @@ export default function SketchGrid({
         aria-controls={`sketches-content-${id}`}
         id={`sketches-header-${id}`}
       >
-        <Box
-          sx={{
-            display: "flex",
-            alignItems: "center",
-          }}
-        >
-          {icon || <LiveTvIcon />}
-          <Typography
-            fontWeight="bold"
-            marginLeft={1}
-            component="h2"
-            variant="h6"
-          >
-            {data.totalCount >= 0 ? data.totalCount.toString() : ""}{" "}
-            {title || "Sketches"}
-          </Typography>
-        </Box>
+        <AccordionHeader icon={icon || <LiveTvIcon />}>
+          {data.totalCount >= 0 ? data.totalCount.toString() : ""}{" "}
+          {title || "Sketches"}
+        </AccordionHeader>
       </AccordionSummary>
       <AccordionDetails>
         <ImageList
@@ -133,7 +120,7 @@ export default function SketchGrid({
                         fontSize: "0.8rem",
                       }}
                     >
-                      ⭐ {sketch.site_rating.toFixed(0)}
+                      {sketch.site_rating.toFixed(0)} ⭐
                     </Box>
                   )}
                   <Image

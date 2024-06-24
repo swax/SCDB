@@ -209,7 +209,7 @@ export default function LookupField({
         value={value}
       />
       {error && (
-        <Typography color="error" variant="subtitle2">
+        <Typography color="error" component="div" variant="subtitle2">
           {error}
         </Typography>
       )}

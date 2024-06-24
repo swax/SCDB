@@ -72,13 +72,13 @@ export default async function EpisodePage({ params }: ContentPageProps) {
         <Typography component="h1" variant="h4">
           Episode {episode.number}
         </Typography>
-        <Typography variant="subtitle1">
+        <Typography component="div" variant="subtitle1">
           <ContentLink mui table="show" entry={episode.season.show} /> -{" "}
           <ContentLink mui table="season" entry={episode.season}>
             Season {episode.season.number}
           </ContentLink>
         </Typography>
-        <Typography variant="subtitle1">
+        <Typography component="div" variant="subtitle1">
           {episode.air_date?.toLocaleDateString()}
         </Typography>
       </Box>

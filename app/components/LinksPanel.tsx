@@ -5,9 +5,9 @@ import {
   AccordionDetails,
   AccordionSummary,
   Box,
-  Typography,
 } from "@mui/material";
 import { useMemo } from "react";
+import AccordionHeader from "./AccordionHeader";
 import MuiNextLink from "./MuiNextLink";
 
 export default function LinksPanel({
@@ -36,20 +36,17 @@ export default function LinksPanel({
             aria-controls="links-content"
             id="links-header"
           >
-            <LinkIcon />
-            <Typography
-              fontWeight="bold"
-              marginLeft={1}
-              component="h2"
-              variant="body1"
-            >
-              Links
-            </Typography>
+            <AccordionHeader icon={<LinkIcon />}>Links</AccordionHeader>
           </AccordionSummary>
           <AccordionDetails>
             {domainAndUrls.map(([, url], index) => (
               <Box key={index}>
-                <MuiNextLink href={url} target="_blank" rel="noreferrer">
+                <MuiNextLink
+                  href={url}
+                  target="_blank"
+                  rel="noreferrer"
+                  prefetch={false}
+                >
                   {url}
                 </MuiNextLink>
               </Box>

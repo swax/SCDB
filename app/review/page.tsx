@@ -51,13 +51,19 @@ export default async function ReviewPage({
           {rowsToReview.map((row, i) => (
             <TableRow key={i}>
               <TableCell>
-                <MuiNextLink href={getEditUrl(row.table_name, row.row_id)}>
+                <MuiNextLink
+                  href={getEditUrl(row.table_name, row.row_id)}
+                  prefetch={false}
+                >
                   {row.table_name}/{row.row_id}
                 </MuiNextLink>
               </TableCell>
               <TableCell>{row.review_status}</TableCell>
               <TableCell>
-                <MuiNextLink href={`/profile/${row.modified_by_username}`}>
+                <MuiNextLink
+                  href={`/profile/${row.modified_by_username}`}
+                  prefetch={false}
+                >
                   {row.modified_by_username}
                 </MuiNextLink>
               </TableCell>

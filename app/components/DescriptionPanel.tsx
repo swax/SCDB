@@ -1,13 +1,9 @@
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import NotesIcon from "@mui/icons-material/Notes";
-import {
-  Accordion,
-  AccordionDetails,
-  AccordionSummary,
-  Typography,
-} from "@mui/material";
+import { Accordion, AccordionDetails, AccordionSummary } from "@mui/material";
 import { useId } from "react";
 import Markdown from "react-markdown";
+import AccordionHeader from "./AccordionHeader";
 
 export default function DescriptionPanel({
   description,
@@ -29,15 +25,9 @@ export default function DescriptionPanel({
             aria-controls={`description-content-${id}`}
             id={`description-header-${id}`}
           >
-            <NotesIcon />
-            <Typography
-              fontWeight="bold"
-              marginLeft={1}
-              component="h2"
-              variant="body1"
-            >
+            <AccordionHeader icon={<NotesIcon />}>
               {title || "Description"}
-            </Typography>
+            </AccordionHeader>
           </AccordionSummary>
           <AccordionDetails>
             <Markdown>{description}</Markdown>

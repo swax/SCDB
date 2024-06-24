@@ -95,13 +95,15 @@ export default function SketchRating({
         id="rating-header"
       >
         <Typography marginLeft={1}>Site Rating:</Typography>
-        <StarIcon sx={{ color: "gold" }} />
-        <Typography fontWeight="bold">
+        <Typography fontWeight="bold" marginLeft={0.25}>
           {siteRating ? siteRating.toFixed(1) : "-"}
         </Typography>
+        <StarIcon sx={{ color: "gold" }} />
         <Typography marginLeft={2}>Your Rating:</Typography>
+        <Typography fontWeight="bold" marginLeft={0.25}>
+          {userRating || "-"}
+        </Typography>
         <StarIcon sx={{ color: "dodgerblue" }} />
-        <Typography fontWeight="bold">{userRating || "-"}</Typography>
       </AccordionSummary>
       <AccordionDetails>
         <Box

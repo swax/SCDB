@@ -1,5 +1,6 @@
 import { ContentLink } from "@/app/components/ContentLink";
 import DateGeneratedFooter from "@/app/components/DateGeneratedFooter";
+import DescriptionPanel from "@/app/components/DescriptionPanel";
 import LinksPanel from "@/app/components/LinksPanel";
 import {
   getPerson,
@@ -84,9 +85,11 @@ export default async function PersonPage({ params }: ContentPageProps) {
         <Typography component="h1" variant="h4">
           {person.name}
         </Typography>
-        <Typography variant="subtitle1">The Person</Typography>
+        <Typography component="div" variant="subtitle1">
+          The Person
+        </Typography>
         {!!person.character && (
-          <Typography variant="subtitle2">
+          <Typography component="div" variant="subtitle2">
             <ContentLink mui table="character" entry={person.character}>
               Go to the Character
             </ContentLink>
@@ -97,17 +100,19 @@ export default async function PersonPage({ params }: ContentPageProps) {
       {(!!birthDate || !!deathDate || !!person.age) && (
         <Box sx={{ display: "flex", gap: 2 }}>
           {!!birthDate && (
-            <Typography variant="subtitle1">
+            <Typography component="div" variant="subtitle1">
               B. {birthDate.toLocaleDateString()}
             </Typography>
           )}
           {!!deathDate && (
-            <Typography variant="subtitle1">
+            <Typography component="div" variant="subtitle1">
               D. {deathDate.toLocaleDateString()}
             </Typography>
           )}
           {!!person.age && (
-            <Typography variant="subtitle1">Age: {person.age}</Typography>
+            <Typography component="div" variant="subtitle1">
+              Age: {person.age}
+            </Typography>
           )}
         </Box>
       )}
@@ -142,7 +147,7 @@ export default async function PersonPage({ params }: ContentPageProps) {
           ))}
         </ImageList>
       )}
-      <Typography variant="subtitle1">{person.description}</Typography>
+      <DescriptionPanel description={person.description} title="About" />
       <SketchGrid initialData={sketchCastData} getData={getSketchCastData} />
       <SketchGrid
         initialData={sketchCreditData}
