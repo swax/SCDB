@@ -59,7 +59,7 @@ export default async function TagPage({ params }: ContentPageProps) {
         <Typography component="h1" variant="h4">
           {tag.name}
         </Typography>
-        <Typography variant="subtitle1">
+        <Typography component="div" variant="subtitle1">
           <ContentLink mui table="category" entry={tag.category} />
         </Typography>
       </Box>

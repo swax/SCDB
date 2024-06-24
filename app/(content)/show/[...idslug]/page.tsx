@@ -1,3 +1,4 @@
+import AccordionHeader from "@/app/components/AccordionHeader";
 import { ContentLink } from "@/app/components/ContentLink";
 import DateGeneratedFooter from "@/app/components/DateGeneratedFooter";
 import DescriptionPanel from "@/app/components/DescriptionPanel";
@@ -72,8 +73,10 @@ export default async function ShowPage({ params }: ContentPageProps) {
         <Typography component="h1" variant="h4">
           {show.title}
         </Typography>
-        <Typography variant="subtitle1" color="textSecondary">
-          <MuiNextLink href={"/shows"}>Show</MuiNextLink>
+        <Typography component="div" variant="subtitle1" color="textSecondary">
+          <MuiNextLink href={"/shows"} prefetch={false}>
+            Show
+          </MuiNextLink>
         </Typography>
       </Box>
       <DescriptionPanel description={show.description} />
@@ -85,15 +88,9 @@ export default async function ShowPage({ params }: ContentPageProps) {
             aria-controls="seasons-content"
             id="seasons-header"
           >
-            <FormatListNumberedIcon />
-            <Typography
-              fontWeight="bold"
-              marginLeft={1}
-              component="h2"
-              variant="body1"
-            >
+            <AccordionHeader icon={<FormatListNumberedIcon />}>
               Seasons
-            </Typography>
+            </AccordionHeader>
           </AccordionSummary>
           <AccordionDetails>
             <Table size="small">

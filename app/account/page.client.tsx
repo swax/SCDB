@@ -52,12 +52,15 @@ export default function AccountClientPage(account: AccountClientPageProps) {
         <Typography component="h1" variant="h4" align="center">
           My Account
         </Typography>
-        <Typography variant="body1" mt={4}>
+        <Typography component="div" variant="body1" mt={4}>
           Email: {account.email}
         </Typography>
-        <Typography variant="body2" color="textSecondary">
+        <Typography component="div" variant="body2" color="textSecondary">
           Note: Your account is{" "}
-          <MuiNextLink href="https://myaccount.google.com/connections">
+          <MuiNextLink
+            href="https://myaccount.google.com/connections"
+            prefetch={false}
+          >
             linked
           </MuiNextLink>{" "}
           to your Google account.
@@ -96,7 +99,11 @@ export default function AccountClientPage(account: AccountClientPageProps) {
             </>
           ) : (
             <>
-              <Typography variant="body1" sx={{ display: "inline" }}>
+              <Typography
+                component="div"
+                variant="body1"
+                sx={{ display: "inline" }}
+              >
                 Username: {account.username}
               </Typography>
               <Button
@@ -111,7 +118,7 @@ export default function AccountClientPage(account: AccountClientPageProps) {
           )}
         </Box>
         <Box mt={4}>
-          <Typography variant="body1" sx={{ mt: 2 }}>
+          <Typography component="div" variant="body1" sx={{ mt: 2 }}>
             Role: {account.role}
           </Typography>
         </Box>

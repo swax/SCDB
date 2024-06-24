@@ -170,8 +170,8 @@ function ResponsiveAppBar() {
           sx={{ flexGrow: 1, display: { xs: "none", sm: "flex" } }}
         >
           {/*
-           * Set prefetch false for header links because these pages are dynamically rendered even though the actual tables are cached
-           * If you look in the Chrome dev tools when a page loads you'll see the X-Vercel-Cache is always MISS when trying to prefetch these pages
+           * Set prefetch to false for header links because no data is brought down,
+           * waste of a request and counted as a cache miss
            */}
           {pages.map((page, i) => (
             <Button

@@ -59,7 +59,11 @@ export default function ListField({
   // Rendering
   return (
     <>
-      {!inTable && <Typography variant="h6">{field.label}</Typography>}
+      {!inTable && (
+        <Typography component="h2" variant="h6">
+          {field.label}
+        </Typography>
+      )}
       {list.map((value, listIndex) => (
         <Box sx={{ display: "flex", gap: 2, ml: 2, mt: 1 }} key={listIndex}>
           <TextField

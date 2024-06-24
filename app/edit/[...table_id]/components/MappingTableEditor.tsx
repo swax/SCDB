@@ -133,7 +133,9 @@ export default function MappingTableEditor({
   // Rendering
   return (
     <>
-      <Typography variant="h6">{label}</Typography>
+      <Typography component="h2" variant="h6">
+        {label}
+      </Typography>
       {Boolean(mappingTable.ids?.length) && (
         <Table size="small">
           <TableHead>

@@ -66,9 +66,11 @@ export default async function CharacterPage({ params }: ContentPageProps) {
         <Typography component="h1" variant="h4">
           {character.name}
         </Typography>
-        <Typography variant="subtitle1">The Character</Typography>
+        <Typography component="div" variant="subtitle1">
+          The Character
+        </Typography>
         {!!character.person && (
-          <Typography variant="subtitle2">
+          <Typography component="div" variant="subtitle2">
             <ContentLink mui table="person" entry={character.person}>
               Go to the Person
             </ContentLink>

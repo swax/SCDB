@@ -37,7 +37,7 @@ export default async function HomePage() {
           textAlign: "center",
         }}
       >
-        <Typography variant="subtitle2">
+        <Typography component="div" variant="subtitle2">
           🚧 This site is in beta. Please{" "}
           <MuiNextLink href="/about">add</MuiNextLink> your favorite sketches!
           🚧
@@ -58,6 +58,7 @@ export default async function HomePage() {
       </Box>
       <Box mt={6} className="about-page">
         <Typography
+          component="div"
           variant="subtitle1"
           color="textSecondary"
           textAlign={"center"}

@@ -57,7 +57,7 @@ export default function DateGeneratedFooter({
       {/* The info */}
       {display && (
         <Box sx={{ fontStyle: "italic", color: "gray", textAlign: "center" }}>
-          <Typography variant="caption">
+          <Typography component="div" variant="caption">
             Meta: {metaDescription}
             <br />
             {`${capitalizeFirstLetter(type)} Generated: ${dateStr}`}

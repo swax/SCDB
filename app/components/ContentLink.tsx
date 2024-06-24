@@ -9,6 +9,7 @@ export function ContentLink({
   entry,
   children,
 }: {
+  /** Not set when sending links from the backend */
   mui?: boolean;
   table: string;
   /** If not set then the content will not be wrapped in a link */
