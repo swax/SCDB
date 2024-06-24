@@ -108,3 +108,13 @@ export function buildPageTitle(subtitle?: string) {
 
   return subtitle + " | " + siteName;
 }
+
+export function toNiceDate(value: Date | string) {
+  const dateValue = typeof value === "string" ? new Date(value) : value;
+
+  return dateValue.toLocaleDateString(undefined, {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+  });
+}

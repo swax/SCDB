@@ -47,7 +47,7 @@ export default function StringField({
       helperText={field.helperText}
       label={inTable ? "" : field.label}
       multiline={Boolean(field.multiline)}
-      minRows={field.multiline ? 3 : undefined}
+      minRows={field.multiline ? 2 : undefined}
       onChange={(e) => handleChange_field(field, index, e.target.value)}
       size="small"
       value={field.values?.[index] || placeholderValue}

@@ -9,6 +9,7 @@ import {
   AccordionDetails,
   AccordionSummary,
   Box,
+  ButtonBase,
   ImageList,
   ImageListItem,
   ImageListItemBar,
@@ -94,20 +95,26 @@ export default function SketchGrid({
                   width={imgWidth}
                   height={imgHeight}
                 >
-                  <PlayCircleFilledTwoToneIcon
+                  <ButtonBase
+                    aria-controls="video-player-overlay"
+                    aria-haspopup="true"
+                    aria-label="Play Video"
                     sx={{
                       position: "absolute",
                       right: "2px",
                       bottom: "2px",
                     }}
-                    fontSize="large"
-                    // Capute prevents pageLoadingHook from triggering
-                    onClickCapture={(e) => {
-                      e.stopPropagation();
-                      e.preventDefault();
-                      setPlayVideoUrls(sketch.video_urls);
-                    }}
-                  />
+                  >
+                    <PlayCircleFilledTwoToneIcon
+                      fontSize="large"
+                      // Capute prevents pageLoadingHook from triggering
+                      onClickCapture={(e) => {
+                        e.stopPropagation();
+                        e.preventDefault();
+                        setPlayVideoUrls(sketch.video_urls);
+                      }}
+                    />
+                  </ButtonBase>
                   {!!sketch.site_rating && (
                     <Box
                       sx={{

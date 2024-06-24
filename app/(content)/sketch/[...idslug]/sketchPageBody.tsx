@@ -3,7 +3,7 @@ import { ContentLink } from "@/app/components/ContentLink";
 import DescriptionPanel from "@/app/components/DescriptionPanel";
 import LinksPanel from "@/app/components/LinksPanel";
 import s3url from "@/shared/cdnHost";
-import { enumNameToDisplayName } from "@/shared/utilities";
+import { enumNameToDisplayName, toNiceDate } from "@/shared/utilities";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import FormatQuoteIcon from "@mui/icons-material/FormatQuote";
 import GroupsIcon from "@mui/icons-material/Groups";
@@ -64,9 +64,15 @@ export default function SketchPageBody({
             <>
               {" Episode "}
               <ContentLink mui table="episode" entry={sketch.episode}>
-                {sketch.episode.air_date
-                  ? sketch.episode.air_date.toLocaleDateString()
-                  : sketch.episode.number}
+                <span
+                  title={
+                    sketch.episode.air_date
+                      ? "Air Date " + toNiceDate(sketch.episode.air_date)
+                      : ""
+                  }
+                >
+                  {sketch.episode.number}
+                </span>
               </ContentLink>
             </>
           )}

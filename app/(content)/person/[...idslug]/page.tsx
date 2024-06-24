@@ -10,7 +10,7 @@ import {
 } from "@/backend/content/personService";
 import { getStaticPageCount } from "@/shared/ProcessEnv";
 import s3url from "@/shared/cdnHost";
-import { buildPageTitle } from "@/shared/utilities";
+import { buildPageTitle, toNiceDate } from "@/shared/utilities";
 import {
   Box,
   ImageList,
@@ -101,12 +101,12 @@ export default async function PersonPage({ params }: ContentPageProps) {
         <Box sx={{ display: "flex", gap: 2 }}>
           {!!birthDate && (
             <Typography component="div" variant="subtitle1">
-              B. {birthDate.toLocaleDateString()}
+              Born: {toNiceDate(birthDate)}
             </Typography>
           )}
           {!!deathDate && (
             <Typography component="div" variant="subtitle1">
-              D. {deathDate.toLocaleDateString()}
+              Died: {toNiceDate(deathDate)}
             </Typography>
           )}
           {!!person.age && (
@@ -130,7 +130,7 @@ export default async function PersonPage({ params }: ContentPageProps) {
           {person.person_images.map((person_image, i) => (
             <ImageListItem key={i} aria-label={`Picture ${i}`}>
               <Image
-                alt={person_image.description || person.name}
+                alt={`Image ${i}: ${person_image.description || person.name}`}
                 style={{ objectFit: "cover", borderRadius: 8 }}
                 src={`${s3url}/${person_image.image.cdn_key}`}
                 priority={i == 0}

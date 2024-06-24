@@ -2,7 +2,7 @@ import { useForceUpdate } from "@/app/hooks/useForceUpdate";
 import { FieldCms, ImageFieldCms } from "@/backend/cms/cmsTypes";
 import s3url from "@/shared/cdnHost";
 import { fileToShortHash, showAndLogError } from "@/shared/utilities";
-import { Button, Stack } from "@mui/material";
+import { Button, Stack, Typography } from "@mui/material";
 import Image from "next/image";
 import { useState } from "react";
 import { getPresignedUploadUrl } from "../../actions/uploadAction";
@@ -103,47 +103,51 @@ export default function ImageField({
   const showRequiredHighlight = !field.optional && !cdnKey;
 
   return (
-    <Stack direction="row" spacing={2} sx={{ alignItems: "center" }}>
-      {cdnKey && (
-        <a href={imgUrl} rel="noreferrer" target="_blank">
-          <Image
-            alt="The Associated Image"
-            height={75}
-            src={imgUrl}
-            style={{ objectFit: "cover" }}
-            unoptimized={true /* Not optimized in edit mode */}
-            width={75}
-          />
-        </a>
-      )}
-      <Button
-        component={"label" /* Must be a label for upload link to work*/}
-        disabled={loading || uploading}
-        color={showRequiredHighlight ? "error" : "primary"}
-        sx={{
-          border: showRequiredHighlight
-            ? "1px solid #f44336"
-            : "1px solid lightblue",
-        }}
-      >
-        {uploading ? "Uploading..." : cdnKey ? "Change Image" : "Upload Image"}
-        <input
-          accept="image/*"
-          hidden
-          multiple
-          onChange={(e) => void handleChange_uploadImage(e)}
-          type="file"
-        />
-      </Button>
-      {cdnKey && (
+    <>
+      <Typography component="h2" variant="h6">
+        {field.label}
+      </Typography>
+      <Stack direction="row" spacing={2} sx={{ alignItems: "center" }}>
+        {cdnKey && (
+          <a href={imgUrl} rel="noreferrer" target="_blank">
+            <Image
+              alt="The Associated Image"
+              height={75}
+              src={imgUrl}
+              style={{ objectFit: "cover" }}
+              unoptimized={true /* Not optimized in edit mode */}
+              width={75}
+            />
+          </a>
+        )}
         <Button
-          component="label"
-          onClick={() => handleChange_field(null)}
+          component={"label" /* Must be a label for upload link to work*/}
           disabled={loading || uploading}
+          color={showRequiredHighlight ? "error" : "primary"}
+          sx={{
+            border: showRequiredHighlight
+              ? "1px solid #f44336"
+              : "1px solid lightblue",
+          }}
         >
-          Delete Image
+          {uploading ? "Uploading..." : cdnKey ? "Change" : "Upload"}
+          <input
+            accept="image/*"
+            hidden
+            multiple
+            onChange={(e) => void handleChange_uploadImage(e)}
+            type="file"
+          />
         </Button>
-      )}
-    </Stack>
+        {cdnKey && (
+          <Button
+            onClick={() => handleChange_field(null)}
+            disabled={loading || uploading}
+          >
+            Delete
+          </Button>
+        )}
+      </Stack>
+    </>
   );
 }

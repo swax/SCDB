@@ -45,7 +45,11 @@ export default function EditableField({
 
   // Rendering
   return (
-    <Box sx={{ marginTop: inTable ? 0 : 3 }}>
+    <Box
+      sx={{ marginTop: inTable ? 0 : 3 }}
+      role="region"
+      aria-label={`${field.label} Field`}
+    >
       {field.type == "string" && (
         <StringField
           field={field}

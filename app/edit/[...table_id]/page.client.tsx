@@ -305,7 +305,7 @@ export default function EditClientPage({
     <>
       <title>{pageTitle}</title>
       <Typography component="h1" variant="h5">
-        {addOrUpdate + tableName}
+        {`${addOrUpdate} ${tableName}`}
       </Typography>
 
       {/* Render fields */}

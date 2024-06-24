@@ -65,7 +65,16 @@ export default function ListField({
         </Typography>
       )}
       {list.map((value, listIndex) => (
-        <Box sx={{ display: "flex", gap: 2, ml: 2, mt: 1 }} key={listIndex}>
+        <Box
+          sx={{
+            alignItems: "flex-start",
+            display: "flex",
+            gap: 2,
+            marginLeft: 2,
+            marginTop: 1,
+          }}
+          key={listIndex}
+        >
           <TextField
             disabled={loading || Boolean(field.templates)}
             error={hasError}
@@ -100,7 +109,7 @@ export default function ListField({
         sx={{ ml: 2, mt: 2 }}
         variant="outlined"
       >
-        Add
+        Add {field.label}
       </Button>
     </>
   );

@@ -14,6 +14,12 @@ export default function HelpPage() {
     <>
       <Box className="about-page" sx={{ marginTop: 4 }}>
         <Markdown>{`
+### Links
+- [X/Twitter](https://x.com/sketchtvlol)
+- [Discord](https://discord.gg/UKE8gSYp)
+- [GitHub](https://github.com/swax/SCDB)
+
+
 ### About
 
 SketchTV.lol is all about building a database of comedy sketches. 
