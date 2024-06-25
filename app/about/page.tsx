@@ -26,7 +26,7 @@ SketchTV.lol is all about building a database of comedy sketches.
 There's no place on the internet that catalogs individual sketches to make them easy to find by category, person, year, etc...
 
 Some sketches seem to be impossible to find anywhere. 
-Others are hidden on various large streaming sites, let's help people find them to enjoy again.
+Others are hidden across YouTube, TikTok, Reddit, Facebook, etc.. Let's Find what we can so it's easier to share and enjoy.
 
 Create an account to add your favorite sketches.
 We have a [Discord server](https://discord.gg/UKE8gSYp) as well if you want to collaborate;

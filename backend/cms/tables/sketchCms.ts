@@ -54,7 +54,8 @@ const sketchCms: TableCms = {
     {
       label: "Video URLs",
       column: "video_urls",
-      helperText: "Supports: YouTube, Vimeo, TikTok, or Internet Archive",
+      helperText:
+        "Supports: YouTube, Vimeo, TikTok, Reddit, Facebook or Internet Archive URLs",
       type: "list",
     },
     {
