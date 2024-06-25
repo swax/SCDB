@@ -84,7 +84,7 @@ export default function SketchPageBody({
         videoUrls={sketch.video_urls}
       />
       {!!sketch.recurring_sketch && (
-        <Typography component="div" variant="subtitle1">
+        <Typography component="div" variant="subtitle1" marginTop={2}>
           {"See more "}
           <ContentLink
             mui
