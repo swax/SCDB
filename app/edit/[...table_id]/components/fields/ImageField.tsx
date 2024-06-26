@@ -1,6 +1,6 @@
 import { useForceUpdate } from "@/app/hooks/useForceUpdate";
 import { FieldCms, ImageFieldCms } from "@/backend/cms/cmsTypes";
-import s3url from "@/shared/cdnHost";
+import staticUrl from "@/shared/cdnHost";
 import { fileToShortHash, showAndLogError } from "@/shared/utilities";
 import { Button, Stack, Typography } from "@mui/material";
 import Image from "next/image";
@@ -99,7 +99,7 @@ export default function ImageField({
 
   // Rendering
   const cdnKey = field.values?.[index] || "";
-  const imgUrl = `${s3url}/${cdnKey}`;
+  const imgUrl = `${staticUrl}/${cdnKey}`;
   const showRequiredHighlight = !field.optional && !cdnKey;
 
   return (

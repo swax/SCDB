@@ -1,5 +1,34 @@
 import "server-only";
-import { sketchType } from "./sketchTypes";
+import { sketchType } from "../app/(content)/sketch/[...idslug]/sketchTypes";
+import { Metadata } from "next";
+
+export function buildPageMeta(
+  title: string,
+  description: string,
+  url: string,
+  images: { url: string; alt: string }[],
+): Metadata {
+  return {
+    title,
+    description,
+    openGraph: {
+      title,
+      description,
+      type: "website",
+      locale: "en_US",
+      url,
+      siteName: "SketchTV.lol",
+      images,
+    },
+    twitter: {
+      site: "@sketchtvlol",
+      title,
+      description,
+      card: "summary_large_image",
+      images,
+    },
+  };
+}
 
 /**
  * Way over engineered, but aggregates the sketch description, cast, and title to build the meta description

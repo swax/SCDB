@@ -29,20 +29,18 @@ export default async function HomePage() {
   return (
     <>
       {/* Beta announcement */}
-      <Paper
-        elevation={3}
+      <Box
         sx={{
           marginTop: 2,
           padding: 0.5,
           textAlign: "center",
         }}
       >
-        <Typography component="div" variant="subtitle2">
-          🚧 This site is in beta. Feel free to{" "}
-          <MuiNextLink href="/about">add</MuiNextLink> your favorite sketches!
-          🚧
+        {/* H1 is important for SEO */}
+        <Typography component="h1" variant="subtitle1">
+          SketchTV.lol - The Sketch Comedy Database
         </Typography>
-      </Paper>
+      </Box>
       <Box mt={2}>
         <SketchGrid
           initialData={trendingSketchData}
@@ -64,7 +62,7 @@ export default async function HomePage() {
           textAlign={"center"}
         >
           SketchTV.lol is a free database of sketch comedy. More info{" "}
-          <a href="/about">here</a>.<br />
+          <MuiNextLink href="/about">here</MuiNextLink>.<br />
           Help us grow by creating an account and adding your favorite sketches!
         </Typography>
       </Box>

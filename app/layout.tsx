@@ -5,12 +5,22 @@ import "./globals.css";
 import ResponsiveAppBar from "./header/ResponsiveAppBar";
 import { NextAuthProvider } from "./providers/NextAuthProvider";
 import ThemeRegistry from "./providers/ThemeRegistry";
+import { buildPageMeta } from "@/shared/metaBuilder";
 
-export const metadata: Metadata = {
-  title: "SketchTV.lol",
-  description:
-    "The Sketch Comedy Database. Discover new and trending comedy sketches here!",
-};
+/** Longer title important for SEO */
+export const metadata = buildPageMeta(
+  "SketchTV.lol - The Sketch Comedy Database",
+  "Discover new and trending comedy sketches here!",
+  "/",
+  [
+    {
+      url: "/images/logo2.webp",
+      alt: "SketchTV.lol logo",
+    },
+  ],
+);
+
+metadata.metadataBase = new URL("https://www.sketchtv.lol");
 
 export const viewport: Viewport = {
   width: "device-width",

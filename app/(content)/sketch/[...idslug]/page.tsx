@@ -2,12 +2,16 @@ import { ContentLink } from "@/app/components/ContentLink";
 import DateGeneratedFooter from "@/app/components/DateGeneratedFooter";
 import { getSketch, getSketchList } from "@/backend/content/sketchService";
 import { getStaticPageCount } from "@/shared/ProcessEnv";
+import staticUrl from "@/shared/cdnHost";
+import {
+  buildPageMeta,
+  buildSketchMetaDescription,
+} from "@/shared/metaBuilder";
 import { buildPageTitle } from "@/shared/utilities";
 import { Metadata } from "next";
 import { cache } from "react";
 import { ContentPageProps, tryGetContent } from "../../contentBase";
 import SketchPageBody from "./sketchPageBody";
-import { buildSketchMetaDescription } from "./sketchPageMeta";
 import { castMemberType, combinedCastMemberType } from "./sketchTypes";
 
 const getRequestCachedSketch = cache(async (id: number) => getSketch(id));
@@ -18,15 +22,30 @@ export async function generateMetadata({
   const id = parseInt(params.idslug[0]);
 
   const sketch = await getRequestCachedSketch(id);
+  if (!sketch) {
+    return {};
+  }
 
-  return sketch
-    ? {
-        title: buildPageTitle(
-          `${sketch.title} - ${sketch.show.title} ${sketch.season ? sketch.season.year : ""}`,
-        ),
-        description: buildSketchMetaDescription(sketch),
-      }
-    : {};
+  const title = buildPageTitle(
+    `${sketch.title} - ${sketch.show.title} ${sketch.season ? sketch.season.year : ""}`,
+  );
+  const description = buildSketchMetaDescription(sketch);
+
+  const images = sketch.image
+    ? [
+        {
+          url: `${staticUrl}/${sketch.image.cdn_key}`,
+          alt: sketch.title,
+        },
+      ]
+    : [];
+
+  return buildPageMeta(
+    title,
+    description,
+    `/sketch/${sketch.id}/${sketch.url_slug}`,
+    images,
+  );
 }
 
 export const revalidate = 300; // 5 minutes

@@ -8,7 +8,7 @@ const nextConfig = {
     remotePatterns: [
       {
         protocol: "https",
-        hostname: "sketchtv-lol.s3.us-east-1.amazonaws.com",
+        hostname: process.env.NEXT_PUBLIC_STATIC_HOSTNAME,
         port: "",
         pathname: "/images/**",
       },

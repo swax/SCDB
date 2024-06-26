@@ -10,7 +10,7 @@ import dragdropStyles from "./dragdrop.module.css";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
 import DragIndicatorIcon from "@mui/icons-material/DragIndicator";
-import s3url from "@/shared/cdnHost";
+import staticUrl from "@/shared/cdnHost";
 import Image from "next/image";
 
 interface MappingTableRowProps {
@@ -68,7 +68,7 @@ export default function MappingTableRow({
             <Image
               alt="The Associated Image"
               height={50}
-              src={`${s3url}/${cdnKey}`}
+              src={`${staticUrl}/${cdnKey}`}
               style={{ objectFit: "cover" }}
               unoptimized={true /* Not optimized in edit mode */}
               width={50}

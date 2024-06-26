@@ -9,7 +9,7 @@ import {
   getPersonSketchCreditGrid,
 } from "@/backend/content/personService";
 import { getStaticPageCount } from "@/shared/ProcessEnv";
-import s3url from "@/shared/cdnHost";
+import staticUrl from "@/shared/cdnHost";
 import { buildPageTitle, toNiceDate } from "@/shared/utilities";
 import {
   Box,
@@ -132,7 +132,7 @@ export default async function PersonPage({ params }: ContentPageProps) {
               <Image
                 alt={`Image ${i}: ${person_image.description || person.name}`}
                 style={{ objectFit: "cover", borderRadius: 8 }}
-                src={`${s3url}/${person_image.image.cdn_key}`}
+                src={`${staticUrl}/${person_image.image.cdn_key}`}
                 priority={i == 0}
                 width={imgWidth}
                 height={imgHeight}
