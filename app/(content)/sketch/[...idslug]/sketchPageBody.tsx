@@ -2,7 +2,7 @@ import AccordionHeader from "@/app/components/AccordionHeader";
 import { ContentLink } from "@/app/components/ContentLink";
 import DescriptionPanel from "@/app/components/DescriptionPanel";
 import LinksPanel from "@/app/components/LinksPanel";
-import s3url from "@/shared/cdnHost";
+import staticUrl from "@/shared/cdnHost";
 import { enumNameToDisplayName, toNiceDate } from "@/shared/utilities";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import FormatQuoteIcon from "@mui/icons-material/FormatQuote";
@@ -138,7 +138,7 @@ export default function SketchPageBody({
                         }}
                         src={
                           castMember.image?.cdn_key
-                            ? `${s3url}/${castMember.image?.cdn_key}`
+                            ? `${staticUrl}/${castMember.image?.cdn_key}`
                             : "/images/no-image.webp"
                         }
                         width={imgWidth}
@@ -247,7 +247,7 @@ export default function SketchPageBody({
                             <Image
                               alt={sketch_credit.person.name}
                               style={{ objectFit: "cover" }}
-                              src={`${s3url}/${sketch_credit.person.person_images[0].image.cdn_key}`}
+                              src={`${staticUrl}/${sketch_credit.person.person_images[0].image.cdn_key}`}
                               height={40}
                               width={40}
                             />

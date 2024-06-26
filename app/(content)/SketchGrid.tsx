@@ -1,6 +1,6 @@
 "use client";
 
-import s3url from "@/shared/cdnHost";
+import staticUrl from "@/shared/cdnHost";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import LiveTvIcon from "@mui/icons-material/LiveTv";
 import PlayCircleFilledTwoToneIcon from "@mui/icons-material/PlayCircleFilledTwoTone";
@@ -140,7 +140,7 @@ export default function SketchGrid({
                     }}
                     src={
                       sketch.image_cdnkey
-                        ? `${s3url}/${sketch.image_cdnkey}`
+                        ? `${staticUrl}/${sketch.image_cdnkey}`
                         : "/images/no-image.webp"
                     }
                     width={imgWidth}

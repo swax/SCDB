@@ -1,7 +1,7 @@
 "use client";
 
 import VideoPlayer from "@/app/components/VideoPlayer";
-import s3url from "@/shared/cdnHost";
+import staticUrl from "@/shared/cdnHost";
 import PlayCircleFilledTwoToneIcon from "@mui/icons-material/PlayCircleFilledTwoTone";
 import { Box, ButtonBase } from "@mui/material";
 import Image from "next/image";
@@ -53,7 +53,7 @@ export default function VideoHero({
           )}
           <Image
             alt={title}
-            src={`${s3url}/${image_cdn_key}`}
+            src={`${staticUrl}/${image_cdn_key}`}
             style={{ objectFit: "cover", borderRadius: 8 }}
             priority
             width={imgWidth}
