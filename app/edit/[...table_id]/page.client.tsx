@@ -120,6 +120,7 @@ export default function EditClientPage({
     if (response.warnings) {
       setOpenWarningSnackbar(true);
       setSnackbarWarnings(response.warnings);
+      console.warn("Save Warnings:", response.warnings)
     }
 
     const rowId = response.content.rowId;
