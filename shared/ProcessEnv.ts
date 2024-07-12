@@ -3,6 +3,8 @@ import { user_role_type } from "@prisma/client";
 interface ProcessEnv extends NodeJS.ProcessEnv {
   readonly GOOGLE_CLIENT_ID: string;
   readonly GOOGLE_CLIENT_SECRET: string;
+  readonly GOOGLE_INDEX_SERVICE_EMAIL: string;
+  readonly GOOGLE_INDEX_SERVICE_KEY: string;
   readonly NEXTAUTH_SECRET: string;
   readonly NEXT_PUBLIC_AWS_BUCKET: string;
   readonly NEXT_PUBLIC_AWS_REGION: string;

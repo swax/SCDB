@@ -34,7 +34,7 @@ export default function LookupField({
   // Constants
   const initialValue: Nullable<LookupFieldOption> = field.values?.[index]
     ? {
-        id: field.values[index] as number,
+        id: field.values[index],
         label: field.lookup.labelValues?.[index] ?? "(lookup init error)",
       }
     : null;

@@ -20,11 +20,13 @@ import AddIcon from "@mui/icons-material/Add";
 import DeleteIcon from "@mui/icons-material/Delete";
 import SaveIcon from "@mui/icons-material/Save";
 import {
+  Alert,
   Box,
   Fab,
   MenuItem,
   Select,
   SelectChangeEvent,
+  Snackbar,
   Tooltip,
   Typography,
 } from "@mui/material";
@@ -32,7 +34,7 @@ import { review_status_type } from "@prisma/client";
 import { useEffect, useMemo, useState } from "react";
 import { useBeforeUnload, useEffectOnce } from "react-use";
 import deleteAction from "./actions/deleteAction";
-import editAction from "./actions/editAction";
+import saveAction from "./actions/saveAction";
 import { updateReviewStatus } from "./actions/reviewAction";
 import EditableField from "./components/EditableField";
 
@@ -70,6 +72,9 @@ export default function EditClientPage({
 
   const [createdRowId, setCreatedRowId] = useState<number | null>(null);
 
+  const [openWarningSnackbar, setOpenWarningSnackbar] = useState(false);
+  const [snackbarWarnings, setSnackbarWarnings] = useState<string[]>([]);
+
   useBeforeUnload(
     () => changeState == "dirty",
     "Are you sure you want to leave? You have unsaved changes.",
@@ -104,12 +109,17 @@ export default function EditClientPage({
 
     setLoading(true);
 
-    const response = await editAction(table, id, slug);
+    const response = await saveAction(table, id, slug);
 
     if (response.error || !response.content) {
       showAndLogError(response.error || "Unknown error");
       setLoading(false);
       return;
+    }
+
+    if (response.warnings) {
+      setOpenWarningSnackbar(true);
+      setSnackbarWarnings(response.warnings);
     }
 
     const rowId = response.content.rowId;
@@ -404,6 +414,17 @@ export default function EditClientPage({
           </Tooltip>
         )}
       </Box>
+      <Snackbar
+        open={openWarningSnackbar}
+        autoHideDuration={15000}
+        onClose={() => setOpenWarningSnackbar(false)}
+      >
+        <Alert onClose={() => setOpenWarningSnackbar(false)} severity="warning">
+          {snackbarWarnings.map((warning, i) => (
+            <Box key={i}>{warning}</Box>
+          ))}
+        </Alert>
+      </Snackbar>
     </>
   );
 }

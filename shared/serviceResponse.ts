@@ -1,6 +1,7 @@
 export interface ServiceResponse<T> {
   content?: T;
   error?: string;
+  warnings?: string[];
 }
 
 export function errorResponse(error: string): ServiceResponse<void> {
