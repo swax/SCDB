@@ -34,7 +34,8 @@ export default async function saveAction(
       // Update to use next/after once available in v15
       // https://nextjs.org/blog/next-15-rc#executing-code-after-a-response-with-nextafter-experimental
 
-      const url = `https://www.sketchtv.lol/sketch/${id}/${slug}`;
+      const tablePath = table.name.replace("_", "-");
+      const url = `https://www.sketchtv.lol/${tablePath}/${id}/${slug}`;
       const bingUpdate = sendBingUpdate(url, response);
       const googleUpdate = sendGoogleUpdate(url, response);
       await Promise.all([bingUpdate, googleUpdate]);
