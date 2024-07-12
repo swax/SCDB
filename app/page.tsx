@@ -4,7 +4,7 @@ import {
   getTrendingSketchGrid,
 } from "@/backend/content/homeService";
 import TrendingUpIcon from "@mui/icons-material/TrendingUp";
-import { Box, Paper, Typography } from "@mui/material";
+import { Box, Typography } from "@mui/material";
 import SketchGrid from "./(content)/SketchGrid";
 import MuiNextLink from "./components/MuiNextLink";
 

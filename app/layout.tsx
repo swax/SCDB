@@ -1,11 +1,11 @@
+import { buildPageMeta } from "@/shared/metaBuilder";
 import { Container } from "@mui/material";
-import type { Metadata, Viewport } from "next";
+import type { Viewport } from "next";
 import Script from "next/script";
 import "./globals.css";
 import ResponsiveAppBar from "./header/ResponsiveAppBar";
 import { NextAuthProvider } from "./providers/NextAuthProvider";
 import ThemeRegistry from "./providers/ThemeRegistry";
-import { buildPageMeta } from "@/shared/metaBuilder";
 
 /** Longer title important for SEO */
 export const metadata = buildPageMeta(
