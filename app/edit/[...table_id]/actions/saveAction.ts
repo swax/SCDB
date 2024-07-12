@@ -30,12 +30,13 @@ export default async function saveAction(
     if (ProcessEnv.NODE_ENV === "development") {
       response.warnings ||= [];
       response.warnings.push("Skipping bing/google update in dev mode");
-    } else {
+    } else if (response.content) {
       // Update to use next/after once available in v15
       // https://nextjs.org/blog/next-15-rc#executing-code-after-a-response-with-nextafter-experimental
 
       const tablePath = table.name.replace("_", "-");
-      const url = `https://www.sketchtv.lol/${tablePath}/${id}/${slug}`;
+      const {rowId, newSlug} = response.content;
+      const url = `https://www.sketchtv.lol/${tablePath}/${rowId}/${newSlug || slug}`;
       const bingUpdate = sendBingUpdate(url, response);
       const googleUpdate = sendGoogleUpdate(url, response);
       await Promise.all([bingUpdate, googleUpdate]);
