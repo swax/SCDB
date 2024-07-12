@@ -31,11 +31,11 @@ export async function sendBingUpdate<T>(
         bingResponseCodes[indexResponse.status] || "Unknown";
 
       clientResponse.warnings.push(
-        `Failed to update Bing: ${indexResponse.status} - ${responseMessage}`,
+        `Bing error response: ${indexResponse.status} - ${responseMessage}`,
       );
     }
   } catch (e) {
-    clientResponse.warnings.push(`Failed to update Bing: ${e}`);
+    clientResponse.warnings.push(`Bing update exception: ${e}`);
   }
 }
 
@@ -49,7 +49,7 @@ export async function sendGoogleUpdate<T>(
     const jwtClient = new google.auth.JWT(
       ProcessEnv.GOOGLE_INDEX_SERVICE_EMAIL,
       undefined,
-      ProcessEnv.GOOGLE_INDEX_SERVICE_KEY,
+      ProcessEnv.GOOGLE_INDEX_SERVICE_KEY.replace(/\\n/g,"\n"),
       ["https://www.googleapis.com/auth/indexing"],
       undefined,
     );
@@ -87,10 +87,10 @@ export async function sendGoogleUpdate<T>(
 
     if (!googleResponse.ok) {
       clientResponse.warnings.push(
-        `Failed to update Google: ${googleResponse.status} - ${googleResponse.statusText}`,
+        `Google error response: ${googleResponse.status} - ${googleResponse.statusText}`,
       );
     }
   } catch (e) {
-    clientResponse.warnings.push(`Failed to update Google: ${e}`);
+    clientResponse.warnings.push(`Google update exception: ${e}`);
   }
 }
