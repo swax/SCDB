@@ -35,22 +35,20 @@ export default function EditViewButton() {
     return <></>;
   }
 
-  if (editMode) {
-    const viewPath = pathname.replace(/^\/edit/, "");
+  const id = editMode ? pathParts[3] : pathParts[2];
 
+  if (editMode) {
     return (
       <Tooltip title="View this page">
-        <IconButton aria-label="View Page" href={viewPath} color="inherit">
+        <IconButton aria-label="View Page" href={`/${table}/${id}`} color="inherit">
           <VisibilityIcon />
         </IconButton>
       </Tooltip>
     );
   } else {
-    const editPath = `/edit${pathname}`;
-
     return (
       <Tooltip title="Edit this page">
-        <IconButton aria-label="Edit Page" href={editPath} color="inherit">
+        <IconButton aria-label="Edit Page" href={`/edit/${table}/${id}`} color="inherit">
           <EditIcon />
         </IconButton>
       </Tooltip>

@@ -34,21 +34,16 @@ import { review_status_type } from "@prisma/client";
 import { useEffect, useMemo, useState } from "react";
 import { useBeforeUnload, useEffectOnce } from "react-use";
 import deleteAction from "./actions/deleteAction";
-import saveAction from "./actions/saveAction";
 import { updateReviewStatus } from "./actions/reviewAction";
+import saveAction from "./actions/saveAction";
 import EditableField from "./components/EditableField";
 
 interface EditClientPageProps {
   table: TableCms;
   id: number;
-  slug: string;
 }
 
-export default function EditClientPage({
-  table,
-  id,
-  slug,
-}: EditClientPageProps) {
+export default function EditClientPage({ table, id }: EditClientPageProps) {
   /*
    * HACK: This page modifies the table object directly during the editing process
    * It works fine, but for some reason, after a server action runs, the table object is reset to its original state
@@ -109,7 +104,7 @@ export default function EditClientPage({
 
     setLoading(true);
 
-    const response = await saveAction(table, id, slug);
+    const response = await saveAction(table, id);
 
     if (response.error || !response.content) {
       showAndLogError(response.error || "Unknown error");
@@ -144,7 +139,7 @@ export default function EditClientPage({
 
     setLoading(true);
 
-    const response = await deleteAction(table, id, slug);
+    const response = await deleteAction(table, id);
 
     if (response.error) {
       showAndLogError(response.error);
