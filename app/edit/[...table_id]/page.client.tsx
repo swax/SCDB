@@ -117,10 +117,13 @@ export default function EditClientPage({
       return;
     }
 
-    if (response.warnings) {
-      setOpenWarningSnackbar(true);
+    if (response.warnings?.length) {
+      // Display warning prominently for now, still refresh after warning closed
+      showAndLogError("Save Warnings:\n" + response.warnings.join("\n"));
+
+      /*setOpenWarningSnackbar(true);
       setSnackbarWarnings(response.warnings);
-      console.warn("Save Warnings:", response.warnings)
+      console.warn("Save Warnings:", response.warnings)*/
     }
 
     const rowId = response.content.rowId;
