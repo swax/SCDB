@@ -370,6 +370,26 @@ async function writeMappingChanges(
   }
 }
 
+export async function getSlugForId(table: TableCms, id: number) {
+  const slugField = table.fields.find((f) => f.type == "slug") as SlugFieldCms;
+  if (!slugField || !slugField.column) {
+    throw new Error("Table does not have a slug field or it is not configured");
+  }
+
+  const dynamicPrisma = prisma as any;
+
+  const row = await dynamicPrisma[table.name].findUnique({
+    where: {
+      id,
+    },
+    select: {
+      [slugField.column]: true,
+    },
+  });
+
+  return row?.[slugField.column] as string | undefined;
+}
+
 export async function deleteRow(
   user: SessionUser,
   table: TableCms,

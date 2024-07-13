@@ -14,7 +14,7 @@ interface EditTablePageProps {
 
 export default async function EditTablePage({ params }: EditTablePageProps) {
   // Server Data
-  const [tableName, id, slug] = params.table_id;
+  const [tableName, id] = params.table_id;
 
   const numId = parseInt(id);
 
@@ -35,7 +35,7 @@ export default async function EditTablePage({ params }: EditTablePageProps) {
   // Rendering
   return (
     <>
-      <EditClientPage table={table} id={numId} slug={slug} />
+      <EditClientPage table={table} id={numId} />
       {changelog && Boolean(changelog.entries.length) && (
         <>
           <h4>Recent Changes:</h4>
