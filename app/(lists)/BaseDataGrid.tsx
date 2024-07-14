@@ -161,7 +161,7 @@ export default function BaseDataGrid<T>({
       rowSelection={false}
       slots={{ toolbar: CustomToolbar }}
       sortingMode="server"
-      sx={{ border: "none" }}
+      style={{ border: "none" }}
     />
   );
 }

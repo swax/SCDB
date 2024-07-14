@@ -156,7 +156,7 @@ export default function ChangeLogTable({
                 {entry.operation}
               </MuiNextLink>
             </TableCell>
-            <TableCell sx={{ verticalAlign: "top" }}>
+            <TableCell style={{ verticalAlign: "top" }}>
               <pre style={{ fontSize: 12, margin: 0 }}>{entry.summary}</pre>
             </TableCell>
           </TableRow>

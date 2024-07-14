@@ -144,7 +144,7 @@ function ResponsiveAppBar() {
               >
                 <Typography
                   textAlign="center"
-                  sx={{
+                  style={{
                     color: page.color,
                     fontFamily: funFont,
                     fontWeight: "bold",
@@ -174,7 +174,7 @@ function ResponsiveAppBar() {
               href={`/${page.label.toLowerCase()}`}
               key={i}
               prefetch={false}
-              sx={{
+              style={{
                 color: page.color,
                 fontFamily: funFont,
                 fontWeight: "bold",
@@ -199,7 +199,7 @@ function ResponsiveAppBar() {
         </Box>
 
         {/* Right side header icons */}
-        <Stack direction={"row"} sx={{ marginRight: 1 }}>
+        <Stack direction={"row"} style={{ marginRight: 8 }}>
           <EditViewButton />
           <Tooltip
             title="Follow on X/Twitter"
@@ -239,7 +239,7 @@ function ResponsiveAppBar() {
       {pageLoading ? (
         <LinearProgress
           sx={{
-            bgcolor: dividerColor,
+            backgroundColor: dividerColor,
             height: "1px",
             "& .MuiLinearProgress-bar": {
               backgroundColor: "whitesmoke",
@@ -250,7 +250,7 @@ function ResponsiveAppBar() {
         <Divider
           component={"div"}
           role=""
-          sx={{ bgcolor: dividerColor, height: "1px" }}
+          style={{ backgroundColor: dividerColor, height: "1px" }}
         />
       )}
     </AppBar>

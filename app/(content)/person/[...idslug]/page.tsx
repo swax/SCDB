@@ -81,7 +81,7 @@ export default async function PersonPage({ params }: ContentPageProps) {
   // Rendering
   return (
     <>
-      <Box mt={4} mb={4}>
+      <Box style={{ marginTop: 32, marginBottom: 32 }}>
         <Typography component="h1" variant="h4">
           {person.name}
         </Typography>
@@ -98,7 +98,7 @@ export default async function PersonPage({ params }: ContentPageProps) {
       </Box>
       {/* birth, death, age */}
       {(!!birthDate || !!deathDate || !!person.age) && (
-        <Box sx={{ display: "flex", gap: 2 }}>
+        <Box style={{ display: "flex", gap: 2 }}>
           {!!birthDate && (
             <Typography component="div" variant="subtitle1">
               Born: {toNiceDate(birthDate)}
@@ -119,11 +119,11 @@ export default async function PersonPage({ params }: ContentPageProps) {
       {!!person.person_images.length && (
         <ImageList
           aria-label="Person Images"
-          sx={{
+          style={{
             display: "flex",
             flexWrap: "nowrap",
             gap: 8,
-            padding: 1,
+            padding: 8,
           }}
           cols={2.5}
         >
@@ -140,7 +140,7 @@ export default async function PersonPage({ params }: ContentPageProps) {
               {!!person_image.description && (
                 <ImageListItemBar
                   subtitle={person_image.description}
-                  sx={{ width: imgWidth }}
+                  style={{ width: imgWidth }}
                 />
               )}
             </ImageListItem>

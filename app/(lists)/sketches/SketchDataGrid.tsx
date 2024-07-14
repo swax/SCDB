@@ -63,7 +63,7 @@ export default function SketchDataGrid({
           href="/recurring-sketches"
           label="Recurring Sketches"
           size="small"
-          sx={{ ml: 2 }}
+          style={{ marginLeft: 16 }}
           variant="outlined"
         />
       }

@@ -39,7 +39,7 @@ export default async function EditTablePage({ params }: EditTablePageProps) {
       {changelog && Boolean(changelog.entries.length) && (
         <>
           <h4>Recent Changes:</h4>
-          <Box sx={{ overflowX: "auto" }}>
+          <Box style={{ overflowX: "auto" }}>
             <ChangeLogTable
               changelog={changelog}
               page={1}

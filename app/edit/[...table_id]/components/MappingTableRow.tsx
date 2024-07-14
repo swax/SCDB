@@ -87,7 +87,9 @@ export default function MappingTableRow({
         : value || "";
 
     return (
-      <Box sx={{ marginTop: inTable ? 0 : 3, color, whiteSpace: "pre-line" }}>
+      <Box
+        style={{ marginTop: inTable ? 0 : 24, color, whiteSpace: "pre-line" }}
+      >
         {valueStr}
       </Box>
     );
@@ -102,13 +104,13 @@ export default function MappingTableRow({
           ref={draggable.innerRef}
           {...draggable.draggableProps}
         >
-          <TableCell sx={{ whiteSpace: "nowrap", color: "grey" }}>
+          <TableCell style={{ whiteSpace: "nowrap", color: "grey" }}>
             {mappedId}
           </TableCell>
           {mappingTable?.fields.map((mappedField, fieldIndex) => (
             <TableCell
               key={fieldIndex}
-              sx={{
+              style={{
                 ...(mappedField.fillWidth
                   ? {
                       width: "100%",
@@ -134,7 +136,7 @@ export default function MappingTableRow({
               )}
             </TableCell>
           ))}
-          <TableCell sx={{ whiteSpace: "nowrap" }}>
+          <TableCell style={{ whiteSpace: "nowrap" }}>
             <Tooltip title="Drag to Rearrange">
               <IconButton aria-label="Drag Row" {...draggable.dragHandleProps}>
                 <DragIndicatorIcon />

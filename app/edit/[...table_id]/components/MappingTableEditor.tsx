@@ -141,10 +141,10 @@ export default function MappingTableEditor({
         <Table size="small">
           <TableHead>
             <TableRow>
-              <TableCell sx={{ color: "grey" }}>ID</TableCell>
+              <TableCell style={{ color: "grey" }}>ID</TableCell>
               {mappingTable.fields.map((mappedField, fieldIndex) => (
                 <TableCell key={fieldIndex}>
-                  <Box sx={{ color: "grey" }}>{mappedField.label}</Box>
+                  <Box style={{ color: "grey" }}>{mappedField.label}</Box>
                 </TableCell>
               ))}
               <TableCell />
@@ -187,7 +187,7 @@ export default function MappingTableEditor({
         disabled={loading}
         onClick={() => handleClick_addMappingRow()}
         size="small"
-        sx={{ marginLeft: 2, marginTop: 2 }}
+        style={{ marginLeft: 16, marginTop: 16 }}
         variant="outlined"
       >
         Add {label}

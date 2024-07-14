@@ -181,17 +181,17 @@ export default function LookupField({
           return (
             <li {...props} key={state.index}>
               <Box
-                sx={{
+                style={{
                   alignItems: "center",
                   display: "flex",
                   width: "100%",
                   fontStyle: option.noMatches ? "italic" : "normal",
                 }}
               >
-                <Box sx={{ flex: 1 }}>{option.label}</Box>
+                <Box style={{ flex: 1 }}>{option.label}</Box>
                 {!option.createNew && !option.noMatches && (
                   <>
-                    <Box sx={{ width: 16 }}></Box>
+                    <Box style={{ width: 16 }}></Box>
                     <IconButton
                       aria-label="Open Mapped Entry"
                       onClick={() => handleClick_openMappingRow(option)}

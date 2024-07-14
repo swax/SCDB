@@ -42,7 +42,7 @@ export default function VideoHero({
         >
           {!!videoUrls && (
             <PlayCircleFilledTwoToneIcon
-              sx={{
+              style={{
                 color: "white",
                 position: "absolute",
                 right: "2px",

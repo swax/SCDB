@@ -74,7 +74,7 @@ export default async function SeasonPage({ params }: ContentPageProps) {
   // Rendering
   return (
     <>
-      <Box mt={4} mb={4}>
+      <Box style={{ marginTop: 32, marginBottom: 32 }}>
         <Typography component="h1" variant="h4">
           Season {season.number} ({season.year})
         </Typography>

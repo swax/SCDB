@@ -98,23 +98,25 @@ export default function SketchRating({
         <Typography fontWeight="bold" marginLeft={0.25}>
           {siteRating ? siteRating.toFixed(1) : "-"}
         </Typography>
-        <StarIcon sx={{ color: "gold" }} />
+        <StarIcon style={{ color: "gold" }} />
         <Typography marginLeft={2}>Your Rating:</Typography>
         <Typography fontWeight="bold" marginLeft={0.25}>
           {userRating || "-"}
         </Typography>
-        <StarIcon sx={{ color: "dodgerblue" }} />
+        <StarIcon style={{ color: "dodgerblue" }} />
       </AccordionSummary>
       <AccordionDetails>
         <Box
-          sx={{
-            marginLeft: 1,
+          style={{
+            marginLeft: 8,
           }}
         >
           <Rating
             name="hover-feedback"
             disabled={!canEdit}
-            icon={<StarIcon sx={{ color: "dodgerblue" }} fontSize="inherit" />}
+            icon={
+              <StarIcon style={{ color: "dodgerblue" }} fontSize="inherit" />
+            }
             value={userRating}
             getLabelText={getLabelText}
             defaultValue={0}

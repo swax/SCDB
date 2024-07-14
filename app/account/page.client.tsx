@@ -48,11 +48,11 @@ export default function AccountClientPage(account: AccountClientPageProps) {
   // Rendering
   return (
     <Container>
-      <Box mt={4}>
+      <Box style={{ marginTop: 32 }}>
         <Typography component="h1" variant="h4" align="center">
           My Account
         </Typography>
-        <Typography component="div" variant="body1" mt={4}>
+        <Typography component="div" variant="body1" style={{ marginTop: 32 }}>
           Email: {account.email}
         </Typography>
         <Typography component="div" variant="body2" color="textSecondary">
@@ -65,7 +65,7 @@ export default function AccountClientPage(account: AccountClientPageProps) {
           </MuiNextLink>{" "}
           to your Google account.
         </Typography>
-        <Box mt={4}>
+        <Box style={{ marginTop: 32 }}>
           {editUsername || !username ? (
             <>
               <Box>
@@ -74,11 +74,11 @@ export default function AccountClientPage(account: AccountClientPageProps) {
                   label="Username"
                   margin="normal"
                   onChange={(e) => setUsername(e.target.value)}
-                  sx={{ width: "50%" }}
+                  style={{ width: "50%" }}
                   value={username}
                 />
               </Box>
-              <Box mt={1}>
+              <Box style={{ marginTop: 8 }}>
                 <Button
                   color="primary"
                   disabled={saving}
@@ -90,7 +90,7 @@ export default function AccountClientPage(account: AccountClientPageProps) {
                 <Button
                   color="inherit"
                   onClick={() => setEditUsername(false)}
-                  sx={{ ml: 1 }}
+                  style={{ marginLeft: 8 }}
                   variant="outlined"
                 >
                   Cancel
@@ -102,12 +102,12 @@ export default function AccountClientPage(account: AccountClientPageProps) {
               <Typography
                 component="div"
                 variant="body1"
-                sx={{ display: "inline" }}
+                style={{ display: "inline" }}
               >
                 Username: {account.username}
               </Typography>
               <Button
-                sx={{ display: "inline", ml: 2 }}
+                style={{ display: "inline", marginLeft: 16 }}
                 variant="outlined"
                 size="small"
                 onClick={() => setEditUsername(true)}
@@ -117,13 +117,13 @@ export default function AccountClientPage(account: AccountClientPageProps) {
             </>
           )}
         </Box>
-        <Box mt={4}>
-          <Typography component="div" variant="body1" sx={{ mt: 2 }}>
+        <Box style={{ marginTop: 32 }}>
+          <Typography component="div" variant="body1" style={{ marginTop: 16 }}>
             Role: {account.role}
           </Typography>
         </Box>
         {/* Need to split profile from user table for this to work
-         <Box mt={8}>
+         <Box style={{ marginTop: 64 }}>
           <Button color="error" variant="outlined">
             Delete Account
           </Button>

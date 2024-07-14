@@ -11,7 +11,7 @@ export default function AccordionHeader({
 }: AccordionHeaderProps) {
   return (
     <Box
-      sx={{
+      style={{
         display: "flex",
         alignItems: "center",
       }}

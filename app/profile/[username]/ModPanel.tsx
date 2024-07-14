@@ -84,7 +84,7 @@ export default function ModPanel({ profile }: ModPanelProps) {
                 color="primary"
                 disabled={saving}
                 onClick={() => void saveRoleButton_click()}
-                sx={{ ml: 2 }}
+                style={{ marginLeft: 16 }}
                 variant="outlined"
               >
                 Save
@@ -92,7 +92,7 @@ export default function ModPanel({ profile }: ModPanelProps) {
               <Button
                 color="inherit"
                 onClick={() => setEditRole(false)}
-                sx={{ ml: 1 }}
+                style={{ marginLeft: 8 }}
                 variant="outlined"
               >
                 Cancel
@@ -101,7 +101,7 @@ export default function ModPanel({ profile }: ModPanelProps) {
           </>
         ) : (
           <Button
-            sx={{ display: "inline", ml: 2 }}
+            style={{ display: "inline", marginLeft: 16 }}
             variant="outlined"
             size="small"
             onClick={() => setEditRole(true)}
@@ -109,21 +109,21 @@ export default function ModPanel({ profile }: ModPanelProps) {
             Change Role
           </Button>
         )}
-        <Box sx={{ display: "flex", mt: 2 }}>
+        <Box style={{ display: "flex", marginTop: 16 }}>
           <TextField
             disabled={saving}
             label="Mod Note"
             multiline
             onChange={(e) => setModNote(e.target.value)}
             size="small"
-            sx={{ flex: 1 }}
+            style={{ flex: 1 }}
             value={modNote}
           />
           <Button
             disabled={saving}
             onClick={() => void setModNote_click()}
             size="small"
-            sx={{ ml: 1 }}
+            style={{ marginLeft: 8 }}
             variant="outlined"
           >
             Set

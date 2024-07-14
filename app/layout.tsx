@@ -63,7 +63,10 @@ export default function RootLayout({
         <NextAuthProvider>
           <ThemeRegistry options={{ key: "mui" }}>
             <ResponsiveAppBar />
-            <Container sx={{ marginTop: 1, paddingBottom: 4 }} maxWidth="md">
+            <Container
+              style={{ marginTop: 8, paddingBottom: 32 }}
+              maxWidth="md"
+            >
               {children}
             </Container>
           </ThemeRegistry>

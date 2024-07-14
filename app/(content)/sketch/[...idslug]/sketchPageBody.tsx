@@ -46,7 +46,7 @@ export default function SketchPageBody({
 
   return (
     <>
-      <Box mt={3} mb={2}>
+      <Box style={{ marginTop: 24, marginBottom: 16 }}>
         <Typography component="h1" variant="h4">
           {sketch.title}
         </Typography>
@@ -93,7 +93,7 @@ export default function SketchPageBody({
           />
         </Typography>
       )}
-      <Box sx={{ marginTop: 2 }}>
+      <Box style={{ marginTop: 16 }}>
         <SketchRating
           sketchId={sketch.id}
           slug={sketch.url_slug}
@@ -149,7 +149,7 @@ export default function SketchPageBody({
                       title={
                         <Box
                           component="h3"
-                          sx={{
+                          style={{
                             fontSize: "16px",
                             fontWeight: 400,
                             margin: 0,
@@ -205,12 +205,12 @@ export default function SketchPageBody({
                   <Paper
                     key={i}
                     elevation={3}
-                    sx={{ marginBottom: 1, padding: 1 }}
+                    style={{ marginBottom: 8, padding: 8 }}
                   >
                     <Typography
                       component="div"
                       variant="body2"
-                      sx={{ whiteSpace: "pre-line" }}
+                      style={{ whiteSpace: "pre-line" }}
                     >
                       {quote.quote}
                     </Typography>
@@ -253,7 +253,7 @@ export default function SketchPageBody({
                             />
                           )}
                         </TableCell>
-                        <TableCell sx={{ whiteSpace: "nowrap" }}>
+                        <TableCell style={{ whiteSpace: "nowrap" }}>
                           <ContentLink
                             mui
                             table="person"

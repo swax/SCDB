@@ -51,7 +51,7 @@ export default function ProfileClientPage({
   // Rendering
   return (
     <Box>
-      <Box mt={4} mb={4}>
+      <Box style={{ marginTop: 32, marginBottom: 32 }}>
         <Typography component="h1" variant="h4">
           {profile.username}
         </Typography>
@@ -79,7 +79,7 @@ export default function ProfileClientPage({
           </AccordionHeader>
         </AccordionSummary>
         <AccordionDetails>
-          <Box sx={{ overflowX: "auto" }}>
+          <Box style={{ overflowX: "auto" }}>
             <ChangeLogTable
               changelog={changelog}
               page={page}
@@ -87,7 +87,7 @@ export default function ProfileClientPage({
               profilePage={true}
             />
           </Box>
-          <Box mt={2}>
+          <Box style={{ marginTop: 16 }}>
             <MuiNextLink
               href={`/changelog?username=${profile.username}`}
               prefetch={false}
