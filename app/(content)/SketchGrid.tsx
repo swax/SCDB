@@ -91,7 +91,7 @@ export default function SketchGrid({
             <ImageListItem key={i} aria-label={sketch.titleString}>
               <ContentLink mui table="sketch" entry={sketch}>
                 <Box
-                  sx={{ position: "relative" }}
+                  style={{ position: "relative" }}
                   width={imgWidth}
                   height={imgHeight}
                 >
@@ -99,7 +99,7 @@ export default function SketchGrid({
                     aria-controls="video-player-overlay"
                     aria-haspopup="true"
                     aria-label="Play Video"
-                    sx={{
+                    style={{
                       position: "absolute",
                       right: "2px",
                       bottom: "2px",
@@ -117,12 +117,12 @@ export default function SketchGrid({
                   </ButtonBase>
                   {!!sketch.site_rating && (
                     <Box
-                      sx={{
+                      style={{
                         position: "absolute",
                         left: "2px",
                         top: "2px",
                         backgroundColor: "rgba(0,0,0,0.5)",
-                        borderRadius: 2,
+                        borderRadius: 8,
                         padding: "2px 4px",
                         fontSize: "0.8rem",
                       }}
@@ -154,7 +154,7 @@ export default function SketchGrid({
                   <div style={{ display: "flex", width: imgWidth }}>
                     <Box
                       component="h3"
-                      sx={{
+                      style={{
                         flex: "1",
                         fontSize: "16px",
                         fontWeight: 400,
@@ -173,7 +173,7 @@ export default function SketchGrid({
                     {sketch.subtitle}
                   </h4>
                 }
-                sx={{
+                style={{
                   width: imgWidth,
                 }}
               />

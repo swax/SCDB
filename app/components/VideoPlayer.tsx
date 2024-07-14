@@ -98,14 +98,14 @@ export default function VideoPlayer({ videoUrls, onClose }: VideoPlayerProps) {
         id="video-player-overlay"
         onClick={(e) => e.stopPropagation()}
         role="dialog"
-        sx={{
+        style={{
           background: "black",
           borderRadius: "5px",
           display: "flex",
           flexDirection: "column",
         }}
       >
-        <Box sx={{ flex: 1, margin: "auto" }}>
+        <Box style={{ flex: 1, margin: "auto" }}>
           {provider == "reddit" && (
             <div>
               {/* The div above prevents an error with unmounting this block */}

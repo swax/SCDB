@@ -12,7 +12,7 @@ export default function HelpPage() {
   // Rendering
   return (
     <>
-      <Box className="about-page" sx={{ marginTop: 4 }}>
+      <Box className="about-page" style={{ marginTop: 32 }}>
         <Markdown>{`
 ### Links
 - [X/Twitter](https://x.com/sketchtvlol)

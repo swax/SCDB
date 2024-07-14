@@ -49,7 +49,7 @@ export async function sendGoogleUpdate<T>(
     const jwtClient = new google.auth.JWT(
       ProcessEnv.GOOGLE_INDEX_SERVICE_EMAIL,
       undefined,
-      ProcessEnv.GOOGLE_INDEX_SERVICE_KEY.replace(/\\n/g,"\n"),
+      ProcessEnv.GOOGLE_INDEX_SERVICE_KEY.replace(/\\n/g, "\n"),
       ["https://www.googleapis.com/auth/indexing"],
       undefined,
     );

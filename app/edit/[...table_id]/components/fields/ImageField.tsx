@@ -107,7 +107,7 @@ export default function ImageField({
       <Typography component="h2" variant="h6">
         {field.label}
       </Typography>
-      <Stack direction="row" spacing={2} sx={{ alignItems: "center" }}>
+      <Stack direction="row" spacing={2} style={{ alignItems: "center" }}>
         {cdnKey && (
           <a href={imgUrl} rel="noreferrer" target="_blank">
             <Image
@@ -124,7 +124,7 @@ export default function ImageField({
           component={"label" /* Must be a label for upload link to work*/}
           disabled={loading || uploading}
           color={showRequiredHighlight ? "error" : "primary"}
-          sx={{
+          style={{
             border: showRequiredHighlight
               ? "1px solid #f44336"
               : "1px solid lightblue",

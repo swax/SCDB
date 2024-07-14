@@ -30,9 +30,9 @@ export default async function HomePage() {
     <>
       {/* Beta announcement */}
       <Box
-        sx={{
-          marginTop: 2,
-          padding: 0.5,
+        style={{
+          marginTop: 16,
+          padding: 4,
           textAlign: "center",
         }}
       >
@@ -41,7 +41,7 @@ export default async function HomePage() {
           SketchTV.lol - The Sketch Comedy Database
         </Typography>
       </Box>
-      <Box mt={2}>
+      <Box style={{ marginTop: 16 }}>
         <SketchGrid
           initialData={trendingSketchData}
           getData={getTrendingSketchData}
@@ -54,7 +54,7 @@ export default async function HomePage() {
           title="Latest Sketches"
         />
       </Box>
-      <Box mt={6} className="about-page">
+      <Box style={{ marginTop: 48 }} className="about-page">
         <Typography
           component="div"
           variant="subtitle1"

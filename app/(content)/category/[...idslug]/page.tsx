@@ -69,7 +69,7 @@ export default async function CategoryPage(
   // Rendering
   return (
     <>
-      <Box mt={4} mb={4}>
+      <Box style={{ marginTop: 32, marginBottom: 32 }}>
         <Typography component="h1" variant="h4">
           {category.name}
         </Typography>

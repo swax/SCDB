@@ -43,7 +43,9 @@ export default async function saveAction(table: TableCms, id: number) {
     if (!rowId) {
       response.warnings.push("No row id to send for search index update");
     } else if (!slugPath) {
-      response.warnings.push(`No slug path to send for search index update. New Slug: ${newSlug}, Old Slug: ${slug}`);
+      response.warnings.push(
+        `No slug path to send for search index update. New Slug: ${newSlug}, Old Slug: ${slug}`,
+      );
     } else if (ProcessEnv.NODE_ENV != "development") {
       // Update to use next/after once available in v15
       // https://nextjs.org/blog/next-15-rc#executing-code-after-a-response-with-nextafter-experimental

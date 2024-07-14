@@ -37,16 +37,16 @@ export default function DateGeneratedFooter({
       {/* Click above line to hide info */}
       <Box
         onClick={() => setDisplay(false)}
-        sx={{
+        style={{
           height: "24px",
-          marginTop: 6,
+          marginTop: 48,
         }}
       ></Box>
 
       {/* Click below line to show info */}
       <Box
         onClick={() => setDisplay(true)}
-        sx={{
+        style={{
           borderTop: "1px solid #222",
           height: "24px",
           margin: "auto",
@@ -56,7 +56,9 @@ export default function DateGeneratedFooter({
 
       {/* The info */}
       {display && (
-        <Box sx={{ fontStyle: "italic", color: "gray", textAlign: "center" }}>
+        <Box
+          style={{ fontStyle: "italic", color: "gray", textAlign: "center" }}
+        >
           <Typography component="div" variant="caption">
             Meta: {metaDescription}
             <br />

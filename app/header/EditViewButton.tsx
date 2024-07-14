@@ -40,7 +40,11 @@ export default function EditViewButton() {
   if (editMode) {
     return (
       <Tooltip title="View this page">
-        <IconButton aria-label="View Page" href={`/${table}/${id}`} color="inherit">
+        <IconButton
+          aria-label="View Page"
+          href={`/${table}/${id}`}
+          color="inherit"
+        >
           <VisibilityIcon />
         </IconButton>
       </Tooltip>
@@ -48,7 +52,11 @@ export default function EditViewButton() {
   } else {
     return (
       <Tooltip title="Edit this page">
-        <IconButton aria-label="Edit Page" href={`/edit/${table}/${id}`} color="inherit">
+        <IconButton
+          aria-label="Edit Page"
+          href={`/edit/${table}/${id}`}
+          color="inherit"
+        >
           <EditIcon />
         </IconButton>
       </Tooltip>

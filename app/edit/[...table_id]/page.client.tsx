@@ -334,11 +334,11 @@ export default function EditClientPage({ table, id }: EditClientPageProps) {
       ))}
 
       {/* Space so the buttons don't cover the last field at the bototm of the page */}
-      <Box sx={{ height: 64 }}></Box>
+      <Box style={{ height: 64 }}></Box>
 
       {/* Add, update, delete buttons */}
       <Box
-        sx={{
+        style={{
           bottom: 8,
           position: "fixed",
           right: 8,
@@ -351,7 +351,7 @@ export default function EditClientPage({ table, id }: EditClientPageProps) {
             size="small"
             color="warning"
             sx={{
-              mr: 1,
+              marginRight: 1,
               backgroundColor: "black",
               // wtf is it so hard to color the border of a select?
               "& .MuiOutlinedInput-notchedOutline": {
@@ -379,7 +379,7 @@ export default function EditClientPage({ table, id }: EditClientPageProps) {
           color={changeState == "dirty" ? "primary" : "default"}
           disabled={loading}
           onClick={() => void handleClick_save()}
-          sx={{ mr: 1 }}
+          style={{ marginRight: 8 }}
           variant="extended"
         >
           <SaveIcon />
@@ -394,7 +394,7 @@ export default function EditClientPage({ table, id }: EditClientPageProps) {
             <Fab
               disabled={loading}
               href={getEditUrl(table.name)}
-              sx={{ mr: 1 }}
+              style={{ marginRight: 8 }}
               variant="extended"
             >
               <AddIcon />

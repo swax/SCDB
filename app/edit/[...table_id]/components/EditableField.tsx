@@ -46,7 +46,7 @@ export default function EditableField({
   // Rendering
   return (
     <Box
-      sx={{ marginTop: inTable ? 0 : 3 }}
+      style={{ marginTop: inTable ? 0 : 24 }}
       role="region"
       aria-label={`${field.label} Field`}
     >

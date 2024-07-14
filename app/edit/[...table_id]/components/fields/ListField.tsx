@@ -66,12 +66,12 @@ export default function ListField({
       )}
       {list.map((value, listIndex) => (
         <Box
-          sx={{
+          style={{
             alignItems: "flex-start",
             display: "flex",
             gap: 2,
-            marginLeft: 2,
-            marginTop: 1,
+            marginLeft: 16,
+            marginTop: 8,
           }}
           key={listIndex}
         >
@@ -85,7 +85,7 @@ export default function ListField({
               handleChange_field(field, index, listIndex, e.target.value)
             }
             size="small"
-            sx={{ flexGrow: 1 }}
+            style={{ flexGrow: 1 }}
             value={value}
             variant="outlined"
             helperText={
@@ -106,7 +106,7 @@ export default function ListField({
         disabled={loading}
         onClick={() => handleClick_add(field)}
         size="small"
-        sx={{ ml: 2, mt: 2 }}
+        style={{ marginLeft: 16, marginTop: 16 }}
         variant="outlined"
       >
         Add {field.label}
