@@ -3,7 +3,7 @@
 import { capitalizeFirstLetter } from "@/shared/utilities";
 import { Box, Typography } from "@mui/material";
 import { useEffect, useState } from "react";
-import RevalidateCacheLink from "../header/RevalidateCacheLink";
+import RevalidateCacheLink from "./RevalidateCacheLink";
 
 /**
  * Diagnostic information at the bottom of the page that can be seen by clicking, but

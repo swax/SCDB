@@ -1,4 +1,4 @@
-import DateGeneratedFooter from "@/app/components/DateGeneratedFooter";
+import DateGeneratedFooter from "@/app/footer/DateGeneratedFooter";
 import { getRecurringSketchList } from "@/backend/content/recurringSketch";
 import { buildPageTitle } from "@/shared/utilities";
 import { Metadata } from "next";

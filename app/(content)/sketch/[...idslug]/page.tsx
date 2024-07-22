@@ -1,5 +1,5 @@
 import { ContentLink } from "@/app/components/ContentLink";
-import DateGeneratedFooter from "@/app/components/DateGeneratedFooter";
+import DateGeneratedFooter from "@/app/footer/DateGeneratedFooter";
 import { getSketch, getSketchList } from "@/backend/content/sketchService";
 import { getStaticPageCount } from "@/shared/ProcessEnv";
 import staticUrl from "@/shared/cdnHost";

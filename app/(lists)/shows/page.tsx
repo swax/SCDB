@@ -1,4 +1,4 @@
-import DateGeneratedFooter from "@/app/components/DateGeneratedFooter";
+import DateGeneratedFooter from "@/app/footer/DateGeneratedFooter";
 import { getShowsList } from "@/backend/content/showService";
 import { buildPageTitle } from "@/shared/utilities";
 import { Metadata } from "next";
