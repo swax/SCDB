@@ -2,6 +2,7 @@ import { buildPageMeta } from "@/shared/metaBuilder";
 import { Container } from "@mui/material";
 import type { Viewport } from "next";
 import Script from "next/script";
+import AppFooter from "./footer/AppFooter";
 import "./globals.css";
 import ResponsiveAppBar from "./header/ResponsiveAppBar";
 import { NextAuthProvider } from "./providers/NextAuthProvider";
@@ -36,6 +37,11 @@ export default function RootLayout({
   return (
     <html lang="en">
       <head>
+        <link
+          rel="sitemap"
+          type="application/xml"
+          href="https://www.sketchtv.lol/sitemap.xml"
+        />
         {!isDevelopment && (
           <>
             <Script
@@ -63,12 +69,10 @@ export default function RootLayout({
         <NextAuthProvider>
           <ThemeRegistry options={{ key: "mui" }}>
             <ResponsiveAppBar />
-            <Container
-              style={{ marginTop: 8, paddingBottom: 32 }}
-              maxWidth="md"
-            >
+            <Container style={{ marginTop: 8 }} maxWidth="md">
               {children}
             </Container>
+            <AppFooter />
           </ThemeRegistry>
         </NextAuthProvider>
       </body>

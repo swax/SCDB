@@ -1,7 +1,6 @@
 "use client";
 
 import InfoIcon from "@mui/icons-material/Info";
-import XIcon from "@mui/icons-material/X";
 import { Divider, LinearProgress, Stack, Tooltip } from "@mui/material";
 import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
@@ -16,7 +15,6 @@ import { usePathname } from "next/navigation";
 import { MouseEvent, useMemo, useState } from "react";
 import MuiNextLink from "../components/MuiNextLink";
 import usePageLoading from "../hooks/usePageLoading";
-import DiscordIcon from "./DiscordIcon";
 import EditViewButton from "./EditViewButton";
 import UserMenu from "./UserMenu";
 
@@ -199,34 +197,8 @@ function ResponsiveAppBar() {
         </Box>
 
         {/* Right side header icons */}
-        <Stack direction={"row"} style={{ marginRight: 8 }}>
+        <Stack direction="row" style={{ marginRight: 8 }}>
           <EditViewButton />
-          <Tooltip
-            title="Follow on X/Twitter"
-            sx={{ display: { xs: "none", sm: "flex" } }}
-          >
-            <IconButton
-              aria-label="X/Twitter Link"
-              href="https://x.com/sketchtvlol"
-              color="inherit"
-              target="_blank"
-            >
-              <XIcon />
-            </IconButton>
-          </Tooltip>
-          <Tooltip
-            title="Discuss on Discord"
-            sx={{ display: { xs: "none", sm: "flex" } }}
-          >
-            <IconButton
-              aria-label="Discord Link"
-              href="https://discord.gg/UKE8gSYp"
-              color="inherit"
-              target="_blank"
-            >
-              <DiscordIcon />
-            </IconButton>
-          </Tooltip>
           <Tooltip title="About">
             <IconButton aria-label="About" href="/about" color="inherit">
               <InfoIcon />

@@ -1,6 +1,6 @@
 import AccordionHeader from "@/app/components/AccordionHeader";
 import { ContentLink } from "@/app/components/ContentLink";
-import DateGeneratedFooter from "@/app/components/DateGeneratedFooter";
+import DateGeneratedFooter from "@/app/footer/DateGeneratedFooter";
 import DescriptionPanel from "@/app/components/DescriptionPanel";
 import LinksPanel from "@/app/components/LinksPanel";
 import MuiNextLink from "@/app/components/MuiNextLink";

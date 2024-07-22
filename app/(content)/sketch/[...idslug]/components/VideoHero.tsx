@@ -3,7 +3,7 @@
 import VideoPlayer from "@/app/components/VideoPlayer";
 import staticUrl from "@/shared/cdnHost";
 import PlayCircleFilledTwoToneIcon from "@mui/icons-material/PlayCircleFilledTwoTone";
-import { Box, ButtonBase } from "@mui/material";
+import { Button, ButtonBase, ButtonGroup, Stack } from "@mui/material";
 import Image from "next/image";
 import { useState } from "react";
 
@@ -25,9 +25,22 @@ export default function VideoHero({
   const imgWidth = 350;
   const imgHeight = Math.floor(imgWidth * (9 / 16));
 
+  if (!image_cdn_key) {
+    return (
+      <Button
+        disabled
+        variant="contained"
+        style={{ marginTop: "16px" }}
+        size="small"
+      >
+        No Preview or Video Link Available
+      </Button>
+    );
+  }
+
   return (
     <>
-      {image_cdn_key ? (
+      <Stack>
         <ButtonBase
           aria-controls="video-player-overlay"
           aria-haspopup="true"
@@ -60,9 +73,45 @@ export default function VideoHero({
             height={imgHeight}
           />
         </ButtonBase>
-      ) : (
-        <Box>(No Preview Image)</Box>
-      )}
+
+        {videoUrls?.length ? (
+          <>
+            <ButtonGroup style={{ marginTop: "16px" }} size="small">
+              <Button
+                aria-controls="video-player-overlay"
+                aria-haspopup="true"
+                aria-label="Play Video"
+                onClick={() => setPlayVideoUrls(videoUrls)}
+                variant="contained"
+              >
+                Watch Now
+              </Button>
+              {videoUrls?.map((url, index) => (
+                <Button
+                  key={index}
+                  LinkComponent="a"
+                  aria-controls="video-player-overlay"
+                  aria-haspopup="true"
+                  aria-label="Play Video"
+                  target="_blank"
+                  href={url}
+                >
+                  {new URL(url).hostname.replace("www.", "")}
+                </Button>
+              ))}
+            </ButtonGroup>
+          </>
+        ) : (
+          <Button
+            disabled
+            variant="contained"
+            style={{ marginTop: "16px" }}
+            size="small"
+          >
+            Video lost: Help us find a site to watch it on 😭
+          </Button>
+        )}
+      </Stack>
       {!!playVideoUrls && (
         <VideoPlayer
           videoUrls={playVideoUrls}

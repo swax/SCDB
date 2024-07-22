@@ -4,7 +4,7 @@
  */
 
 import { ContentPageProps, tryGetContent } from "@/app/(content)/contentBase";
-import DateGeneratedFooter from "@/app/components/DateGeneratedFooter";
+import DateGeneratedFooter from "@/app/footer/DateGeneratedFooter";
 import MuiNextLink from "@/app/components/MuiNextLink";
 import { getCategory } from "@/backend/content/categoryService";
 import { getTagsByCategoryList } from "@/backend/content/tagService";

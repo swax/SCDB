@@ -1,5 +1,5 @@
 import { ContentLink } from "@/app/components/ContentLink";
-import DateGeneratedFooter from "@/app/components/DateGeneratedFooter";
+import DateGeneratedFooter from "@/app/footer/DateGeneratedFooter";
 import LinksPanel from "@/app/components/LinksPanel";
 import {
   getEpisode,
