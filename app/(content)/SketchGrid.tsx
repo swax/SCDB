@@ -91,9 +91,11 @@ export default function SketchGrid({
             <ImageListItem key={i} aria-label={sketch.titleString}>
               <ContentLink mui table="sketch" entry={sketch}>
                 <Box
-                  style={{ position: "relative" }}
-                  width={imgWidth}
-                  height={imgHeight}
+                  style={{
+                    position: "relative",
+                    width: imgWidth,
+                    height: imgHeight,
+                  }}
                 >
                   <ButtonBase
                     aria-controls="video-player-overlay"
@@ -152,8 +154,7 @@ export default function SketchGrid({
                 position="below"
                 title={
                   <div style={{ display: "flex", width: imgWidth }}>
-                    <Box
-                      component="h3"
+                    <h3
                       style={{
                         flex: "1",
                         fontSize: "16px",
@@ -165,7 +166,7 @@ export default function SketchGrid({
                       title={sketch.titleString}
                     >
                       {sketch.title}
-                    </Box>
+                    </h3>
                   </div>
                 }
                 subtitle={

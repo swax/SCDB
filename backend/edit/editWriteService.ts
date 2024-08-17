@@ -49,7 +49,7 @@ export async function writeFieldValues(
   const allowedColumns = allowedColumnsByTable[table.name];
 
   if (!allowedColumns) {
-    throw `Table ${table.name} not allowed`;
+    throw new Error(`Table ${table.name} not allowed`);
   }
 
   // Sanitization
@@ -143,7 +143,7 @@ function validateRequiredFields(fields: FieldCms[], operation: operation_type) {
   }
 
   if (errors.length) {
-    throw errors.join("\n");
+    throw new Error(errors.join("\n"));
   }
 }
 

@@ -14,7 +14,7 @@ export async function getLoggedInUser() {
   const session = await getServerSession(authOptions);
 
   if (!session?.user) {
-    throw "You must login to save changes";
+    throw new Error("You must login to save changes");
   }
 
   return session.user;
@@ -27,14 +27,16 @@ export function validateRoleAtLeast(
   const roleRank = getRoleRank(role);
 
   if (roleRank < getRoleRank(minRole)) {
-    throw `You must have at least ${minRole} permission`;
+    throw new Error(`You must have at least ${minRole} permission`);
   }
 
   if (
     ProcessEnv.MIN_EDIT_ROLE &&
     roleRank < getRoleRank(ProcessEnv.MIN_EDIT_ROLE)
   ) {
-    throw `Min role to edit set by server is currently ${ProcessEnv.MIN_EDIT_ROLE}. This may be temporary.`;
+    throw new Error(
+      `Min role to edit set by server is currently ${ProcessEnv.MIN_EDIT_ROLE}. This may be temporary.`,
+    );
   }
 }
 
