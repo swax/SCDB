@@ -43,7 +43,7 @@ export async function getPresignedUploadUrl(
 
 function _validateFile(fileType: string, fileSize: number) {
   if (!fileType.startsWith("image/")) {
-    throw "File must be an image";
+    throw new Error("File must be an image");
   }
 
   if (
@@ -51,7 +51,7 @@ function _validateFile(fileType: string, fileSize: number) {
     isNaN(fileSize) ||
     fileSize > _fileSizeLimitMb * 1_000_000
   ) {
-    throw `File size must be a less than ${_fileSizeLimitMb}MB`;
+    throw new Error(`File size must be a less than ${_fileSizeLimitMb}MB`);
   }
 }
 

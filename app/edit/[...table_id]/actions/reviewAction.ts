@@ -35,7 +35,7 @@ export async function updateReviewStatus(
       reviewStatus == review_status_type.Reviewed &&
       row.modified_by_id == user.id
     ) {
-      throw "You cannot review your own changes";
+      throw new Error("You cannot review your own changes");
     }
 
     // Make the change

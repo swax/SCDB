@@ -11,23 +11,27 @@ export async function saveRole(
   newRole: user_role_type,
 ) {
   if (sessionUser.id === userId) {
-    throw "Cannot change your own role";
+    throw new Error("Cannot change your own role");
   }
 
   const userAccount = await getAccount(userId);
   if (!userAccount) {
-    throw "User account not found";
+    throw new Error("User account not found");
   }
 
   const currentUserRole = userAccount.role;
 
   if (!allowedToChangeRole(currentUserRole, sessionUser.role)) {
-    throw `Unable to change a ${currentUserRole}'s role when your role is ${sessionUser.role}`;
+    throw new Error(
+      `Unable to change a ${currentUserRole}'s role when your role is ${sessionUser.role}`,
+    );
   }
 
   // New role must be less than your role
   if (getRoleRank(newRole) >= getRoleRank(sessionUser.role)) {
-    throw "You cannot change a user's role to a role equal to or higher than your own";
+    throw new Error(
+      "You cannot change a user's role to a role equal to or higher than your own",
+    );
   }
 
   await prisma.user.update({
@@ -64,17 +68,19 @@ export async function saveModNote(
 ) {
   const userAccount = await getAccount(userId);
   if (!userAccount) {
-    throw "User account not found";
+    throw new Error("User account not found");
   }
 
   const currentUserRole = userAccount.role;
 
   if (!allowedToChangeRole(currentUserRole, sessionUser.role)) {
-    throw `Unable to change a ${currentUserRole}'s mod note when your role is ${sessionUser.role}`;
+    throw new Error(
+      `Unable to change a ${currentUserRole}'s mod note when your role is ${sessionUser.role}`,
+    );
   }
 
   if (userId == sessionUser.id) {
-    throw "Cannot change your own mod note";
+    throw new Error("Cannot change your own mod note");
   }
 
   await prisma.user.update({

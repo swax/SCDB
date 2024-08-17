@@ -18,7 +18,7 @@ export async function getAccount(id: string) {
 
 export async function saveUsername(id: string, username: string) {
   if (!username) {
-    throw "Username cannot be empty";
+    throw new Error("Username cannot be empty");
   }
 
   await prisma.user.update({

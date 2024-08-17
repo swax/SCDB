@@ -183,7 +183,7 @@ export default function VideoPlayer({ videoUrls, onClose }: VideoPlayerProps) {
               <Typography variant="body1">
                 Click this link to go there directly
               </Typography>
-              <Box marginTop={2}>
+              <Box style={{ marginTop: "16px" }}>
                 <MuiNextLink href={videoUrl} target="_blank">
                   {videoUrl}
                 </MuiNextLink>

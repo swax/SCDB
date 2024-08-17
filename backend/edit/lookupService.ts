@@ -33,7 +33,9 @@ export default async function lookupTermsInTable(
   );
 
   if (!allowedLookup) {
-    throw `Lookup on ${lookupField.table}/${lookupField.labelColumn} not allowed`;
+    throw new Error(
+      `Lookup on ${lookupField.table}/${lookupField.labelColumn} not allowed`,
+    );
   }
 
   const dynamicPrisma = prisma as any;
