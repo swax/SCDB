@@ -37,6 +37,8 @@ export function ContentLink({
       {content}
     </MuiNextLink>
   ) : (
-    <Link href={href}>{content}</Link>
+    <Link href={href} prefetch={false}>
+      {content}
+    </Link>
   );
 }
