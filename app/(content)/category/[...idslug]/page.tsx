@@ -4,10 +4,11 @@
  */
 
 import { ContentPageProps, tryGetContent } from "@/app/(content)/contentBase";
-import DateGeneratedFooter from "@/app/footer/DateGeneratedFooter";
 import MuiNextLink from "@/app/components/MuiNextLink";
+import DateGeneratedFooter from "@/app/footer/DateGeneratedFooter";
 import { getCategory } from "@/backend/content/categoryService";
 import { getTagsByCategoryList } from "@/backend/content/tagService";
+import { buildPageMeta } from "@/shared/metaBuilder";
 import { buildPageTitle } from "@/shared/utilities";
 import { Box, Typography } from "@mui/material";
 import { Metadata } from "next";
@@ -19,21 +20,28 @@ import {
 } from "../../../(lists)/baseListTypes";
 import TagsDataGrid from "./TagsDataGrid";
 
-const getRequestCachedCategory = cache(async (id: number) => getCategory(id));
+// Cached for the life of the request only
+const getCachedCategory = cache(async (id: number) => getCategory(id));
 
 export async function generateMetadata({
   params,
 }: ContentPageProps): Promise<Metadata> {
   const id = parseInt(params.idslug[0]);
 
-  const category = await getRequestCachedCategory(id);
+  const category = await getCachedCategory(id);
+  if (!category) {
+    return {};
+  }
 
-  return category
-    ? {
-        title: buildPageTitle(category.name),
-        description: `Comedy sketches featuring ${category.name}`,
-      }
-    : {};
+  const title = buildPageTitle(category.name);
+  const description = `Comedy sketches featuring ${category.name}`;
+
+  return buildPageMeta(
+    title,
+    description,
+    `/category/${category.id}/${category.url_slug}`,
+    [],
+  );
 }
 
 /** A combination of a list page and a content page because the url has an id/slug */
@@ -49,7 +57,7 @@ export default async function CategoryPage(
   const category = await tryGetContent(
     "category",
     props.params,
-    getRequestCachedCategory,
+    getCachedCategory,
   );
 
   // When any tag is updated, all category tag list pages will be revalidated

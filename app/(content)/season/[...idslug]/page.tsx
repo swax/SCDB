@@ -1,13 +1,17 @@
 import AccordionHeader from "@/app/components/AccordionHeader";
 import { ContentLink } from "@/app/components/ContentLink";
-import DateGeneratedFooter from "@/app/footer/DateGeneratedFooter";
 import LinksPanel from "@/app/components/LinksPanel";
+import DateGeneratedFooter from "@/app/footer/DateGeneratedFooter";
 import {
   getSeason,
   getSeasonSketchGrid,
   getSeasonsList,
 } from "@/backend/content/seasonService";
 import { getStaticPageCount } from "@/shared/ProcessEnv";
+import {
+  buildPageMeta,
+  getMetaImagesForSketchGrid,
+} from "@/shared/metaBuilder";
 import { buildPageTitle, toNiceDate } from "@/shared/utilities";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import FormatListNumberedIcon from "@mui/icons-material/FormatListNumbered";
@@ -28,23 +32,34 @@ import { cache } from "react";
 import SketchGrid from "../../SketchGrid";
 import { ContentPageProps, tryGetContent } from "../../contentBase";
 
-const getRequestCachedSeason = cache(async (id: number) => getSeason(id));
+// Cached for the life of the request only
+const getCachedSeason = cache(async (id: number) => getSeason(id));
+const getCachedSeasonSketchGrid = cache(async (id: number) =>
+  getSeasonSketchGrid(id, 1),
+);
 
 export async function generateMetadata({
   params,
 }: ContentPageProps): Promise<Metadata> {
   const id = parseInt(params.idslug[0]);
 
-  const season = await getRequestCachedSeason(id);
+  const season = await getCachedSeason(id);
+  if (!season) {
+    return {};
+  }
 
-  return season
-    ? {
-        title: buildPageTitle(
-          `Season ${season.number} - ${season.show.title} ${season.year}`,
-        ),
-        description: `Comedy sketches from the ${season.year} ${season.show.title} season ${season.number}`,
-      }
-    : {};
+  const title = buildPageTitle(
+    `Season ${season.number} - ${season.show.title} ${season.year}`,
+  );
+  const description = `Comedy sketches from the ${season.year} ${season.show.title} season ${season.number}`;
+  const sketches = await getCachedSeasonSketchGrid(season.id);
+
+  return buildPageMeta(
+    title,
+    description,
+    `/season/${season.id}/${season.url_slug}`,
+    getMetaImagesForSketchGrid(sketches, 3),
+  );
 }
 
 export const revalidate = 300; // 5 minutes
@@ -62,14 +77,14 @@ export async function generateStaticParams() {
 
 export default async function SeasonPage({ params }: ContentPageProps) {
   // Data fetching
-  const season = await tryGetContent("season", params, getRequestCachedSeason);
+  const season = await tryGetContent("season", params, getCachedSeason);
 
   async function getSketchData(page: number) {
     "use server";
     return await getSeasonSketchGrid(season.id, page);
   }
 
-  const sketchData = await getSketchData(1);
+  const sketchData = await getCachedSeasonSketchGrid(season.id);
 
   // Rendering
   return (

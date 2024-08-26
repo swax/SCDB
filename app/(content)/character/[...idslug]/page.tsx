@@ -1,13 +1,17 @@
 import { ContentLink } from "@/app/components/ContentLink";
-import DateGeneratedFooter from "@/app/footer/DateGeneratedFooter";
 import DescriptionPanel from "@/app/components/DescriptionPanel";
 import LinksPanel from "@/app/components/LinksPanel";
+import DateGeneratedFooter from "@/app/footer/DateGeneratedFooter";
 import {
   getCharacter,
   getCharacterList,
   getCharacterSketchGrid,
 } from "@/backend/content/characterService";
 import { getStaticPageCount } from "@/shared/ProcessEnv";
+import {
+  buildPageMeta,
+  getMetaImagesForSketchGrid,
+} from "@/shared/metaBuilder";
 import { buildPageTitle } from "@/shared/utilities";
 import { Box, Typography } from "@mui/material";
 import { Metadata } from "next";
@@ -15,21 +19,30 @@ import { cache } from "react";
 import SketchGrid from "../../SketchGrid";
 import { ContentPageProps, tryGetContent } from "../../contentBase";
 
-const getRequestCachedCharacter = cache(async (id: number) => getCharacter(id));
+// Cached for the life of the request only
+const getCachedCharacter = cache(async (id: number) => getCharacter(id));
+const getCachedCharacterSketchGrid = cache(async (id: number) =>
+  getCharacterSketchGrid(id, 1),
+);
 
 export async function generateMetadata({
   params,
 }: ContentPageProps): Promise<Metadata> {
   const id = parseInt(params.idslug[0]);
 
-  const character = await getRequestCachedCharacter(id);
+  const character = await getCachedCharacter(id);
+  if (!character) {
+    return {};
+  }
 
-  return character
-    ? {
-        title: buildPageTitle(character.name),
-        description: `Comedy sketches featuring the character ${character.name}`,
-      }
-    : {};
+  const sketches = await getCachedCharacterSketchGrid(id);
+
+  return buildPageMeta(
+    buildPageTitle(character.name),
+    `Comedy sketches featuring the character ${character.name}`,
+    `/character/${character.id}/${character.url_slug}`,
+    getMetaImagesForSketchGrid(sketches, 3),
+  );
 }
 
 export const revalidate = 300; // 5 minutes
@@ -49,7 +62,7 @@ export default async function CharacterPage({ params }: ContentPageProps) {
   const character = await tryGetContent(
     "character",
     params,
-    getRequestCachedCharacter,
+    getCachedCharacter,
   );
 
   async function getSketchData(page: number) {
@@ -57,7 +70,7 @@ export default async function CharacterPage({ params }: ContentPageProps) {
     return await getCharacterSketchGrid(character.id, page);
   }
 
-  const sketchData = await getSketchData(1);
+  const sketchData = await getCachedCharacterSketchGrid(character.id);
 
   // Rendering
   return (

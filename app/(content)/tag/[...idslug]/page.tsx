@@ -1,15 +1,17 @@
 import { ContentLink } from "@/app/components/ContentLink";
-import DateGeneratedFooter from "@/app/footer/DateGeneratedFooter";
 import DescriptionPanel from "@/app/components/DescriptionPanel";
 import LinksPanel from "@/app/components/LinksPanel";
+import DateGeneratedFooter from "@/app/footer/DateGeneratedFooter";
 import {
   getTag,
   getTagSketchGrid,
   getTagsList,
 } from "@/backend/content/tagService";
 import { getStaticPageCount } from "@/shared/ProcessEnv";
-import staticUrl from "@/shared/cdnHost";
-import { buildPageMeta } from "@/shared/metaBuilder";
+import {
+  buildPageMeta,
+  getMetaImagesForSketchGrid,
+} from "@/shared/metaBuilder";
 import { buildPageTitle } from "@/shared/utilities";
 import { Box, Typography } from "@mui/material";
 import { Metadata } from "next";
@@ -17,9 +19,10 @@ import { cache } from "react";
 import SketchGrid from "../../SketchGrid";
 import { ContentPageProps, tryGetContent } from "../../contentBase";
 
-const getRequestCachedTag = cache(async (id: number) => getTag(id));
-const getRequestCachedSketchGrid = cache(async (id: number, page: number) =>
-  getTagSketchGrid(id, page),
+// Cached for the life of the request only
+const getCachedTag = cache(async (id: number) => getTag(id));
+const getCachedTagSketchGrid = cache(async (id: number) =>
+  getTagSketchGrid(id, 1),
 );
 
 export async function generateMetadata({
@@ -27,26 +30,20 @@ export async function generateMetadata({
 }: ContentPageProps): Promise<Metadata> {
   const id = parseInt(params.idslug[0]);
 
-  const tag = await getRequestCachedTag(id);
+  const tag = await getCachedTag(id);
   if (!tag) {
     return {};
   }
 
   const title = buildPageTitle(tag.name);
   const description = `Comedy sketches tagged with ${tag.name}`;
-  const sketches = await getRequestCachedSketchGrid(id, 1);
-  const images = sketches.sketches
-    .map((sketch) => ({
-      url: `${staticUrl}/${sketch.image_cdnkey}`,
-      alt: sketch.titleString,
-    }))
-    .slice(0, 3);
+  const sketches = await getCachedTagSketchGrid(id);
 
   return buildPageMeta(
     title,
     description,
     `/tag/${tag.id}/${tag.url_slug}`,
-    images,
+    getMetaImagesForSketchGrid(sketches, 3),
   );
 }
 
@@ -61,14 +58,14 @@ export async function generateStaticParams() {
 }
 
 export default async function TagPage({ params }: ContentPageProps) {
-  const tag = await tryGetContent("tag", params, getRequestCachedTag);
+  const tag = await tryGetContent("tag", params, getCachedTag);
 
   async function getSketchData(page: number) {
     "use server";
-    return await getRequestCachedSketchGrid(tag.id, page);
+    return await getTagSketchGrid(tag.id, page);
   }
 
-  const sketchData = await getSketchData(1);
+  const sketchData = await getCachedTagSketchGrid(tag.id);
 
   // Rendering
   return (
