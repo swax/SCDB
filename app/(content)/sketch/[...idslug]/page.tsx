@@ -14,14 +14,15 @@ import { ContentPageProps, tryGetContent } from "../../contentBase";
 import SketchPageBody from "./sketchPageBody";
 import { castMemberType, combinedCastMemberType } from "./sketchTypes";
 
-const getRequestCachedSketch = cache(async (id: number) => getSketch(id));
+// Cached for the life of the request only
+const getCachedSketch = cache(async (id: number) => getSketch(id));
 
 export async function generateMetadata({
   params,
 }: ContentPageProps): Promise<Metadata> {
   const id = parseInt(params.idslug[0]);
 
-  const sketch = await getRequestCachedSketch(id);
+  const sketch = await getCachedSketch(id);
   if (!sketch) {
     return {};
   }
@@ -63,7 +64,7 @@ export async function generateStaticParams() {
 
 export default async function SketchPage({ params }: ContentPageProps) {
   // Data fetching
-  const sketch = await tryGetContent("sketch", params, getRequestCachedSketch);
+  const sketch = await tryGetContent("sketch", params, getCachedSketch);
 
   // Combine cast members that are the same person/image - just the characters are different
   // ie in a sketch Taran Killam plays a character that is both Vin Diesel and Thumper, same picture

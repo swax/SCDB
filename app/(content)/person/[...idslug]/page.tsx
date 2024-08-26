@@ -1,7 +1,7 @@
 import { ContentLink } from "@/app/components/ContentLink";
-import DateGeneratedFooter from "@/app/footer/DateGeneratedFooter";
 import DescriptionPanel from "@/app/components/DescriptionPanel";
 import LinksPanel from "@/app/components/LinksPanel";
+import DateGeneratedFooter from "@/app/footer/DateGeneratedFooter";
 import {
   getPerson,
   getPersonList,
@@ -10,6 +10,7 @@ import {
 } from "@/backend/content/personService";
 import { getStaticPageCount } from "@/shared/ProcessEnv";
 import staticUrl from "@/shared/cdnHost";
+import { buildPageMeta } from "@/shared/metaBuilder";
 import { buildPageTitle, toNiceDate } from "@/shared/utilities";
 import {
   Box,
@@ -24,21 +25,31 @@ import { cache } from "react";
 import SketchGrid from "../../SketchGrid";
 import { ContentPageProps, tryGetContent } from "../../contentBase";
 
-const getRequestCachedPerson = cache(async (id: number) => getPerson(id));
+// Cached for the life of the request only
+const getCachedPerson = cache(async (id: number) => getPerson(id));
 
 export async function generateMetadata({
   params,
 }: ContentPageProps): Promise<Metadata> {
   const id = parseInt(params.idslug[0]);
 
-  const person = await getRequestCachedPerson(id);
+  const person = await getCachedPerson(id);
+  if (!person) {
+    return {};
+  }
 
-  return person
-    ? {
-        title: buildPageTitle(person.name),
-        description: `Comedy sketches featuring the person ${person.name}`,
-      }
-    : {};
+  const title = buildPageTitle(person.name);
+  const description = `Comedy sketches featuring ${person.name}`;
+
+  return buildPageMeta(
+    title,
+    description,
+    `/person/${person.id}/${person.url_slug}`,
+    person.person_images.map((person_image) => ({
+      url: `${staticUrl}/${person_image.image.cdn_key}`,
+      alt: `Image of ${person.name}`,
+    })),
+  );
 }
 
 export const revalidate = 300; // 5 minutes
@@ -56,7 +67,7 @@ export async function generateStaticParams() {
 
 export default async function PersonPage({ params }: ContentPageProps) {
   // Data fetching
-  const person = await tryGetContent("person", params, getRequestCachedPerson);
+  const person = await tryGetContent("person", params, getCachedPerson);
 
   async function getSketchCastData(page: number) {
     "use server";

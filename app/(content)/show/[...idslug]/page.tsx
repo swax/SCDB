@@ -1,15 +1,19 @@
 import AccordionHeader from "@/app/components/AccordionHeader";
 import { ContentLink } from "@/app/components/ContentLink";
-import DateGeneratedFooter from "@/app/footer/DateGeneratedFooter";
 import DescriptionPanel from "@/app/components/DescriptionPanel";
 import LinksPanel from "@/app/components/LinksPanel";
 import MuiNextLink from "@/app/components/MuiNextLink";
+import DateGeneratedFooter from "@/app/footer/DateGeneratedFooter";
 import {
   getShow,
   getShowSketchGrid,
   getShowsList,
 } from "@/backend/content/showService";
 import { getStaticPageCount } from "@/shared/ProcessEnv";
+import {
+  buildPageMeta,
+  getMetaImagesForSketchGrid,
+} from "@/shared/metaBuilder";
 import { buildPageTitle } from "@/shared/utilities";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import FormatListNumberedIcon from "@mui/icons-material/FormatListNumbered";
@@ -30,21 +34,32 @@ import { cache } from "react";
 import SketchGrid from "../../SketchGrid";
 import { ContentPageProps, tryGetContent } from "../../contentBase";
 
-const getRequestCachedShow = cache(async (id: number) => getShow(id));
+// Cached for the life of the request only
+const getCachedShow = cache(async (id: number) => getShow(id));
+const getCachedShowSketchGrid = cache(async (id: number) =>
+  getShowSketchGrid(id, 1),
+);
 
 export async function generateMetadata({
   params,
 }: ContentPageProps): Promise<Metadata> {
   const id = parseInt(params.idslug[0]);
 
-  const show = await getRequestCachedShow(id);
+  const show = await getCachedShow(id);
+  if (!show) {
+    return {};
+  }
 
-  return show
-    ? {
-        title: buildPageTitle(show.title),
-        description: `Comedy sketches from the show ${show.title}`,
-      }
-    : {};
+  const title = buildPageTitle(`${show.title}`);
+  const description = show.description || `Sketches from ${show.title}`;
+  const sketches = await getCachedShowSketchGrid(show.id);
+
+  return buildPageMeta(
+    title,
+    description,
+    `/show/${show.id}/${show.url_slug}`,
+    getMetaImagesForSketchGrid(sketches, 3),
+  );
 }
 
 export async function generateStaticParams() {
@@ -57,14 +72,14 @@ export async function generateStaticParams() {
 
 export default async function ShowPage({ params }: ContentPageProps) {
   // Data fetching
-  const show = await tryGetContent("show", params, getRequestCachedShow);
+  const show = await tryGetContent("show", params, getCachedShow);
 
   async function getSketchData(page: number) {
     "use server";
     return await getShowSketchGrid(show.id, page);
   }
 
-  const sketchData = await getSketchData(1);
+  const sketchData = await getCachedShowSketchGrid(show.id);
 
   // Rendering
   return (

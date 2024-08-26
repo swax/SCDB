@@ -1,6 +1,8 @@
+import { Metadata } from "next";
 import "server-only";
 import { sketchType } from "../app/(content)/sketch/[...idslug]/sketchTypes";
-import { Metadata } from "next";
+import staticUrl from "./cdnHost";
+import { SketchGridData } from "./sketchGridBase";
 
 export function buildPageMeta(
   title: string,
@@ -75,6 +77,18 @@ export function buildSketchMetaDescription({
   }
 
   return reduceStringsToMaxSizeAndJoin(metaParts, 150);
+}
+
+export function getMetaImagesForSketchGrid(
+  sketchGrid: SketchGridData,
+  count: number,
+) {
+  return sketchGrid.sketches
+    .map((sketch) => ({
+      url: `${staticUrl}/${sketch.image_cdnkey}`,
+      alt: sketch.titleString,
+    }))
+    .slice(0, count);
 }
 
 /** Reduces an array of strings proportionally to fit a max size when joined together */

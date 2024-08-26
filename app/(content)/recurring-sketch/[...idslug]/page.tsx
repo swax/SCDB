@@ -1,14 +1,18 @@
 import { ContentLink } from "@/app/components/ContentLink";
-import DateGeneratedFooter from "@/app/footer/DateGeneratedFooter";
 import DescriptionPanel from "@/app/components/DescriptionPanel";
 import LinksPanel from "@/app/components/LinksPanel";
 import MuiNextLink from "@/app/components/MuiNextLink";
+import DateGeneratedFooter from "@/app/footer/DateGeneratedFooter";
 import {
   getRecurringSketch,
   getRecurringSketchGrid,
   getRecurringSketchList,
 } from "@/backend/content/recurringSketch";
 import { getStaticPageCount } from "@/shared/ProcessEnv";
+import {
+  buildPageMeta,
+  getMetaImagesForSketchGrid,
+} from "@/shared/metaBuilder";
 import { buildPageTitle } from "@/shared/utilities";
 import { Box, Typography } from "@mui/material";
 import { Metadata } from "next";
@@ -16,8 +20,12 @@ import { cache } from "react";
 import SketchGrid from "../../SketchGrid";
 import { ContentPageProps, tryGetContent } from "../../contentBase";
 
-const getRequestCachedRecurringSketch = cache(async (id: number) =>
+// Cached for the life of the request only
+const getCachedRecurringSketch = cache(async (id: number) =>
   getRecurringSketch(id),
+);
+const getCachedRecurringSketchGrid = cache(async (id: number) =>
+  getRecurringSketchGrid(id, 1),
 );
 
 export async function generateMetadata({
@@ -25,16 +33,23 @@ export async function generateMetadata({
 }: ContentPageProps): Promise<Metadata> {
   const id = parseInt(params.idslug[0]);
 
-  const recurringSketch = await getRequestCachedRecurringSketch(id);
+  const recurringSketch = await getCachedRecurringSketch(id);
+  if (!recurringSketch) {
+    return {};
+  }
 
-  return recurringSketch
-    ? {
-        title: buildPageTitle(
-          `${recurringSketch.title} - ${recurringSketch.show.title} Recurring`,
-        ),
-        description: `Comedy sketches in the '${recurringSketch.title}' series on ${recurringSketch.show.title}`,
-      }
-    : {};
+  const title = buildPageTitle(
+    `${recurringSketch.title} - ${recurringSketch.show.title} Recurring`,
+  );
+  const description = `Comedy sketches in the '${recurringSketch.title}' series on ${recurringSketch.show.title}`;
+  const sketches = await getCachedRecurringSketchGrid(id);
+
+  return buildPageMeta(
+    title,
+    description,
+    `/recurring-sketch/${recurringSketch.id}/${recurringSketch.url_slug}`,
+    getMetaImagesForSketchGrid(sketches, 3),
+  );
 }
 
 export const revalidate = 300; // 5 minutes
@@ -57,7 +72,7 @@ export default async function RecurringSketchPage({
   const recurringSketch = await tryGetContent(
     "recurring-sketch",
     params,
-    getRequestCachedRecurringSketch,
+    getCachedRecurringSketch,
   );
 
   async function getSketchData(page: number) {
@@ -65,7 +80,7 @@ export default async function RecurringSketchPage({
     return await getRecurringSketchGrid(recurringSketch.id, page);
   }
 
-  const sketchData = await getSketchData(1);
+  const sketchData = await getCachedRecurringSketchGrid(recurringSketch.id);
 
   // Rendering
   return (
