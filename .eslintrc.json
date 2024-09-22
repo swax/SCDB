@@ -31,6 +31,7 @@
     "@typescript-eslint/no-unused-vars": "warn",
     "@typescript-eslint/restrict-template-expressions": "warn",
     "@typescript-eslint/unbound-method": "warn",
-    "@typescript-eslint/no-unsafe-call": "warn"
+    "@typescript-eslint/no-unsafe-call": "warn",
+    "@typescript-eslint/no-floating-promises": "error"
   }
 }
