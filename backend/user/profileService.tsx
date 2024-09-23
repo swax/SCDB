@@ -12,12 +12,16 @@ export interface GetProfileResponse {
   username: string;
   role: user_role_type;
   mod_note: string | null;
+  activityGrid: {
+    sketch_id: number;
+    changed_day: Date;
+  }[];
 }
 
 export async function getProfile(
   username: string,
 ): Promise<GetProfileResponse | null> {
-  return await prisma.user.findUnique({
+  const profile = await prisma.user.findUnique({
     where: {
       username,
     },
@@ -28,6 +32,20 @@ export async function getProfile(
       mod_note: true,
     },
   });
+
+  if (!profile) {
+    return null;
+  }
+
+  // Get record of how many sketches user has created or modified in the past 90 days
+
+  const response: GetProfileResponse = {
+    ...profile,
+    activityGrid:
+      await prisma.$queryRaw`SELECT * FROM select_activity_grid(${profile.id});`,
+  };
+
+  return response;
 }
 
 export async function getProfileSketchGrid(
