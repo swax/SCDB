@@ -18,6 +18,7 @@ import {
   Typography,
 } from "@mui/material";
 import { user_role_type } from "@prisma/client";
+import EditActivity from "./EditActivity";
 import ModPanel from "./ModPanel";
 
 interface ProfileClientPageProps {
@@ -65,6 +66,8 @@ export default function ProfileClientPage({
         getData={getSketchData}
         title="Rated Sketches"
       />
+
+      <EditActivity profile={profile} />
 
       {showModOptions && <ModPanel profile={profile} />}
 
