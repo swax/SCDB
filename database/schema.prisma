@@ -118,7 +118,7 @@ model audit {
   @@index([table_name, row_id]) // Latest changes on edit page
   @@index([table_name, operation])
   @@index([changed_by_id]) // Changelog on profile page
-  @@index([changed_at, changed_by_id, table_name]) // Used for the activity grid query
+  @@index([changed_at, changed_by_id, table_name, operation]) // Used for the activity grid query
 }
 
 model character {
