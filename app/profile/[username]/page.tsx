@@ -1,5 +1,4 @@
 import authOptions from "@/app/api/auth/[...nextauth]/authOptions";
-import { getChangelog } from "@/backend/mgmt/changelogService";
 import {
   getProfile,
   getProfileSketchGrid,
@@ -61,16 +60,6 @@ export default async function ProfilePage({ params }: ProfilePageProps) {
 
   const sketchData = await getSketchData(1);
 
-  // Changelog
-  const page = 1;
-  const rowsPerPage = 5;
-
-  const changelog = await getChangelog({
-    username: params.username,
-    page,
-    rowsPerPage,
-  });
-
   // Rendering
   return (
     <>
@@ -78,9 +67,6 @@ export default async function ProfilePage({ params }: ProfilePageProps) {
         profile={profile}
         sessionRole={session?.user.role}
         sessionUsername={session?.user.username}
-        changelog={changelog}
-        page={page}
-        rowsPerPage={rowsPerPage}
         initialSketchData={sketchData}
         getSketchData={getSketchData}
       />

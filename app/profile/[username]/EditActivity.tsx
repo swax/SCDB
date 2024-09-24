@@ -1,12 +1,18 @@
 import AccordionHeader from "@/app/components/AccordionHeader";
-import { GetProfileResponse } from "@/backend/user/profileService";
+import { ActivityGridRow } from "@/backend/user/profileService";
 import AppsIcon from "@mui/icons-material/Apps";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
-import { Accordion, AccordionDetails, AccordionSummary } from "@mui/material";
-import { useMemo } from "react";
+import {
+  Accordion,
+  AccordionDetails,
+  AccordionSummary,
+  Box,
+} from "@mui/material";
+import { useEffect, useMemo, useState } from "react";
 import CalendarHeatmap, {
   ReactCalendarHeatmapValue,
 } from "react-calendar-heatmap";
+import { getActivityGridAction } from "./actions/getActions";
 
 // heatmap style imported into global.css
 
@@ -17,14 +23,30 @@ type HeatmapValue = {
   count: number;
 };
 
-export default function EditActivity({
-  profile,
-}: {
-  profile: GetProfileResponse;
-}) {
+export default function EditActivity({ userId }: { userId: string }) {
   // Hooks
+  const [expanded, setExpanded] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [activityGrid, setActivityGrid] = useState<ActivityGridRow[]>();
+
+  useEffect(() => {
+    if (expanded && !loading && !activityGrid) {
+      setLoading(true);
+      const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+
+      void getActivityGridAction(userId, timeZone).then((changeLogResponse) => {
+        setActivityGrid(changeLogResponse);
+        setLoading(false);
+      });
+    }
+  }, [expanded]);
+
   const heatmapData = useMemo(() => {
-    const groupedByDate = profile.activityGrid.reduce<{
+    if (!activityGrid) {
+      return [];
+    }
+
+    const groupedByDate = activityGrid.reduce<{
       [date: string]: HeatmapValue;
     }>((grouped, activity) => {
       const date = activity.changed_day.toISOString().split("T")[0];
@@ -44,7 +66,7 @@ export default function EditActivity({
     }, {});
 
     return Object.values(groupedByDate);
-  }, [profile.activityGrid]);
+  }, [activityGrid]);
 
   // Helpers
   const getClassForValue = (value?: ReactCalendarHeatmapValue<string>) => {
@@ -66,27 +88,31 @@ export default function EditActivity({
 
   // Rendering
   return (
-    <Accordion>
+    <Accordion expanded={expanded} onChange={() => setExpanded(!expanded)}>
       <AccordionSummary
         expandIcon={<ExpandMoreIcon />}
         aria-controls="edit-activity-content"
         id="edit-activity-header"
       >
-        <AccordionHeader icon={<AppsIcon />}>
-          Sketch Edit Activity
-        </AccordionHeader>
+        <AccordionHeader icon={<AppsIcon />}>Sketches Added</AccordionHeader>
       </AccordionSummary>
       <AccordionDetails>
-        <CalendarHeatmap
-          startDate={shiftDate(new Date(), -90)}
-          endDate={new Date()}
-          gutterSize={2}
-          values={heatmapData}
-          titleForValue={(value) =>
-            value ? `${value.date}: ${value.count} Changes` : ""
-          }
-          classForValue={getClassForValue}
-        />
+        {loading ? (
+          <Box>Loading...</Box>
+        ) : activityGrid ? (
+          <CalendarHeatmap
+            startDate={shiftDate(new Date(), -90)}
+            endDate={new Date()}
+            gutterSize={2}
+            values={heatmapData}
+            titleForValue={(value) =>
+              value ? `${value.date}: ${value.count} Sketches Added` : ""
+            }
+            classForValue={getClassForValue}
+          />
+        ) : (
+          <Box>No data</Box>
+        )}
       </AccordionDetails>
     </Accordion>
   );

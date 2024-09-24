@@ -1,23 +1,12 @@
 "use client";
 
 import SketchGrid from "@/app/(content)/SketchGrid";
-import ChangeLogTable from "@/app/changelog/components/ChangeLogTable";
-import AccordionHeader from "@/app/components/AccordionHeader";
-import MuiNextLink from "@/app/components/MuiNextLink";
-import { GetChangelogResponse } from "@/backend/mgmt/changelogService";
 import { GetProfileResponse } from "@/backend/user/profileService";
 import { allowedToChangeRole } from "@/shared/roleUtils";
 import { SketchGridData } from "@/shared/sketchGridBase";
-import DifferenceIcon from "@mui/icons-material/Difference";
-import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
-import {
-  Accordion,
-  AccordionDetails,
-  AccordionSummary,
-  Box,
-  Typography,
-} from "@mui/material";
+import { Box, Typography } from "@mui/material";
 import { user_role_type } from "@prisma/client";
+import ChangeLog from "./ChangeLog";
 import EditActivity from "./EditActivity";
 import ModPanel from "./ModPanel";
 
@@ -25,9 +14,6 @@ interface ProfileClientPageProps {
   profile: GetProfileResponse;
   sessionUsername?: string;
   sessionRole?: user_role_type;
-  changelog: GetChangelogResponse;
-  page: number;
-  rowsPerPage: number;
   initialSketchData: SketchGridData;
   getSketchData: (page: number) => Promise<SketchGridData>;
 }
@@ -36,9 +22,6 @@ export default function ProfileClientPage({
   profile,
   sessionRole,
   sessionUsername,
-  changelog,
-  page,
-  rowsPerPage,
   initialSketchData,
   getSketchData,
 }: ProfileClientPageProps) {
@@ -67,39 +50,11 @@ export default function ProfileClientPage({
         title="Rated Sketches"
       />
 
-      <EditActivity profile={profile} />
+      <EditActivity userId={profile.id} />
 
       {showModOptions && <ModPanel profile={profile} />}
 
-      <Accordion>
-        <AccordionSummary
-          expandIcon={<ExpandMoreIcon />}
-          aria-controls="edits-content"
-          id="edits-header"
-        >
-          <AccordionHeader icon={<DifferenceIcon />}>
-            Latest Edits
-          </AccordionHeader>
-        </AccordionSummary>
-        <AccordionDetails>
-          <Box style={{ overflowX: "auto" }}>
-            <ChangeLogTable
-              changelog={changelog}
-              page={page}
-              rowsPerPage={rowsPerPage}
-              profilePage={true}
-            />
-          </Box>
-          <Box style={{ marginTop: 16 }}>
-            <MuiNextLink
-              href={`/changelog?username=${profile.username}`}
-              prefetch={false}
-            >
-              See full change history
-            </MuiNextLink>
-          </Box>
-        </AccordionDetails>
-      </Accordion>
+      <ChangeLog username={profile.username} />
     </Box>
   );
 }
