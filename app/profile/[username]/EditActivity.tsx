@@ -1,5 +1,6 @@
 import AccordionHeader from "@/app/components/AccordionHeader";
 import { ActivityGridRow } from "@/backend/user/profileService";
+import { shiftDayToSundayBefore, toLocalDay } from "@/shared/dateService";
 import AppsIcon from "@mui/icons-material/Apps";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import {
@@ -24,6 +25,8 @@ type HeatmapValue = {
 };
 
 export default function EditActivity({ userId }: { userId: string }) {
+  const daysBack = 90;
+
   // Hooks
   const [expanded, setExpanded] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -32,12 +35,13 @@ export default function EditActivity({ userId }: { userId: string }) {
   useEffect(() => {
     if (expanded && !loading && !activityGrid) {
       setLoading(true);
-      const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
-
-      void getActivityGridAction(userId, timeZone).then((changeLogResponse) => {
-        setActivityGrid(changeLogResponse);
-        setLoading(false);
-      });
+      // Add some buffer to days back because some back days are added to the heat map to show the full week
+      void getActivityGridAction(userId, daysBack + 10).then(
+        (changeLogResponse) => {
+          setActivityGrid(changeLogResponse);
+          setLoading(false);
+        },
+      );
     }
   }, [expanded]);
 
@@ -49,7 +53,7 @@ export default function EditActivity({ userId }: { userId: string }) {
     const groupedByDate = activityGrid.reduce<{
       [date: string]: HeatmapValue;
     }>((grouped, activity) => {
-      const date = activity.changed_day.toISOString().split("T")[0];
+      const date = toLocalDay(activity.changed_day);
 
       if (!grouped[date]) {
         grouped[date] = {
@@ -80,12 +84,6 @@ export default function EditActivity({ userId }: { userId: string }) {
     return "color-empty";
   };
 
-  function shiftDate(date: Date, numDays: number) {
-    const newDate = new Date(date);
-    newDate.setDate(newDate.getDate() + numDays);
-    return newDate;
-  }
-
   // Rendering
   return (
     <Accordion expanded={expanded} onChange={() => setExpanded(!expanded)}>
@@ -101,8 +99,8 @@ export default function EditActivity({ userId }: { userId: string }) {
           <Box>Loading...</Box>
         ) : activityGrid ? (
           <CalendarHeatmap
-            startDate={shiftDate(new Date(), -90)}
-            endDate={new Date()}
+            startDate={shiftDayToSundayBefore(new Date(), -daysBack)}
+            endDate={toLocalDay(new Date())}
             gutterSize={2}
             values={heatmapData}
             titleForValue={(value) =>
