@@ -15,6 +15,6 @@ export async function getChangeLogAction(
   });
 }
 
-export async function getActivityGridAction(userId: string, timeZone: string) {
-  return await getActivityGrid(userId, timeZone);
+export async function getActivityGridAction(userId: string, daysBack: number) {
+  return await getActivityGrid(userId, daysBack);
 }

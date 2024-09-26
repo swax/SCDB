@@ -39,9 +39,12 @@ export type ActivityGridRow = {
 
 export async function getActivityGrid(
   userId: string,
-  timeZone: string,
+  daysBack: number,
 ): Promise<ActivityGridRow[]> {
-  return await prisma.$queryRaw`SELECT * FROM select_activity_grid(${userId}, ${timeZone});`;
+  return await prisma.$queryRaw`
+  SELECT * 
+  FROM select_activity_grid(${userId}, ${daysBack}::int);
+`;
 }
 
 export async function getProfileSketchGrid(
