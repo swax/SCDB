@@ -11,6 +11,7 @@ import {
 import { getStaticPageCount } from "@/shared/ProcessEnv";
 import staticUrl from "@/shared/cdnHost";
 import { buildPageMeta } from "@/shared/metaBuilder";
+import { SketchGridSearchOptions } from "@/shared/sketchGridBase";
 import { buildPageTitle, toNiceDate } from "@/shared/utilities";
 import {
   Box,
@@ -24,7 +25,6 @@ import Image from "next/image";
 import { cache } from "react";
 import SketchGrid from "../../SketchGrid";
 import { ContentPageProps, tryGetContent } from "../../contentBase";
-import MinorRolesCheckBox from "./MinorRolesCheckBox";
 
 // Cached for the life of the request only
 const getCachedPerson = cache(async (id: number) => getPerson(id));
@@ -66,22 +66,16 @@ export async function generateStaticParams() {
   }));
 }
 
-// add hideMinorRoles query param
-interface PersonPageProps extends ContentPageProps {
-  searchParams: { hideMinorRoles?: string };
-}
-
-export default async function PersonPage({
-  params,
-  searchParams,
-}: PersonPageProps) {
+export default async function PersonPage({ params }: ContentPageProps) {
   // Data fetching
   const person = await tryGetContent("person", params, getCachedPerson);
-  const hideMinorRoles = Boolean(searchParams.hideMinorRoles);
 
-  async function getSketchCastData(page: number) {
+  async function getSketchCastData(
+    page: number,
+    options?: SketchGridSearchOptions,
+  ) {
     "use server";
-    return await getPersonSketchCastGrid(person.id, page, hideMinorRoles);
+    return await getPersonSketchCastGrid(person.id, page, options); //, hideMinorRoles);
   }
 
   async function getSketchCreditData(page: number) {
@@ -169,8 +163,11 @@ export default async function PersonPage({
         </ImageList>
       )}
       <DescriptionPanel description={person.description} title="About" />
-      <SketchGrid initialData={sketchCastData} getData={getSketchCastData} />
-      <MinorRolesCheckBox checked={hideMinorRoles} />
+      <SketchGrid
+        initialData={sketchCastData}
+        getData={getSketchCastData}
+        options={{ minorRolesFilter: true }}
+      />
       <SketchGrid
         initialData={sketchCreditData}
         getData={getSketchCreditData}

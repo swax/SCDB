@@ -3,6 +3,7 @@ import prisma from "@/database/prisma";
 import {
   SKETCH_PAGE_SIZE,
   SketchGridData,
+  SketchGridSearchOptions,
   selectSketch,
 } from "@/shared/sketchGridBase";
 import { ListSearchParms, getBaseFindParams } from "./listHelper";
@@ -98,12 +99,12 @@ function getAge(birthDate: Nullable<Date>, deathDate: Nullable<Date>) {
 export async function getPersonSketchCastGrid(
   id: number,
   page: number,
-  hideMinorRoles?: boolean,
+  options?: SketchGridSearchOptions,
 ): Promise<SketchGridData> {
   const dbResults = await prisma.sketch_cast.findMany({
     where: {
       person_id: id,
-      minor_role: hideMinorRoles ? false : undefined,
+      minor_role: options?.hideMinorRoles ? false : undefined,
     },
     select: {
       character_name: true,
@@ -138,7 +139,7 @@ export async function getPersonSketchCastGrid(
   // Also need raw unsafe sql because we can't compose a conditional 'where' clause
   let rawSql = `SELECT COUNT(DISTINCT sketch_id) FROM sketch_cast WHERE person_id = $1`;
 
-  if (hideMinorRoles) {
+  if (options?.hideMinorRoles) {
     rawSql += ` AND minor_role = false`;
   }
 
