@@ -96,10 +96,12 @@ function getAge(birthDate: Nullable<Date>, deathDate: Nullable<Date>) {
 export async function getPersonSketchCastGrid(
   id: number,
   page: number,
+  hideMinorRoles?: boolean,
 ): Promise<SketchGridData> {
   const dbResults = await prisma.sketch_cast.findMany({
     where: {
       person_id: id,
+      minor_role: hideMinorRoles ? false : undefined,
     },
     select: {
       character_name: true,
@@ -131,10 +133,14 @@ export async function getPersonSketchCastGrid(
   });
 
   // Need to do raw sql here because prisma can't do count(distinct)
-  const distinctCount = (await prisma.$queryRaw`
-    SELECT COUNT(DISTINCT sketch_id) 
-    FROM sketch_cast 
-    WHERE person_id = ${id}`) as {
+  // Also need raw unsafe sql because we can't compose a conditional 'where' clause
+  let rawSql = `SELECT COUNT(DISTINCT sketch_id) FROM sketch_cast WHERE person_id = $1`;
+
+  if (hideMinorRoles) {
+    rawSql += ` AND minor_role = false`;
+  }
+
+  let distinctCount = (await prisma.$queryRawUnsafe(rawSql, id)) as {
     count: number;
   }[];
 

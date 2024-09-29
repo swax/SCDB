@@ -47,7 +47,7 @@ export default function MappingTableRow({
       value = field.lookup.labelValues?.[index];
     }
 
-    if (!field.optional && !value) {
+    if (!field.optional && value !== false && !value) {
       color = "red";
       value =
         value === ""
@@ -80,11 +80,17 @@ export default function MappingTableRow({
       );
     }
 
-    const valueStr = Array.isArray(value)
-      ? value.join(", ")
-      : value instanceof Date
-        ? value.toLocaleString()
-        : value || "";
+    let valueStr = "";
+
+    if (Array.isArray(value)) {
+      valueStr = value.join(", ");
+    } else if (value instanceof Date) {
+      valueStr = value.toLocaleString();
+    } else if (value === true) {
+      valueStr = "✅";
+    } else {
+      valueStr = value ? value.toString() : "";
+    }
 
     return (
       <Box

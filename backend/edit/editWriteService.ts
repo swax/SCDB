@@ -108,7 +108,8 @@ function validateRequiredFields(fields: FieldCms[], operation: operation_type) {
 
   for (const field of fields) {
     if (field.column) {
-      let noValue = !field.values?.[0];
+      const value = field.values?.[0];
+      let noValue = !value && value !== false;
       if (!noValue && field.type == "list") {
         noValue = field.values?.[0]?.length == 0;
       }

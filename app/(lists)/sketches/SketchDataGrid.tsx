@@ -47,12 +47,20 @@ export default function SketchDataGrid({
       type: "number",
       valueFormatter: (value?: number) => value?.toString(),
     },
+    {
+      field: "posted_on_socials",
+      headerName: "Posted",
+      type: "boolean",
+    },
   ];
 
   return (
     <BaseDataGrid
       basePath="sketches"
       columns={columns}
+      columnVisibilityModel={{
+        posted_on_socials: false,
+      }}
       searchParams={searchParams}
       rows={rows}
       totalRowCount={totalRowCount}

@@ -12,6 +12,7 @@ export async function getSketchList(searchParams: ListSearchParms) {
       title: true,
       url_slug: true,
       site_rating: true,
+      posted_on_socials: true,
       show: {
         select: {
           title: true,

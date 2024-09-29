@@ -24,6 +24,7 @@ import Image from "next/image";
 import { cache } from "react";
 import SketchGrid from "../../SketchGrid";
 import { ContentPageProps, tryGetContent } from "../../contentBase";
+import MinorRolesCheckBox from "./MinorRolesCheckBox";
 
 // Cached for the life of the request only
 const getCachedPerson = cache(async (id: number) => getPerson(id));
@@ -65,13 +66,22 @@ export async function generateStaticParams() {
   }));
 }
 
-export default async function PersonPage({ params }: ContentPageProps) {
+// add hideMinorRoles query param
+interface PersonPageProps extends ContentPageProps {
+  searchParams: { hideMinorRoles?: string };
+}
+
+export default async function PersonPage({
+  params,
+  searchParams,
+}: PersonPageProps) {
   // Data fetching
   const person = await tryGetContent("person", params, getCachedPerson);
+  const hideMinorRoles = Boolean(searchParams.hideMinorRoles);
 
   async function getSketchCastData(page: number) {
     "use server";
-    return await getPersonSketchCastGrid(person.id, page);
+    return await getPersonSketchCastGrid(person.id, page, hideMinorRoles);
   }
 
   async function getSketchCreditData(page: number) {
@@ -160,6 +170,7 @@ export default async function PersonPage({ params }: ContentPageProps) {
       )}
       <DescriptionPanel description={person.description} title="About" />
       <SketchGrid initialData={sketchCastData} getData={getSketchCastData} />
+      <MinorRolesCheckBox checked={hideMinorRoles} />
       <SketchGrid
         initialData={sketchCreditData}
         getData={getSketchCreditData}
