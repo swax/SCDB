@@ -24,7 +24,9 @@ export async function getRecurringSketchList(searchParams: ListSearchParms) {
     },
   });
 
-  const count = await prisma.recurring_sketch.count();
+  const count = await prisma.recurring_sketch.count({
+    where: baseFindParams.where,
+  });
 
   return { list, count, dateGenerated: new Date() };
 }

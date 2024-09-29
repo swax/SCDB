@@ -18,7 +18,9 @@ export async function getCategoriesList(searchParams: ListSearchParms) {
     },
   });
 
-  const count = await prisma.category.count();
+  const count = await prisma.category.count({
+    where: baseFindParams.where,
+  });
 
   return { list, count, dateGenerated: new Date() };
 }

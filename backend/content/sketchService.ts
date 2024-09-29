@@ -28,7 +28,9 @@ export async function getSketchList(searchParams: ListSearchParms) {
   });
 
   // get total count
-  const count = await prisma.sketch.count();
+  const count = await prisma.sketch.count({
+    where: baseFindParams.where,
+  });
 
   return { list, count, dateGenerated: new Date() };
 }

@@ -26,7 +26,9 @@ export async function getPersonList(searchParams: ListSearchParms) {
     },
   });
 
-  const count = await prisma.person.count();
+  const count = await prisma.person.count({
+    where: baseFindParams.where,
+  });
 
   const list = dbList.map((person) => ({
     ...person,

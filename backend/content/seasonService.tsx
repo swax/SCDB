@@ -19,7 +19,9 @@ export async function getSeasonsList(searchParams: ListSearchParms) {
     },
   });
 
-  const count = await prisma.season.count();
+  const count = await prisma.season.count({
+    where: baseFindParams.where,
+  });
 
   return { list, count };
 }

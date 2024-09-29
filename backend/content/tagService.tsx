@@ -19,7 +19,9 @@ export async function getTagsList(searchParams: ListSearchParms) {
     },
   });
 
-  const count = await prisma.tag.count();
+  const count = await prisma.tag.count({
+    where: baseFindParams.where,
+  });
 
   return { list, count };
 }

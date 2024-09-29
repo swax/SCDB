@@ -18,7 +18,9 @@ export async function getEpisodesList(searchParams: ListSearchParms) {
     },
   });
 
-  const count = await prisma.episode.count();
+  const count = await prisma.episode.count({
+    where: baseFindParams.where,
+  });
 
   return { list, count };
 }
