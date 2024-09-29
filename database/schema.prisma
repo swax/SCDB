@@ -316,6 +316,7 @@ model sketch_cast {
   character_id   Int?
   person_id      Int?
   image_id       Int
+  minor_role     Boolean        @default(false)
   sequence       Int
   role           cast_role_type
   created_by_id  String
@@ -397,6 +398,7 @@ model sketch {
   episode_id          Int?
   recurring_sketch_id Int?
   link_urls           String[]
+  posted_on_socials   Boolean            @default(false)
   review_status       review_status_type @default(NeedsReview)
   created_by_id       String
   created_at          DateTime           @default(now())

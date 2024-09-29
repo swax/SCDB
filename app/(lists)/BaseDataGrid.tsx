@@ -2,6 +2,7 @@ import { ListSearchParms } from "@/backend/content/listHelper";
 import {
   DataGrid,
   GridColDef,
+  GridColumnVisibilityModel,
   GridFilterModel,
   GridPaginationModel,
   GridSortModel,
@@ -13,6 +14,7 @@ import { useRouter } from "next/navigation";
 interface BaseDataGridProps<T> {
   basePath: string;
   columns: GridColDef[];
+  columnVisibilityModel?: GridColumnVisibilityModel;
   rows: T[];
   searchParams: ListSearchParms;
   totalRowCount: number;
@@ -22,6 +24,7 @@ interface BaseDataGridProps<T> {
 export default function BaseDataGrid<T>({
   basePath,
   columns,
+  columnVisibilityModel,
   rows,
   searchParams,
   totalRowCount,
@@ -61,11 +64,17 @@ export default function BaseDataGrid<T>({
       const { field, value, operator } = filterModel.items[0];
 
       // if value is a date set it to the just the date component of the iso string
-      const cleanVal = !value
-        ? undefined
-        : value instanceof Date
-          ? value.toISOString().split("T")[0]
-          : `${value}`;
+      let cleanVal = undefined;
+
+      if (value === false) {
+        cleanVal = "false";
+      } else if (!value) {
+        cleanVal = undefined;
+      } else if (value instanceof Date) {
+        cleanVal = value.toISOString().split("T")[0];
+      } else {
+        cleanVal = `${value}`;
+      }
 
       searchParams.filterField = field;
       searchParams.filterValue = cleanVal;
@@ -152,6 +161,7 @@ export default function BaseDataGrid<T>({
         sorting,
         filter,
       }}
+      columnVisibilityModel={columnVisibilityModel}
       onFilterModelChange={dataGrid_filterModelChange}
       onPaginationModelChange={dataGrid_paginationModelChange}
       onSortModelChange={dataGrid_sortModelChange}

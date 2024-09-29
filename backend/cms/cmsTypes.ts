@@ -86,6 +86,12 @@ export type NumberFieldCms = BaseFieldCms & {
   values?: Nullable<number>[];
 };
 
+export type BooleanFieldCms = BaseFieldCms & {
+  type: "bool";
+  // Maybe do int vs float here
+  values?: Nullable<boolean>[];
+};
+
 export type FieldCms =
   | DateFieldCms
   | EnumFieldCms
@@ -95,7 +101,8 @@ export type FieldCms =
   | StringFieldCms
   | NumberFieldCms
   | ListFieldCms
-  | ImageFieldCms;
+  | ImageFieldCms
+  | BooleanFieldCms;
 
 export type FieldCmsValueType = NonNullable<FieldCms["values"]>[number];
 

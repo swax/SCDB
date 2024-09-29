@@ -1,8 +1,8 @@
 import { FieldCms, FieldCmsValueType } from "@/backend/cms/cmsTypes";
-import { Box, MenuItem, Select, TextField } from "@mui/material";
-import { $Enums } from "@prisma/client";
+import { Box, Checkbox, FormControlLabel, TextField } from "@mui/material";
 import MappingTableEditor from "./MappingTableEditor";
 import DateField2 from "./fields/DateField2";
+import EnumField from "./fields/EnumField";
 import ImageField from "./fields/ImageField";
 import ListField from "./fields/ListField";
 import LookupField from "./fields/LookupField";
@@ -34,15 +34,6 @@ export default function EditableField({
   setFieldValue,
   setDirty,
 }: EditableFieldProps) {
-  // Event Handlers
-  function handleChange_enumField(
-    field: FieldCms,
-    index: number,
-    value: Nullable<string>,
-  ) {
-    setFieldValue(field, index, value);
-  }
-
   // Rendering
   return (
     <Box
@@ -87,6 +78,19 @@ export default function EditableField({
           setFieldValue={setFieldValue}
         />
       )}
+      {field.type == "bool" && (
+        <FormControlLabel
+          label={field.label}
+          disabled={loading}
+          control={
+            <Checkbox
+              checked={field.values?.[index] || false}
+              onChange={(e) => setFieldValue(field, index, e.target.checked)}
+              size="small"
+            />
+          }
+        />
+      )}
       {field.type == "date" && (
         <DateField2
           field={field}
@@ -97,23 +101,13 @@ export default function EditableField({
         />
       )}
       {field.type === "enum" && (
-        <Select
-          error={!field.optional && !field.values?.[index]}
-          fullWidth
-          label={inTable ? "" : field.label}
-          onChange={(e) => handleChange_enumField(field, index, e.target.value)}
-          size="small"
-          value={field.values?.[index] || ""}
-        >
-          <MenuItem value="none">
-            <i>Select...</i>
-          </MenuItem>
-          {Object.keys(($Enums as any)[field.enum]).map((value, i) => (
-            <MenuItem key={i} value={value}>
-              {value}
-            </MenuItem>
-          ))}
-        </Select>
+        <EnumField
+          field={field}
+          index={index}
+          inTable={inTable}
+          loading={loading}
+          setFieldValue={setFieldValue}
+        />
       )}
       {field.type == "slug" && (
         <TextField

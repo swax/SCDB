@@ -55,6 +55,7 @@ function getWhereParams({
   let filter:
     | Record<string, string | number | Date | Date[]>
     | string
+    | boolean
     | number = {};
   const numValue = parseInt(filterValue);
   const dateValue = new Date(filterValue);
@@ -89,12 +90,18 @@ function getWhereParams({
   } else if (filterOp == "<=") {
     filter["lte"] = numValue;
   } else if (filterOp == "is") {
-    //filter["equals"] = dateValue;
+    if (filterValue === "true") {
+      filter = true;
+    } else if (filterValue === "false") {
+      filter = false;
+    } else {
+      //filter["equals"] = dateValue;
 
-    // Trying to match on just the date not the time
-    const endDate = new Date(dateValue);
-    endDate.setDate(dateValue.getDate() + 1);
-    filter["in"] = [dateValue, endDate];
+      // Trying to match on just the date not the time
+      const endDate = new Date(dateValue);
+      endDate.setDate(dateValue.getDate() + 1);
+      filter["in"] = [dateValue, endDate];
+    }
   } else if (filterOp == "after") {
     filter["gt"] = dateValue;
   } else if (filterOp == "onOrAfter") {

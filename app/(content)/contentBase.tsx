@@ -2,7 +2,7 @@ import { revalidatePath, revalidateTag } from "next/cache";
 import { notFound, redirect } from "next/navigation";
 import "server-only";
 
-interface ContentPageParams {
+export interface ContentPageParams {
   idslug: string[];
 }
 

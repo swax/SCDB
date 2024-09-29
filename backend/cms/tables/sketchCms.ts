@@ -114,6 +114,11 @@ const sketchCms: TableCms = {
             helperText: "(Optional: If character has their own page)",
           },
           {
+            label: "Minor Role (No Lines)",
+            column: "minor_role",
+            type: "bool",
+          },
+          {
             label: "Actor",
             column: "person_id",
             type: "lookup",
@@ -124,7 +129,7 @@ const sketchCms: TableCms = {
             },
           },
           {
-            label: "Role",
+            label: "Cast Role",
             column: "role",
             type: "enum",
             enum: "cast_role_type",
@@ -229,6 +234,11 @@ const sketchCms: TableCms = {
       column: "url_slug",
       type: "slug",
       derivedFrom: "lookup_slug",
+    },
+    {
+      label: "Posted on Social Media",
+      column: "posted_on_socials",
+      type: "bool",
     },
   ],
 };
