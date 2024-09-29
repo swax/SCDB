@@ -24,7 +24,9 @@ export async function getShowsList(searchParams: ListSearchParms) {
     },
   });
 
-  const count = await prisma.show.count();
+  const count = await prisma.show.count({
+    where: baseFindParams.where,
+  });
 
   return { list, count, dateGenerated: new Date() };
 }

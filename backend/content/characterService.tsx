@@ -24,7 +24,9 @@ export async function getCharacterList(searchParams: ListSearchParms) {
     },
   });
 
-  const count = await prisma.character.count();
+  const count = await prisma.character.count({
+    where: baseFindParams.where,
+  });
 
   return { list, count, dateGenerated: new Date() };
 }
