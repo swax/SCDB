@@ -15,6 +15,10 @@ export interface SketchGridData {
   totalPages: number;
 }
 
+export interface SketchGridSearchOptions {
+  hideMinorRoles?: boolean;
+}
+
 export const SKETCH_PAGE_SIZE = 12; // Looks even 4x3 and 6x2
 
 export const selectSketch = {

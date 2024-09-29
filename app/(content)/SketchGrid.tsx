@@ -10,6 +10,8 @@ import {
   AccordionSummary,
   Box,
   ButtonBase,
+  Checkbox,
+  FormControlLabel,
   ImageList,
   ImageListItem,
   ImageListItemBar,
@@ -17,16 +19,25 @@ import {
 } from "@mui/material";
 import Image from "next/image";
 import { useId, useState } from "react";
-import { SketchGridData } from "../../shared/sketchGridBase";
+import {
+  SketchGridData,
+  SketchGridSearchOptions,
+} from "../../shared/sketchGridBase";
 import AccordionHeader from "../components/AccordionHeader";
 import { ContentLink } from "../components/ContentLink";
 import VideoPlayer from "../components/VideoPlayer";
 
 interface SketchGridProps {
   initialData: SketchGridData;
-  getData: (page: number) => Promise<SketchGridData>;
+  getData: (
+    page: number,
+    options?: SketchGridSearchOptions,
+  ) => Promise<SketchGridData>;
   title?: string;
   icon?: React.ReactNode;
+  options?: {
+    minorRolesFilter?: boolean;
+  };
 }
 
 export default function SketchGrid({
@@ -34,6 +45,7 @@ export default function SketchGrid({
   getData,
   title,
   icon,
+  options,
 }: SketchGridProps) {
   // Hooks
   const id = useId();
@@ -42,16 +54,34 @@ export default function SketchGrid({
   const [loading, setLoading] = useState(false);
   const [playVideoUrls, setPlayVideoUrls] = useState<string[] | null>(null);
 
+  const [hideMinorRoles, setHideMinorRoles] = useState(false);
+
   // Event Handlers
-  async function pageination_handleChange(
+  function handleChange_pageination(
     event: React.ChangeEvent<unknown>,
     newPage: number,
   ) {
+    setPage(newPage);
+    void reloadSketchGrid(newPage, hideMinorRoles);
+  }
+
+  function handleChange_minorRolesFilter(
+    event: React.ChangeEvent<HTMLInputElement>,
+  ) {
+    const newSetting = event.target.checked;
+    setHideMinorRoles(newSetting);
+
+    void reloadSketchGrid(page, newSetting);
+  }
+
+  // Helper functions
+  async function reloadSketchGrid(page: number, hideMinorRoles: boolean) {
     setLoading(true);
 
-    const newData = await getData(newPage);
+    const options = hideMinorRoles ? { hideMinorRoles: true } : undefined;
+
+    const newData = await getData(page, options);
     setData(newData);
-    setPage(newPage);
 
     setLoading(false);
   }
@@ -185,8 +215,20 @@ export default function SketchGrid({
           <Pagination
             count={data.totalPages}
             disabled={loading}
-            onChange={(e, v) => void pageination_handleChange(e, v)}
+            onChange={handleChange_pageination}
             page={page}
+          />
+        )}
+        {options?.minorRolesFilter && (
+          <FormControlLabel
+            disabled={loading}
+            label="Hide Minor Roles (No Lines)"
+            control={
+              <Checkbox
+                checked={hideMinorRoles}
+                onChange={handleChange_minorRolesFilter}
+              />
+            }
           />
         )}
         {!!playVideoUrls && (
