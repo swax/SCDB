@@ -9,6 +9,7 @@ import {
 import {
   FieldCms,
   ImageFieldCms,
+  isFieldEmpty,
   MappingFieldCms,
   SlugFieldCms,
   TableCms,
@@ -108,15 +109,9 @@ function validateRequiredFields(fields: FieldCms[], operation: operation_type) {
 
   for (const field of fields) {
     if (field.column) {
-      const value = field.values?.[0];
-      let noValue = !value && value !== false;
-      if (!noValue && field.type == "list") {
-        noValue = field.values?.[0]?.length == 0;
-      }
-
       if (
-        noValue &&
         !field.optional &&
+        isFieldEmpty(field, 0) &&
         (field.modified?.[0] || operation == operation_type.INSERT)
       ) {
         errors.push(`Field '${field.column}' is required`);
@@ -131,7 +126,7 @@ function validateRequiredFields(fields: FieldCms[], operation: operation_type) {
             errors.push(`${field.label}: Row ${i + 1}: No data`);
           } else if (
             !mappedField.optional &&
-            !mappedField.values[i] &&
+            isFieldEmpty(mappedField, i) &&
             mappedField.modified?.[i]
           ) {
             errors.push(

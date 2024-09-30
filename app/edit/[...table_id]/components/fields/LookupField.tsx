@@ -1,6 +1,6 @@
 import useDebounce2 from "@/app/hooks/useDebounce2";
+import { isFieldEmpty, LookupFieldCms } from "@/backend/cms/cmsTypes";
 import { LookupFieldOption } from "@/backend/edit/lookupService";
-import { LookupFieldCms } from "@/backend/cms/cmsTypes";
 import { getEditUrl } from "@/shared/urls";
 import { fillHolesWithNullInPlace } from "@/shared/utilities";
 import OpenInNewIcon from "@mui/icons-material/OpenInNew";
@@ -39,7 +39,7 @@ export default function LookupField({
       }
     : null;
 
-  const hasError = !field.optional && !field.values?.[index];
+  const hasError = !field.optional && isFieldEmpty(field, index);
 
   // Hooks
   const [value, setValue] = useState(initialValue);

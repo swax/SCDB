@@ -1,5 +1,5 @@
-import { FieldCms, ListFieldCms } from "@/backend/cms/cmsTypes";
 import { useForceUpdate } from "@/app/hooks/useForceUpdate";
+import { FieldCms, isFieldEmpty, ListFieldCms } from "@/backend/cms/cmsTypes";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { Box, Button, IconButton, TextField, Typography } from "@mui/material";
 
@@ -21,7 +21,7 @@ export default function ListField({
   // Constants
   const list = field.values?.[index] || [];
   const hasError =
-    !field.optional && !field.values?.[index] && !field.templates;
+    !field.optional && isFieldEmpty(field, index) && !field.templates;
 
   // Hooks
   const forceUpdate = useForceUpdate();
@@ -102,7 +102,7 @@ export default function ListField({
         </Box>
       ))}
       <Button
-        color={!field.optional && !list.length ? "error" : "primary"}
+        color={hasError ? "error" : "primary"}
         disabled={loading}
         onClick={() => handleClick_add(field)}
         size="small"

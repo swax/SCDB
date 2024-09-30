@@ -4,6 +4,7 @@ import EditableField from "./EditableField";
 import {
   FieldCms,
   FieldCmsValueType,
+  isFieldEmpty,
   MappingTableCms,
 } from "@/backend/cms/cmsTypes";
 import dragdropStyles from "./dragdrop.module.css";
@@ -47,7 +48,7 @@ export default function MappingTableRow({
       value = field.lookup.labelValues?.[index];
     }
 
-    if (!field.optional && value !== false && !value) {
+    if (!field.optional && isFieldEmpty(field, index)) {
       color = "red";
       value =
         value === ""

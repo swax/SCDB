@@ -46,6 +46,16 @@ const sketchCms: TableCms = {
       optional: true,
     },
     {
+      label: "Recurring Sketch",
+      column: "recurring_sketch_id",
+      type: "lookup",
+      optional: true,
+      lookup: {
+        table: "recurring_sketch",
+        labelColumn: "lookup_slug",
+      },
+    },
+    {
       label: "Preview Image",
       column: "image_id",
       type: "image",
@@ -71,16 +81,6 @@ const sketchCms: TableCms = {
       type: "string",
       multiline: true,
       optional: true,
-    },
-    {
-      label: "Recurring Sketch",
-      column: "recurring_sketch_id",
-      type: "lookup",
-      optional: true,
-      lookup: {
-        table: "recurring_sketch",
-        labelColumn: "lookup_slug",
-      },
     },
     {
       label: "Cast",

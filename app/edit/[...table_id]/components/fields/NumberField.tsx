@@ -1,4 +1,4 @@
-import { FieldCms, NumberFieldCms } from "@/backend/cms/cmsTypes";
+import { FieldCms, isFieldEmpty, NumberFieldCms } from "@/backend/cms/cmsTypes";
 import { useForceUpdate } from "@/app/hooks/useForceUpdate";
 import { TextField } from "@mui/material";
 
@@ -18,8 +18,7 @@ export default function NumberField({
   setFieldValue,
 }: NumberFieldProps) {
   // Constants
-  const hasError =
-    !field.optional && isNaN(parseInt(`${field.values?.[index]}`));
+  const hasError = !field.optional && isFieldEmpty(field, index);
 
   // Hooks
   const forceUpdate = useForceUpdate();

@@ -1,4 +1,4 @@
-import { EnumFieldCms, FieldCms } from "@/backend/cms/cmsTypes";
+import { EnumFieldCms, FieldCms, isFieldEmpty } from "@/backend/cms/cmsTypes";
 import { FormControl, InputLabel, Select, MenuItem } from "@mui/material";
 import { $Enums } from "@prisma/client";
 import { useId } from "react";
@@ -23,18 +23,18 @@ export default function EnumField({
 
   // Rendering
   const label = inTable ? "" : field.label;
+  const value = field.values?.[index];
 
   return (
-    <FormControl disabled={loading}>
+    <FormControl disabled={loading} fullWidth>
       <InputLabel id={labelId}>{label}</InputLabel>
       <Select
-        error={!field.optional && !field.values?.[index]}
-        fullWidth
+        error={!field.optional && isFieldEmpty(field, index)}
         label={label}
         labelId={labelId}
         onChange={(e) => setFieldValue(field, index, e.target.value)}
         size="small"
-        value={field.values?.[index] || ""}
+        value={value || ""}
       >
         <MenuItem value="none">
           <i>Select...</i>

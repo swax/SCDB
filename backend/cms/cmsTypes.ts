@@ -122,3 +122,20 @@ export type TableCms = {
 export type DatabaseCms = {
   [key: string]: TableCms;
 };
+
+export function isFieldEmpty(field: FieldCms, index: number) {
+  // Can't set value at the beginning here because the type guard won't work
+  if (field.type == "list") {
+    const list = field.values?.[index];
+    return !list || list.length == 0;
+  } else if (field.type == "bool") {
+    const bool = field.values?.[index];
+    return bool !== true && bool !== false;
+  } else if (field.type == "number") {
+    const number = field.values?.[index];
+    return isNaN(parseInt(`${number}`));
+  } else {
+    const value = field.values?.[index];
+    return !value;
+  }
+}
