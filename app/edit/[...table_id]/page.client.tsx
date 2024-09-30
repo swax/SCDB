@@ -37,6 +37,7 @@ import deleteAction from "./actions/deleteAction";
 import { updateReviewStatus } from "./actions/reviewAction";
 import saveAction from "./actions/saveAction";
 import EditableField from "./components/EditableField";
+import { PromiseReturnType } from "@prisma/client/extension";
 
 interface EditClientPageProps {
   table: TableCms;
@@ -104,7 +105,15 @@ export default function EditClientPage({ table, id }: EditClientPageProps) {
 
     setLoading(true);
 
-    const response = await saveAction(table, id);
+    let response: PromiseReturnType<typeof saveAction>;
+
+    try {
+      response = await saveAction(table, id);
+    } catch (e) {
+      showAndLogError(e);
+      setLoading(false);
+      return;
+    }
 
     if (response.error || !response.content) {
       showAndLogError(response.error || "Unknown error");

@@ -1,4 +1,4 @@
-import { FieldCms, StringFieldCms } from "@/backend/cms/cmsTypes";
+import { FieldCms, isFieldEmpty, StringFieldCms } from "@/backend/cms/cmsTypes";
 import { useForceUpdate } from "@/app/hooks/useForceUpdate";
 import { TextField } from "@mui/material";
 
@@ -19,7 +19,7 @@ export default function StringField({
 }: StringFieldProps) {
   // Constants
   const hasError =
-    !field.optional && !field.values?.[index] && !field.templates;
+    !field.optional && isFieldEmpty(field, index) && !field.templates;
 
   // Hooks
   const forceUpdate = useForceUpdate();

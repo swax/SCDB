@@ -1,6 +1,7 @@
 import { FieldCms, FieldCmsValueType } from "@/backend/cms/cmsTypes";
-import { Box, Checkbox, FormControlLabel, TextField } from "@mui/material";
+import { Box, TextField } from "@mui/material";
 import MappingTableEditor from "./MappingTableEditor";
+import BooleanField from "./fields/BooleanField";
 import DateField2 from "./fields/DateField2";
 import EnumField from "./fields/EnumField";
 import ImageField from "./fields/ImageField";
@@ -79,16 +80,12 @@ export default function EditableField({
         />
       )}
       {field.type == "bool" && (
-        <FormControlLabel
-          label={field.label}
-          disabled={loading}
-          control={
-            <Checkbox
-              checked={field.values?.[index] || false}
-              onChange={(e) => setFieldValue(field, index, e.target.checked)}
-              size="small"
-            />
-          }
+        <BooleanField
+          field={field}
+          index={index}
+          inTable={inTable}
+          loading={loading}
+          setFieldValue={setFieldValue}
         />
       )}
       {field.type == "date" && (
