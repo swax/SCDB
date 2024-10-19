@@ -1,18 +1,19 @@
-import { Draggable } from "@hello-pangea/dnd";
-import { TableRow, TableCell, IconButton, Box, Tooltip } from "@mui/material";
-import EditableField from "./EditableField";
 import {
   FieldCms,
   FieldCmsValueType,
   isFieldEmpty,
   MappingTableCms,
 } from "@/backend/cms/cmsTypes";
-import dragdropStyles from "./dragdrop.module.css";
-import DeleteIcon from "@mui/icons-material/Delete";
-import EditIcon from "@mui/icons-material/Edit";
-import DragIndicatorIcon from "@mui/icons-material/DragIndicator";
 import staticUrl from "@/shared/cdnHost";
+import { getImageDimensions } from "@/shared/imgSizing";
+import { Draggable } from "@hello-pangea/dnd";
+import DeleteIcon from "@mui/icons-material/Delete";
+import DragIndicatorIcon from "@mui/icons-material/DragIndicator";
+import EditIcon from "@mui/icons-material/Edit";
+import { Box, IconButton, TableCell, TableRow, Tooltip } from "@mui/material";
 import Image from "next/image";
+import dragdropStyles from "./dragdrop.module.css";
+import EditableField from "./EditableField";
 
 interface MappingTableRowProps {
   mappingTable: MappingTableCms;
@@ -63,16 +64,21 @@ export default function MappingTableRow({
     if (field.type == "image") {
       const cdnKey = field.values?.[index] || "";
 
+      const { width, height, objectPosition } = getImageDimensions(
+        field.preview[0],
+        50,
+      );
+
       return (
         <>
           {cdnKey ? (
             <Image
               alt="The Associated Image"
-              height={50}
               src={`${staticUrl}/${cdnKey}`}
-              style={{ objectFit: "cover" }}
+              style={{ objectFit: "cover", objectPosition }}
               unoptimized={true /* Not optimized in edit mode */}
-              width={50}
+              width={width}
+              height={height}
             />
           ) : (
             <></>

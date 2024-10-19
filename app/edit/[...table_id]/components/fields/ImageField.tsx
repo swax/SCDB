@@ -1,6 +1,7 @@
 import { useForceUpdate } from "@/app/hooks/useForceUpdate";
 import { FieldCms, ImageFieldCms } from "@/backend/cms/cmsTypes";
 import staticUrl from "@/shared/cdnHost";
+import { getImageDimensions } from "@/shared/imgSizing";
 import { fileToShortHash, showAndLogError } from "@/shared/utilities";
 import { Button, Stack, Typography } from "@mui/material";
 import Image from "next/image";
@@ -103,23 +104,37 @@ export default function ImageField({
   const showRequiredHighlight = !field.optional && !cdnKey;
 
   return (
-    <>
-      <Typography component="h2" variant="h6">
+    <Stack direction="column" spacing={1}>
+      <Typography component="h2" variant="body1">
         {field.label}
       </Typography>
-      <Stack direction="row" spacing={2} style={{ alignItems: "center" }}>
-        {cdnKey && (
-          <a href={imgUrl} rel="noreferrer" target="_blank">
-            <Image
-              alt="The Associated Image"
-              height={75}
-              src={imgUrl}
-              style={{ objectFit: "cover" }}
-              unoptimized={true /* Not optimized in edit mode */}
-              width={75}
-            />
-          </a>
-        )}
+      <Stack direction="row" spacing={2}>
+        {/* Preview how the image will look in the video and cast sections */}
+        {cdnKey &&
+          field.preview.map((previewAspectRatio, i) => {
+            const { width, height, objectPosition } = getImageDimensions(
+              previewAspectRatio,
+              150,
+            );
+
+            return (
+              <Image
+                key={i}
+                alt={previewAspectRatio + " Preview Image"}
+                title={previewAspectRatio + " Preview Image"}
+                style={{
+                  objectFit: "cover",
+                  objectPosition,
+                  borderRadius: 8,
+                }}
+                src={imgUrl}
+                width={width}
+                height={height}
+              />
+            );
+          })}
+      </Stack>
+      <Stack direction="row" spacing={2}>
         <Button
           component={"label" /* Must be a label for upload link to work*/}
           disabled={loading || uploading}
@@ -129,6 +144,7 @@ export default function ImageField({
               ? "1px solid #f44336"
               : "1px solid lightblue",
           }}
+          variant="text"
         >
           {uploading ? "Uploading..." : cdnKey ? "Change" : "Upload"}
           <input
@@ -143,11 +159,12 @@ export default function ImageField({
           <Button
             onClick={() => handleChange_field(null)}
             disabled={loading || uploading}
+            variant="outlined"
           >
             Delete
           </Button>
         )}
       </Stack>
-    </>
+    </Stack>
   );
 }

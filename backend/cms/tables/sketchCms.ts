@@ -59,6 +59,7 @@ const sketchCms: TableCms = {
       label: "Preview Image",
       column: "image_id",
       type: "image",
+      preview: ["wide"],
       navProp: "image",
     },
     {
@@ -94,6 +95,7 @@ const sketchCms: TableCms = {
             label: "Thumbnail",
             column: "image_id",
             type: "image",
+            preview: ["square", "wide"],
             navProp: "image",
           },
           {

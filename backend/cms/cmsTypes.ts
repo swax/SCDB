@@ -1,3 +1,4 @@
+import { AspectRatio } from "@/shared/imgSizing";
 import { review_status_type } from "@prisma/client";
 
 export type BaseFieldCms = {
@@ -44,6 +45,8 @@ export type LookupFieldCms = BaseFieldCms & {
 export type ImageFieldCms = BaseFieldCms & {
   type: "image";
   navProp: string;
+  /** The aspect ratio of the preview image, so it can match how it will later be displayed */
+  preview: AspectRatio[];
   values?: Nullable<string>[];
 };
 

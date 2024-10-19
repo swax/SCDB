@@ -28,6 +28,7 @@ const personCms: TableCms = {
             label: "",
             column: "image_id",
             type: "image",
+            preview: ["tall"],
             navProp: "image",
           },
           {
