@@ -118,19 +118,39 @@ export default function ImageField({
             );
 
             return (
-              <Image
-                key={i}
-                alt={previewAspectRatio + " Preview Image"}
-                title={previewAspectRatio + " Preview Image"}
-                style={{
-                  objectFit: "cover",
-                  objectPosition,
-                  borderRadius: 8,
-                }}
-                src={imgUrl}
-                width={width}
-                height={height}
-              />
+              <div key={i} style={{ position: "relative" }}>
+                <Image
+                  alt={previewAspectRatio + " Preview Image"}
+                  title={previewAspectRatio + " Preview Image"}
+                  style={{
+                    display: "block",
+                    objectFit: "cover",
+                    objectPosition,
+                    borderRadius: 8,
+                  }}
+                  src={imgUrl}
+                  width={width}
+                  height={height}
+                />
+                {previewAspectRatio == "square" && (
+                  <div
+                    style={{
+                      position: "absolute",
+                      bottom: 0,
+                      left: 0,
+                      right: 0,
+                      height: height / 3,
+                      background: "#0008",
+                      textAlign: "center",
+                      fontSize: 14,
+                    }}
+                  >
+                    (Character)
+                    <br />
+                    (Actor)
+                  </div>
+                )}
+              </div>
             );
           })}
       </Stack>
