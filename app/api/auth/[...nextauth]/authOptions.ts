@@ -62,6 +62,7 @@ const authOptions = {
           session.user.role = token.role as user_role_type;
         }
 
+        // TODO: is this right going to the database everytime??, need to log/diagnose this to see what's going on here
         if (session.user.id) {
           const account = await getAccount(session.user.id);
           if (account) {
