@@ -47,7 +47,7 @@ model User {
   emailVerified  DateTime?      @map("email_verified")
   image          String?
   username       String         @unique @default(nanoid(6))
-  role           user_role_type @default(Editor)
+  role           user_role_type @default(None)
   mod_note       String?
   modified_by_id String?
   modified_at    DateTime       @default(now())
