@@ -11,27 +11,28 @@ export const metadata: Metadata = {
 export default async function Changelog({
   searchParams,
 }: {
-  searchParams: {
+  searchParams: Promise<{
     op?: string;
     page?: string;
     row?: string;
     rowsPerPage?: string;
     table?: string;
     username?: string;
-  };
+  }>;
 }) {
   // URL params
-  const page = parseInt(searchParams.page || "1");
-  const rowsPerPage = parseInt(searchParams.rowsPerPage || "10");
+  const resolvedParams = await searchParams;
+  const page = parseInt(resolvedParams.page || "1");
+  const rowsPerPage = parseInt(resolvedParams.rowsPerPage || "10");
 
   // Server Data
   const changelog = await getChangelog({
-    operation: searchParams.op,
+    operation: resolvedParams.op,
     page,
-    rowId: searchParams.row,
+    rowId: resolvedParams.row,
     rowsPerPage,
-    tableName: searchParams.table,
-    username: searchParams.username,
+    tableName: resolvedParams.table,
+    username: resolvedParams.username,
   });
 
   // Rendering
@@ -40,12 +41,12 @@ export default async function Changelog({
       <h1>Changelog</h1>
       <ChangeLogTable
         changelog={changelog}
-        operation={searchParams.op}
+        operation={resolvedParams.op}
         page={page}
-        rowId={searchParams.row}
+        rowId={resolvedParams.row}
         rowsPerPage={rowsPerPage}
-        table={searchParams.table}
-        username={searchParams.username}
+        table={resolvedParams.table}
+        username={resolvedParams.username}
       />
     </>
   );

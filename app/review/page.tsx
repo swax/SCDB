@@ -19,12 +19,13 @@ export const metadata: Metadata = {
 export default async function ReviewPage({
   searchParams,
 }: {
-  searchParams: {
+  searchParams: Promise<{
     rowCount?: number;
-  };
+  }>;
 }) {
   // URL parmam
-  const rowCount = searchParams.rowCount || 50;
+  const resolvedParams = await searchParams;
+  const rowCount = resolvedParams.rowCount || 50;
 
   // Server data
   const rowsToReview = await getRowsToReview(rowCount);

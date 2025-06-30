@@ -3,24 +3,25 @@ import { getDefaultPageListSize } from "@/shared/ProcessEnv";
 import { unstable_cache } from "next/cache";
 
 export interface ListPageProps {
-  searchParams: {
+  searchParams: Promise<{
     page?: string;
     pageSize?: string;
     sortField?: string;
     sortDir?: "asc" | "desc";
     filterField?: string;
     filterValue?: string;
-  };
+  }>;
 }
 
-export function parseSearchParams(
+export async function parseSearchParams(
   searchParams: ListPageProps["searchParams"],
-): ListSearchParms {
-  const page = parseInt(searchParams.page || "1");
+): Promise<ListSearchParms> {
+  const resolvedParams = await searchParams;
+  const page = parseInt(resolvedParams.page || "1");
   const pageSize =
-    parseInt(searchParams.pageSize || "0") || getDefaultPageListSize();
+    parseInt(resolvedParams.pageSize || "0") || getDefaultPageListSize();
 
-  return { ...searchParams, page, pageSize };
+  return { ...resolvedParams, page, pageSize };
 }
 
 export function getCachedList<T>(

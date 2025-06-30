@@ -48,8 +48,8 @@ export async function sendGoogleUpdate<T>(
   try {
     const jwtClient = new google.auth.JWT({
       email: process.env.GOOGLE_INDEX_SERVICE_EMAIL,
-      key: process.env.GOOGLE_INDEX_SERVICE_KEY?.replace(/\\n/g, '\n'),
-      scopes: ['https://www.googleapis.com/auth/indexing'],
+      key: process.env.GOOGLE_INDEX_SERVICE_KEY?.replace(/\\n/g, "\n"),
+      scopes: ["https://www.googleapis.com/auth/indexing"],
     });
 
     const credentials = await jwtClient.authorize();

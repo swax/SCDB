@@ -16,7 +16,7 @@ export const metadata: Metadata = {
 
 export default async function PeoplePage(props: ListPageProps) {
   // URL params
-  const searchParams = parseSearchParams(props.searchParams);
+  const searchParams = await parseSearchParams(props.searchParams);
 
   // Data
   const people = await getCachedList("person", getPersonList)(searchParams);

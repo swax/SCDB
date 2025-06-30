@@ -16,7 +16,7 @@ export const metadata: Metadata = {
 
 export default async function CharactersPage(props: ListPageProps) {
   // URL params
-  const searchParams = parseSearchParams(props.searchParams);
+  const searchParams = await parseSearchParams(props.searchParams);
 
   // Data
   const characters = await getCachedList(
