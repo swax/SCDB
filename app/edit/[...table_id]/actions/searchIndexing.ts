@@ -46,13 +46,11 @@ export async function sendGoogleUpdate<T>(
   clientResponse.warnings ||= [];
 
   try {
-    const jwtClient = new google.auth.JWT(
-      ProcessEnv.GOOGLE_INDEX_SERVICE_EMAIL,
-      undefined,
-      ProcessEnv.GOOGLE_INDEX_SERVICE_KEY.replace(/\\n/g, "\n"),
-      ["https://www.googleapis.com/auth/indexing"],
-      undefined,
-    );
+    const jwtClient = new google.auth.JWT({
+      email: process.env.GOOGLE_INDEX_SERVICE_EMAIL,
+      key: process.env.GOOGLE_INDEX_SERVICE_KEY?.replace(/\\n/g, '\n'),
+      scopes: ['https://www.googleapis.com/auth/indexing'],
+    });
 
     const credentials = await jwtClient.authorize();
 
