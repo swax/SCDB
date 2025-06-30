@@ -7,14 +7,15 @@ import { getServerSession } from "next-auth";
 import EditClientPage from "./page.client";
 
 interface EditTablePageProps {
-  params: {
+  params: Promise<{
     table_id: string[];
-  };
+  }>;
 }
 
 export default async function EditTablePage({ params }: EditTablePageProps) {
   // Server Data
-  const [tableName, id] = params.table_id;
+  const resolvedParams = await params;
+  const [tableName, id] = resolvedParams.table_id;
 
   const numId = parseInt(id);
 

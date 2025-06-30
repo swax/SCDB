@@ -18,7 +18,7 @@ export const metadata: Metadata = {
 
 export default async function SketchesPage(props: ListPageProps) {
   // URL params
-  const searchParams = parseSearchParams(props.searchParams);
+  const searchParams = await parseSearchParams(props.searchParams);
 
   // Data
   const sketches = await getCachedList("sketch", getSketchList)(searchParams);

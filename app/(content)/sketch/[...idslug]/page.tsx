@@ -20,7 +20,8 @@ const getCachedSketch = cache(async (id: number) => getSketch(id));
 export async function generateMetadata({
   params,
 }: ContentPageProps): Promise<Metadata> {
-  const id = parseInt(params.idslug[0]);
+  const resolvedParams = await params;
+  const id = parseInt(resolvedParams.idslug[0]);
 
   const sketch = await getCachedSketch(id);
   if (!sketch) {

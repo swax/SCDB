@@ -7,7 +7,7 @@ export interface ContentPageParams {
 }
 
 export interface ContentPageProps {
-  params: ContentPageParams;
+  params: Promise<ContentPageParams>;
 }
 
 /**
@@ -16,10 +16,11 @@ export interface ContentPageProps {
  */
 export async function tryGetContent<T extends { url_slug: string }>(
   table: string,
-  params: ContentPageParams,
+  params: Promise<ContentPageParams>,
   serviceFunc: (id: number) => Promise<T | null>,
 ) {
-  const [id, slug] = params.idslug;
+  const resolvedParams = await params;
+  const [id, slug] = resolvedParams.idslug;
 
   const idNum = parseInt(id);
 

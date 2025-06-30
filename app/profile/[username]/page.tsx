@@ -13,7 +13,7 @@ import { cache } from "react";
 import ProfileClientPage from "./page.client";
 
 interface ProfilePageProps {
-  params: { username: string };
+  params: Promise<{ username: string }>;
 }
 
 const getRequestCachedProfile = cache(async (username: string) =>
@@ -23,7 +23,8 @@ const getRequestCachedProfile = cache(async (username: string) =>
 export async function generateMetadata({
   params,
 }: ProfilePageProps): Promise<Metadata> {
-  const profile = await getRequestCachedProfile(params.username);
+  const resolvedParams = await params;
+  const profile = await getRequestCachedProfile(resolvedParams.username);
 
   return profile
     ? {
@@ -38,7 +39,8 @@ export const revalidate = 10;
 export default async function ProfilePage({ params }: ProfilePageProps) {
   const session = await getServerSession(authOptions);
 
-  const profile = await getRequestCachedProfile(params.username);
+  const resolvedParams = await params;
+  const profile = await getRequestCachedProfile(resolvedParams.username);
 
   if (!profile) {
     notFound();

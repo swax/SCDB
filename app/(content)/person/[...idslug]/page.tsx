@@ -32,7 +32,8 @@ const getCachedPerson = cache(async (id: number) => getPerson(id));
 export async function generateMetadata({
   params,
 }: ContentPageProps): Promise<Metadata> {
-  const id = parseInt(params.idslug[0]);
+  const resolvedParams = await params;
+  const id = parseInt(resolvedParams.idslug[0]);
 
   const person = await getCachedPerson(id);
   if (!person) {

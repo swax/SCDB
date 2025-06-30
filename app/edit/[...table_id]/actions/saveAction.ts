@@ -52,7 +52,7 @@ export default async function saveAction(table: TableCms, id: number) {
       const tablePath = table.name.replace("_", "-");
       const url = `https://www.sketchtv.lol/${tablePath}/${rowId}/${slugPath}`;
       const bingUpdate = sendBingUpdate(url, response);
-      
+
       // Disable this, not meant for how we are using it, no changes are being registered by google
       // const googleUpdate = sendGoogleUpdate(url, response);
 
