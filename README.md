@@ -11,7 +11,7 @@ If you find this code useful, please give back by adding your favorite sketch!
   - Server Actions
   - Accessibility / ARIA / a11y
 - Backend
-  - Next.js 14
+  - Next.js 15
   - App Router
   - NextAuth.js
   - RSC (React Server Components)
