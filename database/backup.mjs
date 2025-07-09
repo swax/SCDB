@@ -4,7 +4,7 @@ import fs from "fs";
 
 dotenv.config();
 
-const pgUri = process.env.DIRECT_URL;
+const pgUri = process.env.DATABASE_AGENT_URL;
 const backupDir = "./database/backups";
 const date = new Date().toISOString().slice(0, 10); // YYYY-MM-DD format
 
