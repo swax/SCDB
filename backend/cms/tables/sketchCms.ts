@@ -97,6 +97,7 @@ const sketchCms: TableCms = {
             type: "image",
             preview: ["square", "wide"],
             navProp: "image",
+            optional: true,
           },
           {
             label: "Character Name",
