@@ -6,6 +6,9 @@ const { PrismaClient } = require('@prisma/client');
 const fs = require('fs');
 const path = require('path');
 
+// Load environment variables from .env.local file
+require('dotenv').config({ path: '.env.local' });
+
 // Check Node.js version
 const nodeVersion = parseInt(process.version.slice(1));
 if (nodeVersion < 18) {
