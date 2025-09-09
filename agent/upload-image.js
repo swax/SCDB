@@ -4,6 +4,9 @@ const fs = require('fs');
 const path = require('path');
 const crypto = require('crypto');
 
+// Load environment variables from .env.local file
+require('dotenv').config({ path: '.env.local' });
+
 // Check Node.js version
 const nodeVersion = parseInt(process.version.slice(1));
 if (nodeVersion < 18) {
@@ -26,25 +29,11 @@ function usage() {
 
 // Function to get API token
 function getToken() {
-    // Check environment variable first
-    if (process.env.UPLOAD_API_TOKEN) {
-        return process.env.UPLOAD_API_TOKEN;
+    if (!process.env.UPLOAD_API_TOKEN) {
+        console.error('Error: UPLOAD_API_TOKEN not found in .env.local');
+        process.exit(1);
     }
-    
-    // Try to read from .env.local
-    try {
-        const envPath = path.join(__dirname, '..', '.env.local');
-        const envContent = fs.readFileSync(envPath, 'utf8');
-        const match = envContent.match(/^UPLOAD_API_TOKEN=(.*)$/m);
-        if (match) {
-            return match[1].replace(/^['"](.*)['"]$/, '$1'); // Remove quotes
-        }
-    } catch (error) {
-        // .env.local doesn't exist or can't be read
-    }
-    
-    console.error('Error: No API token found. Set UPLOAD_API_TOKEN env var or create .env.local');
-    process.exit(1);
+    return process.env.UPLOAD_API_TOKEN;
 }
 
 // Function to calculate SHA-256 hash (first 8 characters)
