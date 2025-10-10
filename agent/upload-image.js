@@ -91,14 +91,16 @@ async function uploadImage(imagePath, tableName, baseUrl, verbose = false) {
         // Get file information
         const fileStats = fs.statSync(imagePath);
         const fileSize = fileStats.size;
-        const fileType = getMimeType(imagePath);
+        const mimeType = getMimeType(imagePath);
         const fileHash = calculateHash(imagePath);
+        const fileName = path.basename(imagePath);
         const token = getToken();
         
         if (verbose) {
             console.log(`File: ${imagePath}`);
+            console.log(`Name: ${fileName}`);
             console.log(`Size: ${fileSize} bytes`);
-            console.log(`Type: ${fileType}`);
+            console.log(`Type: ${mimeType}`);
             console.log(`Hash: ${fileHash}`);
             console.log(`Table: ${tableName}`);
             console.log('');
@@ -116,7 +118,8 @@ async function uploadImage(imagePath, tableName, baseUrl, verbose = false) {
             },
             body: JSON.stringify({
                 table_name: tableName,
-                file_type: fileType,
+                file_name: fileName,
+                mime_type: mimeType,
                 file_size: fileSize,
                 file_hash: fileHash
             })
@@ -149,8 +152,7 @@ async function uploadImage(imagePath, tableName, baseUrl, verbose = false) {
         
         // Add the file as a buffer with proper metadata
         const fileBuffer = fs.readFileSync(imagePath);
-        const fileName = path.basename(imagePath);
-        formData.append('file', new Blob([fileBuffer], { type: fileType }), fileName);
+        formData.append('file', new Blob([fileBuffer], { type: mimeType }), fileName);
         
         // Upload to S3
         const s3Response = await fetch(presigned_post.url, {

@@ -32,8 +32,8 @@ export async function validateUploadAuth(request: NextRequest): Promise<AuthResu
   }
 }
 
-export function validateImageFile(fileType: string, fileSize: number): void {
-  if (!fileType.startsWith("image/")) {
+export function validateImageFile(mimeType: string, fileSize: number): void {
+  if (!mimeType.startsWith("image/")) {
     throw new Error("File must be an image");
   }
 
@@ -46,7 +46,11 @@ export function validateImageFile(fileType: string, fileSize: number): void {
   }
 }
 
-export async function createPresignedUploadUrl(key: string, fileSize: number) {
+export async function createPresignedUploadUrl(
+  key: string,
+  fileSize: number,
+  mimeType: string
+) {
   const client = new S3Client({
     region: ProcessEnv.NEXT_PUBLIC_AWS_REGION,
   });
@@ -54,8 +58,13 @@ export async function createPresignedUploadUrl(key: string, fileSize: number) {
   const presignedPost = await createPresignedPost(client, {
     Bucket: ProcessEnv.NEXT_PUBLIC_AWS_BUCKET,
     Key: key,
-    Conditions: [["content-length-range", fileSize, fileSize]],
-    Fields: {},
+    Conditions: [
+      ["content-length-range", fileSize, fileSize],
+      ["eq", "$Content-Type", mimeType],
+    ],
+    Fields: {
+      "Content-Type": mimeType,
+    },
     Expires: 60, // Seconds
   });
 
@@ -64,12 +73,14 @@ export async function createPresignedUploadUrl(key: string, fileSize: number) {
 
 export function buildUploadKey(
   tableName: string,
+  fileName: string,
   fileHash: string,
-  fileType: string,
+  mimeType: string,
   userTag: string
 ): string {
-  const fileExt = fileType.split("/")[1];
-  const uploadFileName = `${userTag}_${fileHash}.${fileExt}`;
+  const fileExt = mimeType.split("/")[1];
+  const sanitizedFileName = fileName.replace(/[^a-zA-Z0-9_\.]/g, "_");
+  const uploadFileName = `${userTag}_${sanitizedFileName}_${fileHash}.${fileExt}`;
   return `images/${tableName}/${uploadFileName}`;
 }
 
