@@ -8,8 +8,9 @@ import { user_role_type } from "@prisma/client";
 export async function getPresignedUploadUrl(
   uploadType: "images",
   tableName: string,
+  fileName: string,
   fileHash: string,
-  fileType: string,
+  mimeType: string,
   fileSize: number,
 ) {
   return await catchServiceErrors(async () => {
@@ -17,16 +18,15 @@ export async function getPresignedUploadUrl(
 
     validateRoleAtLeast(user.role, user_role_type.Editor);
 
-    validateImageFile(fileType, fileSize);
+    validateImageFile(mimeType, fileSize);
 
     // Build aws key
     const userTag = getUserTag({ isApiToken: false, userId: user.id });
-    const awsKey = buildUploadKey(tableName, fileHash, fileType, userTag);
+    const awsKey = buildUploadKey(tableName, fileName, fileHash, mimeType, userTag);
 
     // Get the pre-signed url
-    const signedPost = await createPresignedUploadUrl(awsKey, fileSize);
+    const signedPost = await createPresignedUploadUrl(awsKey, fileSize, mimeType);
 
     return contentResponse(signedPost);
   });
 }
-

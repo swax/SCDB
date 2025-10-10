@@ -51,6 +51,7 @@ export default function ImageField({
       const reponse = await getPresignedUploadUrl(
         "images",
         tableName,
+        file.name,
         shortHash,
         file.type,
         file.size,

@@ -14,24 +14,27 @@ export async function POST(request: NextRequest) {
 
     // Parse request body
     const body = await request.json();
-    const { table_name, file_type, file_size, file_hash } = body;
+    const { table_name, file_name, mime_type, file_size, file_hash } = body;
 
-    if (!table_name || !file_type || !file_size || !file_hash) {
+    if (!table_name || !file_name || !mime_type || !file_size || !file_hash) {
       return NextResponse.json(
-        { error: "Missing required fields: table_name, file_type, file_size, file_hash" },
+        {
+          error:
+            "Missing required fields: table_name, file_name, mime_type, file_size, file_hash",
+        },
         { status: 400 }
       );
     }
 
     // Validate file
-    validateImageFile(file_type, file_size);
+    validateImageFile(mime_type, file_size);
 
     // Build AWS key
     const userTag = getUserTag(authResult);
-    const awsKey = buildUploadKey(table_name, file_hash, file_type, userTag);
+    const awsKey = buildUploadKey(table_name, file_name, file_hash, mime_type, userTag);
 
     // Get presigned URL
-    const signedPost = await createPresignedUploadUrl(awsKey, file_size);
+    const signedPost = await createPresignedUploadUrl(awsKey, file_size, mime_type);
     
     // Return presigned URL data for client upload
     return NextResponse.json({
@@ -48,4 +51,3 @@ export async function POST(request: NextRequest) {
     );
   }
 }
-
