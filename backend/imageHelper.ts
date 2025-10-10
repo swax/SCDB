@@ -79,7 +79,8 @@ export function buildUploadKey(
   userTag: string
 ): string {
   const fileExt = mimeType.split("/")[1];
-  const sanitizedFileName = fileName.replace(/[^a-zA-Z0-9_\.]/g, "_");
+  const fileNameWithoutExt = fileName.replace(/\.[^/.]+$/, "");
+  const sanitizedFileName = fileNameWithoutExt.replace(/[^a-zA-Z0-9_]/g, "_");
   const uploadFileName = `${userTag}_${sanitizedFileName}_${fileHash}.${fileExt}`;
   return `images/${tableName}/${uploadFileName}`;
 }
