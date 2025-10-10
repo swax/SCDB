@@ -10,8 +10,6 @@ export function buildPageMeta(
   url: string,
   images: { url: string; alt: string }[],
 ): Metadata {
-  const fbAppId = process.env.FACEBOOK_APP_ID!;
-
   return {
     title,
     description,
@@ -31,8 +29,8 @@ export function buildPageMeta(
       card: "summary_large_image",
       images,
     },
-    other: {
-      "fb:app_id": fbAppId,
+    facebook: {
+      appId: process.env.FACEBOOK_APP_ID!,
     },
   };
 }
