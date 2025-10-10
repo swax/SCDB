@@ -35,7 +35,7 @@ if (!FACEBOOK_PAGE_ACCESS_TOKEN) {
 
 const postText = process.argv[2];
 const pageUrl = process.argv[3];
-const message = `${postText}\n\n${pageUrl}`;
+const message = postText;
 
 function graphRequest({ method = 'GET', path, body, headers = {} }) {
     return new Promise((resolve, reject) => {
@@ -133,9 +133,10 @@ async function debugToken(token) {
     return graphRequest({ path });
 }
 
-async function postToPage(accessToken, body) {
+async function postToPage(accessToken, body, linkUrl) {
     const postData = querystring.stringify({
-        message: body,
+        message: body,          // optional; will appear above the card
+        link: linkUrl,          // <-- this makes Facebook attach the preview
         access_token: accessToken
     });
 
@@ -165,8 +166,9 @@ async function main() {
 
         console.log('\n📤 Posting to Facebook...');
         console.log('Message:', message);
+        console.log('Link:', pageUrl);
 
-        const response = await postToPage(FACEBOOK_PAGE_ACCESS_TOKEN, message);
+        const response = await postToPage(FACEBOOK_PAGE_ACCESS_TOKEN, message, pageUrl);
 
         if (response && response.id) {
             console.log('\n✅ Post published successfully!');
