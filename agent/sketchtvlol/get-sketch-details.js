@@ -18,9 +18,9 @@ if (nodeVersion < 18) {
 
 // Function to display usage
 function usage() {
-    console.log('Usage: node get-sketch-details.js <sketch_id> [--with-folder]');
-    console.log('Example: node get-sketch-details.js 123');
-    console.log('Example: node get-sketch-details.js 123 --with-folder');
+    console.log('Usage: node agent/sketchtvlol/get-sketch-details.js <sketch_id> [--with-folder]');
+    console.log('Example: node agent/sketchtvlol/get-sketch-details.js 123');
+    console.log('Example: node agent/sketchtvlol/get-sketch-details.js 123 --with-folder');
     console.log('');
     console.log('Options:');
     console.log('  --with-folder    Create folder named <sketch_id>_<sketch_url_slug> and save database.txt inside');

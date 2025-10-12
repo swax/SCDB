@@ -5,7 +5,7 @@ const videoUrl = process.argv[2];
 const numComments = process.argv[3] || 50;
 
 if (!videoUrl) {
-  console.error('Usage: node youtube-viewer.js <video_url> [num_comments]');
+  console.error('Usage: node agent/youtube/video-summary.js <video_url> [num_comments]');
   process.exit(1);
 }
 
