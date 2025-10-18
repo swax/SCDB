@@ -221,7 +221,7 @@ function formatDateTime(value) {
         return 'Unknown';
     }
 
-    return date.toISOString();
+    return date.toLocaleString();
 }
 
 function renderPosts(posts) {
