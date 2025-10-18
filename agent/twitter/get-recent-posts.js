@@ -414,7 +414,7 @@ function formatDateTime(value) {
         return 'Unknown';
     }
 
-    return date.toISOString();
+    return date.toLocaleString();
 }
 
 function resolveTweetLink({ tweetId, username }) {
