@@ -13,6 +13,15 @@ interface VideoHeroProps {
   videoUrls?: string[];
 }
 
+function getHostname(url: string): string {
+  try {
+    return new URL(url).hostname.replace("www.", "");
+  } catch {
+    // If URL parsing fails, return a shortened version of the original string
+    return "Error parsing URL";
+  }
+}
+
 export default function VideoHero({
   title,
   image_cdn_key,
@@ -96,7 +105,7 @@ export default function VideoHero({
                   target="_blank"
                   href={url}
                 >
-                  {new URL(url).hostname.replace("www.", "")}
+                  {getHostname(url)}
                 </Button>
               ))}
             </ButtonGroup>
