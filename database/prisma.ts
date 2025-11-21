@@ -1,5 +1,6 @@
 import ProcessEnv from "@/shared/ProcessEnv";
-import { PrismaClient } from "@prisma/client";
+import { PrismaClient } from "@/database/generated/client";
+import { PrismaPg } from "@prisma/adapter-pg";
 
 // PrismaClient is attached to the `global` object in development to prevent
 // exhausting your database connection limit.
@@ -13,9 +14,15 @@ declare global {
   var prisma: PrismaClient | undefined;
 }
 
+// Create the PostgreSQL adapter
+const adapter = new PrismaPg({
+  connectionString: ProcessEnv.DATABASE_POOLED_URL || ProcessEnv.DATABASE_URL || "",
+});
+
 const prisma =
   global.prisma ||
   new PrismaClient({
+    adapter,
     //log: ['query']
     /*    {
                 emit: 'event',

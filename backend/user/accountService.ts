@@ -1,6 +1,6 @@
 import { StringFieldCms } from "@/backend/cms/cmsTypes";
 import prisma from "@/database/prisma";
-import { operation_type } from "@prisma/client";
+import { operation_type } from '@/shared/enums';
 
 export async function getAccount(id: string) {
   return await prisma.user.findUnique({

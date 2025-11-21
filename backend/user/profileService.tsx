@@ -5,7 +5,7 @@ import {
   SketchGridData,
   selectSketch,
 } from "@/shared/sketchGridBase";
-import { user_role_type } from "@prisma/client";
+import { user_role_type } from '@/shared/enums';
 
 export interface GetProfileResponse {
   id: string;
@@ -29,7 +29,12 @@ export async function getProfile(
     },
   });
 
-  return profile;
+  if (!profile) return null;
+
+  return {
+    ...profile,
+    role: profile.role as user_role_type,
+  };
 }
 
 export type ActivityGridRow = {

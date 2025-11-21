@@ -1,6 +1,6 @@
 import prisma from "@/database/prisma";
 import { getRoleRank } from "@/shared/roleUtils";
-import { user_role_type } from "@prisma/client";
+import { user_role_type } from '@/shared/enums';
 import { notFound } from "next/navigation";
 import { FieldCms, TableCms } from "../cms/cmsTypes";
 import sketchDatabaseCms from "../cms/sketchDatabaseCms";

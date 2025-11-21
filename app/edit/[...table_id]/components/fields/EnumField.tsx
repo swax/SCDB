@@ -1,6 +1,6 @@
 import { EnumFieldCms, FieldCms, isFieldEmpty } from "@/backend/cms/cmsTypes";
 import { FormControl, InputLabel, Select, MenuItem } from "@mui/material";
-import { $Enums } from "@prisma/client";
+import { $Enums } from '@/shared/enums';
 import { useId } from "react";
 
 interface EnumFieldProps {

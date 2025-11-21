@@ -1,4 +1,4 @@
-import { review_status_type } from "@prisma/client";
+import { review_status_type } from '@/shared/enums';
 
 /** Returned by the select_rows_to_review() function */
 export interface RowToReview {

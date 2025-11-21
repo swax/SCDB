@@ -5,7 +5,7 @@ import { GetProfileResponse } from "@/backend/user/profileService";
 import { allowedToChangeRole } from "@/shared/roleUtils";
 import { SketchGridData } from "@/shared/sketchGridBase";
 import { Box, Typography } from "@mui/material";
-import { user_role_type } from "@prisma/client";
+import { user_role_type } from '@/shared/enums';
 import ChangeLog from "./ChangeLog";
 import EditActivity from "./EditActivity";
 import ModPanel from "./ModPanel";

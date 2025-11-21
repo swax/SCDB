@@ -1,4 +1,4 @@
-import { user_role_type } from "@prisma/client";
+import { user_role_type } from '@/shared/enums';
 
 interface ProcessEnv extends NodeJS.ProcessEnv {
   readonly GOOGLE_CLIENT_ID: string;

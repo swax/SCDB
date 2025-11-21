@@ -30,7 +30,8 @@ import {
   Tooltip,
   Typography,
 } from "@mui/material";
-import { review_status_type } from "@prisma/client";
+import type { review_status_type } from '@/database/generated/client';
+import { review_status_type as ReviewStatus } from '@/shared/enums';
 import { useEffect, useMemo, useState } from "react";
 import { useBeforeUnload, useEffectOnce } from "react-use";
 import deleteAction from "./actions/deleteAction";
@@ -159,7 +160,7 @@ export default function EditClientPage({ table, id }: EditClientPageProps) {
   }
 
   async function reviewStatusSelect_change(e: SelectChangeEvent) {
-    const newStatus = e.target.value as review_status_type;
+    const newStatus = e.target.value as ReviewStatus;
 
     if (newStatus === reviewStatus) {
       return;
@@ -304,11 +305,11 @@ export default function EditClientPage({ table, id }: EditClientPageProps) {
 
   // Rendering
   const reviewStatusBorderColor =
-    reviewStatus == review_status_type.NeedsReview
+    reviewStatus == ReviewStatus.NeedsReview
       ? "orange"
-      : reviewStatus == review_status_type.Flagged
+      : reviewStatus == ReviewStatus.Flagged
         ? "red"
-        : reviewStatus == review_status_type.Reviewed
+        : reviewStatus == ReviewStatus.Reviewed
           ? "limegreen"
           : "pink";
 
@@ -377,11 +378,11 @@ export default function EditClientPage({ table, id }: EditClientPageProps) {
             }}
             value={reviewStatus}
           >
-            <MenuItem value={review_status_type.NeedsReview}>
+            <MenuItem value={ReviewStatus.NeedsReview}>
               ⚠️ Needs Review
             </MenuItem>
-            <MenuItem value={review_status_type.Flagged}>🚩 Flagged</MenuItem>
-            <MenuItem value={review_status_type.Reviewed}>👍 Reviewed</MenuItem>
+            <MenuItem value={ReviewStatus.Flagged}>🚩 Flagged</MenuItem>
+            <MenuItem value={ReviewStatus.Reviewed}>👍 Reviewed</MenuItem>
           </Select>
         )}
         <Fab

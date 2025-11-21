@@ -1,5 +1,5 @@
 import { AspectRatio } from "@/shared/imgSizing";
-import { review_status_type } from "@prisma/client";
+import { review_status_type } from '@/shared/enums';
 
 export type BaseFieldCms = {
   label: string;

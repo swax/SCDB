@@ -14,7 +14,8 @@ import {
   Select,
   TextField,
 } from "@mui/material";
-import { user_role_type } from "@prisma/client";
+import type { user_role_type } from '@/database/generated/client';
+import { user_role_type as UserRole } from '@/shared/enums';
 import { useState } from "react";
 import { saveModNote, saveRole } from "./actions/saveActions";
 
@@ -70,15 +71,15 @@ export default function ModPanel({ profile }: ModPanelProps) {
             <Box>
               <Select
                 disabled={saving}
-                onChange={(e) => setNewRole(e.target.value as user_role_type)}
+                onChange={(e) => setNewRole(e.target.value)}
                 size="small"
                 value={newRole}
               >
-                <MenuItem value={user_role_type.None}>None</MenuItem>
-                <MenuItem value={user_role_type.Editor}>Editor</MenuItem>
-                <MenuItem value={user_role_type.Moderator}>Moderator</MenuItem>
-                <MenuItem value={user_role_type.SuperMod}>SuperMod</MenuItem>
-                <MenuItem value={user_role_type.Admin}>Admin</MenuItem>
+                <MenuItem value={UserRole.None}>None</MenuItem>
+                <MenuItem value={UserRole.Editor}>Editor</MenuItem>
+                <MenuItem value={UserRole.Moderator}>Moderator</MenuItem>
+                <MenuItem value={UserRole.SuperMod}>SuperMod</MenuItem>
+                <MenuItem value={UserRole.Admin}>Admin</MenuItem>
               </Select>
               <Button
                 color="primary"

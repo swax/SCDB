@@ -10,7 +10,8 @@ import {
   MenuItem,
   Tooltip,
 } from "@mui/material";
-import { user_role_type } from "@prisma/client";
+import type { user_role_type } from '@/database/generated/client';
+import { user_role_type as UserRole } from '@/shared/enums';
 import { signIn, signOut, useSession } from "next-auth/react";
 import { useState } from "react";
 
@@ -52,7 +53,7 @@ export default function UserMenu() {
 
   const showReviewMenuItem =
     session?.user &&
-    getRoleRank(session.user.role) >= getRoleRank(user_role_type.Moderator);
+    getRoleRank(session.user.role) >= getRoleRank(UserRole.Moderator);
 
   return (
     <Box>

@@ -37,4 +37,5 @@ next-env.d.ts
 .vscode/settings.json
 
 database/backups
+database/generated
 .claude/

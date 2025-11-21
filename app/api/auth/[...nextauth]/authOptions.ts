@@ -6,7 +6,7 @@ import { getAccount } from "@/backend/user/accountService";
 import prisma from "@/database/prisma";
 import ProcessEnv from "@/shared/ProcessEnv";
 import { PrismaAdapter } from "@auth/prisma-adapter";
-import { user_role_type } from "@prisma/client";
+import { user_role_type } from '@/shared/enums';
 import { AuthOptions } from "next-auth";
 import { Adapter } from "next-auth/adapters";
 import GoogleProvider from "next-auth/providers/google";
@@ -67,7 +67,7 @@ const authOptions = {
           const account = await getAccount(session.user.id);
           if (account) {
             session.user.username = account.username;
-            session.user.role = account.role;
+            session.user.role = account.role as user_role_type;
           }
         }
       }

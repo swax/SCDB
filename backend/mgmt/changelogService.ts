@@ -1,6 +1,6 @@
 import { FieldCms } from "@/backend/cms/cmsTypes";
 import prisma from "@/database/prisma";
-import { operation_type } from "@prisma/client";
+import { operation_type } from '@/shared/enums';
 
 interface ChangelogEntry {
   id: number;
