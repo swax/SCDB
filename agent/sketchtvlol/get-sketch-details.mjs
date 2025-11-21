@@ -1,13 +1,37 @@
-#!/usr/bin/env node
+#!/usr/bin/env tsx
 
-// Used to rebuild the database.txt file for use with agents processing the sketch
+/**
+ * Sketch Details Exporter
+ *
+ * This script fetches detailed information about a sketch from the database
+ * and exports it to a text file for use with AI agents.
+ *
+ * Usage: npx tsx agent/sketchtvlol/get-sketch-details.mjs <sketch_id> [--with-folder]
+ *
+ * Requirements:
+ * - Node.js 18 or higher
+ * - tsx (installed as dev dependency)
+ * - .env.local file with database configuration
+ *
+ * @example
+ * npx tsx agent/sketchtvlol/get-sketch-details.mjs 123
+ * npx tsx agent/sketchtvlol/get-sketch-details.mjs 123 --with-folder
+ */
 
-const { PrismaClient } = require('@prisma/client');
-const fs = require('fs');
-const path = require('path');
+import prismaExports from '../../database/generated/client.ts';
+const { PrismaClient } = prismaExports;
+import { PrismaPg } from '@prisma/adapter-pg';
+import fs from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
+import dotenv from 'dotenv';
 
 // Load environment variables from .env.local file
-require('dotenv').config({ path: '.env.local' });
+dotenv.config({ path: '.env.local' });
+
+// Get __dirname equivalent in ESM
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 // Check Node.js version
 const nodeVersion = parseInt(process.version.slice(1));
@@ -18,14 +42,17 @@ if (nodeVersion < 18) {
 
 // Function to display usage
 function usage() {
-    console.log('Usage: node agent/sketchtvlol/get-sketch-details.js <sketch_id> [--with-folder]');
-    console.log('Example: node agent/sketchtvlol/get-sketch-details.js 123');
-    console.log('Example: node agent/sketchtvlol/get-sketch-details.js 123 --with-folder');
+    console.log('Usage: npx tsx agent/sketchtvlol/get-sketch-details.mjs <sketch_id> [--with-folder]');
+    console.log('Example: npx tsx agent/sketchtvlol/get-sketch-details.mjs 123');
+    console.log('Example: npx tsx agent/sketchtvlol/get-sketch-details.mjs 123 --with-folder');
     console.log('');
     console.log('Options:');
     console.log('  --with-folder    Create folder named <sketch_id>_<sketch_url_slug> and save database.txt inside');
     console.log('');
     console.log('This script fetches sketch details from the database and saves them to database.txt');
+    console.log('');
+    console.log('Note: This script uses tsx to handle TypeScript imports from Prisma 7.');
+    console.log('      Make sure you have run "npm install" to install tsx as a dev dependency.');
     process.exit(1);
 }
 
@@ -51,7 +78,12 @@ function sanitizeFolderName(name) {
 
 // Main function to get sketch details
 async function getSketchDetails(sketchId, withFolder = false) {
-    const prisma = new PrismaClient();
+    // Create the PostgreSQL adapter
+    const adapter = new PrismaPg({
+        connectionString: process.env.DATABASE_POOLED_URL || process.env.DATABASE_URL || "",
+    });
+
+    const prisma = new PrismaClient({ adapter });
     
     try {
         console.log(`Fetching details for sketch ID: ${sketchId}...`);
@@ -241,12 +273,12 @@ async function getSketchDetails(sketchId, withFolder = false) {
         }
         fs.writeFileSync(outputPath, details, 'utf8');
         
-        console.log(' Sketch details fetched successfully!');
-        console.log(`=� Details saved to: ${outputPath}`);
+        console.log('✅ Sketch details fetched successfully!');
+        console.log(`💾 Details saved to: ${outputPath}`);
         console.log(`📊 Found: ${sketch.sketch_casts.length} cast members, ${sketch.sketch_credits.length} credits, ${sketch.sketch_tags.length} tags, ${sketch.sketch_quotes.length} quotes`);
         
     } catch (error) {
-        console.error(`L Error: ${error.message}`);
+        console.error(`❌ Error: ${error.message}`);
         process.exit(1);
     } finally {
         await prisma.$disconnect();
@@ -254,7 +286,7 @@ async function getSketchDetails(sketchId, withFolder = false) {
 }
 
 // Check if we're running as a script
-if (require.main === module) {
+if (import.meta.url === `file://${process.argv[1]}`) {
     // Parse arguments
     const args = process.argv.slice(2);
     const withFolderIndex = args.indexOf('--with-folder');
@@ -280,4 +312,4 @@ if (require.main === module) {
     getSketchDetails(sketchId, withFolder);
 }
 
-module.exports = { getSketchDetails };
+export { getSketchDetails };

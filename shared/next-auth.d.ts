@@ -1,4 +1,4 @@
-import { user_role_type } from "@prisma/client";
+import { user_role_type } from '@/shared/enums';
 import { DefaultUser } from "next-auth";
 
 declare module "next-auth" {

@@ -48,5 +48,5 @@ export function revalidateContent(table: string, id: number, slug?: string) {
   }
 
   // Revalidate the associated list page for the content, default is 5 minutes as well
-  revalidateTag(`${table}-list`);
+  revalidateTag(`${table}-list`, "default");
 }

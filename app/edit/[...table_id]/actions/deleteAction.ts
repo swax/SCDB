@@ -8,7 +8,7 @@ import {
 } from "@/backend/actionHelper";
 import { TableCms } from "@/backend/cms/cmsTypes";
 import { deleteRow, getSlugForId } from "@/backend/edit/editWriteService";
-import { user_role_type } from "@prisma/client";
+import { user_role_type } from '@/shared/enums';
 
 export default async function deleteAction(table: TableCms, id: number) {
   return await catchServiceErrors(async () => {

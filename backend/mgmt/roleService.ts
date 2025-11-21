@@ -1,7 +1,7 @@
 import { StringFieldCms } from "@/backend/cms/cmsTypes";
 import prisma from "@/database/prisma";
 import { allowedToChangeRole, getRoleRank } from "@/shared/roleUtils";
-import { operation_type, user_role_type } from "@prisma/client";
+import { operation_type, user_role_type } from '@/shared/enums';
 import { SessionUser } from "next-auth";
 import { getAccount } from "../user/accountService";
 
@@ -19,7 +19,7 @@ export async function saveRole(
     throw new Error("User account not found");
   }
 
-  const currentUserRole = userAccount.role;
+  const currentUserRole = userAccount.role as user_role_type;
 
   if (!allowedToChangeRole(currentUserRole, sessionUser.role)) {
     throw new Error(
@@ -71,7 +71,7 @@ export async function saveModNote(
     throw new Error("User account not found");
   }
 
-  const currentUserRole = userAccount.role;
+  const currentUserRole = userAccount.role as user_role_type;
 
   if (!allowedToChangeRole(currentUserRole, sessionUser.role)) {
     throw new Error(

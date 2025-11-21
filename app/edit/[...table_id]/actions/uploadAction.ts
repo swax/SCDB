@@ -3,7 +3,7 @@
 import { catchServiceErrors, getLoggedInUser, validateRoleAtLeast } from "@/backend/actionHelper";
 import { buildUploadKey, createPresignedUploadUrl, getUserTag, validateImageFile } from "@/backend/imageHelper";
 import { contentResponse } from "@/shared/serviceResponse";
-import { user_role_type } from "@prisma/client";
+import { user_role_type } from '@/shared/enums';
 
 export async function getPresignedUploadUrl(
   uploadType: "images",

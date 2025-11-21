@@ -2,7 +2,7 @@
 
 import { catchServiceErrors, getLoggedInUser } from "@/backend/actionHelper";
 import * as roleService from "@/backend/mgmt/roleService";
-import { user_role_type } from "@prisma/client";
+import { user_role_type } from '@/shared/enums';
 
 export async function saveRole(userId: string, newRole: user_role_type) {
   return await catchServiceErrors(async () => {

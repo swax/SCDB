@@ -2,7 +2,7 @@ import { getLoggedInUser, validateRoleAtLeast } from "@/backend/actionHelper";
 import ProcessEnv from "@/shared/ProcessEnv";
 import { S3Client } from "@aws-sdk/client-s3";
 import { createPresignedPost } from "@aws-sdk/s3-presigned-post";
-import { user_role_type } from "@prisma/client";
+import { user_role_type } from '@/shared/enums';
 import { NextRequest } from "next/server";
 
 const FILE_SIZE_LIMIT_MB = 5;
