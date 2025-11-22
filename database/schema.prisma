@@ -388,7 +388,8 @@ model sketch {
   lookup_slug         String             @unique @db.VarChar(100)
   video_urls          String[]
   image_id            Int
-  description         String?
+  teaser              String?
+  synopsis            String?
   notes               String?
   site_rating         Float?
   show_id             Int
