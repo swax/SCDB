@@ -94,13 +94,51 @@ export default function SketchPageBody({
         </Typography>
       )}
       <Box style={{ marginTop: 16 }}>
+        {sketch.teaser && (
+          <Paper elevation={0} style={{ padding: 16, marginBottom: 16 }}>
+            <Typography
+              component="div"
+              variant="body1"
+              style={{ whiteSpace: "pre-line" }}
+            >
+              {sketch.teaser}
+            </Typography>
+          </Paper>
+        )}
         <SketchRating
           sketchId={sketch.id}
           slug={sketch.url_slug}
           siteRating={sketch.site_rating}
         />
-        <DescriptionPanel description={sketch.description} />
-        <DescriptionPanel description={sketch.notes} title="Notes" />
+        {Boolean(sketch.sketch_tags.length) && (
+          <Accordion defaultExpanded>
+            <AccordionSummary
+              expandIcon={<ExpandMoreIcon />}
+              aria-controls="tags-content"
+              id="tags-header"
+            >
+              <AccordionHeader icon={<LocalOfferIcon />}>Tags</AccordionHeader>
+            </AccordionSummary>
+            <AccordionDetails>
+              <Stack direction="row" flexWrap="wrap" spacing={1} useFlexGap>
+                {sketch.sketch_tags.map((sketch_tag, i) => (
+                  <ContentLink mui key={i} table="tag" entry={sketch_tag.tag}>
+                    <Chip
+                      clickable
+                      label={
+                        <span>
+                          {sketch_tag.tag.category.name}&nbsp;/&nbsp;
+                          {sketch_tag.tag.name}
+                        </span>
+                      }
+                      variant="outlined"
+                    />
+                  </ContentLink>
+                ))}
+              </Stack>
+            </AccordionDetails>
+          </Accordion>
+        )}
         {Boolean(sketch.sketch_casts.length) && (
           <Accordion defaultExpanded>
             <AccordionSummary
@@ -220,6 +258,8 @@ export default function SketchPageBody({
             </AccordionDetails>
           </Accordion>
         )}
+        <DescriptionPanel description={sketch.synopsis} title="Synopsis" />
+        <DescriptionPanel description={sketch.notes} title="Notes" />
         {Boolean(sketch.sketch_credits.length) && (
           <Accordion defaultExpanded>
             <AccordionSummary
@@ -268,35 +308,6 @@ export default function SketchPageBody({
                   </TableBody>
                 </Table>
               </TableContainer>
-            </AccordionDetails>
-          </Accordion>
-        )}
-        {Boolean(sketch.sketch_tags.length) && (
-          <Accordion defaultExpanded>
-            <AccordionSummary
-              expandIcon={<ExpandMoreIcon />}
-              aria-controls="tags-content"
-              id="tags-header"
-            >
-              <AccordionHeader icon={<LocalOfferIcon />}>Tags</AccordionHeader>
-            </AccordionSummary>
-            <AccordionDetails>
-              <Stack direction="row" flexWrap="wrap" spacing={1} useFlexGap>
-                {sketch.sketch_tags.map((sketch_tag, i) => (
-                  <ContentLink mui key={i} table="tag" entry={sketch_tag.tag}>
-                    <Chip
-                      clickable
-                      label={
-                        <span>
-                          {sketch_tag.tag.category.name}&nbsp;/&nbsp;
-                          {sketch_tag.tag.name}
-                        </span>
-                      }
-                      variant="outlined"
-                    />
-                  </ContentLink>
-                ))}
-              </Stack>
             </AccordionDetails>
           </Accordion>
         )}

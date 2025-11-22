@@ -104,7 +104,7 @@ CREATE TABLE sketches (
     thumbnail_url TEXT,
     youbube_embed TEXT,
     teaser TEXT,
-    description TEXT,
+    synopsis TEXT,
     quotes TEXT[],
     notes TEXT[],
     duration INT,

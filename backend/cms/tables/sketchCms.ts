@@ -70,8 +70,14 @@ const sketchCms: TableCms = {
       type: "list",
     },
     {
-      label: "Description",
-      column: "description",
+      label: "Teaser",
+      column: "teaser",
+      type: "string",
+      optional: true,
+    },
+    {
+      label: "Synopsis",
+      column: "synopsis",
       type: "string",
       multiline: true,
       optional: true,
