@@ -105,6 +105,11 @@ export async function getSketch(id: number) {
                   name: true,
                 },
               },
+              _count: {
+                select: {
+                  sketch_tags: true,
+                },
+              },
             },
           },
         },

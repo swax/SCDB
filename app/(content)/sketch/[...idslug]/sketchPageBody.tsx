@@ -7,7 +7,6 @@ import { enumNameToDisplayName, toNiceDate } from "@/shared/utilities";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import FormatQuoteIcon from "@mui/icons-material/FormatQuote";
 import GroupsIcon from "@mui/icons-material/Groups";
-import LocalOfferIcon from "@mui/icons-material/LocalOffer";
 import {
   Accordion,
   AccordionDetails,
@@ -93,52 +92,43 @@ export default function SketchPageBody({
           />
         </Typography>
       )}
+      {sketch.teaser && (
+        <Paper elevation={0} style={{ marginTop: 16 }}>
+          <Typography
+            component="div"
+            variant="body1"
+            style={{ whiteSpace: "pre-line",fontStyle: "italic", padding: 16 }}
+          >
+            {sketch.teaser}
+          </Typography>
+        </Paper>
+      )}
+      <Stack
+        direction="row"
+        flexWrap="wrap"
+        spacing={1}
+        style={{ marginTop: 16 }}
+        useFlexGap
+      >
+        {sketch.sketch_tags
+          .filter((st) => st.tag._count.sketch_tags > 1)
+          .map((sketch_tag, i) => (
+            <ContentLink mui key={i} table="tag" entry={sketch_tag.tag}>
+              <Chip
+                clickable
+                title={`Category: ${sketch_tag.tag.category.name}, Sketch count: ${sketch_tag.tag._count.sketch_tags}`}
+                label={<span>{sketch_tag.tag.name}</span>}
+                variant="outlined"
+              />
+            </ContentLink>
+          ))}
+      </Stack>
       <Box style={{ marginTop: 16 }}>
-        {sketch.teaser && (
-          <Paper elevation={0} style={{ padding: 16, marginBottom: 16 }}>
-            <Typography
-              component="div"
-              variant="body1"
-              style={{ whiteSpace: "pre-line" }}
-            >
-              {sketch.teaser}
-            </Typography>
-          </Paper>
-        )}
         <SketchRating
           sketchId={sketch.id}
           slug={sketch.url_slug}
           siteRating={sketch.site_rating}
         />
-        {Boolean(sketch.sketch_tags.length) && (
-          <Accordion defaultExpanded>
-            <AccordionSummary
-              expandIcon={<ExpandMoreIcon />}
-              aria-controls="tags-content"
-              id="tags-header"
-            >
-              <AccordionHeader icon={<LocalOfferIcon />}>Tags</AccordionHeader>
-            </AccordionSummary>
-            <AccordionDetails>
-              <Stack direction="row" flexWrap="wrap" spacing={1} useFlexGap>
-                {sketch.sketch_tags.map((sketch_tag, i) => (
-                  <ContentLink mui key={i} table="tag" entry={sketch_tag.tag}>
-                    <Chip
-                      clickable
-                      label={
-                        <span>
-                          {sketch_tag.tag.category.name}&nbsp;/&nbsp;
-                          {sketch_tag.tag.name}
-                        </span>
-                      }
-                      variant="outlined"
-                    />
-                  </ContentLink>
-                ))}
-              </Stack>
-            </AccordionDetails>
-          </Accordion>
-        )}
         {Boolean(sketch.sketch_casts.length) && (
           <Accordion defaultExpanded>
             <AccordionSummary
