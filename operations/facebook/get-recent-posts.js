@@ -23,7 +23,7 @@ const DEFAULT_LIMIT = 10;
 const MAX_PAGE_LIMIT = 50;
 
 const USAGE = [
-    'Usage: node agent/facebook/get-recent-posts.js [--limit N] [--json]',
+    'Usage: node operations/facebook/get-recent-posts.js [--limit N] [--json]',
     '',
     'Options:',
     `  --limit N   Maximum number of recent posts to retrieve (default: ${DEFAULT_LIMIT})`,

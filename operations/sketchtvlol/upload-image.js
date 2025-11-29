@@ -16,9 +16,9 @@ if (nodeVersion < 18) {
 
 // Function to display usage
 function usage() {
-    console.log('Usage: node agent/sketchtvlol/upload-image.js <image_path> <table_name> <base_url> [--verbose]');
-    console.log('Example: node agent/sketchtvlol/upload-image.js /path/to/image.jpg sketch https://www.sketchtv.lol');
-    console.log('Example: node agent/sketchtvlol/upload-image.js /path/to/image.jpg sketch http://localhost:3000 --verbose');
+    console.log('Usage: node operations/sketchtvlol/upload-image.js <image_path> <table_name> <base_url> [--verbose]');
+    console.log('Example: node operations/sketchtvlol/upload-image.js /path/to/image.jpg sketch https://www.sketchtv.lol');
+    console.log('Example: node operations/sketchtvlol/upload-image.js /path/to/image.jpg sketch http://localhost:3000 --verbose');
     console.log('');
     console.log('Options:');
     console.log('  --verbose    Show detailed progress information');

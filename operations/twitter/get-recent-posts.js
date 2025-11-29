@@ -45,7 +45,7 @@ const DEFAULT_TWEET_FIELDS = [
 ].join(',');
 
 const USAGE = [
-    'Usage: node agent/twitter/get-recent-posts.js <handle> [--limit N] [--json]',
+    'Usage: node operations/twitter/get-recent-posts.js <handle> [--limit N] [--json]',
     '',
     'Options:',
     `  --limit N   Maximum number of recent tweets to retrieve (default: ${DEFAULT_LIMIT})`,

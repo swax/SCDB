@@ -31,9 +31,9 @@ const TWEET_MAX_LENGTH = 280;
 
 // Validate CLI arguments
 if (process.argv.length < 4) {
-    console.error('Usage: node agent/twitter/create-post.js "Post text" "URL"');
+    console.error('Usage: node operations/twitter/create-post.js "Post text" "URL"');
     console.error(
-        'Example: node agent/twitter/create-post.js "Check this out!" "https://sketchtv.lol/sketch/123"'
+        'Example: node operations/twitter/create-post.js "Check this out!" "https://sketchtv.lol/sketch/123"'
     );
     process.exit(1);
 }

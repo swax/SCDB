@@ -6,7 +6,7 @@
  * This script fetches detailed information about a sketch from the database
  * and exports it to a text file for use with AI agents.
  *
- * Usage: npx tsx agent/sketchtvlol/get-sketch-details.mjs <sketch_id> [--with-folder]
+ * Usage: npx tsx operations/sketchtvlol/get-sketch-details.mjs <sketch_id> [--with-folder]
  *
  * Requirements:
  * - Node.js 18 or higher
@@ -14,8 +14,8 @@
  * - .env.local file with database configuration
  *
  * @example
- * npx tsx agent/sketchtvlol/get-sketch-details.mjs 123
- * npx tsx agent/sketchtvlol/get-sketch-details.mjs 123 --with-folder
+ * npx tsx operations/sketchtvlol/get-sketch-details.mjs 123
+ * npx tsx operations/sketchtvlol/get-sketch-details.mjs 123 --with-folder
  */
 
 import prismaExports from '../../database/generated/client.ts';
@@ -42,9 +42,9 @@ if (nodeVersion < 18) {
 
 // Function to display usage
 function usage() {
-    console.log('Usage: npx tsx agent/sketchtvlol/get-sketch-details.mjs <sketch_id> [--with-folder]');
-    console.log('Example: npx tsx agent/sketchtvlol/get-sketch-details.mjs 123');
-    console.log('Example: npx tsx agent/sketchtvlol/get-sketch-details.mjs 123 --with-folder');
+    console.log('Usage: npx tsx operations/sketchtvlol/get-sketch-details.mjs <sketch_id> [--with-folder]');
+    console.log('Example: npx tsx operations/sketchtvlol/get-sketch-details.mjs 123');
+    console.log('Example: npx tsx operations/sketchtvlol/get-sketch-details.mjs 123 --with-folder');
     console.log('');
     console.log('Options:');
     console.log('  --with-folder    Create folder named <sketch_id>_<sketch_url_slug> and save database.txt inside');
