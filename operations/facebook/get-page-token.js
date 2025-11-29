@@ -3,7 +3,7 @@
 /**
  * Facebook Page Token Retriever
  *
- * Usage: node agent/facebook/get-page-token.js
+ * Usage: node operations/facebook/get-page-token.js
  *
  * Required Environment Variables:
  * - FACEBOOK_APP_ID

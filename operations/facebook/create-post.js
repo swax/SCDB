@@ -17,8 +17,8 @@ const GRAPH_VERSION = 'v23.0';
 
 // Validate CLI arguments
 if (process.argv.length < 4) {
-    console.error('Usage: node agent/facebook/create-post.js "Post text" "Page URL"');
-    console.error('Example: node agent/facebook/create-post.js "Check out this sketch!" "https://sketchtv.lol/sketch/123"');
+    console.error('Usage: node operations/facebook/create-post.js "Post text" "Page URL"');
+    console.error('Example: node operations/facebook/create-post.js "Check out this sketch!" "https://sketchtv.lol/sketch/123"');
     process.exit(1);
 }
 
