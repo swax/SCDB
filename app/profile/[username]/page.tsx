@@ -5,7 +5,7 @@ import {
 } from "@/backend/user/profileService";
 import { getRoleRank } from "@/shared/roleUtils";
 import { buildPageTitle } from "@/shared/utilities";
-import { user_role_type } from '@/shared/enums';
+import { user_role_type } from "@/shared/enums";
 import { Metadata } from "next";
 import { getServerSession } from "next-auth";
 import { notFound } from "next/navigation";

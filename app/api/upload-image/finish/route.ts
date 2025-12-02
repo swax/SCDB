@@ -14,17 +14,17 @@ export async function POST(request: NextRequest) {
     if (!cdn_key) {
       return NextResponse.json(
         { error: "Missing required field: cdn_key" },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
     // Get the user ID for NAISYS user
     const naisysUserId = await _getUserIdByUsername("NAISYS");
-    
+
     if (!naisysUserId) {
       return NextResponse.json(
         { error: "NAISYS user not found" },
-        { status: 500 }
+        { status: 500 },
       );
     }
 
@@ -39,13 +39,13 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({
       success: true,
       image_id: imageRecord.id,
-      message: "Image record created successfully"
+      message: "Image record created successfully",
     });
   } catch (error) {
     console.error("Upload finish API error:", error);
     return NextResponse.json(
       { error: error instanceof Error ? error.message : "Unknown error" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }
@@ -56,7 +56,7 @@ async function _getUserIdByUsername(username: string): Promise<string | null> {
       where: { username },
       select: { id: true },
     });
-    
+
     return user?.id || null;
   } catch (error) {
     console.error("Error finding user by username:", error);

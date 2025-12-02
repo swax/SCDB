@@ -6,7 +6,7 @@ import {
   validateRoleAtLeast,
 } from "@/backend/actionHelper";
 import { TableCms } from "@/backend/cms/cmsTypes";
-import { review_status_type, user_role_type } from '@/shared/enums';
+import { review_status_type, user_role_type } from "@/shared/enums";
 
 export async function updateReviewStatus(
   table: TableCms,

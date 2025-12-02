@@ -2,7 +2,7 @@
 
 import { showAndLogError } from "@/shared/utilities";
 import { Box, Button, Container, TextField, Typography } from "@mui/material";
-import type { user_role_type } from '@/database/generated/client';
+import type { user_role_type } from "@/database/generated/client";
 import { useSession } from "next-auth/react";
 import { useState } from "react";
 import MuiNextLink from "../components/MuiNextLink";

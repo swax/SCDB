@@ -1,8 +1,8 @@
 "use client";
 
 import { getRoleRank } from "@/shared/roleUtils";
-import type { user_role_type } from '@/database/generated/client';
-import { user_role_type as UserRole } from '@/shared/enums';
+import type { user_role_type } from "@/database/generated/client";
+import { user_role_type as UserRole } from "@/shared/enums";
 import { useSession } from "next-auth/react";
 import { usePathname } from "next/navigation";
 import { useMemo } from "react";

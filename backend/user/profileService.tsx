@@ -5,7 +5,7 @@ import {
   SketchGridData,
   selectSketch,
 } from "@/shared/sketchGridBase";
-import { user_role_type } from '@/shared/enums';
+import { user_role_type } from "@/shared/enums";
 
 export interface GetProfileResponse {
   id: string;

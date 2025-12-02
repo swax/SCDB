@@ -2,7 +2,7 @@ import { getLoggedInUser, validateRoleAtLeast } from "@/backend/actionHelper";
 import ProcessEnv from "@/shared/ProcessEnv";
 import { S3Client } from "@aws-sdk/client-s3";
 import { createPresignedPost } from "@aws-sdk/s3-presigned-post";
-import { user_role_type } from '@/shared/enums';
+import { user_role_type } from "@/shared/enums";
 import { NextRequest } from "next/server";
 
 const FILE_SIZE_LIMIT_MB = 5;
@@ -12,18 +12,20 @@ export interface AuthResult {
   userId?: string;
 }
 
-export async function validateUploadAuth(request: NextRequest): Promise<AuthResult> {
+export async function validateUploadAuth(
+  request: NextRequest,
+): Promise<AuthResult> {
   const authHeader = request.headers.get("authorization");
   const isApiToken = authHeader?.startsWith("Bearer ");
-  
+
   if (isApiToken && authHeader) {
     const token = authHeader.substring(7);
     const expectedToken = process.env.UPLOAD_API_TOKEN;
-    
+
     if (!expectedToken || token !== expectedToken) {
       throw new Error("Invalid API token");
     }
-    
+
     return { isApiToken: true };
   } else {
     const user = await getLoggedInUser();
@@ -49,7 +51,7 @@ export function validateImageFile(mimeType: string, fileSize: number): void {
 export async function createPresignedUploadUrl(
   key: string,
   fileSize: number,
-  mimeType: string
+  mimeType: string,
 ) {
   const client = new S3Client({
     region: ProcessEnv.NEXT_PUBLIC_AWS_REGION,
@@ -76,7 +78,7 @@ export function buildUploadKey(
   fileName: string,
   fileHash: string,
   mimeType: string,
-  userTag: string
+  userTag: string,
 ): string {
   const fileExt = mimeType.split("/")[1];
   const fileNameWithoutExt = fileName.replace(/\.[^/.]+$/, "");

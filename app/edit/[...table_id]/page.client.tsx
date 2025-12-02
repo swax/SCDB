@@ -30,8 +30,8 @@ import {
   Tooltip,
   Typography,
 } from "@mui/material";
-import type { review_status_type } from '@/database/generated/client';
-import { review_status_type as ReviewStatus } from '@/shared/enums';
+import type { review_status_type } from "@/database/generated/client";
+import { review_status_type as ReviewStatus } from "@/shared/enums";
 import { useEffect, useMemo, useState } from "react";
 import { useBeforeUnload, useEffectOnce } from "react-use";
 import deleteAction from "./actions/deleteAction";

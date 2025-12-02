@@ -16,7 +16,8 @@ declare global {
 
 // Create the PostgreSQL adapter
 const adapter = new PrismaPg({
-  connectionString: ProcessEnv.DATABASE_POOLED_URL || ProcessEnv.DATABASE_URL || "",
+  connectionString:
+    ProcessEnv.DATABASE_POOLED_URL || ProcessEnv.DATABASE_URL || "",
 });
 
 const prisma =

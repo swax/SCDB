@@ -14,8 +14,8 @@ import {
   Select,
   TextField,
 } from "@mui/material";
-import type { user_role_type } from '@/database/generated/client';
-import { user_role_type as UserRole } from '@/shared/enums';
+import type { user_role_type } from "@/database/generated/client";
+import { user_role_type as UserRole } from "@/shared/enums";
 import { useState } from "react";
 import { saveModNote, saveRole } from "./actions/saveActions";
 
