@@ -1,6 +1,6 @@
+import { user_role_type as UserRole } from "@/shared/enums";
 import { getRoleRank } from "@/shared/roleUtils";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
-import LoginIcon from "@mui/icons-material/Login";
 import {
   Box,
   CircularProgress,
@@ -10,8 +10,6 @@ import {
   MenuItem,
   Tooltip,
 } from "@mui/material";
-import type { user_role_type } from '@/database/generated/client';
-import { user_role_type as UserRole } from '@/shared/enums';
 import { signIn, signOut, useSession } from "next-auth/react";
 import { useState } from "react";
 
@@ -45,7 +43,7 @@ export default function UserMenu() {
           aria-label="Login with Google"
           onClick={() => void signIn("google", { prompt: "login" })}
         >
-          <LoginIcon />
+          <AccountCircleIcon />
         </IconButton>
       </Tooltip>
     );
@@ -80,6 +78,9 @@ export default function UserMenu() {
         </MenuItem>
         <MenuItem component={"a"} href={"/account"}>
           My Account
+        </MenuItem>
+        <MenuItem component={"a"} href={"/about"}>
+          About
         </MenuItem>
 
         <Divider />

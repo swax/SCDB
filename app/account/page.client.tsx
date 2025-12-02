@@ -122,6 +122,7 @@ export default function AccountClientPage(account: AccountClientPageProps) {
             Role: {account.role}
           </Typography>
         </Box>
+        <Box style={{ marginTop: 64, marginBottom: 64 }}></Box>
         {/* Need to split profile from user table for this to work
          <Box style={{ marginTop: 64 }}>
           <Button color="error" variant="outlined">

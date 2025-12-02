@@ -1,12 +1,18 @@
 import FacebookIcon from "@mui/icons-material/Facebook";
+import GitHubIcon from "@mui/icons-material/GitHub";
 import XIcon from "@mui/icons-material/X";
-import { Box, IconButton, Stack, Tooltip } from "@mui/material";
+import { Box, IconButton, Stack, Tooltip, Typography } from "@mui/material";
 import DiscordIcon from "./DiscordIcon";
 
 export default function AppFooter() {
   return (
     <Box
-      style={{ display: "flex", justifyContent: "center", paddingBottom: 32 }}
+      style={{
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        paddingBottom: 32,
+      }}
     >
       <Stack direction="row">
         <Tooltip title="Discuss on Discord">
@@ -39,7 +45,20 @@ export default function AppFooter() {
             <XIcon />
           </IconButton>
         </Tooltip>
+        <Tooltip title="View on GitHub">
+          <IconButton
+            aria-label="GitHub Link"
+            href="https://github.com/swax/SCDB"
+            color="inherit"
+            target="_blank"
+          >
+            <GitHubIcon />
+          </IconButton>
+        </Tooltip>
       </Stack>
+      <Typography variant="caption" color="text.secondary" sx={{ mt: 1 }}>
+        SketchTV.lol™ 2025
+      </Typography>
     </Box>
   );
 }
