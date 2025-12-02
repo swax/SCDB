@@ -15,16 +15,17 @@ export default function LinksPanel({
 }: {
   link_urls?: Nullable<string[]>;
 }) {
+  // Helpers
+  function getDomainName(link: string) {
+    const url = new URL(link);
+    return url.hostname;
+  }
+
   // Hooks
   const domainAndUrls = useMemo(
     () => link_urls?.map((link) => [getDomainName(link), link] as const) || [],
     [link_urls],
   );
-
-  function getDomainName(link: string) {
-    const url = new URL(link);
-    return url.hostname;
-  }
 
   // Rendering
   return (

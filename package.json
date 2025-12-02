@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "clean": "rimraf .next .turbo node_modules/.cache",
-    "build": "tsc",
+    "compile": "tsc",
     "dev": "next dev --turbo",
     "lint": "eslint",
     "prettier:write": "npx prettier --write .",

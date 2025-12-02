@@ -143,7 +143,7 @@ export async function getPersonSketchCastGrid(
     rawSql += ` AND minor_role = false`;
   }
 
-  let distinctCount = (await prisma.$queryRawUnsafe(rawSql, id)) as {
+  const distinctCount = (await prisma.$queryRawUnsafe(rawSql, id)) as {
     count: number;
   }[];
 
