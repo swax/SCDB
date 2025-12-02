@@ -497,6 +497,7 @@ enum cast_role_type {
 }
 
 enum credit_role_type {
+  Producer
   Writer
   Director
   Musician
