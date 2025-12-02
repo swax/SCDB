@@ -1,7 +1,11 @@
 import prisma from "@/database/prisma";
 import { contentResponse } from "@/shared/serviceResponse";
 import { slugifyForUrl } from "@/shared/utilities";
-import { operation_type, review_status_type, user_role_type } from '@/shared/enums';
+import {
+  operation_type,
+  review_status_type,
+  user_role_type,
+} from "@/shared/enums";
 import {
   FieldCms,
   ImageFieldCms,

@@ -97,7 +97,7 @@ export default function SketchPageBody({
           <Typography
             component="div"
             variant="body1"
-            style={{ whiteSpace: "pre-line",fontStyle: "italic", padding: 16 }}
+            style={{ whiteSpace: "pre-line", fontStyle: "italic", padding: 16 }}
           >
             {sketch.teaser}
           </Typography>

@@ -1,4 +1,4 @@
-import { user_role_type } from './enums';
+import { user_role_type } from "./enums";
 
 export function getRoleRank(role?: user_role_type) {
   switch (role) {
