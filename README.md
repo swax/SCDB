@@ -31,7 +31,9 @@ If you find this code useful, please give back by adding your favorite sketch!
 
 ### Resources
 
-The offcial website [www.sketchtv.lol](https://www.sketchtv.lol/)
+The official website [www.sketchtv.lol](https://www.sketchtv.lol/)
+
+The search website [www.sketchcomedydatabase.com](https://www.sketchcomedydatabase.com/)
 
 Talk about comedy and website ideas on our [Discord server](https://discord.gg/UKE8gSYp)
 

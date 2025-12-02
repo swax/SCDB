@@ -18,6 +18,18 @@ export default function usePageLoading() {
 
   const [pageLoading, setPageLoading] = useState(false);
 
+  // Event handler - must be defined before useEffect
+  function handleGlobalClick(event: MouseEvent) {
+    if (event.target instanceof Element) {
+      const anchor = event.target.closest("a");
+
+      // If anchor and has no target property then set to loading
+      if (anchor && !anchor.target) {
+        setPageLoading(true);
+      }
+    }
+  }
+
   useEffect(() => {
     document.addEventListener("click", handleGlobalClick);
 
@@ -36,17 +48,6 @@ export default function usePageLoading() {
       //currentParams.current = paramsStr;
     }
   }, [path]); //, paramsStr]);
-
-  function handleGlobalClick(event: MouseEvent) {
-    if (event.target instanceof Element) {
-      const anchor = event.target.closest("a");
-
-      // If anchor and has no target property then set to loading
-      if (anchor && !anchor.target) {
-        setPageLoading(true);
-      }
-    }
-  }
 
   return pageLoading;
 }
