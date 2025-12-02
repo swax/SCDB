@@ -1,6 +1,6 @@
 "use client";
 
-import InfoIcon from "@mui/icons-material/Info";
+import SearchIcon from "@mui/icons-material/Search";
 import { Divider, LinearProgress, Stack, Tooltip } from "@mui/material";
 import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
@@ -199,9 +199,13 @@ function ResponsiveAppBar() {
         {/* Right side header icons */}
         <Stack direction="row" style={{ marginRight: 8 }}>
           <EditViewButton />
-          <Tooltip title="About">
-            <IconButton aria-label="About" href="/about" color="inherit">
-              <InfoIcon />
+          <Tooltip title="Search The Sketch Comedy Database">
+            <IconButton
+              aria-label="Search The Sketch Comedy Database"
+              href="https://www.sketchcomedydatabase.com"
+              color="inherit"
+            >
+              <SearchIcon />
             </IconButton>
           </Tooltip>
           <UserMenu />
