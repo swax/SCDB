@@ -4,7 +4,7 @@ import { ContentLink } from "@/app/components/ContentLink";
 import { ListSearchParms } from "@/backend/content/listHelper";
 import { GridColDef, GridRenderCellParams } from "@mui/x-data-grid";
 import BaseDataGrid from "../BaseDataGrid";
-import { Chip } from "@mui/material";
+import { Button } from "@mui/material";
 
 interface SketchDataGridProps {
   rows: {
@@ -14,6 +14,7 @@ interface SketchDataGridProps {
     season__year: number | undefined;
     url_slug: string;
     site_rating: number | null;
+    review_status: string;
   }[];
   searchParams: ListSearchParms;
   totalRowCount: number;
@@ -28,6 +29,7 @@ export default function SketchDataGrid({
   type SketchRow = (typeof rows)[number];
 
   const columns: GridColDef[] = [
+    { field: "id", headerName: "ID", type: "number", width: 80 },
     {
       field: "title",
       flex: 1,
@@ -48,6 +50,12 @@ export default function SketchDataGrid({
       valueFormatter: (value?: number) => value?.toString(),
     },
     {
+      field: "review_status",
+      headerName: "Review Status",
+      type: "string",
+      width: 150,
+    },
+    {
       field: "posted_on_socials",
       headerName: "Posted",
       type: "boolean",
@@ -59,21 +67,22 @@ export default function SketchDataGrid({
       basePath="sketches"
       columns={columns}
       columnVisibilityModel={{
+        id: false,
+        review_status: false,
         posted_on_socials: false,
       }}
       searchParams={searchParams}
       rows={rows}
       totalRowCount={totalRowCount}
       toolbar={
-        <Chip
-          clickable
+        <Button
           component="a"
           href="/recurring-sketches"
-          label="Recurring Sketches"
           size="small"
           style={{ marginLeft: 16 }}
-          variant="outlined"
-        />
+        >
+          List Recurring Sketches
+        </Button>
       }
     />
   );

@@ -8,7 +8,7 @@ import prisma from "@/database/prisma";
 import { ContentLink } from "@/app/components/ContentLink";
 
 export async function getShowsList(searchParams: ListSearchParms) {
-  const baseFindParams = getBaseFindParams(searchParams);
+  const baseFindParams = getBaseFindParams(searchParams, ["title"]);
 
   const list = await prisma.show.findMany({
     ...baseFindParams,

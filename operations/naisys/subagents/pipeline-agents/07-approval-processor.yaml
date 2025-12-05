@@ -15,6 +15,9 @@ agentPrompt: |
   5. On success move the folder to ${env.SCDB_APPROVAL_FOLDER}/03-completed/<folder_name>
   6. Call completetask once all pending sketches have been processed
 
+  ${env.SPECIAL_INSTRUCTIONS}
+  ${env.PROBLEM_INSTRUCTIONS}
+
 completeTaskEnabled: true
 mailEnabled: true
 wakeOnMessage: true

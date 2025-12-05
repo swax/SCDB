@@ -4,6 +4,7 @@ import { ContentLink } from "@/app/components/ContentLink";
 import { ListSearchParms } from "@/backend/content/listHelper";
 import { GridColDef, GridRenderCellParams } from "@mui/x-data-grid";
 import BaseDataGrid from "../BaseDataGrid";
+import { Button } from "@mui/material";
 
 interface CategoryDataGridProps {
   rows: {
@@ -49,6 +50,16 @@ export default function CategoryDataGrid({
       searchParams={searchParams}
       rows={rows}
       totalRowCount={totalRowCount}
+      toolbar={
+        <Button
+          component="a"
+          href="/tags"
+          size="small"
+          style={{ marginLeft: 16 }}
+        >
+          List All Tags
+        </Button>
+      }
     />
   );
 }

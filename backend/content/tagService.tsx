@@ -8,7 +8,7 @@ import {
 import { ListSearchParms, getBaseFindParams } from "./listHelper";
 
 export async function getTagsList(searchParams: ListSearchParms) {
-  const baseFindParams = getBaseFindParams(searchParams);
+  const baseFindParams = getBaseFindParams(searchParams, ["name"]);
 
   const list = await prisma.tag.findMany({
     ...baseFindParams,
@@ -26,6 +26,37 @@ export async function getTagsList(searchParams: ListSearchParms) {
   return { list, count };
 }
 
+export async function getAllTagsList(searchParams: ListSearchParms) {
+  const baseFindParams = getBaseFindParams(searchParams, ["name"]);
+
+  const list = await prisma.tag.findMany({
+    ...baseFindParams,
+    select: {
+      id: true,
+      url_slug: true,
+      name: true,
+      category: {
+        select: {
+          id: true,
+          name: true,
+          url_slug: true,
+        },
+      },
+      _count: {
+        select: {
+          sketch_tags: true,
+        },
+      },
+    },
+  });
+
+  const count = await prisma.tag.count({
+    where: baseFindParams.where,
+  });
+
+  return { list, count, dateGenerated: new Date() };
+}
+
 export async function getTagsByCategoryList(
   searchParams: ListSearchParms,
   categoryId?: number,
@@ -35,7 +66,7 @@ export async function getTagsByCategoryList(
     throw new Error("getTagsByCategoryList: categoryId is required");
   }
 
-  const baseFindParams = getBaseFindParams(searchParams);
+  const baseFindParams = getBaseFindParams(searchParams, ["name"]);
 
   if (baseFindParams.where) {
     baseFindParams.where.category_id = categoryId;

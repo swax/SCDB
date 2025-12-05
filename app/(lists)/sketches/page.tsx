@@ -31,6 +31,7 @@ export default async function SketchesPage(props: ListPageProps) {
     url_slug: sketch.url_slug,
     site_rating: sketch.site_rating,
     posted_on_socials: sketch.posted_on_socials,
+    review_status: sketch.review_status,
   }));
 
   // Rendering

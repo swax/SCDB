@@ -2,7 +2,7 @@ import { ListSearchParms, getBaseFindParams } from "./listHelper";
 import prisma from "@/database/prisma";
 
 export async function getCategoriesList(searchParams: ListSearchParms) {
-  const baseFindParams = getBaseFindParams(searchParams);
+  const baseFindParams = getBaseFindParams(searchParams, ["name"]);
 
   const list = await prisma.category.findMany({
     ...baseFindParams,

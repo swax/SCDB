@@ -8,7 +8,7 @@ import { ListSearchParms, getBaseFindParams } from "./listHelper";
 import { ContentLink } from "@/app/components/ContentLink";
 
 export async function getRecurringSketchList(searchParams: ListSearchParms) {
-  const baseFindParams = getBaseFindParams(searchParams);
+  const baseFindParams = getBaseFindParams(searchParams, ["title"]);
 
   const list = await prisma.recurring_sketch.findMany({
     ...baseFindParams,

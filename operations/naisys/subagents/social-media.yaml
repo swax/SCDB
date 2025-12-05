@@ -26,6 +26,8 @@ agentPrompt: |
   9. On failure mail the director what happened
   10. Call the completetask command when finished
 
+  ${env.PROBLEM_INSTRUCTIONS}
+
 mailEnabled: true
 wakeOnMessage: true
 tokenMax: 20000

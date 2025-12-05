@@ -3,7 +3,7 @@ import { contentResponse } from "@/shared/serviceResponse";
 import { ListSearchParms, getBaseFindParams } from "./listHelper";
 
 export async function getSketchList(searchParams: ListSearchParms) {
-  const baseFindParams = getBaseFindParams(searchParams);
+  const baseFindParams = getBaseFindParams(searchParams, ["title"]);
 
   const list = await prisma.sketch.findMany({
     ...baseFindParams,
@@ -13,6 +13,7 @@ export async function getSketchList(searchParams: ListSearchParms) {
       url_slug: true,
       site_rating: true,
       posted_on_socials: true,
+      review_status: true,
       show: {
         select: {
           title: true,
