@@ -45,7 +45,7 @@ export async function setFieldValues(
   // Base select
   const selectParams: any = {
     id: true,
-    ...(includeReviewStatus && { review_status: true }),
+    ...(includeReviewStatus && { review_status: true, flag_note: true }),
   };
 
   addFieldsToSelect(table, selectParams);
@@ -69,6 +69,10 @@ export async function setFieldValues(
 
   if (dbResult.review_status) {
     table.reviewStatus = dbResult.review_status;
+  }
+
+  if (dbResult.flag_note) {
+    table.flagNote = dbResult.flag_note;
   }
 }
 

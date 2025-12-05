@@ -120,6 +120,7 @@ model character {
   name           String             @unique @db.VarChar(100)
   description    String?
   review_status  review_status_type @default(NeedsReview)
+  flag_note      String?
   created_by_id  String
   created_at     DateTime           @default(now())
   modified_by_id String
@@ -144,6 +145,7 @@ model episode {
   description    String?
   season_id      Int
   review_status  review_status_type @default(NeedsReview)
+  flag_note      String?
   created_by_id  String
   created_at     DateTime           @default(now())
   modified_by_id String
@@ -166,6 +168,7 @@ model person {
   birth_date     DateTime?          @db.Date
   gender         gender_type
   review_status  review_status_type @default(NeedsReview)
+  flag_note      String?
   created_by_id  String
   created_at     DateTime           @default(now())
   modified_by_id String
@@ -221,6 +224,7 @@ model recurring_sketch {
   description    String?
   show_id        Int
   review_status  review_status_type @default(NeedsReview)
+  flag_note      String?
   created_by_id  String
   created_at     DateTime           @default(now())
   modified_by_id String
@@ -246,6 +250,7 @@ model season {
   description    String?
   show_id        Int
   review_status  review_status_type @default(NeedsReview)
+  flag_note      String?
   created_by_id  String
   created_at     DateTime           @default(now())
   modified_by_id String
@@ -267,6 +272,7 @@ model show {
   title              String             @unique @db.VarChar(100)
   description        String?
   review_status      review_status_type @default(NeedsReview)
+  flag_note          String?
   created_by_id      String
   created_at         DateTime           @default(now())
   modified_by_id     String
@@ -389,6 +395,7 @@ model sketch {
   episode_id          Int?
   recurring_sketch_id Int?
   review_status       review_status_type @default(NeedsReview)
+  flag_note           String?
   created_by_id       String
   created_at          DateTime           @default(now())
   modified_by_id      String
@@ -430,6 +437,7 @@ model category {
   name           String             @unique @db.VarChar(100)
   url_slug       String             @unique @db.VarChar(100)
   review_status  review_status_type @default(NeedsReview)
+  flag_note      String?
   created_by_id  String
   created_at     DateTime           @default(now())
   modified_by_id String
@@ -448,6 +456,7 @@ model tag {
   lookup_slug    String             @unique @db.VarChar(100)
   category_id    Int
   review_status  review_status_type @default(NeedsReview)
+  flag_note      String?
   created_by_id  String
   created_at     DateTime           @default(now())
   modified_by_id String

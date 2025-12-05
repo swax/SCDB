@@ -13,11 +13,17 @@ export async function updateReviewStatus(
   table: TableCms,
   id: number,
   reviewStatus: review_status_type,
+  flagNote?: string,
 ) {
   return await catchServiceErrors(async () => {
     const user = await getLoggedInUser();
 
     validateRoleAtLeast(user.role, user_role_type.Moderator);
+
+    // Validate flag note requirement
+    if (reviewStatus === review_status_type.Flagged && !flagNote?.trim()) {
+      throw new Error("Flag note is required when flagging an item");
+    }
 
     const dynamicPrisma = prisma as any;
 
@@ -46,6 +52,8 @@ export async function updateReviewStatus(
       },
       data: {
         review_status: reviewStatus,
+        flag_note:
+          reviewStatus === review_status_type.Flagged ? flagNote : null,
         modified_by_id: user.id,
         modified_at: new Date(),
       },
