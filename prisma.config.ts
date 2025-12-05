@@ -13,6 +13,9 @@ dotenv.config();
 export default defineConfig({
   schema: "database/schema.prisma",
   datasource: {
-    url: process.env.DATABASE_POOLED_URL || process.env.DATABASE_URL || "",
+    url:
+      process.env.PRISMA_PUSH_PULL === "true"
+        ? process.env.DATABASE_SESSION_URL || ""
+        : process.env.DATABASE_POOLED_URL || "",
   },
 });
