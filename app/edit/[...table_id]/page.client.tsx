@@ -61,6 +61,7 @@ export default function EditClientPage({ table, id }: EditClientPageProps) {
   const forceUpdate = useForceUpdate();
 
   const [reviewStatus, setReviewStatus] = useState(table.reviewStatus);
+  const [flagNote, setFlagNote] = useState(table.flagNote);
   const [updatingReviewStatus, setUpdatingReviewStatus] = useState(false);
 
   const [changeState, setChangeState] = useState<
@@ -166,14 +167,32 @@ export default function EditClientPage({ table, id }: EditClientPageProps) {
       return;
     }
 
+    let newFlagNote: string | undefined = undefined;
+
+    // Prompt for flag note if flagging
+    if (newStatus === ReviewStatus.Flagged) {
+      const userInput = prompt(
+        "Please enter a note explaining why this item is being flagged:",
+        flagNote || undefined,
+      );
+
+      if (!userInput?.trim()) {
+        alert("Flag note is required when flagging an item");
+        return;
+      }
+
+      newFlagNote = userInput;
+    }
+
     setUpdatingReviewStatus(true);
 
-    const response = await updateReviewStatus(table, id, newStatus);
+    const response = await updateReviewStatus(table, id, newStatus, newFlagNote);
 
     if (response.error) {
       showAndLogError(response.error);
     } else {
       setReviewStatus(newStatus);
+      setFlagNote(newStatus === ReviewStatus.Flagged ? newFlagNote : null);
     }
 
     setUpdatingReviewStatus(false);
@@ -326,6 +345,13 @@ export default function EditClientPage({ table, id }: EditClientPageProps) {
       <Typography component="h1" variant="h5">
         {`${addOrUpdate} ${tableName}`}
       </Typography>
+
+      {/* Show flag note if present */}
+      {flagNote && reviewStatus === ReviewStatus.Flagged && (
+        <Alert severity="warning" style={{ marginTop: 16, marginBottom: 16 }}>
+          <strong>Flag Note:</strong> {flagNote}
+        </Alert>
+      )}
 
       {/* Render fields */}
       {table.fields.map((field, i) => (

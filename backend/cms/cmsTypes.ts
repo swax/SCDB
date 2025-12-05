@@ -120,6 +120,7 @@ export type TableCms = {
   operation?: "create" | "update";
   fields: FieldCms[];
   reviewStatus?: review_status_type;
+  flagNote?: string | null;
 };
 
 export type DatabaseCms = {
