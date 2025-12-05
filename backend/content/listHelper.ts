@@ -7,6 +7,7 @@ export interface ListSearchParms {
   filterValue?: string;
   filterOp?: string;
   search?: string;
+  hiddenColumns?: string;
 }
 
 export function getBaseFindParams(
@@ -124,13 +125,14 @@ function getWhereParams(
         filter = true;
       } else if (filterValue === "false") {
         filter = false;
-      } else {
-        //filter["equals"] = dateValue;
-
-        // Trying to match on just the date not the time
+      } else if (!isNaN(dateValue.getTime())) {
+        // Valid date - trying to match on just the date not the time
         const endDate = new Date(dateValue);
         endDate.setDate(dateValue.getDate() + 1);
         filter["in"] = [dateValue, endDate];
+      } else {
+        // Not a boolean or date, treat as string equality (for enums)
+        filter = filterValue;
       }
     } else if (filterOp == "after") {
       filter["gt"] = dateValue;

@@ -2,6 +2,7 @@
 
 import { ContentLink } from "@/app/components/ContentLink";
 import { ListSearchParms } from "@/backend/content/listHelper";
+import { review_status_type } from "@/shared/enums";
 import { GridColDef, GridRenderCellParams } from "@mui/x-data-grid";
 import BaseDataGrid from "../BaseDataGrid";
 import { Button } from "@mui/material";
@@ -52,7 +53,8 @@ export default function SketchDataGrid({
     {
       field: "review_status",
       headerName: "Review Status",
-      type: "string",
+      type: "singleSelect",
+      valueOptions: Object.values(review_status_type),
       width: 150,
     },
     {
