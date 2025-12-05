@@ -132,10 +132,32 @@ export default function BaseDataGrid<T>({
     buildAndPushUrl();
   }
 
+  function dataGrid_columnVisibilityModelChange(
+    model: GridColumnVisibilityModel,
+  ) {
+    // Get list of hidden columns (where value is false)
+    const hiddenCols = Object.entries(model)
+      .filter(([, visible]) => !visible)
+      .map(([field]) => field);
+
+    searchParams.hiddenColumns = hiddenCols.length
+      ? hiddenCols.join(",")
+      : undefined;
+
+    buildAndPushUrl();
+  }
+
   // Helpers
   function buildAndPushUrl() {
-    const { page, sortField, sortDir, filterField, filterValue, filterOp } =
-      searchParams;
+    const {
+      page,
+      sortField,
+      sortDir,
+      filterField,
+      filterValue,
+      filterOp,
+      hiddenColumns,
+    } = searchParams;
     const search = (searchParams as { search?: string }).search;
 
     let url = `/${basePath}?page=${page}`;
@@ -152,6 +174,10 @@ export default function BaseDataGrid<T>({
       url += `&filterField=${filterField}&filterValue=${filterValue}&filterOp=${filterOp}`;
     }
 
+    if (hiddenColumns) {
+      url += `&hiddenColumns=${encodeURIComponent(hiddenColumns)}`;
+    }
+
     router.push(url, { scroll: false });
   }
 
@@ -164,6 +190,7 @@ export default function BaseDataGrid<T>({
     filterField,
     filterValue,
     filterOp,
+    hiddenColumns,
   } = searchParams;
 
   const sorting =
@@ -192,6 +219,26 @@ export default function BaseDataGrid<T>({
           },
         }
       : undefined;
+
+  // Merge default column visibility with URL-based visibility
+  const mergedColumnVisibilityModel: GridColumnVisibilityModel = {
+    ...columnVisibilityModel,
+  };
+
+  // Parse hidden columns from URL and apply them
+  if (hiddenColumns) {
+    const hiddenColArray = hiddenColumns.split(",");
+    hiddenColArray.forEach((col) => {
+      mergedColumnVisibilityModel[col] = false;
+    });
+
+    // Also set any columns not in the hidden list to true (they're visible)
+    columns.forEach((col) => {
+      if (col.field && !hiddenColArray.includes(col.field)) {
+        mergedColumnVisibilityModel[col.field] = true;
+      }
+    });
+  }
 
   function CustomToolbar() {
     return (
@@ -234,9 +281,10 @@ export default function BaseDataGrid<T>({
         sorting,
         filter,
         columns: {
-          columnVisibilityModel,
+          columnVisibilityModel: mergedColumnVisibilityModel,
         },
       }}
+      onColumnVisibilityModelChange={dataGrid_columnVisibilityModelChange}
       onFilterModelChange={dataGrid_filterModelChange}
       onPaginationModelChange={dataGrid_paginationModelChange}
       onSortModelChange={dataGrid_sortModelChange}

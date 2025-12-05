@@ -1,11 +1,9 @@
 import prisma from "@/database/prisma";
+import { operation_type, user_role_type } from "@/shared/enums";
 import { contentResponse } from "@/shared/serviceResponse";
 import { slugifyForUrl } from "@/shared/utilities";
-import {
-  operation_type,
-  review_status_type,
-  user_role_type,
-} from "@/shared/enums";
+import { SessionUser } from "next-auth";
+import { validateRoleAtLeast } from "../actionHelper";
 import {
   FieldCms,
   ImageFieldCms,
@@ -15,8 +13,6 @@ import {
   TableCms,
 } from "../cms/cmsTypes";
 import sketchDatabaseCms from "../cms/sketchDatabaseCms";
-import { validateRoleAtLeast } from "../actionHelper";
-import { SessionUser } from "next-auth";
 
 const allowedColumnsByTable: { [key: string]: string[] } = {};
 const allowedMappingsByTable: { [key: string]: string[] } = {};
@@ -239,10 +235,13 @@ async function writeFieldChanges(
   dataParams["modified_by_id"] = userid;
   dataParams["modified_at"] = new Date();
 
-  // Only flag the root as needs review
-  if (!mappingTableRelation) {
+  // This code would set NeedsReview on any human edited change, requiring review by someone else
+  // Now we assume human edits are implicitly reviewed (dont change review status) and AI edits need review
+  /*if (!mappingTableRelation) {
     dataParams["review_status"] = review_status_type.NeedsReview;
-  } else {
+  }*/
+
+  if (mappingTableRelation) {
     dataParams["sequence"] = index;
   }
 

@@ -6,6 +6,7 @@ import {
   validateRoleAtLeast,
 } from "@/backend/actionHelper";
 import { TableCms } from "@/backend/cms/cmsTypes";
+import prisma from "@/database/prisma";
 import { review_status_type, user_role_type } from "@/shared/enums";
 
 export async function updateReviewStatus(
@@ -30,13 +31,13 @@ export async function updateReviewStatus(
       },
     });
 
-    // Prevent the user from reviewing their own changes
+    /* Prevent the user from reviewing their own changes
     if (
       reviewStatus == review_status_type.Reviewed &&
       row.modified_by_id == user.id
     ) {
       throw new Error("You cannot review your own changes");
-    }
+    }*/
 
     // Make the change
     await dynamicPrisma[table.name].update({
