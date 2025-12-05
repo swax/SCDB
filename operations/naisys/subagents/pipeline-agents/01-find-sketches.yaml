@@ -15,7 +15,7 @@ agentPrompt: |
     - Title of the sketch
     - Short description
   3. Do a check in the database to see if the sketch already exists
-    - Access via the psql command in non interactive mode for example: psql service=scdb -c "select url_slug from sketch limit 10"
+    - Use `https://www.sketchcomedydatabase.com/api/search?q=<search terms>` to see if the sketch already exists in the system.
     - The url slug contains show, season and title of the sketch. There are also title and description fields if needed.
   4. Create a folder in ${env.SCDB_FIND_SKETCHES_FOLDER}/02-processing/<folder_name> 
     - The folder_name should be snake case in the format <show>_<year>_<sketch title>
@@ -25,22 +25,8 @@ agentPrompt: |
 
   Don't use llmynx to open YouTube pages, use `node ${env.SCDB_FOLDER}/operations/youtube/video-summary.js <youtube url>` command
 
-  Notes for finding a new sketch:
-    - Find a sketch that doesn't exist already with a working video link and return
-    - Stick to shows that have actually broadcasted on TV
-    - The sketch shouuld be a single comedy sketch, not a full episode, sketch compilation, interview, behind the scenes, blooper reel, musical guest performance, or any other non-sketch content
-    - This query summarizes what we already have
-      ```
-      SELECT sh.title, se.year, se.number, count(1)
-      FROM sketch sk
-      JOIN season se ON se.id = sk.season_id
-      JOIN show sh ON sh.id = sk.show_id
-      GROUP BY sh.title, se.year, se.number
-      order by sh.title, se.number
-      ```
-    - Double check the database that a sketch doesn't already exist
-
-  Special instructions may come in from the Pipeline Manager. If that happens prioritize those tasks and when complete call the completetask command.
+  ${env.SPECIAL_INSTRUCTIONS}
+  ${env.PROBLEM_INSTRUCTIONS}
 
 completeTaskEnabled: true
 mailEnabled: true

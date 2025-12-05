@@ -8,7 +8,7 @@ import {
 import { ListSearchParms, getBaseFindParams } from "./listHelper";
 
 export async function getCharacterList(searchParams: ListSearchParms) {
-  const baseFindParams = getBaseFindParams(searchParams);
+  const baseFindParams = getBaseFindParams(searchParams, ["name"]);
 
   const list = await prisma.character.findMany({
     ...baseFindParams,

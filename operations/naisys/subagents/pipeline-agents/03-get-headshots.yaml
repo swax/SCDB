@@ -42,7 +42,8 @@ agentPrompt: |
 
   Important: Be patient with the headshot detection script - it processes video frames and can take 10 minutes or more depending on video length.
 
-  Special instructions may come in from the Pipeline Manager. If that happens prioritize those tasks and when complete call the completetask command.
+  ${env.SPECIAL_INSTRUCTIONS}
+  ${env.PROBLEM_INSTRUCTIONS}
 
 completeTaskEnabled: true
 mailEnabled: true

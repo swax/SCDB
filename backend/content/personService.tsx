@@ -9,7 +9,7 @@ import {
 import { ListSearchParms, getBaseFindParams } from "./listHelper";
 
 export async function getPersonList(searchParams: ListSearchParms) {
-  const baseFindParams = getBaseFindParams(searchParams);
+  const baseFindParams = getBaseFindParams(searchParams, ["name"]);
 
   const dbList = await prisma.person.findMany({
     ...baseFindParams,

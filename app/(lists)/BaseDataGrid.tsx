@@ -1,4 +1,8 @@
+"use client";
+
 import { ListSearchParms } from "@/backend/content/listHelper";
+import SearchIcon from "@mui/icons-material/Search";
+import { Box, InputAdornment, TextField } from "@mui/material";
 import {
   DataGrid,
   GridColDef,
@@ -6,10 +10,10 @@ import {
   GridFilterModel,
   GridPaginationModel,
   GridSortModel,
-  GridToolbarContainer,
-  GridToolbarFilterButton,
+  Toolbar,
 } from "@mui/x-data-grid";
 import { useRouter } from "next/navigation";
+import { useEffect, useRef, useState } from "react";
 
 interface BaseDataGridProps<T> {
   basePath: string;
@@ -32,6 +36,20 @@ export default function BaseDataGrid<T>({
 }: BaseDataGridProps<T>) {
   // Hooks
   const router = useRouter();
+  const [searchValue, setSearchValue] = useState(
+    (searchParams as { search?: string }).search || "",
+  );
+  const debounceTimerRef = useRef<NodeJS.Timeout | null>(null);
+  const inputRef = useRef<HTMLInputElement | null>(null);
+  const shouldFocusRef = useRef(false);
+
+  // Restore focus after re-render if we were typing
+  useEffect(() => {
+    if (shouldFocusRef.current && inputRef.current) {
+      inputRef.current.focus();
+      shouldFocusRef.current = false;
+    }
+  });
 
   // Event Handlers
   function dataGrid_paginationModelChange(model: GridPaginationModel) {
@@ -41,6 +59,36 @@ export default function BaseDataGrid<T>({
       buildAndPushUrl();
     }
   }
+
+  function handleSearchChange(event: React.ChangeEvent<HTMLInputElement>) {
+    const value = event.target.value;
+    setSearchValue(value);
+
+    // Mark that we should restore focus after re-render
+    shouldFocusRef.current = true;
+
+    // Clear existing timer
+    if (debounceTimerRef.current) {
+      clearTimeout(debounceTimerRef.current);
+    }
+
+    // Set new timer
+    debounceTimerRef.current = setTimeout(() => {
+      (searchParams as { search?: string }).search = value || undefined;
+      searchParams.page = 1; // Reset to first page on search
+      shouldFocusRef.current = true; // Keep focus after URL update
+      buildAndPushUrl();
+    }, 500);
+  }
+
+  // Cleanup timer on unmount
+  useEffect(() => {
+    return () => {
+      if (debounceTimerRef.current) {
+        clearTimeout(debounceTimerRef.current);
+      }
+    };
+  }, []);
 
   function dataGrid_sortModelChange(sortModel: GridSortModel) {
     if (!sortModel.length) {
@@ -88,8 +136,13 @@ export default function BaseDataGrid<T>({
   function buildAndPushUrl() {
     const { page, sortField, sortDir, filterField, filterValue, filterOp } =
       searchParams;
+    const search = (searchParams as { search?: string }).search;
 
     let url = `/${basePath}?page=${page}`;
+
+    if (search) {
+      url += `&search=${encodeURIComponent(search)}`;
+    }
 
     if (sortField && sortDir) {
       url += `&sortField=${sortField}&sortDir=${sortDir}`;
@@ -99,16 +152,7 @@ export default function BaseDataGrid<T>({
       url += `&filterField=${filterField}&filterValue=${filterValue}&filterOp=${filterOp}`;
     }
 
-    router.push(url);
-  }
-
-  function CustomToolbar() {
-    return (
-      <GridToolbarContainer>
-        <GridToolbarFilterButton />
-        {toolbar}
-      </GridToolbarContainer>
-    );
+    router.push(url, { scroll: false });
   }
 
   // Rendering
@@ -149,6 +193,35 @@ export default function BaseDataGrid<T>({
         }
       : undefined;
 
+  function CustomToolbar() {
+    return (
+      <Toolbar>
+        <Box sx={{ display: "flex", gap: 2, width: "100%" }}>
+          <TextField
+            size="small"
+            placeholder="Search..."
+            value={searchValue}
+            onChange={handleSearchChange}
+            inputRef={inputRef}
+            slotProps={{
+              input: {
+                startAdornment: (
+                  <InputAdornment position="start">
+                    <SearchIcon />
+                  </InputAdornment>
+                ),
+              },
+            }}
+            sx={{
+              minWidth: 200,
+            }}
+          />
+          {toolbar}
+        </Box>
+      </Toolbar>
+    );
+  }
+
   return (
     <DataGrid
       autoPageSize
@@ -160,8 +233,10 @@ export default function BaseDataGrid<T>({
         },
         sorting,
         filter,
+        columns: {
+          columnVisibilityModel,
+        },
       }}
-      columnVisibilityModel={columnVisibilityModel}
       onFilterModelChange={dataGrid_filterModelChange}
       onPaginationModelChange={dataGrid_paginationModelChange}
       onSortModelChange={dataGrid_sortModelChange}
@@ -170,6 +245,7 @@ export default function BaseDataGrid<T>({
       rows={rows}
       rowSelection={false}
       slots={{ toolbar: CustomToolbar }}
+      showToolbar
       sortingMode="server"
       style={{ border: "none" }}
     />

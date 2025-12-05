@@ -45,6 +45,8 @@ agentPrompt: |
     - If the sketch can't be found anywhere, but you have the ID then run this command to generate the sketch folder
       - `(cd ${env.SCDB_FOLDER} && npx tsx operations/sketchtvlol/get-sketch-details.mjs <sketch_id> --with-folder)`
 
+  ${env.PROBLEM_INSTRUCTIONS}
+
 subagentMax: 2
 subagentDirectory: pipeline-agents
 mailEnabled: true
