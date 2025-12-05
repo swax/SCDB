@@ -13,15 +13,14 @@ model Account {
   type              String
   provider          String
   providerAccountId String  @map("provider_account_id")
-  refresh_token     String? @db.Text
-  access_token      String? @db.Text
+  refresh_token     String?
+  access_token      String?
   expires_at        Int?
   token_type        String?
   scope             String?
-  id_token          String? @db.Text
+  id_token          String?
   session_state     String?
-
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([provider, providerAccountId])
   @@map("account")
@@ -32,31 +31,26 @@ model Session {
   sessionToken String   @unique @map("session_token")
   userId       String   @map("user_id")
   expires      DateTime
-
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@map("session")
 }
 
 model User {
-  id             String         @id @default(cuid())
-  name           String?
-  email          String?        @unique
-  emailVerified  DateTime?      @map("email_verified")
-  image          String?
-  username       String         @unique @default(nanoid(6))
-  role           user_role_type @default(None)
-  mod_note       String?
-  modified_by_id String?
-  modified_at    DateTime       @default(now())
-
-  modified_by User? @relation("UsersModified", fields: [modified_by_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
-
-  accounts Account[]
-  sessions Session[]
-  audits   audit[]
-  ratings  sketch_rating[]
-
+  id                          String             @id @default(cuid())
+  name                        String?
+  email                       String?            @unique
+  emailVerified               DateTime?          @map("email_verified")
+  image                       String?
+  username                    String             @unique @default(nanoid(6))
+  role                        user_role_type     @default(None)
+  mod_note                    String?
+  modified_by_id              String?
+  modified_at                 DateTime           @default(now())
+  accounts                    Account[]
+  audits                      audit[]
+  categories_created          category[]         @relation("CategoriesCreated")
+  categories_modified         category[]         @relation("CategoriesModified")
   characters_created          character[]        @relation("CharactersCreated")
   characters_modified         character[]        @relation("CharactersModified")
   episodes_created            episode[]          @relation("EpisodesCreated")
@@ -70,6 +64,7 @@ model User {
   recurring_sketches_modified recurring_sketch[] @relation("RecurringSketchesModified")
   seasons_created             season[]           @relation("SeasonsCreated")
   seasons_modified            season[]           @relation("SeasonsModified")
+  sessions                    Session[]
   shows_created               show[]             @relation("ShowsCreated")
   shows_modified              show[]             @relation("ShowsModified")
   show_images_created         show_image[]       @relation("ShowImagesCreated")
@@ -82,13 +77,13 @@ model User {
   sketch_credits_modified     sketch_credit[]    @relation("SketchCreditsModified")
   sketch_quotes_created       sketch_quote[]     @relation("SketchQuotesCreated")
   sketch_quotes_modified      sketch_quote[]     @relation("SketchQuotesModified")
+  user_ratings_modified       sketch_rating[]    @relation("SketchRatingsModified")
+  ratings                     sketch_rating[]
   sketch_tags_created         sketch_tag[]       @relation("SketchTagsCreated")
   sketch_tags_modified        sketch_tag[]       @relation("SketchTagsModified")
-  categories_created          category[]         @relation("CategoriesCreated")
-  categories_modified         category[]         @relation("CategoriesModified")
   tags_created                tag[]              @relation("TagsCreated")
   tags_modified               tag[]              @relation("TagsModified")
-  user_ratings_modified       sketch_rating[]    @relation("SketchRatingsModified")
+  modified_by                 User?              @relation("UsersModified", fields: [modified_by_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
   user_modified               User[]             @relation("UsersModified")
 
   @@map("user")
@@ -113,10 +108,10 @@ model audit {
   modified_fields Json?
   changed_by      User           @relation(fields: [changed_by_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
 
-  @@index([table_name, row_id]) // Latest changes on edit page
+  @@index([table_name, row_id])
   @@index([table_name, operation])
-  @@index([changed_by_id]) // Changelog on profile page
-  @@index([changed_at, changed_by_id, table_name, operation]) // Used for the activity grid query
+  @@index([changed_by_id])
+  @@index([changed_at, changed_by_id, table_name, operation])
 }
 
 model character {
@@ -124,18 +119,17 @@ model character {
   url_slug       String             @unique @db.VarChar(100)
   name           String             @unique @db.VarChar(100)
   description    String?
-  person_id      Int?               @unique
-  link_urls      String[]
   review_status  review_status_type @default(NeedsReview)
   created_by_id  String
   created_at     DateTime           @default(now())
   modified_by_id String
   modified_at    DateTime           @default(now())
-
-  person       person?       @relation(fields: [person_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  created_by   User          @relation("CharactersCreated", fields: [created_by_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  modified_by  User          @relation("CharactersModified", fields: [modified_by_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  sketch_casts sketch_cast[]
+  person_id      Int?               @unique
+  link_urls      String[]
+  created_by     User               @relation("CharactersCreated", fields: [created_by_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  modified_by    User               @relation("CharactersModified", fields: [modified_by_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  person         person?            @relation(fields: [person_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  sketch_casts   sketch_cast[]
 
   @@index([review_status])
 }
@@ -149,17 +143,16 @@ model episode {
   title          String?            @db.VarChar(100)
   description    String?
   season_id      Int
-  link_urls      String[]
   review_status  review_status_type @default(NeedsReview)
   created_by_id  String
   created_at     DateTime           @default(now())
   modified_by_id String
   modified_at    DateTime           @default(now())
-
-  created_by  User     @relation("EpisodesCreated", fields: [created_by_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  modified_by User     @relation("EpisodesModified", fields: [modified_by_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  season      season   @relation(fields: [season_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  sketches    sketch[]
+  link_urls      String[]
+  created_by     User               @relation("EpisodesCreated", fields: [created_by_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  modified_by    User               @relation("EpisodesModified", fields: [modified_by_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  season         season             @relation(fields: [season_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  sketches       sketch[]
 
   @@unique([season_id, number])
   @@index([review_status])
@@ -171,21 +164,20 @@ model person {
   name           String             @unique @db.VarChar(100)
   description    String?
   birth_date     DateTime?          @db.Date
-  death_date     DateTime?          @db.Date
   gender         gender_type
-  link_urls      String[]
   review_status  review_status_type @default(NeedsReview)
   created_by_id  String
   created_at     DateTime           @default(now())
   modified_by_id String
   modified_at    DateTime           @default(now())
-
-  created_by     User            @relation("PeopleCreated", fields: [created_by_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  modified_by    User            @relation("PeopleModified", fields: [modified_by_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  death_date     DateTime?          @db.Date
+  link_urls      String[]
+  character      character?
+  created_by     User               @relation("PeopleCreated", fields: [created_by_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  modified_by    User               @relation("PeopleModified", fields: [modified_by_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  person_images  person_image[]
   sketch_casts   sketch_cast[]
   sketch_credits sketch_credit[]
-  person_images  person_image[]
-  character      character?
 
   @@index([review_status])
 }
@@ -195,16 +187,17 @@ model person_image {
   person_id      Int
   image_id       Int
   sequence       Int
-  description    String?
   created_by_id  String
   created_at     DateTime @default(now())
   modified_by_id String
   modified_at    DateTime @default(now())
+  description    String?
+  created_by     User     @relation("PersonImagesCreated", fields: [created_by_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  image          image    @relation(fields: [image_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  modified_by    User     @relation("PersonImagesModified", fields: [modified_by_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  person         person   @relation(fields: [person_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
 
-  created_by  User   @relation("PersonImagesCreated", fields: [created_by_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  modified_by User   @relation("PersonImagesModified", fields: [modified_by_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  person      person @relation(fields: [person_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  image       image  @relation(fields: [image_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  @@index([person_id, sequence])
 }
 
 model sketch_rating {
@@ -213,32 +206,32 @@ model sketch_rating {
   rating_value   Int?
   modified_by_id String
   modified_at    DateTime @default(now())
-
-  modified_by User   @relation("SketchRatingsModified", fields: [modified_by_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  sketch      sketch @relation(fields: [sketch_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  user        User   @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  modified_by    User     @relation("SketchRatingsModified", fields: [modified_by_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  sketch         sketch   @relation(fields: [sketch_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  user           User     @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
 
   @@id([user_id, sketch_id])
+  @@index([modified_at])
+  @@index([user_id, rating_value])
 }
 
 model recurring_sketch {
   id             Int                @id @default(autoincrement())
   url_slug       String             @unique @db.VarChar(100)
-  lookup_slug    String             @unique @db.VarChar(100)
-  title          String             @db.VarChar(100)
   description    String?
-  link_urls      String[]
   show_id        Int
   review_status  review_status_type @default(NeedsReview)
   created_by_id  String
   created_at     DateTime           @default(now())
   modified_by_id String
   modified_at    DateTime           @default(now())
-
-  created_by  User     @relation("RecurringSketchesCreated", fields: [created_by_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  modified_by User     @relation("RecurringSketchesModified", fields: [modified_by_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  show        show     @relation(fields: [show_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  sketches    sketch[]
+  lookup_slug    String             @unique @db.VarChar(100)
+  title          String             @db.VarChar(100)
+  link_urls      String[]
+  created_by     User               @relation("RecurringSketchesCreated", fields: [created_by_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  modified_by    User               @relation("RecurringSketchesModified", fields: [modified_by_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  show           show               @relation(fields: [show_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  sketches       sketch[]
 
   @@unique([show_id, title])
   @@index([review_status])
@@ -252,39 +245,37 @@ model season {
   year           Int
   description    String?
   show_id        Int
-  link_urls      String[]
   review_status  review_status_type @default(NeedsReview)
   created_by_id  String
   created_at     DateTime           @default(now())
   modified_by_id String
   modified_at    DateTime           @default(now())
-
-  created_by  User      @relation("SeasonsCreated", fields: [created_by_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  modified_by User      @relation("SeasonsModified", fields: [modified_by_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  episodes    episode[]
-  show        show      @relation(fields: [show_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  sketches    sketch[]
+  link_urls      String[]
+  episodes       episode[]
+  created_by     User               @relation("SeasonsCreated", fields: [created_by_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  modified_by    User               @relation("SeasonsModified", fields: [modified_by_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  show           show               @relation(fields: [show_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  sketches       sketch[]
 
   @@unique([show_id, number])
   @@index([review_status])
 }
 
 model show {
-  id             Int                @id @default(autoincrement())
-  url_slug       String             @unique @db.VarChar(100)
-  title          String             @unique @db.VarChar(100)
-  description    String?
-  link_urls      String[]
-  review_status  review_status_type @default(NeedsReview)
-  created_by_id  String
-  created_at     DateTime           @default(now())
-  modified_by_id String
-  modified_at    DateTime           @default(now())
-
-  created_by         User               @relation("ShowsCreated", fields: [created_by_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  modified_by        User               @relation("ShowsModified", fields: [modified_by_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  id                 Int                @id @default(autoincrement())
+  url_slug           String             @unique @db.VarChar(100)
+  title              String             @unique @db.VarChar(100)
+  description        String?
+  review_status      review_status_type @default(NeedsReview)
+  created_by_id      String
+  created_at         DateTime           @default(now())
+  modified_by_id     String
+  modified_at        DateTime           @default(now())
+  link_urls          String[]
   recurring_sketches recurring_sketch[]
   seasons            season[]
+  created_by         User               @relation("ShowsCreated", fields: [created_by_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  modified_by        User               @relation("ShowsModified", fields: [modified_by_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
   show_images        show_image[]
   sketches           sketch[]
 
@@ -300,34 +291,39 @@ model show_image {
   created_at     DateTime @default(now())
   modified_by_id String
   modified_at    DateTime @default(now())
+  created_by     User     @relation("ShowImagesCreated", fields: [created_by_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  image          image    @relation(fields: [image_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  modified_by    User     @relation("ShowImagesModified", fields: [modified_by_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  show           show     @relation(fields: [show_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
 
-  created_by  User  @relation("ShowImagesCreated", fields: [created_by_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  modified_by User  @relation("ShowImagesModified", fields: [modified_by_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  show        show  @relation(fields: [show_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  image       image @relation(fields: [image_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  @@index([show_id, sequence])
 }
 
 model sketch_cast {
   id             Int            @id @default(autoincrement())
   sketch_id      Int
-  character_name String? // Used for one-off characters, otherwise use character_id, a trigger syncs the name if the id is set
+  character_name String?
   character_id   Int?
   person_id      Int?
   image_id       Int?
-  minor_role     Boolean        @default(false)
   sequence       Int
   role           cast_role_type
   created_by_id  String
   created_at     DateTime       @default(now())
   modified_by_id String
   modified_at    DateTime       @default(now())
+  minor_role     Boolean        @default(false)
+  character      character?     @relation(fields: [character_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  created_by     User           @relation("SketchCastCreated", fields: [created_by_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  image          image?         @relation(fields: [image_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  modified_by    User           @relation("SketchCastModified", fields: [modified_by_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  person         person?        @relation(fields: [person_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  sketch         sketch         @relation(fields: [sketch_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
 
-  created_by  User       @relation("SketchCastCreated", fields: [created_by_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  modified_by User       @relation("SketchCastModified", fields: [modified_by_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  image       image?     @relation(fields: [image_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  character   character? @relation(fields: [character_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  person      person?    @relation(fields: [person_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  sketch      sketch     @relation(fields: [sketch_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  @@index([sketch_id])
+  @@index([person_id])
+  @@index([character_id])
+  @@index([person_id, minor_role])
 }
 
 model sketch_credit {
@@ -341,11 +337,13 @@ model sketch_credit {
   created_at     DateTime         @default(now())
   modified_by_id String
   modified_at    DateTime         @default(now())
+  created_by     User             @relation("SketchCreditsCreated", fields: [created_by_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  modified_by    User             @relation("SketchCreditsModified", fields: [modified_by_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  person         person           @relation(fields: [person_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  sketch         sketch           @relation(fields: [sketch_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
 
-  created_by  User   @relation("SketchCreditsCreated", fields: [created_by_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  modified_by User   @relation("SketchCreditsModified", fields: [modified_by_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  person      person @relation(fields: [person_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  sketch      sketch @relation(fields: [sketch_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  @@index([sketch_id])
+  @@index([person_id])
 }
 
 model sketch_tag {
@@ -357,13 +355,13 @@ model sketch_tag {
   created_at     DateTime @default(now())
   modified_by_id String
   modified_at    DateTime @default(now())
-
-  created_by  User   @relation("SketchTagsCreated", fields: [created_by_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  modified_by User   @relation("SketchTagsModified", fields: [modified_by_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  sketch      sketch @relation(fields: [sketch_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  tag         tag    @relation(fields: [tag_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  created_by     User     @relation("SketchTagsCreated", fields: [created_by_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  modified_by    User     @relation("SketchTagsModified", fields: [modified_by_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  sketch         sketch   @relation(fields: [sketch_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  tag            tag      @relation(fields: [tag_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
 
   @@unique([sketch_id, tag_id])
+  @@index([tag_id])
 }
 
 model sketch_quote {
@@ -375,10 +373,9 @@ model sketch_quote {
   created_at     DateTime @default(now())
   modified_by_id String
   modified_at    DateTime @default(now())
-
-  created_by  User   @relation("SketchQuotesCreated", fields: [created_by_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  modified_by User   @relation("SketchQuotesModified", fields: [modified_by_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  sketch      sketch @relation(fields: [sketch_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  created_by     User     @relation("SketchQuotesCreated", fields: [created_by_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  modified_by    User     @relation("SketchQuotesModified", fields: [modified_by_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  sketch         sketch   @relation(fields: [sketch_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
 }
 
 model sketch {
@@ -387,37 +384,45 @@ model sketch {
   url_slug            String             @unique @db.VarChar(100)
   lookup_slug         String             @unique @db.VarChar(100)
   video_urls          String[]
-  image_id            Int
-  teaser              String?
-  synopsis            String?
-  notes               String?
-  site_rating         Float?
   show_id             Int
   season_id           Int?
   episode_id          Int?
   recurring_sketch_id Int?
-  link_urls           String[]
-  posted_on_socials   Boolean            @default(false)
   review_status       review_status_type @default(NeedsReview)
   created_by_id       String
   created_at          DateTime           @default(now())
   modified_by_id      String
   modified_at         DateTime           @default(now())
-
-  created_by       User              @relation("SketchesCreated", fields: [created_by_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  modified_by      User              @relation("SketchesModified", fields: [modified_by_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  image            image?            @relation(fields: [image_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  user_ratings     sketch_rating[]
-  sketch_casts     sketch_cast[]
-  sketch_credits   sketch_credit[]
-  sketch_quotes    sketch_quote[]
-  sketch_tags      sketch_tag[]
-  show             show              @relation(fields: [show_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  season           season?           @relation(fields: [season_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  episode          episode?          @relation(fields: [episode_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  recurring_sketch recurring_sketch? @relation(fields: [recurring_sketch_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  image_id            Int?
+  site_rating         Float?
+  link_urls           String[]
+  notes               String?
+  posted_on_socials   Boolean            @default(false)
+  synopsis            String?
+  teaser              String?
+  created_by          User               @relation("SketchesCreated", fields: [created_by_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  episode             episode?           @relation(fields: [episode_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  image               image?             @relation(fields: [image_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  modified_by         User               @relation("SketchesModified", fields: [modified_by_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  recurring_sketch    recurring_sketch?  @relation(fields: [recurring_sketch_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  season              season?            @relation(fields: [season_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  show                show               @relation(fields: [show_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  sketch_casts        sketch_cast[]
+  sketch_credits      sketch_credit[]
+  sketch_quotes       sketch_quote[]
+  user_ratings        sketch_rating[]
+  sketch_tags         sketch_tag[]
 
   @@index([review_status])
+  @@index([show_id])
+  @@index([season_id])
+  @@index([episode_id])
+  @@index([recurring_sketch_id])
+  @@index([site_rating(sort: Desc)])
+  @@index([show_id, site_rating(sort: Desc)])
+  @@index([season_id, site_rating(sort: Desc)])
+  @@index([episode_id, site_rating(sort: Desc)])
+  @@index([recurring_sketch_id, site_rating(sort: Desc)])
 }
 
 model category {
@@ -429,10 +434,9 @@ model category {
   created_at     DateTime           @default(now())
   modified_by_id String
   modified_at    DateTime           @default(now())
-
-  created_by  User  @relation("CategoriesCreated", fields: [created_by_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  modified_by User  @relation("CategoriesModified", fields: [modified_by_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  tags        tag[]
+  created_by     User               @relation("CategoriesCreated", fields: [created_by_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  modified_by    User               @relation("CategoriesModified", fields: [modified_by_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  tags           tag[]
 
   @@index([review_status])
 }
@@ -442,19 +446,18 @@ model tag {
   name           String             @db.VarChar(100)
   url_slug       String             @db.VarChar(100)
   lookup_slug    String             @unique @db.VarChar(100)
-  description    String?
-  link_urls      String[]
   category_id    Int
   review_status  review_status_type @default(NeedsReview)
   created_by_id  String
   created_at     DateTime           @default(now())
   modified_by_id String
   modified_at    DateTime           @default(now())
-
-  created_by  User         @relation("TagsCreated", fields: [created_by_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  modified_by User         @relation("TagsModified", fields: [modified_by_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  sketch_tags sketch_tag[]
-  category    category     @relation(fields: [category_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  description    String?
+  link_urls      String[]
+  sketch_tags    sketch_tag[]
+  category       category           @relation(fields: [category_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  created_by     User               @relation("TagsCreated", fields: [created_by_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  modified_by    User               @relation("TagsModified", fields: [modified_by_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
 
   @@unique([category_id, url_slug])
   @@unique([category_id, name])
@@ -462,19 +465,15 @@ model tag {
 }
 
 model image {
-  id            Int      @id @default(autoincrement())
-  // Removed unique constraint, same image can be uploaded by different people 
-  // Don't even need this table, can just have image_key fields on tables directly, and view to merge them if needed
-  // Maybe want this table if we want to store dimensions, hash, etc..
+  id            Int            @id @default(autoincrement())
   cdn_key       String
   created_by_id String
-  created_at    DateTime @default(now())
-
+  created_at    DateTime       @default(now())
   created_by    User           @relation("ImagesCreated", fields: [created_by_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
   person_images person_image[]
   show_images   show_image[]
-  sketch_casts  sketch_cast[]
   sketch        sketch[]
+  sketch_casts  sketch_cast[]
 }
 
 enum gender_type {
@@ -497,11 +496,11 @@ enum cast_role_type {
 }
 
 enum credit_role_type {
-  Producer
   Writer
   Director
   Musician
   Other
+  Producer
 }
 
 enum user_role_type {
