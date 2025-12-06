@@ -5,6 +5,7 @@ import {
 } from "@/backend/content/homeService";
 import TrendingUpIcon from "@mui/icons-material/TrendingUp";
 import { Box, Typography } from "@mui/material";
+import { Suspense } from "react";
 import SketchGrid from "./(content)/SketchGrid";
 import MuiNextLink from "./components/MuiNextLink";
 
@@ -42,17 +43,19 @@ export default async function HomePage() {
         </Typography>
       </Box>
       <Box style={{ marginTop: 16 }}>
-        <SketchGrid
-          initialData={trendingSketchData}
-          getData={getTrendingSketchData}
-          title="Trending Sketches"
-          icon={<TrendingUpIcon />}
-        />
-        <SketchGrid
-          initialData={latestSketchData}
-          getData={getLatestSketchData}
-          title="Latest Sketches"
-        />
+        <Suspense fallback={<div>Loading...</div>}>
+          <SketchGrid
+            initialData={trendingSketchData}
+            getData={getTrendingSketchData}
+            title="Trending Sketches"
+            icon={<TrendingUpIcon />}
+          />
+          <SketchGrid
+            initialData={latestSketchData}
+            getData={getLatestSketchData}
+            title="Latest Sketches"
+          />
+        </Suspense>
       </Box>
       <Box style={{ marginTop: 48 }} className="about-page">
         <Typography

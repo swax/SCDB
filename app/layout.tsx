@@ -2,6 +2,7 @@ import { buildPageMeta } from "@/shared/metaBuilder";
 import { Container } from "@mui/material";
 import type { Viewport } from "next";
 import Script from "next/script";
+import { Suspense } from "react";
 import AppFooter from "./footer/AppFooter";
 import "./globals.css";
 import ResponsiveAppBar from "./header/ResponsiveAppBar";
@@ -22,6 +23,9 @@ export const metadata = buildPageMeta(
 );
 
 metadata.metadataBase = new URL("https://www.sketchtv.lol");
+metadata.icons = {
+  apple: "/images/scdb2.png",
+};
 
 export const viewport: Viewport = {
   width: "device-width",
@@ -68,7 +72,9 @@ export default function RootLayout({
       <body className="bodyColor">
         <NextAuthProvider>
           <ThemeRegistry options={{ key: "mui" }}>
-            <ResponsiveAppBar />
+            <Suspense fallback={<div style={{ height: "48px" }} />}>
+              <ResponsiveAppBar />
+            </Suspense>
             <Container style={{ marginTop: 8 }} maxWidth="md">
               {children}
             </Container>

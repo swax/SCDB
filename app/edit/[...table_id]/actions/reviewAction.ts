@@ -52,8 +52,13 @@ export async function updateReviewStatus(
       },
       data: {
         review_status: reviewStatus,
+        // Don't change note in needs review status, set to null if reviewed, set to note if flagged
         flag_note:
-          reviewStatus === review_status_type.Flagged ? flagNote : null,
+          reviewStatus === review_status_type.NeedsReview
+            ? undefined
+            : reviewStatus === review_status_type.Flagged
+              ? flagNote
+              : null,
         modified_by_id: user.id,
         modified_at: new Date(),
       },

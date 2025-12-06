@@ -1,4 +1,4 @@
-import { usePathname } from "next/navigation";
+import { usePathname, useSearchParams } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 
 /**
@@ -7,14 +7,11 @@ import { useEffect, useRef, useState } from "react";
  */
 export default function usePageLoading() {
   const path = usePathname();
-
-  // Can't use this without wrapping app header in a suspense boundary, which causes the pap header to blank out on load
-  // TODO: Use the more 'approved' way to get the loading bar working instead of this hacky hook
-  // Really mostly a problem on the changelog page where the loading bar won't go way
-  //const params = useSearchParams();
+  const params = useSearchParams();
+  const paramsStr = params.toString();
 
   const currentPath = useRef(path);
-  //const currentParams = useRef(paramsStr);
+  const currentParams = useRef(paramsStr);
 
   const [pageLoading, setPageLoading] = useState(false);
 
@@ -39,15 +36,14 @@ export default function usePageLoading() {
     };
   }, []);
 
-  // When path changes, clear the loading status
+  // When path or search params change, clear the loading status
   useEffect(() => {
-    if (currentPath.current !== path) {
-      // || currentParams.current !== paramsStr) {
+    if (currentPath.current !== path || currentParams.current !== paramsStr) {
       setPageLoading(false);
       currentPath.current = path;
-      //currentParams.current = paramsStr;
+      currentParams.current = paramsStr;
     }
-  }, [path]); //, paramsStr]);
+  }, [path, paramsStr]);
 
   return pageLoading;
 }

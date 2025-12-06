@@ -14,7 +14,7 @@ import {
 import { buildPageTitle, toNiceDate } from "@/shared/utilities";
 import { Box, Typography } from "@mui/material";
 import { Metadata } from "next";
-import { cache } from "react";
+import { cache, Suspense } from "react";
 import SketchGrid from "../../SketchGrid";
 import { ContentPageProps, tryGetContent } from "../../contentBase";
 
@@ -94,7 +94,9 @@ export default async function EpisodePage({ params }: ContentPageProps) {
           </Typography>
         )}
       </Box>
-      <SketchGrid initialData={sketchData} getData={getSketchData} />
+      <Suspense fallback={<div>Loading sketches...</div>}>
+        <SketchGrid initialData={sketchData} getData={getSketchData} />
+      </Suspense>
       <LinksPanel link_urls={episode.link_urls} />
       <DateGeneratedFooter genDate={new Date()} type="page" />
     </>

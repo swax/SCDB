@@ -7,6 +7,7 @@ import {
   SlugFieldCms,
   TableCms,
 } from "@/backend/cms/cmsTypes";
+import { review_status_type as ReviewStatus } from "@/shared/enums";
 import { getEditUrl } from "@/shared/urls";
 import {
   buildPageTitle,
@@ -30,15 +31,13 @@ import {
   Tooltip,
   Typography,
 } from "@mui/material";
-import type { review_status_type } from "@/database/generated/client";
-import { review_status_type as ReviewStatus } from "@/shared/enums";
+import { PromiseReturnType } from "@prisma/client/extension";
 import { useEffect, useMemo, useState } from "react";
 import { useBeforeUnload, useEffectOnce } from "react-use";
 import deleteAction from "./actions/deleteAction";
 import { updateReviewStatus } from "./actions/reviewAction";
 import saveAction from "./actions/saveAction";
 import EditableField from "./components/EditableField";
-import { PromiseReturnType } from "@prisma/client/extension";
 
 interface EditClientPageProps {
   table: TableCms;
@@ -186,13 +185,20 @@ export default function EditClientPage({ table, id }: EditClientPageProps) {
 
     setUpdatingReviewStatus(true);
 
-    const response = await updateReviewStatus(table, id, newStatus, newFlagNote);
+    const response = await updateReviewStatus(
+      table,
+      id,
+      newStatus,
+      newFlagNote,
+    );
 
     if (response.error) {
       showAndLogError(response.error);
     } else {
       setReviewStatus(newStatus);
-      setFlagNote(newStatus === ReviewStatus.Flagged ? newFlagNote : null);
+      if (newFlagNote) {
+        setFlagNote(newFlagNote);
+      }
     }
 
     setUpdatingReviewStatus(false);
@@ -347,7 +353,7 @@ export default function EditClientPage({ table, id }: EditClientPageProps) {
       </Typography>
 
       {/* Show flag note if present */}
-      {flagNote && reviewStatus === ReviewStatus.Flagged && (
+      {flagNote && reviewStatus !== ReviewStatus.Reviewed && (
         <Alert severity="warning" style={{ marginTop: 16, marginBottom: 16 }}>
           <strong>Flag Note:</strong> {flagNote}
         </Alert>
