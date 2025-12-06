@@ -2,7 +2,13 @@
 
 import { ListSearchParms } from "@/backend/content/listHelper";
 import SearchIcon from "@mui/icons-material/Search";
-import { Box, InputAdornment, TextField } from "@mui/material";
+import {
+  Box,
+  InputAdornment,
+  Pagination,
+  PaginationItem,
+  TextField,
+} from "@mui/material";
 import {
   DataGrid,
   GridColDef,
@@ -12,6 +18,7 @@ import {
   GridSortModel,
   Toolbar,
 } from "@mui/x-data-grid";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 
@@ -148,9 +155,8 @@ export default function BaseDataGrid<T>({
   }
 
   // Helpers
-  function buildAndPushUrl() {
+  function buildUrl(pageNum: number) {
     const {
-      page,
       sortField,
       sortDir,
       filterField,
@@ -160,7 +166,7 @@ export default function BaseDataGrid<T>({
     } = searchParams;
     const search = (searchParams as { search?: string }).search;
 
-    let url = `/${basePath}?page=${page}`;
+    let url = `/${basePath}?page=${pageNum}`;
 
     if (search) {
       url += `&search=${encodeURIComponent(search)}`;
@@ -178,7 +184,11 @@ export default function BaseDataGrid<T>({
       url += `&hiddenColumns=${encodeURIComponent(hiddenColumns)}`;
     }
 
-    router.push(url, { scroll: false });
+    return url;
+  }
+
+  function buildAndPushUrl() {
+    router.push(buildUrl(searchParams.page), { scroll: false });
   }
 
   // Rendering
@@ -269,33 +279,68 @@ export default function BaseDataGrid<T>({
     );
   }
 
+  function CustomPagination() {
+    const totalPages = Math.ceil(totalRowCount / pageSize);
+
+    if (totalPages <= 1) {
+      return null;
+    }
+
+    return (
+      <Box sx={{ display: "flex", justifyContent: "center", p: 2 }}>
+        <Pagination
+          count={totalPages}
+          page={page}
+          onChange={(event, newPage) => {
+            // Prevent default link navigation (which would scroll to top)
+            event.preventDefault();
+
+            searchParams.page = newPage;
+            buildAndPushUrl();
+          }}
+          renderItem={(item) => (
+            <PaginationItem
+              component={Link}
+              href={buildUrl(item.page || 1)}
+              {...item}
+            />
+          )}
+        />
+      </Box>
+    );
+  }
+
   return (
-    <DataGrid
-      autoPageSize
-      columns={columns}
-      filterMode="server"
-      initialState={{
-        pagination: {
-          paginationModel: { pageSize, page: page - 1 },
-        },
-        sorting,
-        filter,
-        columns: {
-          columnVisibilityModel: mergedColumnVisibilityModel,
-        },
-      }}
-      onColumnVisibilityModelChange={dataGrid_columnVisibilityModelChange}
-      onFilterModelChange={dataGrid_filterModelChange}
-      onPaginationModelChange={dataGrid_paginationModelChange}
-      onSortModelChange={dataGrid_sortModelChange}
-      paginationMode="server"
-      rowCount={totalRowCount}
-      rows={rows}
-      rowSelection={false}
-      slots={{ toolbar: CustomToolbar }}
-      showToolbar
-      sortingMode="server"
-      style={{ border: "none" }}
-    />
+    <>
+      <DataGrid
+        autoPageSize
+        columns={columns}
+        filterMode="server"
+        initialState={{
+          pagination: {
+            paginationModel: { pageSize, page: page - 1 },
+          },
+          sorting,
+          filter,
+          columns: {
+            columnVisibilityModel: mergedColumnVisibilityModel,
+          },
+        }}
+        onColumnVisibilityModelChange={dataGrid_columnVisibilityModelChange}
+        onFilterModelChange={dataGrid_filterModelChange}
+        onPaginationModelChange={dataGrid_paginationModelChange}
+        onSortModelChange={dataGrid_sortModelChange}
+        paginationMode="server"
+        rowCount={totalRowCount}
+        rows={rows}
+        rowSelection={false}
+        slots={{ toolbar: CustomToolbar }}
+        showToolbar
+        sortingMode="server"
+        style={{ border: "none" }}
+        hideFooterPagination
+      />
+      <CustomPagination />
+    </>
   );
 }

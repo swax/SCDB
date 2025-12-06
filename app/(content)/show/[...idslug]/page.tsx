@@ -30,7 +30,7 @@ import {
   Typography,
 } from "@mui/material";
 import { Metadata } from "next";
-import { cache } from "react";
+import { cache, Suspense } from "react";
 import SketchGrid from "../../SketchGrid";
 import { ContentPageProps, tryGetContent } from "../../contentBase";
 
@@ -96,7 +96,9 @@ export default async function ShowPage({ params }: ContentPageProps) {
         </Typography>
       </Box>
       <DescriptionPanel description={show.description} />
-      <SketchGrid initialData={sketchData} getData={getSketchData} />
+      <Suspense fallback={<div>Loading sketches...</div>}>
+        <SketchGrid initialData={sketchData} getData={getSketchData} />
+      </Suspense>
       {!!show.seasons.length && (
         <Accordion defaultExpanded>
           <AccordionSummary

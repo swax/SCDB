@@ -84,6 +84,11 @@ export async function getSketch(id: number) {
           id: true,
           url_slug: true,
           title: true,
+          _count: {
+            select: {
+              sketches: true,
+            },
+          },
         },
       },
       sketch_quotes: {

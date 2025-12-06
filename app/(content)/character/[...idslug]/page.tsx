@@ -15,7 +15,7 @@ import {
 import { buildPageTitle } from "@/shared/utilities";
 import { Box, Typography } from "@mui/material";
 import { Metadata } from "next";
-import { cache } from "react";
+import { cache, Suspense } from "react";
 import SketchGrid from "../../SketchGrid";
 import { ContentPageProps, tryGetContent } from "../../contentBase";
 
@@ -94,7 +94,9 @@ export default async function CharacterPage({ params }: ContentPageProps) {
 
       <DescriptionPanel description={character.description} title="About" />
 
-      <SketchGrid initialData={sketchData} getData={getSketchData} />
+      <Suspense fallback={<div>Loading sketches...</div>}>
+        <SketchGrid initialData={sketchData} getData={getSketchData} />
+      </Suspense>
 
       <LinksPanel link_urls={character.link_urls} />
 

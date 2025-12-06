@@ -28,7 +28,7 @@ import {
   Typography,
 } from "@mui/material";
 import { Metadata } from "next";
-import { cache } from "react";
+import { cache, Suspense } from "react";
 import SketchGrid from "../../SketchGrid";
 import { ContentPageProps, tryGetContent } from "../../contentBase";
 
@@ -98,7 +98,9 @@ export default async function SeasonPage({ params }: ContentPageProps) {
           <ContentLink mui table="show" entry={season.show} />
         </Typography>
       </Box>
-      <SketchGrid initialData={sketchData} getData={getSketchData} />
+      <Suspense fallback={<div>Loading sketches...</div>}>
+        <SketchGrid initialData={sketchData} getData={getSketchData} />
+      </Suspense>
       {!!season.episodes.length && (
         <Accordion defaultExpanded>
           <AccordionSummary

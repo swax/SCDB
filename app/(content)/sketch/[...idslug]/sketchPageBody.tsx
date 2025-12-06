@@ -82,16 +82,17 @@ export default function SketchPageBody({
         image_cdn_key={sketch.image?.cdn_key}
         videoUrls={sketch.video_urls}
       />
-      {!!sketch.recurring_sketch && (
-        <Typography component="div" variant="subtitle1" marginTop={2}>
-          {"See more "}
-          <ContentLink
-            mui
-            table="recurring-sketch"
-            entry={sketch.recurring_sketch}
-          />
-        </Typography>
-      )}
+      {!!sketch.recurring_sketch &&
+        sketch.recurring_sketch._count.sketches > 1 && (
+          <Typography component="div" variant="subtitle1" marginTop={2}>
+            {"See more "}
+            <ContentLink
+              mui
+              table="recurring-sketch"
+              entry={sketch.recurring_sketch}
+            />
+          </Typography>
+        )}
       {sketch.teaser && (
         <Paper elevation={0} style={{ marginTop: 16 }}>
           <Typography

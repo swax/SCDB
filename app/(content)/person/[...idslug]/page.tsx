@@ -22,7 +22,7 @@ import {
 } from "@mui/material";
 import { Metadata } from "next";
 import Image from "next/image";
-import { cache } from "react";
+import { cache, Suspense } from "react";
 import SketchGrid from "../../SketchGrid";
 import { ContentPageProps, tryGetContent } from "../../contentBase";
 
@@ -164,16 +164,20 @@ export default async function PersonPage({ params }: ContentPageProps) {
         </ImageList>
       )}
       <DescriptionPanel description={person.description} title="About" />
-      <SketchGrid
-        initialData={sketchCastData}
-        getData={getSketchCastData}
-        options={{ minorRolesFilter: true }}
-      />
-      <SketchGrid
-        initialData={sketchCreditData}
-        getData={getSketchCreditData}
-        title="Credits"
-      />
+      <Suspense fallback={<div>Loading sketches...</div>}>
+        <SketchGrid
+          initialData={sketchCastData}
+          getData={getSketchCastData}
+          options={{ minorRolesFilter: true }}
+        />
+      </Suspense>
+      <Suspense fallback={<div>Loading credits...</div>}>
+        <SketchGrid
+          initialData={sketchCreditData}
+          getData={getSketchCreditData}
+          title="Credits"
+        />
+      </Suspense>
       <LinksPanel link_urls={person.link_urls} />
       <DateGeneratedFooter genDate={new Date()} type="page" />
     </>
