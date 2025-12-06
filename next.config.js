@@ -10,7 +10,8 @@ const nextConfig = {
         protocol: "https",
         hostname: process.env.NEXT_PUBLIC_STATIC_HOSTNAME,
         port: "",
-        pathname: "/images/**",
+        // Inclusive so bad cdn key doesn't crash the page, and it's easier to diagnose the issue
+        pathname: "/**",
       },
     ],
   },

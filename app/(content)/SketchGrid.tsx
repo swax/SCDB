@@ -173,7 +173,7 @@ export default function SketchGrid({
                     src={
                       sketch.image_cdnkey
                         ? `${staticUrl}/${sketch.image_cdnkey}`
-                        : "/images/no-image.webp"
+                        : "images/sketch-placeholder.png"
                     }
                     width={imgWidth}
                     height={imgHeight}

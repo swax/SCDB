@@ -167,7 +167,7 @@ export default function SketchPageBody({
                         src={
                           castMember.image?.cdn_key
                             ? `${staticUrl}/${castMember.image?.cdn_key}`
-                            : "/images/no-image.webp"
+                            : "/images/sketch-cast-placeholder.png"
                         }
                         width={imgWidth}
                         height={imgHeight}
