@@ -5,7 +5,7 @@ import { getImageDimensions } from "@/shared/imgSizing";
 import { fileToShortHash, showAndLogError } from "@/shared/utilities";
 import { Button, Stack, Typography } from "@mui/material";
 import Image from "next/image";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { getPresignedUploadUrl } from "../../actions/uploadAction";
 
 interface ImageFieldProps {
@@ -31,6 +31,7 @@ export default function ImageField({
   // Hooks
   const forceUpdate = useForceUpdate();
   const [uploading, setUploading] = useState(false);
+  const containerRef = useRef<HTMLDivElement>(null);
 
   // Event Handlers
   function handleChange_field(value: Nullable<string>) {
@@ -39,12 +40,10 @@ export default function ImageField({
     forceUpdate();
   }
 
-  async function handleChange_uploadImage(
-    e: React.ChangeEvent<HTMLInputElement>,
-  ) {
+  async function uploadFile(file: File) {
     setUploading(true);
 
-    for (const file of Array.from(e.target.files || [])) {
+    try {
       const shortHash = await fileToShortHash(file);
 
       // Get presigned URL so client can upload directly to S3
@@ -59,7 +58,6 @@ export default function ImageField({
 
       if (reponse.error || !reponse.content) {
         showAndLogError(reponse.error || "Unknown error");
-        setUploading(false);
         return;
       }
 
@@ -85,19 +83,48 @@ export default function ImageField({
         alert(
           `Upload failed: ${uploadResponse.status} ${uploadResponse.statusText}`,
         );
-        setUploading(false);
         return;
       }
 
       // Update field value
       handleChange_field(presignedPost.fields.key);
+    } finally {
+      setUploading(false);
+    }
+  }
 
+  async function handleChange_uploadImage(
+    e: React.ChangeEvent<HTMLInputElement>,
+  ) {
+    for (const file of Array.from(e.target.files || [])) {
+      await uploadFile(file);
       // Only support uploading a single file right now
       break;
     }
-
-    setUploading(false);
   }
+
+  async function handlePaste(e: ClipboardEvent) {
+    // Check if there are any image files in the clipboard
+    const items = Array.from(e.clipboardData?.items || []);
+    const imageItem = items.find((item) => item.type.startsWith("image/"));
+
+    if (imageItem) {
+      e.preventDefault();
+      const file = imageItem.getAsFile();
+      if (file) {
+        await uploadFile(file);
+      }
+    }
+  }
+
+  // Setup paste event listener
+  useEffect(() => {
+    const container = containerRef.current;
+    if (!container) return;
+
+    container.addEventListener("paste", handlePaste);
+    return () => container.removeEventListener("paste", handlePaste);
+  }, [tableName, index, field, loading, uploading]);
 
   // Rendering
   const cdnKey = field.values?.[index] || "";
@@ -105,9 +132,23 @@ export default function ImageField({
   const showRequiredHighlight = !field.optional && !cdnKey;
 
   return (
-    <Stack direction="column" spacing={1}>
+    <Stack
+      ref={containerRef}
+      direction="column"
+      spacing={1}
+      tabIndex={0}
+      sx={{
+        outline: "none",
+        "&:focus-within": {
+          opacity: 0.9,
+        },
+      }}
+    >
       <Typography component="h2" variant="body1">
-        {field.label}
+        {field.label}{" "}
+        <Typography component="span" variant="caption" color="text.secondary">
+          (click to focus, then paste)
+        </Typography>
       </Typography>
       <Stack direction="row" spacing={2}>
         {/* Preview how the image will look in the video and cast sections */}

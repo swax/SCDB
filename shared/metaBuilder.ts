@@ -99,7 +99,9 @@ export function getMetaImagesForSketchGrid(
 ) {
   return sketchGrid.sketches
     .map((sketch) => ({
-      url: `${staticUrl}/${sketch.image_cdnkey}`,
+      url: sketch.image_cdnkey
+        ? `${staticUrl}/${sketch.image_cdnkey}`
+        : "/images/no-image.webp",
       alt: sketch.titleString,
     }))
     .slice(0, count);
