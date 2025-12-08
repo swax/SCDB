@@ -270,6 +270,7 @@ model show {
   id                 Int                @id @default(autoincrement())
   url_slug           String             @unique @db.VarChar(100)
   title              String             @unique @db.VarChar(100)
+  short_name         String?            @db.VarChar(50)
   description        String?
   review_status      review_status_type @default(NeedsReview)
   flag_note          String?

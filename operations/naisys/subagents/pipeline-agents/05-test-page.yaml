@@ -23,7 +23,6 @@ agentPrompt: |
      - Broken links, headshot images in the folder, but not on the page, other data that should be on the page that is missing or wrong
        - Move to ${env.SCDB_UPDATE_DATABASE_FOLDER}/01-pending/<folder_name> with a note of what needs to be fixed
   12. If everything looks good move the folder to ${env.SCDB_TEST_FOLDER}/03-completed/<folder_name>
-     - Send a llmail to the Reviewer when you move sketches into the completed folder
   13. Pass or fail, regardless, call the completetask command once testing is complete
 
   Don't use llmynx to open YouTube pages, use `node ${env.SCDB_FOLDER}/operations/youtube/video-summary.js <youtube url>` command
