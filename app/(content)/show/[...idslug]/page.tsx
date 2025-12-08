@@ -88,6 +88,7 @@ export default async function ShowPage({ params }: ContentPageProps) {
       <Box style={{ marginTop: 32, marginBottom: 32 }}>
         <Typography component="h1" variant="h4">
           {show.title}
+          {show.short_name && ` (${show.short_name})`}
         </Typography>
         <Typography component="div" variant="subtitle1" color="textSecondary">
           <MuiNextLink href={"/shows"} prefetch={false}>

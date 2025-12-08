@@ -11,6 +11,12 @@ const showCms: TableCms = {
       type: "string",
     },
     {
+      label: "Short Name",
+      column: "short_name",
+      type: "string",
+      optional: true,
+    },
+    {
       label: "Description",
       column: "description",
       type: "string",

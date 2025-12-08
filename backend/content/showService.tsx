@@ -16,6 +16,7 @@ export async function getShowsList(searchParams: ListSearchParms) {
       id: true,
       url_slug: true,
       title: true,
+      short_name: true,
       _count: {
         select: {
           sketches: true,
@@ -40,6 +41,7 @@ export async function getShow(id: number) {
       id: true,
       url_slug: true,
       title: true,
+      short_name: true,
       link_urls: true,
       description: true,
       seasons: {
