@@ -313,7 +313,6 @@ export default function BaseDataGrid<T>({
   return (
     <>
       <DataGrid
-        autoPageSize
         columns={columns}
         filterMode="server"
         initialState={{

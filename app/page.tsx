@@ -7,7 +7,9 @@ import TrendingUpIcon from "@mui/icons-material/TrendingUp";
 import { Box, Typography } from "@mui/material";
 import { Suspense } from "react";
 import SketchGrid from "./(content)/SketchGrid";
+import FeaturedTagChips from "./components/FeaturedTagChips";
 import MuiNextLink from "./components/MuiNextLink";
+import Snow from "./components/Snow";
 
 export const revalidate = 300; // 5 minutes
 
@@ -29,47 +31,51 @@ export default async function HomePage() {
   // Rendering
   return (
     <>
-      {/* Beta announcement */}
-      <Box
-        style={{
-          marginTop: 16,
-          padding: 4,
-          textAlign: "center",
-        }}
-      >
-        {/* H1 is important for SEO */}
-        <Typography component="h1" variant="subtitle1">
-          SketchTV.lol - The Sketch Comedy Database
-        </Typography>
-      </Box>
-      <Box style={{ marginTop: 16 }}>
-        <Suspense fallback={<div>Loading...</div>}>
-          <SketchGrid
-            initialData={trendingSketchData}
-            getData={getTrendingSketchData}
-            title="Trending Sketches"
-            icon={<TrendingUpIcon />}
-          />
-          <SketchGrid
-            initialData={latestSketchData}
-            getData={getLatestSketchData}
-            title="Latest Sketches"
-          />
-        </Suspense>
-      </Box>
-      <Box style={{ marginTop: 48 }} className="about-page">
-        <Typography
-          component="div"
-          variant="subtitle1"
-          color="textSecondary"
-          textAlign={"center"}
+      <Snow />
+      <Box style={{ position: "relative", zIndex: 1 }}>
+        {/* Beta announcement */}
+        <Box
+          style={{
+            marginTop: 16,
+            padding: 4,
+            textAlign: "center",
+          }}
         >
-          SketchTV.lol is a free database of sketch comedy. More info{" "}
-          <MuiNextLink href="/about">here</MuiNextLink>.<br />
-          Help us grow by creating an account and adding your favorite sketches!
-        </Typography>
+          {/* H1 is important for SEO */}
+          <Typography component="h1" variant="subtitle1">
+            SketchTV.lol - The Sketch Comedy Database
+          </Typography>
+          <FeaturedTagChips />
+        </Box>
+        <Box style={{ marginTop: 16 }}>
+          <Suspense fallback={<div>Loading...</div>}>
+            <SketchGrid
+              initialData={trendingSketchData}
+              getData={getTrendingSketchData}
+              title="Trending Sketches"
+              icon={<TrendingUpIcon />}
+            />
+            <SketchGrid
+              initialData={latestSketchData}
+              getData={getLatestSketchData}
+              title="Latest Sketches"
+            />
+          </Suspense>
+        </Box>
+        <Box style={{ marginTop: 48 }} className="about-page">
+          <Typography
+            component="div"
+            variant="subtitle1"
+            color="textSecondary"
+            textAlign={"center"}
+          >
+            SketchTV.lol is a free database of sketch comedy. More info{" "}
+            <MuiNextLink href="/about">here</MuiNextLink>.<br />
+            Help us grow by creating an account and adding your favorite sketches!
+          </Typography>
+        </Box>
+        <DateGeneratedFooter genDate={new Date()} type="page" />
       </Box>
-      <DateGeneratedFooter genDate={new Date()} type="page" />
     </>
   );
 }
