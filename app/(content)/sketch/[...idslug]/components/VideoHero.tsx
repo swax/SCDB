@@ -36,14 +36,14 @@ export default function VideoHero({
 
   if (!image_cdn_key) {
     return (
-      <Button
-        disabled
-        variant="contained"
-        style={{ marginTop: "16px" }}
-        size="small"
-      >
-        No Preview or Video Link Available
-      </Button>
+      <Image
+        alt={title}
+        src={"/images/sketch-placeholder.png"}
+        style={{ objectFit: "cover", borderRadius: 8 }}
+        priority
+        width={imgWidth}
+        height={imgHeight}
+      />
     );
   }
 
