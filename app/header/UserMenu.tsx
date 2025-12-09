@@ -11,12 +11,17 @@ import {
   Tooltip,
 } from "@mui/material";
 import { signIn, signOut, useSession } from "next-auth/react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 export default function UserMenu() {
   // Hooks
   const { data: session, status } = useSession();
   const [anchorEl, setAnchorEl] = useState<Nullable<Element>>(null);
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   // Event Handlers
   function handleClick_userMenu(event: React.MouseEvent) {
@@ -28,7 +33,7 @@ export default function UserMenu() {
   }
 
   // Rendering
-  if (status == "loading") {
+  if (!mounted || status == "loading") {
     return (
       <IconButton aria-label="Getting login status">
         <CircularProgress size={16} />
