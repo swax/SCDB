@@ -15,8 +15,10 @@ agentPrompt: |
   4. For sketches that are 'Reviewed'
     - Move the folder to ${env.SCDB_APPROVAL_FOLDER}/03-completed/<folder_name>
   5. For sketches that are 'Flagged'
-    - Include information about the flagged sketches when you call completetask
-  6. Call completetask once all 'Reviewed' status sketches have been moved
+    - Include information about the flagged sketches when you call `ns-session complete`
+  6. Call `ns-session complete` once all 'Reviewed' status sketches have been moved
+
+  Note: You do not approve sketches. Someone else does that. Many sketches may pile up in NeedsReview status. That's fine. 
 
   ${env.SPECIAL_INSTRUCTIONS}
   ${env.PROBLEM_INSTRUCTIONS}

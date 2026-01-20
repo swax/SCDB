@@ -39,7 +39,7 @@ agentPrompt: |
      - You can also use this to validate the sketch information after updating
   12. Run the query `SELECT refresh_sketch_search()` to reindex the search view with the new data you added
   13. After successfully updating the the database, move and rename the folder to ${env.SCDB_UPDATE_DATABASE_FOLDER}/03-completed/<sketch id>_<sketch url slug>
-  14. Then call the completetask command once a single sketch is completed. Do not process multiple pending sketches
+  14. Then call the `ns-session complete` command once a single sketch is completed. Do not process multiple pending sketches
 
   Notes:
     - Schema: ${env.SCDB_FOLDER}/database/schema.prisma (large file so use grep to find tables)

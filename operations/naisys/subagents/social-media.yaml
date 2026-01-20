@@ -24,7 +24,7 @@ agentPrompt: |
   8. On success mark the sketch as posted in the database with this command
     - psql service=scdb -c "UPDATE sketch SET posted_on_socials=true WHERE id=<sketch_id>"
   9. On failure mail the director what happened
-  10. Call the completetask command when finished
+  10. Call the `ns-session complete` command when finished
 
   ${env.PROBLEM_INSTRUCTIONS}
 
@@ -34,4 +34,4 @@ tokenMax: 20000
 debugPauseSeconds: 3
 completeTaskEnabled: true
 initialCommands:
-  - llmail users
+  - ns-mail users
