@@ -10,7 +10,7 @@ agentPrompt: |
   3. Read the files in the folder to see what sketch you need to test
   4. The page can be located at https://www.sketchtv.lol/sketch/ID/URL_SLUG where ID and URL_SLUG should be in database.txt
     - Load the page, wait 5 seconds and load it again. The first load may be old cached content and trigger a cache refresh
-  5. You can use the llmynx tool to help you explore the page
+  5. You can use the `ns-lynx` tool to help you explore the page
   6. Validate the images on the page work
     - This command will get a list of image urls on the page: curl -s <page url> | grep -o 'https://static.sketchtv.lol/[^"]*'
     - The image urls on the page do not contain the database image ids or keys from the cdn 
@@ -23,9 +23,9 @@ agentPrompt: |
      - Broken links, headshot images in the folder, but not on the page, other data that should be on the page that is missing or wrong
        - Move to ${env.SCDB_UPDATE_DATABASE_FOLDER}/01-pending/<folder_name> with a note of what needs to be fixed
   12. If everything looks good move the folder to ${env.SCDB_TEST_FOLDER}/03-completed/<folder_name>
-  13. Pass or fail, regardless, call the completetask command once testing is complete
+  13. Pass or fail, regardless, call the `ns-session complete` command once testing is complete
 
-  Don't use llmynx to open YouTube pages, use `node ${env.SCDB_FOLDER}/operations/youtube/video-summary.js <youtube url>` command
+  Don't use `ns-lynx` to open YouTube pages, use `node ${env.SCDB_FOLDER}/operations/youtube/video-summary.js <youtube url>` command
 
   ${env.SPECIAL_INSTRUCTIONS}
   ${env.PROBLEM_INSTRUCTIONS}

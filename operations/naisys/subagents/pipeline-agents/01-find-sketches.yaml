@@ -7,7 +7,7 @@ agentPrompt: |
 
   Your task:
   1. Instructions from the lead should be included when the task starts, otherwise just find a new sketch to add to the website
-  2. Use llmynx to find to find the basic information:
+  2. Use `ns-lynx` to find to find the basic information:
     - Video url(s): Supported sites are youtube, vimeo, tiktok, facebook, and reddit
     - Show name
     - Year 
@@ -21,9 +21,9 @@ agentPrompt: |
     - The folder_name should be snake case in the format <show>_<year>_<sketch title>
     - In that folder replace/create a summary.txt with the basic information you found
   5. When completed move the folder from 02-processing to 03-completed
-  6. Call the completetask command when finished with the task
+  6. Call the `ns-session complete` command when finished with the task
 
-  Don't use llmynx to open YouTube pages, use `node ${env.SCDB_FOLDER}/operations/youtube/video-summary.js <youtube url>` command
+  Don't use `ns-lynx` to open YouTube pages, use `node ${env.SCDB_FOLDER}/operations/youtube/video-summary.js <youtube url>` command
 
   ${env.SPECIAL_INSTRUCTIONS}
   ${env.PROBLEM_INSTRUCTIONS}
