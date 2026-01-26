@@ -33,6 +33,7 @@ wakeOnMessage: true
 tokenMax: 20000
 debugPauseSeconds: 3
 complexMail: true # Allows director to see where it left off since the last run
+completeTaskEnabled: false
 initialCommands:
   - ns-agent help
   - ns-agent list
