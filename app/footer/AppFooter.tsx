@@ -1,3 +1,5 @@
+"use client";
+
 import FacebookIcon from "@mui/icons-material/Facebook";
 import GitHubIcon from "@mui/icons-material/GitHub";
 import XIcon from "@mui/icons-material/X";
@@ -57,7 +59,7 @@ export default function AppFooter() {
         </Tooltip>
       </Stack>
       <Typography variant="caption" color="text.secondary" sx={{ mt: 1 }}>
-        SketchTV.lol™ 2025
+        SketchTV.lol™ 2026
       </Typography>
     </Box>
   );
