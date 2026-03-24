@@ -45,7 +45,11 @@ export default async function HomePage() {
           }}
         >
           {/* H1 is important for SEO */}
-          <Typography component="h1" variant="subtitle1" style={{fontWeight: 'bold'}}>
+          <Typography
+            component="h1"
+            variant="subtitle1"
+            style={{ fontWeight: "bold" }}
+          >
             {(() => {
               const text = "SketchTV.lol - The Sketch Comedy Database";
               const parts = text.split(/(\s+|\.|-|!)/);

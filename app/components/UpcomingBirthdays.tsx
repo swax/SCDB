@@ -115,9 +115,18 @@ export default function UpcomingBirthdays({
                   </Avatar>
                 )}
               </Box>
-              <Box sx={{ flexShrink: 0, minWidth: { xs: 100, sm: 140 }, textAlign: "right" }}>
+              <Box
+                sx={{
+                  flexShrink: 0,
+                  minWidth: { xs: 100, sm: 140 },
+                  textAlign: "right",
+                }}
+              >
                 <Typography variant="body2" color="textSecondary">
-                  {formatBirthday(birthday.birth_date, birthday.isBirthdayToday)}
+                  {formatBirthday(
+                    birthday.birth_date,
+                    birthday.isBirthdayToday,
+                  )}
                 </Typography>
               </Box>
             </ListItem>

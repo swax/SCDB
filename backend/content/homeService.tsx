@@ -212,6 +212,6 @@ export async function getUpcomingBirthdays(): Promise<UpcomingBirthday[]> {
     birth_date: r.birth_date,
     image_cdnkey: r.image_cdnkey,
     isBirthdayToday: r.days_until === 0,
-    cast_images: r.cast_images ? r.cast_images.split(',').slice(0, 3) : [],
+    cast_images: r.cast_images ? r.cast_images.split(",").slice(0, 3) : [],
   }));
 }
