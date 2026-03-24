@@ -18,7 +18,7 @@ import {
   ListPageProps,
   getCachedList,
   parseSearchParams,
-} from "@/app/(lists)/baseListTypes";
+} from "@/app/(content)/baseListTypes";
 import TagsDataGrid from "./TagsDataGrid";
 
 // Cached for the life of the request only
