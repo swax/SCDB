@@ -1,24 +1,24 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState, useSyncExternalStore } from "react";
+
+const noopSubscribe = () => () => {};
 
 export default function Snow() {
-  const [mounted, setMounted] = useState(false);
-  const [snowflakes, setSnowflakes] = useState<
-    Array<{ id: number; left: number; animationDuration: number; size: number }>
-  >([]);
-
-  useEffect(() => {
-    setMounted(true);
-    // Generate snowflakes
-    const flakes = Array.from({ length: 50 }, (_, i) => ({
+  const mounted = useSyncExternalStore(
+    noopSubscribe,
+    () => true,
+    () => false,
+  );
+  const [snowflakes] = useState(() =>
+    Array.from({ length: 50 }, (_, i) => ({
       id: i,
       left: Math.random() * 100,
       animationDuration: 10 + Math.random() * 20,
       size: 10 + Math.random() * 15,
-    }));
-    setSnowflakes(flakes);
-  }, []);
+      animationDelay: Math.random() * 5,
+    })),
+  );
 
   if (!mounted) {
     return null;
@@ -47,7 +47,7 @@ export default function Snow() {
             fontSize: `${flake.size}px`,
             color: "rgba(255, 255, 255, 0.8)",
             animation: `fall ${flake.animationDuration}s linear infinite`,
-            animationDelay: `${Math.random() * 5}s`,
+            animationDelay: `${flake.animationDelay}s`,
             userSelect: "none",
           }}
         >
