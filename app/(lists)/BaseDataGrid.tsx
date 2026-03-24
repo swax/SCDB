@@ -17,10 +17,54 @@ import {
   GridPaginationModel,
   GridSortModel,
   Toolbar,
+  ToolbarPropsOverrides,
 } from "@mui/x-data-grid";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
+
+declare module "@mui/x-data-grid" {
+  interface ToolbarPropsOverrides {
+    searchValue: string;
+    onSearchChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
+    inputRef: React.RefObject<HTMLInputElement | null>;
+    extraToolbar?: React.ReactNode;
+  }
+}
+
+function CustomToolbar({
+  searchValue,
+  onSearchChange,
+  inputRef,
+  extraToolbar,
+}: ToolbarPropsOverrides) {
+  return (
+    <Toolbar>
+      <Box sx={{ display: "flex", gap: 2, width: "100%" }}>
+        <TextField
+          size="small"
+          placeholder="Search..."
+          value={searchValue}
+          onChange={onSearchChange}
+          inputRef={inputRef}
+          slotProps={{
+            input: {
+              startAdornment: (
+                <InputAdornment position="start">
+                  <SearchIcon />
+                </InputAdornment>
+              ),
+            },
+          }}
+          sx={{
+            minWidth: 200,
+          }}
+        />
+        {extraToolbar}
+      </Box>
+    </Toolbar>
+  );
+}
 
 interface BaseDataGridProps<T> {
   basePath: string;
@@ -43,9 +87,7 @@ export default function BaseDataGrid<T>({
 }: BaseDataGridProps<T>) {
   // Hooks
   const router = useRouter();
-  const [searchValue, setSearchValue] = useState(
-    (searchParams as { search?: string }).search || "",
-  );
+  const [searchValue, setSearchValue] = useState(searchParams.search || "");
   const debounceTimerRef = useRef<NodeJS.Timeout | null>(null);
   const inputRef = useRef<HTMLInputElement | null>(null);
   const shouldFocusRef = useRef(false);
@@ -58,115 +100,21 @@ export default function BaseDataGrid<T>({
     }
   });
 
-  // Event Handlers
-  function dataGrid_paginationModelChange(model: GridPaginationModel) {
-    // Grid uses a zero based page number
-    if (model.page != searchParams.page - 1) {
-      searchParams.page = model.page + 1;
-      buildAndPushUrl();
-    }
-  }
-
-  function handleSearchChange(event: React.ChangeEvent<HTMLInputElement>) {
-    const value = event.target.value;
-    setSearchValue(value);
-
-    // Mark that we should restore focus after re-render
-    shouldFocusRef.current = true;
-
-    // Clear existing timer
-    if (debounceTimerRef.current) {
-      clearTimeout(debounceTimerRef.current);
-    }
-
-    // Set new timer
-    debounceTimerRef.current = setTimeout(() => {
-      (searchParams as { search?: string }).search = value || undefined;
-      searchParams.page = 1; // Reset to first page on search
-      shouldFocusRef.current = true; // Keep focus after URL update
-      buildAndPushUrl();
-    }, 500);
-  }
-
-  // Cleanup timer on unmount
-  useEffect(() => {
-    return () => {
-      if (debounceTimerRef.current) {
-        clearTimeout(debounceTimerRef.current);
-      }
-    };
-  }, []);
-
-  function dataGrid_sortModelChange(sortModel: GridSortModel) {
-    if (!sortModel.length) {
-      searchParams.sortField = undefined;
-      searchParams.sortDir = undefined;
-    } else {
-      const { field, sort } = sortModel[0];
-      searchParams.sortField = field;
-      searchParams.sortDir = sort;
-    }
-
-    buildAndPushUrl();
-  }
-
-  function dataGrid_filterModelChange(filterModel: GridFilterModel) {
-    if (!filterModel.items.length) {
-      searchParams.filterField = undefined;
-      searchParams.filterValue = undefined;
-      searchParams.filterOp = undefined;
-    } else {
-      const { field, value, operator } = filterModel.items[0];
-
-      // if value is a date set it to the just the date component of the iso string
-      let cleanVal = undefined;
-
-      if (value === false) {
-        cleanVal = "false";
-      } else if (!value) {
-        cleanVal = undefined;
-      } else if (value instanceof Date) {
-        cleanVal = value.toISOString().split("T")[0];
-      } else {
-        cleanVal = `${value}`;
-      }
-
-      searchParams.filterField = field;
-      searchParams.filterValue = cleanVal;
-      searchParams.filterOp = operator;
-    }
-
-    buildAndPushUrl();
-  }
-
-  function dataGrid_columnVisibilityModelChange(
-    model: GridColumnVisibilityModel,
-  ) {
-    // Get list of hidden columns (where value is false)
-    const hiddenCols = Object.entries(model)
-      .filter(([, visible]) => !visible)
-      .map(([field]) => field);
-
-    searchParams.hiddenColumns = hiddenCols.length
-      ? hiddenCols.join(",")
-      : undefined;
-
-    buildAndPushUrl();
-  }
-
   // Helpers
-  function buildUrl(pageNum: number) {
+  function buildUrl(overrides: Partial<ListSearchParms> = {}) {
+    const merged = { ...searchParams, ...overrides };
     const {
+      page,
+      search,
       sortField,
       sortDir,
       filterField,
       filterValue,
       filterOp,
       hiddenColumns,
-    } = searchParams;
-    const search = (searchParams as { search?: string }).search;
+    } = merged;
 
-    let url = `/${basePath}?page=${pageNum}`;
+    let url = `/${basePath}?page=${page}`;
 
     if (search) {
       url += `&search=${encodeURIComponent(search)}`;
@@ -187,8 +135,97 @@ export default function BaseDataGrid<T>({
     return url;
   }
 
-  function buildAndPushUrl() {
-    router.push(buildUrl(searchParams.page), { scroll: false });
+  function navigateTo(overrides: Partial<ListSearchParms>) {
+    router.push(buildUrl(overrides), { scroll: false });
+  }
+
+  // Event Handlers
+  function dataGrid_paginationModelChange(model: GridPaginationModel) {
+    // Grid uses a zero based page number
+    if (model.page != searchParams.page - 1) {
+      navigateTo({ page: model.page + 1 });
+    }
+  }
+
+  function handleSearchChange(event: React.ChangeEvent<HTMLInputElement>) {
+    const value = event.target.value;
+    setSearchValue(value);
+
+    // Mark that we should restore focus after re-render
+    shouldFocusRef.current = true;
+
+    // Clear existing timer
+    if (debounceTimerRef.current) {
+      clearTimeout(debounceTimerRef.current);
+    }
+
+    // Set new timer
+    debounceTimerRef.current = setTimeout(() => {
+      shouldFocusRef.current = true; // Keep focus after URL update
+      navigateTo({ search: value || undefined, page: 1 });
+    }, 500);
+  }
+
+  // Cleanup timer on unmount
+  useEffect(() => {
+    return () => {
+      if (debounceTimerRef.current) {
+        clearTimeout(debounceTimerRef.current);
+      }
+    };
+  }, []);
+
+  function dataGrid_sortModelChange(sortModel: GridSortModel) {
+    if (!sortModel.length) {
+      navigateTo({ sortField: undefined, sortDir: undefined });
+    } else {
+      const { field, sort } = sortModel[0];
+      navigateTo({ sortField: field, sortDir: sort });
+    }
+  }
+
+  function dataGrid_filterModelChange(filterModel: GridFilterModel) {
+    if (!filterModel.items.length) {
+      navigateTo({
+        filterField: undefined,
+        filterValue: undefined,
+        filterOp: undefined,
+      });
+    } else {
+      const { field, value, operator } = filterModel.items[0];
+
+      // if value is a date set it to the just the date component of the iso string
+      let cleanVal = undefined;
+
+      if (value === false) {
+        cleanVal = "false";
+      } else if (!value) {
+        cleanVal = undefined;
+      } else if (value instanceof Date) {
+        cleanVal = value.toISOString().split("T")[0];
+      } else {
+        cleanVal = `${value}`;
+      }
+
+      navigateTo({
+        filterField: field,
+        filterValue: cleanVal,
+        filterOp: operator,
+      });
+    }
+  }
+
+  function dataGrid_columnVisibilityModelChange(
+    model: GridColumnVisibilityModel,
+  ) {
+    // Get list of hidden columns (where value is false)
+    const hiddenCols = Object.entries(model)
+      .filter(([, visible]) => !visible)
+      .map(([field]) => field);
+
+    navigateTo({
+      hiddenColumns: hiddenCols.length ? hiddenCols.join(",") : undefined,
+    });
   }
 
   // Rendering
@@ -250,65 +287,7 @@ export default function BaseDataGrid<T>({
     });
   }
 
-  function CustomToolbar() {
-    return (
-      <Toolbar>
-        <Box sx={{ display: "flex", gap: 2, width: "100%" }}>
-          <TextField
-            size="small"
-            placeholder="Search..."
-            value={searchValue}
-            onChange={handleSearchChange}
-            inputRef={inputRef}
-            slotProps={{
-              input: {
-                startAdornment: (
-                  <InputAdornment position="start">
-                    <SearchIcon />
-                  </InputAdornment>
-                ),
-              },
-            }}
-            sx={{
-              minWidth: 200,
-            }}
-          />
-          {toolbar}
-        </Box>
-      </Toolbar>
-    );
-  }
-
-  function CustomPagination() {
-    const totalPages = Math.ceil(totalRowCount / pageSize);
-
-    if (totalPages <= 1) {
-      return null;
-    }
-
-    return (
-      <Box sx={{ display: "flex", justifyContent: "center", p: 2 }}>
-        <Pagination
-          count={totalPages}
-          page={page}
-          onChange={(event, newPage) => {
-            // Prevent default link navigation (which would scroll to top)
-            event.preventDefault();
-
-            searchParams.page = newPage;
-            buildAndPushUrl();
-          }}
-          renderItem={(item) => (
-            <PaginationItem
-              component={Link}
-              href={buildUrl(item.page || 1)}
-              {...item}
-            />
-          )}
-        />
-      </Box>
-    );
-  }
+  const totalPages = Math.ceil(totalRowCount / pageSize);
 
   return (
     <>
@@ -334,12 +313,38 @@ export default function BaseDataGrid<T>({
         rows={rows}
         rowSelection={false}
         slots={{ toolbar: CustomToolbar }}
+        slotProps={{
+          toolbar: {
+            searchValue,
+            onSearchChange: handleSearchChange,
+            inputRef,
+            extraToolbar: toolbar,
+          },
+        }}
         showToolbar
         sortingMode="server"
         style={{ border: "none" }}
         hideFooterPagination
       />
-      <CustomPagination />
+      {totalPages > 1 && (
+        <Box sx={{ display: "flex", justifyContent: "center", p: 2 }}>
+          <Pagination
+            count={totalPages}
+            page={page}
+            onChange={(event, newPage) => {
+              event.preventDefault();
+              navigateTo({ page: newPage });
+            }}
+            renderItem={(item) => (
+              <PaginationItem
+                component={Link}
+                href={buildUrl({ page: item.page || 1 })}
+                {...item}
+              />
+            )}
+          />
+        </Box>
+      )}
     </>
   );
 }
