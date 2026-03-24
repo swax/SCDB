@@ -75,7 +75,7 @@ export const schemaRegistry: Record<string, object> = {
       tags: {
         type: "array",
         description: "Tags for categorization. See TagInput schema.",
-        items: { $ref: "TagInput" },
+        items: { $ref: "SketchTagInput" },
       },
     },
   },
@@ -116,7 +116,7 @@ export const schemaRegistry: Record<string, object> = {
       tags: {
         type: "array",
         description: "Replaces all existing tag entries",
-        items: { $ref: "TagInput" },
+        items: { $ref: "SketchTagInput" },
       },
     },
   },
@@ -185,9 +185,9 @@ export const schemaRegistry: Record<string, object> = {
     },
   },
 
-  TagInput: {
+  SketchTagInput: {
     type: "object",
-    description: "A tag for categorizing a sketch",
+    description: "A tag entry for a sketch (references an existing tag by ID)",
     required: ["tag_id"],
     properties: {
       tag_id: {
@@ -294,6 +294,172 @@ export const schemaRegistry: Record<string, object> = {
             description: "Number of sketches this person appears in",
           },
         },
+      },
+    },
+  },
+
+  ShowInput: {
+    type: "object",
+    description: "Request body for creating a show (POST /shows)",
+    required: ["title"],
+    properties: {
+      title: { type: "string", description: "Show title" },
+      short_name: {
+        type: "string",
+        nullable: true,
+        description: "Short name / abbreviation",
+      },
+      description: {
+        type: "string",
+        nullable: true,
+        description: "Show description",
+      },
+      link_urls: {
+        type: "array",
+        items: { type: "string" },
+        nullable: true,
+        description: "Related external links",
+      },
+    },
+  },
+
+  SeasonInput: {
+    type: "object",
+    description: "Request body for creating a season (POST /seasons)",
+    required: ["show_id", "year", "number"],
+    properties: {
+      show_id: {
+        type: "integer",
+        description: "ID of the show. Use GET /lookup/show to find IDs.",
+      },
+      year: { type: "integer", description: "Year the season aired" },
+      number: { type: "integer", description: "Season number" },
+      description: {
+        type: "string",
+        nullable: true,
+        description: "Season description",
+      },
+      link_urls: {
+        type: "array",
+        items: { type: "string" },
+        nullable: true,
+        description: "Related external links",
+      },
+    },
+  },
+
+  EpisodeInput: {
+    type: "object",
+    description: "Request body for creating an episode (POST /episodes)",
+    required: ["season_id", "number"],
+    properties: {
+      season_id: {
+        type: "integer",
+        description: "ID of the season. Use GET /lookup/season to find IDs.",
+      },
+      number: { type: "integer", description: "Episode number" },
+      air_date: {
+        type: "string",
+        format: "date",
+        nullable: true,
+        description: "Air date (YYYY-MM-DD)",
+      },
+      title: { type: "string", nullable: true, description: "Episode title" },
+      description: {
+        type: "string",
+        nullable: true,
+        description: "Episode description",
+      },
+      link_urls: {
+        type: "array",
+        items: { type: "string" },
+        nullable: true,
+        description: "Related external links",
+      },
+    },
+  },
+
+  RecurringSketchInput: {
+    type: "object",
+    description:
+      "Request body for creating a recurring sketch (POST /recurring-sketches)",
+    required: ["title", "show_id"],
+    properties: {
+      title: { type: "string", description: "Recurring sketch title" },
+      show_id: {
+        type: "integer",
+        description: "ID of the show. Use GET /lookup/show to find IDs.",
+      },
+      description: {
+        type: "string",
+        nullable: true,
+        description: "Description",
+      },
+      link_urls: {
+        type: "array",
+        items: { type: "string" },
+        nullable: true,
+        description: "Related external links",
+      },
+    },
+  },
+
+  CharacterInput: {
+    type: "object",
+    description: "Request body for creating a character (POST /characters)",
+    required: ["name"],
+    properties: {
+      name: { type: "string", description: "Character name" },
+      person_id: {
+        type: "integer",
+        nullable: true,
+        description:
+          "If the character portrays a real person, link to them. Use GET /lookup/person to find IDs.",
+      },
+      description: {
+        type: "string",
+        nullable: true,
+        description: "Character description",
+      },
+      link_urls: {
+        type: "array",
+        items: { type: "string" },
+        nullable: true,
+        description: "Related external links",
+      },
+    },
+  },
+
+  CategoryInput: {
+    type: "object",
+    description: "Request body for creating a category (POST /categories)",
+    required: ["name"],
+    properties: {
+      name: { type: "string", description: "Category name" },
+    },
+  },
+
+  TagInput: {
+    type: "object",
+    description: "Request body for creating a tag (POST /tags)",
+    required: ["name", "category_id"],
+    properties: {
+      name: { type: "string", description: "Tag name" },
+      category_id: {
+        type: "integer",
+        description:
+          "ID of the category. Use GET /lookup/category to find IDs.",
+      },
+      description: {
+        type: "string",
+        nullable: true,
+        description: "Tag description",
+      },
+      link_urls: {
+        type: "array",
+        items: { type: "string" },
+        nullable: true,
+        description: "Related external links",
       },
     },
   },
