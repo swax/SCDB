@@ -2,7 +2,7 @@
 
 import { capitalizeFirstLetter } from "@/shared/utilities";
 import { Box, Typography } from "@mui/material";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import RevalidateCacheLink from "./RevalidateCacheLink";
 
 /**
@@ -20,15 +20,6 @@ export default function DateGeneratedFooter({
   const [display, setDisplay] = useState(false);
   const [metaDescription, setMetaDescription] = useState("");
 
-  useEffect(() => {
-    // Rendering
-    const description = document
-      .querySelector('meta[name="description"]')
-      ?.getAttribute("content");
-
-    setMetaDescription(description || "Not set");
-  }, []);
-
   // Rendering
   const dateStr = new Date(genDate).toLocaleString();
 
@@ -45,7 +36,15 @@ export default function DateGeneratedFooter({
 
       {/* Click below line to show info */}
       <Box
-        onClick={() => setDisplay(true)}
+        onClick={() => {
+          if (!metaDescription) {
+            const description = document
+              .querySelector('meta[name="description"]')
+              ?.getAttribute("content");
+            setMetaDescription(description || "Not set");
+          }
+          setDisplay(true);
+        }}
         style={{
           borderTop: "1px solid #222",
           height: "24px",
