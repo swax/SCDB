@@ -9,7 +9,7 @@ import {
   AccordionSummary,
   Box,
 } from "@mui/material";
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import CalendarHeatmap, {
   ReactCalendarHeatmapValue,
 } from "react-calendar-heatmap";
@@ -32,8 +32,10 @@ export default function EditActivity({ userId }: { userId: string }) {
   const [loading, setLoading] = useState(false);
   const [activityGrid, setActivityGrid] = useState<ActivityGridRow[]>();
 
-  useEffect(() => {
-    if (expanded && !loading && !activityGrid) {
+  function handleExpandToggle() {
+    const newExpanded = !expanded;
+    setExpanded(newExpanded);
+    if (newExpanded && !loading && !activityGrid) {
       setLoading(true);
       // Add some buffer to days back because some back days are added to the heat map to show the full week
       void getActivityGridAction(userId, daysBack + 10).then(
@@ -43,7 +45,7 @@ export default function EditActivity({ userId }: { userId: string }) {
         },
       );
     }
-  }, [expanded]);
+  }
 
   const heatmapData = useMemo(() => {
     if (!activityGrid) {
@@ -86,7 +88,7 @@ export default function EditActivity({ userId }: { userId: string }) {
 
   // Rendering
   return (
-    <Accordion expanded={expanded} onChange={() => setExpanded(!expanded)}>
+    <Accordion expanded={expanded} onChange={handleExpandToggle}>
       <AccordionSummary
         expandIcon={<ExpandMoreIcon />}
         aria-controls="edit-activity-content"

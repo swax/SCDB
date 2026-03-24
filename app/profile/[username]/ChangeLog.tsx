@@ -10,7 +10,7 @@ import {
   AccordionSummary,
   Box,
 } from "@mui/material";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { getChangeLogAction } from "./actions/getActions";
 
 export default function ChangeLog({ username }: { username: string }) {
@@ -23,8 +23,10 @@ export default function ChangeLog({ username }: { username: string }) {
   const [loading, setLoading] = useState(false);
   const [changelog, setChangelog] = useState<GetChangelogResponse>();
 
-  useEffect(() => {
-    if (expanded && !loading && !changelog) {
+  function handleExpandToggle() {
+    const newExpanded = !expanded;
+    setExpanded(newExpanded);
+    if (newExpanded && !loading && !changelog) {
       setLoading(true);
       void getChangeLogAction(username, page, rowsPerPage).then(
         (changeLogResponse) => {
@@ -33,11 +35,11 @@ export default function ChangeLog({ username }: { username: string }) {
         },
       );
     }
-  }, [expanded]);
+  }
 
   // Rendering
   return (
-    <Accordion expanded={expanded} onChange={() => setExpanded(!expanded)}>
+    <Accordion expanded={expanded} onChange={handleExpandToggle}>
       <AccordionSummary
         expandIcon={<ExpandMoreIcon />}
         aria-controls="edits-content"
