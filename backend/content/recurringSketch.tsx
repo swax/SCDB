@@ -53,6 +53,15 @@ export async function getRecurringSketch(id: number) {
   });
 }
 
+export async function getRecurringSketchBySlug(slug: string) {
+  const result = await prisma.recurring_sketch.findUnique({
+    where: { url_slug: slug },
+    select: { id: true },
+  });
+  if (!result) return null;
+  return getRecurringSketch(result.id);
+}
+
 export async function getRecurringSketchGrid(
   id: number,
   page: number,

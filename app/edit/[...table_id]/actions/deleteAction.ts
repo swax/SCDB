@@ -1,6 +1,6 @@
 "use server";
 
-import { revalidateContent } from "@/app/(content)/contentBase";
+import { revalidateContent } from "@/app/contentBase";
 import {
   catchServiceErrors,
   getLoggedInUser,
@@ -18,7 +18,7 @@ export default async function deleteAction(table: TableCms, id: number) {
 
     const slug = await getSlugForId(table, id);
 
-    revalidateContent(table.name, id, slug);
+    revalidateContent(table.name, slug);
 
     await deleteRow(user, table, id);
   });

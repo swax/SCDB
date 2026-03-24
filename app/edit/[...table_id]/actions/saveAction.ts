@@ -1,6 +1,6 @@
 "use server";
 
-import { revalidateContent } from "@/app/(content)/contentBase";
+import { revalidateContent } from "@/app/contentBase";
 import { catchServiceErrors, getLoggedInUser } from "@/backend/actionHelper";
 import { TableCms } from "@/backend/cms/cmsTypes";
 import {
@@ -8,6 +8,7 @@ import {
   writeFieldValues,
 } from "@/backend/edit/editWriteService";
 import ProcessEnv from "@/shared/ProcessEnv";
+import { getPluralTableName } from "@/shared/tableNames";
 import { sendBingUpdate, sendGoogleUpdate } from "./searchIndexing";
 
 export default async function saveAction(table: TableCms, id: number) {
@@ -18,7 +19,7 @@ export default async function saveAction(table: TableCms, id: number) {
 
     if (id) {
       slug = await getSlugForId(table, id);
-      revalidateContent(table.name, id, slug);
+      revalidateContent(table.name, slug);
     }
 
     const response = await writeFieldValues(user, table, id);
@@ -32,7 +33,7 @@ export default async function saveAction(table: TableCms, id: number) {
     const { rowId, newSlug } = response.content;
 
     if (newSlug && newSlug !== slug) {
-      revalidateContent(table.name, id, newSlug);
+      revalidateContent(table.name, newSlug);
     }
 
     // Notify bing/google of changes, skip if in dev mode
@@ -50,7 +51,8 @@ export default async function saveAction(table: TableCms, id: number) {
       // Update to use next/after once available in v15
       // https://nextjs.org/blog/next-15-rc#executing-code-after-a-response-with-nextafter-experimental
       const tablePath = table.name.replace("_", "-");
-      const url = `https://www.sketchtv.lol/${tablePath}/${rowId}/${slugPath}`;
+      const plural = getPluralTableName(tablePath);
+      const url = `https://www.sketchtv.lol/${plural}/${slugPath}`;
       const bingUpdate = sendBingUpdate(url, response);
 
       // Disable this, not meant for how we are using it, no changes are being registered by google

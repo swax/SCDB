@@ -46,3 +46,12 @@ export async function getCategory(id: number) {
     dateGenerated: new Date(),
   };
 }
+
+export async function getCategoryBySlug(slug: string) {
+  const result = await prisma.category.findUnique({
+    where: { url_slug: slug },
+    select: { id: true },
+  });
+  if (!result) return null;
+  return getCategory(result.id);
+}

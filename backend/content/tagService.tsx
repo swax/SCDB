@@ -128,6 +128,15 @@ export async function getTag(id: number) {
   };
 }
 
+export async function getTagBySlug(slug: string) {
+  const result = await prisma.tag.findFirst({
+    where: { url_slug: slug },
+    select: { id: true },
+  });
+  if (!result) return null;
+  return getTag(result.id);
+}
+
 export async function getTagSketchGrid(
   id: number,
   page: number,

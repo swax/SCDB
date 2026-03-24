@@ -86,6 +86,15 @@ export async function getPerson(id: number) {
   };
 }
 
+export async function getPersonBySlug(slug: string) {
+  const result = await prisma.person.findUnique({
+    where: { url_slug: slug },
+    select: { id: true },
+  });
+  if (!result) return null;
+  return getPerson(result.id);
+}
+
 function getAge(birthDate: Nullable<Date>, deathDate: Nullable<Date>) {
   if (!birthDate) {
     return null;

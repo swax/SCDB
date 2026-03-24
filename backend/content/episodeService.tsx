@@ -56,6 +56,15 @@ export async function getEpisode(id: number) {
   });
 }
 
+export async function getEpisodeBySlug(slug: string) {
+  const result = await prisma.episode.findUnique({
+    where: { url_slug: slug },
+    select: { id: true },
+  });
+  if (!result) return null;
+  return getEpisode(result.id);
+}
+
 export async function getEpisodeSketchGrid(
   id: number,
   page: number,

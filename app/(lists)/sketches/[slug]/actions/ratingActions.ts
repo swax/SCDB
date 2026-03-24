@@ -1,6 +1,6 @@
 "use server";
 
-import { revalidateContent } from "@/app/(content)/contentBase";
+import { revalidateContent } from "@/app/contentBase";
 import { catchServiceErrors, getLoggedInUser } from "@/backend/actionHelper";
 import * as sketchService from "@/backend/content/sketchService";
 
@@ -14,7 +14,7 @@ export async function saveRating(
 
     const response = sketchService.saveRating(user.id, sketchId, rating);
 
-    revalidateContent("sketch", sketchId, slug); // Revalidates page cache so the updated rating will show
+    revalidateContent("sketch", slug); // Revalidates page cache so the updated rating will show
 
     return response;
   });

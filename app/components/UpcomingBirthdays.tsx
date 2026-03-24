@@ -58,7 +58,7 @@ export default function UpcomingBirthdays({
             <ListItem
               key={birthday.id}
               component={Link}
-              href={`/person/${birthday.id}/${birthday.url_slug}`}
+              href={`/people/${birthday.url_slug}`}
               sx={{
                 textDecoration: "none",
                 color: "inherit",

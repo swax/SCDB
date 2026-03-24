@@ -64,6 +64,15 @@ export async function getSeason(id: number) {
   });
 }
 
+export async function getSeasonBySlug(slug: string) {
+  const result = await prisma.season.findUnique({
+    where: { url_slug: slug },
+    select: { id: true },
+  });
+  if (!result) return null;
+  return getSeason(result.id);
+}
+
 export async function getSeasonSketchGrid(
   id: number,
   page: number,

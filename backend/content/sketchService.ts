@@ -192,6 +192,15 @@ export async function getSketch(id: number) {
   };
 }
 
+export async function getSketchBySlug(slug: string) {
+  const result = await prisma.sketch.findUnique({
+    where: { url_slug: slug },
+    select: { id: true },
+  });
+  if (!result) return null;
+  return getSketch(result.id);
+}
+
 export async function saveRating(
   userId: string,
   sketchId: number,
@@ -270,7 +279,7 @@ export async function getSketchSitemap() {
   });
 
   return list.map((sketch) => ({
-    url: `https://www.sketchtv.lol/sketch/${sketch.id}/${sketch.url_slug}`,
+    url: `https://www.sketchtv.lol/sketches/${sketch.url_slug}`,
     lastModified: sketch.modified_at.toISOString().split("T")[0],
   }));
 }

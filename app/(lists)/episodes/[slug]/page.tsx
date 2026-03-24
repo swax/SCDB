@@ -1,0 +1,105 @@
+import { ContentLink } from "@/app/components/ContentLink";
+import LinksPanel from "@/app/components/LinksPanel";
+import DateGeneratedFooter from "@/app/footer/DateGeneratedFooter";
+import {
+  getEpisodeBySlug,
+  getEpisodeSketchGrid,
+  getEpisodesList,
+} from "@/backend/content/episodeService";
+import { SlugPageProps, tryGetContentBySlug } from "@/app/contentBase";
+import { getStaticPageCount } from "@/shared/ProcessEnv";
+import {
+  buildPageMeta,
+  getMetaImagesForSketchGrid,
+} from "@/shared/metaBuilder";
+import { getContentPath } from "@/shared/tableNames";
+import { buildPageTitle, toNiceDate } from "@/shared/utilities";
+import { Box, Typography } from "@mui/material";
+import { Metadata } from "next";
+import { cache, Suspense } from "react";
+import SketchGrid from "@/app/components/SketchGrid";
+
+// Cached for the life of the request only
+const getCachedEpisode = cache(async (slug: string) => getEpisodeBySlug(slug));
+const getCachedEpisodeSketchGrid = cache(async (id: number) =>
+  getEpisodeSketchGrid(id, 1),
+);
+
+export async function generateMetadata({
+  params,
+}: SlugPageProps): Promise<Metadata> {
+  const resolvedParams = await params;
+  const { slug } = resolvedParams;
+
+  const episode = await getCachedEpisode(slug);
+  if (!episode) {
+    return {};
+  }
+
+  const title = buildPageTitle(
+    `Episode ${episode.number} - ${episode.season.lookup_slug}`,
+  );
+  const description =
+    `Comedy sketches from episode ${episode.number} of ${episode.season.lookup_slug}` +
+    (episode.air_date ? ` aired on ${toNiceDate(episode.air_date)}` : "");
+  const sketches = await getCachedEpisodeSketchGrid(episode.id);
+
+  return buildPageMeta(
+    title,
+    description,
+    getContentPath("episode", episode.url_slug),
+    getMetaImagesForSketchGrid(sketches, 3),
+  );
+}
+
+export const revalidate = 300; // 5 minutes
+
+export async function generateStaticParams() {
+  const episodes = await getEpisodesList({
+    page: 1,
+    pageSize: getStaticPageCount(),
+  });
+
+  return episodes.list.map((episode) => ({
+    slug: episode.url_slug,
+  }));
+}
+
+export default async function EpisodePage({ params }: SlugPageProps) {
+  // Data fetching
+  const episode = await tryGetContentBySlug(params, getCachedEpisode);
+
+  async function getSketchData(page: number) {
+    "use server";
+    return await getEpisodeSketchGrid(episode.id, page);
+  }
+
+  const sketchData = await getCachedEpisodeSketchGrid(episode.id);
+
+  // Rendering
+  return (
+    <>
+      <Box style={{ marginTop: 32, marginBottom: 32 }}>
+        <Typography component="h1" variant="h4">
+          Episode {episode.number}
+        </Typography>
+        <Typography component="div" variant="subtitle1">
+          <ContentLink mui table="show" entry={episode.season.show} /> -{" "}
+          <ContentLink mui table="season" entry={episode.season}>
+            Season {episode.season.number}
+          </ContentLink>
+        </Typography>
+        {!!episode.air_date && (
+          <Typography component="div" variant="subtitle1">
+            Air Date: {toNiceDate(episode.air_date)}
+          </Typography>
+        )}
+      </Box>
+      <Suspense fallback={<div>Loading sketches...</div>}>
+        <SketchGrid initialData={sketchData} getData={getSketchData} />
+      </Suspense>
+      <LinksPanel link_urls={episode.link_urls} />
+      <DateGeneratedFooter genDate={new Date()} type="page" />
+    </>
+  );
+}

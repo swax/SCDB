@@ -1,3 +1,4 @@
+import { getContentPath } from "@/shared/tableNames";
 import Link from "next/link";
 import { ReactNode } from "react";
 import MuiNextLink from "./MuiNextLink";
@@ -29,7 +30,7 @@ export function ContentLink({
     return <>{children}</>;
   }
 
-  const href = `/${table}/${entry.id}/${entry.url_slug}`;
+  const href = getContentPath(table, entry.url_slug);
   const content = children || entry.name || entry.title || entry.year;
 
   return mui ? (

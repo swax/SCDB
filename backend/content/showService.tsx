@@ -64,6 +64,15 @@ export async function getShow(id: number) {
   });
 }
 
+export async function getShowBySlug(slug: string) {
+  const result = await prisma.show.findUnique({
+    where: { url_slug: slug },
+    select: { id: true },
+  });
+  if (!result) return null;
+  return getShow(result.id);
+}
+
 export async function getShowSketchGrid(
   id: number,
   page: number,

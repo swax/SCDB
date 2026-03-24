@@ -1,6 +1,6 @@
 import { Metadata } from "next";
 import "server-only";
-import { sketchType } from "../app/(content)/sketch/[...idslug]/sketchTypes";
+import { sketchType } from "../app/(lists)/sketches/[slug]/sketchTypes";
 import staticUrl from "./cdnHost";
 import { SketchGridData } from "./sketchGridBase";
 

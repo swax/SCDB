@@ -6,25 +6,25 @@ import { useEffect, useState } from "react";
 const featuredTags = [
   {
     label: "Winter",
-    href: "/tag/1453/holidays-winter",
+    href: "/tags/holidays-winter",
     color: "#e3f2fd",
   },
-  { label: "Christmas", href: "/tag/42/holidays-Christmas", color: "#ff5252" },
-  { label: "Friendship", href: "/tag/225/friendship", color: "#ffd54f" },
+  { label: "Christmas", href: "/tags/holidays-Christmas", color: "#ff5252" },
+  { label: "Friendship", href: "/tags/friendship", color: "#ffd54f" },
   {
     label: "Santa Claus",
-    href: "/tag/1395/characters-santa-claus",
+    href: "/tags/characters-santa-claus",
     color: "#ff5252",
   },
   {
     label: "Hanukkah",
-    href: "/tag/1385/holidays-hanukkah",
+    href: "/tags/holidays-hanukkah",
     color: "#64b5f6",
   },
-  { label: "Family", href: "/tag/422/family", color: "#81c784" },
+  { label: "Family", href: "/tags/family", color: "#81c784" },
   {
     label: "Gift Giving",
-    href: "/tag/1027/topics-gift-giving",
+    href: "/tags/topics-gift-giving",
     color: "#ffd54f",
   },
 ];

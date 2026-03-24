@@ -62,6 +62,15 @@ export async function getCharacter(id: number) {
   };
 }
 
+export async function getCharacterBySlug(slug: string) {
+  const result = await prisma.character.findUnique({
+    where: { url_slug: slug },
+    select: { id: true },
+  });
+  if (!result) return null;
+  return getCharacter(result.id);
+}
+
 export async function getCharacterSketchGrid(
   id: number,
   page: number,

@@ -1,6 +1,6 @@
 "use client";
 
-import SketchGrid from "@/app/(content)/SketchGrid";
+import SketchGrid from "@/app/components/SketchGrid";
 import { GetProfileResponse } from "@/backend/user/profileService";
 import { allowedToChangeRole } from "@/shared/roleUtils";
 import { SketchGridData } from "@/shared/sketchGridBase";

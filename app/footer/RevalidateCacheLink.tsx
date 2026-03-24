@@ -1,6 +1,7 @@
 "use client";
 
 import { getRoleRank } from "@/shared/roleUtils";
+import { getSingularTableName } from "@/shared/tableNames";
 import type { user_role_type } from "@/database/generated/client";
 import { user_role_type as UserRole } from "@/shared/enums";
 import { useSession } from "next-auth/react";
@@ -15,32 +16,34 @@ export default function RevalidateCacheLink() {
   const path = usePathname();
   const { data: session } = useSession();
 
-  const { enabled, table, id, slug } = useMemo(() => {
+  const { enabled, table, slug } = useMemo(() => {
     const pathParts = path.split("/");
 
-    // A valid cached path that can be revalidated has the from "/<table>/<id>/<slug>"
-    const validPath =
-      path == "/" || (pathParts.length == 4 && parseInt(pathParts[2]));
+    // A valid cached path that can be revalidated has the form "/<plural>/<slug>"
+    const [, pluralTable, slug] = pathParts;
+    const table =
+      pathParts.length == 3 && pluralTable
+        ? getSingularTableName(pluralTable)
+        : undefined;
+
+    const validPath = path == "/" || !!table;
 
     const enabled =
       validPath &&
       session?.user &&
       getRoleRank(session.user.role) >= getRoleRank(UserRole.Moderator);
 
-    const [, table, id, slug] = pathParts;
-
     return {
       enabled,
       table,
-      id: parseInt(id),
       slug,
     };
   }, [session, path]);
 
   // Event handlers
   async function revalidateCacheButton_click() {
-    if (table && id) {
-      await revalidate(table, id, slug);
+    if (table && slug) {
+      await revalidate(table, slug);
     } else {
       await revalidateRoot();
     }

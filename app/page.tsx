@@ -7,7 +7,7 @@ import {
 import TrendingUpIcon from "@mui/icons-material/TrendingUp";
 import { Box, Typography } from "@mui/material";
 import { Suspense } from "react";
-import SketchGrid from "./(content)/SketchGrid";
+import SketchGrid from "./components/SketchGrid";
 import FeaturedTagChips from "./components/FeaturedTagChips";
 import MuiNextLink from "./components/MuiNextLink";
 import Snow from "./components/Snow";
