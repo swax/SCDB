@@ -122,8 +122,9 @@ export default function ImageField({
     const container = containerRef.current;
     if (!container) return;
 
-    container.addEventListener("paste", handlePaste);
-    return () => container.removeEventListener("paste", handlePaste);
+    const onPaste = (e: ClipboardEvent) => void handlePaste(e);
+    container.addEventListener("paste", onPaste);
+    return () => container.removeEventListener("paste", onPaste);
   }, [tableName, index, field, loading, uploading]);
 
   // Rendering
