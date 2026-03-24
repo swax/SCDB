@@ -374,6 +374,68 @@ const spec = {
           },
         },
       },
+      Person: {
+        type: "object",
+        properties: {
+          id: { type: "integer" },
+          url_slug: { type: "string" },
+          name: { type: "string" },
+          description: { type: "string", nullable: true },
+          birth_date: { type: "string", format: "date", nullable: true },
+          death_date: { type: "string", format: "date", nullable: true },
+          age: { type: "integer", nullable: true },
+          link_urls: {
+            type: "array",
+            items: { type: "string" },
+            nullable: true,
+          },
+          character: {
+            type: "array",
+            items: {
+              type: "object",
+              properties: {
+                id: { type: "integer" },
+                url_slug: { type: "string" },
+                name: { type: "string" },
+              },
+            },
+          },
+          person_images: {
+            type: "array",
+            items: {
+              type: "object",
+              properties: {
+                description: { type: "string", nullable: true },
+                image: {
+                  type: "object",
+                  properties: {
+                    cdn_key: { type: "string" },
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+      PersonInput: { $ref: "#/components/schemas/Person" },
+      PersonUpdateInput: { $ref: "#/components/schemas/Person" },
+      PersonListItem: {
+        type: "object",
+        properties: {
+          id: { type: "integer" },
+          name: { type: "string" },
+          url_slug: { type: "string" },
+          birth_date: { type: "string", format: "date", nullable: true },
+          death_date: { type: "string", format: "date", nullable: true },
+          age: { type: "integer", nullable: true },
+          _count: {
+            type: "object",
+            properties: {
+              sketch_casts: { type: "integer" },
+            },
+          },
+        },
+      },
       LookupResult: {
         type: "object",
         properties: {
@@ -744,6 +806,241 @@ const spec = {
         },
       },
     },
+    "/people": {
+      get: {
+        operationId: "listPeople",
+        summary: "List people",
+        description:
+          "Returns a paginated list of people (actors, writers, etc.) with basic info.",
+        tags: ["People"],
+        parameters: [
+          {
+            name: "search",
+            in: "query",
+            description: "Search people by name",
+            schema: { type: "string" },
+          },
+          {
+            name: "page",
+            in: "query",
+            description: "Page number (default: 1)",
+            schema: { type: "integer", default: 1 },
+          },
+          {
+            name: "pageSize",
+            in: "query",
+            description: "Results per page (default: 30)",
+            schema: { type: "integer", default: 30 },
+          },
+          {
+            name: "sortField",
+            in: "query",
+            description: "Field to sort by (e.g. name, birth_date)",
+            schema: { type: "string" },
+          },
+          {
+            name: "sortDir",
+            in: "query",
+            description: "Sort direction",
+            schema: { type: "string", enum: ["asc", "desc"] },
+          },
+        ],
+        responses: {
+          "200": {
+            description: "Paginated list of people",
+            content: {
+              "application/json": {
+                schema: {
+                  type: "object",
+                  properties: {
+                    people: {
+                      type: "array",
+                      items: { $ref: "#/components/schemas/PersonListItem" },
+                    },
+                    total: { type: "integer" },
+                    page: { type: "integer" },
+                    pageSize: { type: "integer" },
+                  },
+                },
+              },
+            },
+          },
+          "401": {
+            description: "Unauthorized",
+            content: {
+              "application/json": {
+                schema: { $ref: "#/components/schemas/Error" },
+              },
+            },
+          },
+        },
+      },
+      post: {
+        operationId: "createPerson",
+        summary: "Create a new person",
+        description: "Creates a new person entry (actor, writer, etc.).",
+        tags: ["People"],
+        requestBody: {
+          required: true,
+          content: {
+            "application/json": {
+              schema: { $ref: "#/components/schemas/PersonInput" },
+            },
+          },
+        },
+        responses: {
+          "201": {
+            description: "Person created",
+            content: {
+              "application/json": {
+                schema: {
+                  type: "object",
+                  properties: {
+                    id: { type: "integer" },
+                    url_slug: { type: "string" },
+                  },
+                },
+              },
+            },
+          },
+          "400": {
+            description: "Validation error",
+            content: {
+              "application/json": {
+                schema: { $ref: "#/components/schemas/Error" },
+              },
+            },
+          },
+        },
+      },
+    },
+    "/people/{id}": {
+      get: {
+        operationId: "getPerson",
+        summary: "Get person details",
+        description:
+          "Returns full details for a person including images, characters, and links.",
+        tags: ["People"],
+        parameters: [
+          {
+            name: "id",
+            in: "path",
+            required: true,
+            schema: { type: "integer" },
+          },
+        ],
+        responses: {
+          "200": {
+            description: "Person details",
+            content: {
+              "application/json": {
+                schema: { $ref: "#/components/schemas/Person" },
+              },
+            },
+          },
+          "404": {
+            description: "Person not found",
+            content: {
+              "application/json": {
+                schema: { $ref: "#/components/schemas/Error" },
+              },
+            },
+          },
+        },
+      },
+      put: {
+        operationId: "updatePerson",
+        summary: "Update a person",
+        description:
+          "Updates an existing person. Only include fields you want to change.",
+        tags: ["People"],
+        parameters: [
+          {
+            name: "id",
+            in: "path",
+            required: true,
+            schema: { type: "integer" },
+          },
+        ],
+        requestBody: {
+          required: true,
+          content: {
+            "application/json": {
+              schema: { $ref: "#/components/schemas/PersonUpdateInput" },
+            },
+          },
+        },
+        responses: {
+          "200": {
+            description: "Person updated",
+            content: {
+              "application/json": {
+                schema: {
+                  type: "object",
+                  properties: {
+                    id: { type: "integer" },
+                    url_slug: { type: "string" },
+                  },
+                },
+              },
+            },
+          },
+          "400": {
+            description: "Validation error",
+            content: {
+              "application/json": {
+                schema: { $ref: "#/components/schemas/Error" },
+              },
+            },
+          },
+          "404": {
+            description: "Person not found",
+            content: {
+              "application/json": {
+                schema: { $ref: "#/components/schemas/Error" },
+              },
+            },
+          },
+        },
+      },
+      delete: {
+        operationId: "deletePerson",
+        summary: "Delete a person",
+        description: "Permanently deletes a person entry.",
+        tags: ["People"],
+        parameters: [
+          {
+            name: "id",
+            in: "path",
+            required: true,
+            schema: { type: "integer" },
+          },
+        ],
+        responses: {
+          "200": {
+            description: "Person deleted",
+            content: {
+              "application/json": {
+                schema: {
+                  type: "object",
+                  properties: {
+                    success: { type: "boolean" },
+                  },
+                },
+              },
+            },
+          },
+          "404": {
+            description: "Person not found",
+            content: {
+              "application/json": {
+                schema: { $ref: "#/components/schemas/Error" },
+              },
+            },
+          },
+        },
+      },
+    },
     "/lookup/{table}": {
       get: {
         operationId: "lookupValues",
@@ -813,7 +1110,7 @@ const spec = {
     },
     {
       name: "Content",
-      tags: ["Sketches"],
+      tags: ["Sketches", "People"],
     },
   ],
 };

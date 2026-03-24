@@ -220,6 +220,84 @@ export const schemaRegistry: Record<string, object> = {
     },
   },
 
+  PersonInput: {
+    type: "object",
+    description: "Request body for creating a new person (POST /people)",
+    required: ["name", "gender"],
+    properties: {
+      name: { type: "string", description: "Full name" },
+      description: {
+        type: "string",
+        nullable: true,
+        description: "Bio or description",
+      },
+      gender: {
+        type: "string",
+        enum: ["Male", "Female", "Other"],
+        description: "Gender",
+      },
+      birth_date: {
+        type: "string",
+        format: "date",
+        nullable: true,
+        description: "Birthday (YYYY-MM-DD)",
+      },
+      death_date: {
+        type: "string",
+        format: "date",
+        nullable: true,
+        description: "Date of death (YYYY-MM-DD)",
+      },
+      link_urls: {
+        type: "array",
+        items: { type: "string" },
+        nullable: true,
+        description: "Related external links (e.g. Wikipedia, IMDb)",
+      },
+    },
+  },
+
+  PersonUpdateInput: {
+    type: "object",
+    description:
+      "Request body for updating a person (PUT /people/{id}). All fields optional. " +
+      "Only provided fields are updated.",
+    properties: {
+      name: { type: "string" },
+      description: { type: "string", nullable: true },
+      gender: { type: "string", enum: ["Male", "Female", "Other"] },
+      birth_date: { type: "string", format: "date", nullable: true },
+      death_date: { type: "string", format: "date", nullable: true },
+      link_urls: {
+        type: "array",
+        items: { type: "string" },
+        nullable: true,
+      },
+    },
+  },
+
+  PersonListItem: {
+    type: "object",
+    description: "Person summary returned by GET /people",
+    properties: {
+      id: { type: "integer" },
+      name: { type: "string" },
+      url_slug: { type: "string" },
+      birth_date: { type: "string", format: "date", nullable: true },
+      death_date: { type: "string", format: "date", nullable: true },
+      age: { type: "integer", nullable: true },
+      _count: {
+        type: "object",
+        properties: {
+          sketch_casts: {
+            type: "integer",
+            description: "Number of sketches this person appears in",
+          },
+        },
+      },
+    },
+  },
+
   LookupResult: {
     type: "object",
     description: "A lookup match returned by GET /lookup/{table}",

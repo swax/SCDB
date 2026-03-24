@@ -24,6 +24,18 @@ export function GET() {
         methods: ["GET", "PUT", "DELETE"],
       },
       {
+        rel: "people",
+        href: `${API_PREFIX}/people`,
+        title: "List/Create People",
+        methods: ["GET", "POST"],
+      },
+      {
+        rel: "person",
+        href: `${API_PREFIX}/people/{id}`,
+        title: "Get/Update/Delete Person",
+        methods: ["GET", "PUT", "DELETE"],
+      },
+      {
         rel: "lookup",
         href: `${API_PREFIX}/lookup/{table}?search={term}`,
         title:
