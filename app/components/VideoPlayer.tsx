@@ -2,7 +2,7 @@
 
 import CloseIcon from "@mui/icons-material/Close";
 import { Backdrop, Box, Chip, Typography } from "@mui/material";
-import { useEffect, useState } from "react";
+import { useMemo, useState } from "react";
 import { useWindowSize } from "react-use";
 import MuiNextLink from "./MuiNextLink";
 
@@ -11,70 +11,58 @@ interface VideoPlayerProps {
   onClose: () => void;
 }
 
+function deriveVideoInfo(url: string): { videoUrl: string; provider: string } {
+  if (url.startsWith("https://www.youtube.com/embed/")) {
+    return { videoUrl: url, provider: "youtube" };
+  }
+  if (url.startsWith("https://player.vimeo.com/video/")) {
+    return { videoUrl: url, provider: "vimeo" };
+  }
+  if (url.startsWith("https://archive.org/embed/")) {
+    return { videoUrl: url, provider: "archive" };
+  }
+  if (url.startsWith("https://www.youtube.com/watch?v=")) {
+    const videoId = url.split("v=").pop();
+    return {
+      videoUrl: `https://www.youtube.com/embed/${videoId}`,
+      provider: "youtube",
+    };
+  }
+  if (url.startsWith("https://vimeo.com/")) {
+    const videoId = url.split("/").pop();
+    return {
+      videoUrl: `https://player.vimeo.com/video/${videoId}`,
+      provider: "vimeo",
+    };
+  }
+  if (url.startsWith("https://archive.org/details/")) {
+    const videoId = url.split("/")[4];
+    return {
+      videoUrl: `https://archive.org/embed/${videoId}`,
+      provider: "archive",
+    };
+  }
+  if (url.startsWith("https://www.tiktok.com/@")) {
+    const videoId = url.match(/\/video\/(\d+)/)?.[1] || "";
+    return { videoUrl: videoId, provider: "tiktok" };
+  }
+  if (url.startsWith("https://www.reddit.com/")) {
+    return { videoUrl: url, provider: "reddit" };
+  }
+  if (url.startsWith("https://www.facebook.com/")) {
+    return { videoUrl: url, provider: "facebook" };
+  }
+  return { videoUrl: url, provider: "" };
+}
+
 export default function VideoPlayer({ videoUrls, onClose }: VideoPlayerProps) {
   // Hooks
   const [selectedUrl, setSelectedUrl] = useState(videoUrls[0]);
-  const [videoUrl, setVideoUrl] = useState("");
-  const [provider, setProvider] = useState("");
+  const { videoUrl, provider } = useMemo(
+    () => deriveVideoInfo(selectedUrl),
+    [selectedUrl],
+  );
   let { height, width } = useWindowSize();
-
-  useEffect(() => {
-    const url = selectedUrl;
-
-    setVideoUrl(url);
-    setProvider("");
-
-    // Embedded youtube url
-    if (url.startsWith("https://www.youtube.com/embed/")) {
-      setProvider("youtube");
-    }
-    // Embedded video url
-    else if (url.startsWith("https://player.vimeo.com/video/")) {
-      setProvider("vimeo");
-    }
-    // Embedded web archive url
-    else if (url.startsWith("https://archive.org/embed/")) {
-      setProvider("archive");
-    }
-
-    // Turn https://www.youtube.com/watch?v=5fvsItXYgzk into https://www.youtube.com/embed/5fvsItXYgzk
-    else if (url.startsWith("https://www.youtube.com/watch?v=")) {
-      const videoId = url.split("v=").pop();
-      setVideoUrl(`https://www.youtube.com/embed/${videoId}`);
-      setProvider("youtube");
-    }
-
-    // Turn https://vimeo.com/386154032 into https://player.vimeo.com/video/386154032
-    else if (url.startsWith("https://vimeo.com/")) {
-      const videoId = url.split("/").pop();
-      setVideoUrl(`https://player.vimeo.com/video/${videoId}`);
-      setProvider("vimeo");
-    }
-
-    // Turn https://archive.org/details/the-state-season-4-mkv/The+State+-+S04E01.mkv into https://archive.org/embed/the-state-season-4-mkv
-    else if (url.startsWith("https://archive.org/details/")) {
-      const videoId = url.split("/")[4];
-      setVideoUrl(`https://archive.org/embed/${videoId}`);
-      setProvider("archive");
-    }
-
-    // Get ID 7371058051584970026 from https://www.tiktok.com/@nypost/video/7371058051584970026 with regex
-    else if (url.startsWith("https://www.tiktok.com/@")) {
-      const videoId = url.match(/\/video\/(\d+)/)?.[1] || "";
-      setVideoUrl(videoId);
-      setProvider("tiktok");
-    }
-
-    // https://www.reddit.com/r/Terminator/comments/m41ve3/the_tooncinator/
-    else if (url.startsWith("https://www.reddit.com/")) {
-      setProvider("reddit");
-    }
-
-    // https://www.facebook.com/watch/?v=470851350261614
-    else if (url.startsWith("https://www.facebook.com/")) {
-      setProvider("facebook");
-    }
-  }, [selectedUrl]);
 
   // Rendering
   if (typeof window !== "undefined") {
