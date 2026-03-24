@@ -1,5 +1,5 @@
 import { usePathname, useSearchParams } from "next/navigation";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 
 /**
  * Hook that listens for click on an anchor element, when that happens return true
@@ -10,10 +10,19 @@ export default function usePageLoading() {
   const params = useSearchParams();
   const paramsStr = params.toString();
 
-  const currentPath = useRef(path);
-  const currentParams = useRef(paramsStr);
-
   const [pageLoading, setPageLoading] = useState(false);
+  const [prevPath, setPrevPath] = useState(path);
+  const [prevParams, setPrevParams] = useState(paramsStr);
+
+  // When path or search params change, clear the loading status (React-approved
+  // "store previous render info" pattern avoids setState-in-effect)
+  if (prevPath !== path || prevParams !== paramsStr) {
+    setPrevPath(path);
+    setPrevParams(paramsStr);
+    if (pageLoading) {
+      setPageLoading(false);
+    }
+  }
 
   // Event handler - must be defined before useEffect
   function handleGlobalClick(event: MouseEvent) {
@@ -35,15 +44,6 @@ export default function usePageLoading() {
       document.removeEventListener("click", handleGlobalClick);
     };
   }, []);
-
-  // When path or search params change, clear the loading status
-  useEffect(() => {
-    if (currentPath.current !== path || currentParams.current !== paramsStr) {
-      setPageLoading(false);
-      currentPath.current = path;
-      currentParams.current = paramsStr;
-    }
-  }, [path, paramsStr]);
 
   return pageLoading;
 }
