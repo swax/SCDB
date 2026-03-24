@@ -3,17 +3,19 @@ import VisibilityIcon from "@mui/icons-material/Visibility";
 import { IconButton, Tooltip } from "@mui/material";
 import { useSession } from "next-auth/react";
 import { usePathname } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useSyncExternalStore } from "react";
+
+const noopSubscribe = () => () => {};
 
 export default function EditViewButton() {
   // Hooks
   const { status } = useSession();
   const pathname = usePathname();
-  const [mounted, setMounted] = useState(false);
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
+  const mounted = useSyncExternalStore(
+    noopSubscribe,
+    () => true,
+    () => false,
+  );
 
   // Rendering
   if (!mounted || status != "authenticated") {

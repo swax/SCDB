@@ -11,17 +11,19 @@ import {
   Tooltip,
 } from "@mui/material";
 import { signIn, signOut, useSession } from "next-auth/react";
-import { useEffect, useState } from "react";
+import { useState, useSyncExternalStore } from "react";
+
+const noopSubscribe = () => () => {};
 
 export default function UserMenu() {
   // Hooks
   const { data: session, status } = useSession();
   const [anchorEl, setAnchorEl] = useState<Nullable<Element>>(null);
-  const [mounted, setMounted] = useState(false);
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
+  const mounted = useSyncExternalStore(
+    noopSubscribe,
+    () => true,
+    () => false,
+  );
 
   // Event Handlers
   function handleClick_userMenu(event: React.MouseEvent) {
