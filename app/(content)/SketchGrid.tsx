@@ -21,7 +21,7 @@ import {
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { useEffect, useId, useState } from "react";
+import { useEffect, useId, useRef, useState } from "react";
 import {
   SketchGridData,
   SketchGridSearchOptions,
@@ -59,43 +59,12 @@ export default function SketchGrid({
   // Get initial page from URL or default to 1
   const urlPage = parseInt(searchParams.get("sketchPage") || "1", 10);
   const [data, setData] = useState(initialData);
-  const [page, setPage] = useState(urlPage);
   const [loading, setLoading] = useState(false);
+  const [prevUrlPage, setPrevUrlPage] = useState(urlPage);
+  const isFirstRender = useRef(true);
   const [playVideoUrls, setPlayVideoUrls] = useState<string[] | null>(null);
 
   const [hideMinorRoles, setHideMinorRoles] = useState(false);
-
-  // Load data when URL page changes
-  useEffect(() => {
-    const newUrlPage = parseInt(searchParams.get("sketchPage") || "1", 10);
-    if (newUrlPage !== page) {
-      setPage(newUrlPage);
-      void reloadSketchGrid(newUrlPage, hideMinorRoles);
-    }
-  }, [searchParams]);
-
-  // Event Handlers
-  function handleChange_pageination(
-    event: React.ChangeEvent<unknown>,
-    newPage: number,
-  ) {
-    // Prevent default link navigation (which would scroll to top)
-    event.preventDefault();
-
-    // Update URL with new page (scroll: false keeps position)
-    const url = buildUrl(newPage);
-    router.push(url, { scroll: false });
-    // The useEffect will handle reloading the data
-  }
-
-  function handleChange_minorRolesFilter(
-    event: React.ChangeEvent<HTMLInputElement>,
-  ) {
-    const newSetting = event.target.checked;
-    setHideMinorRoles(newSetting);
-
-    void reloadSketchGrid(page, newSetting);
-  }
 
   // Helper functions
   function buildUrl(pageNum: number): string {
@@ -111,15 +80,56 @@ export default function SketchGrid({
     return pathname + (queryString ? `?${queryString}` : "");
   }
 
-  async function reloadSketchGrid(page: number, hideMinorRoles: boolean) {
+  // Detect URL page change during render (React-approved "store previous render" pattern)
+  if (urlPage !== prevUrlPage) {
+    setPrevUrlPage(urlPage);
     setLoading(true);
+  }
 
+  // Fetch data when URL page changes
+  useEffect(() => {
+    if (isFirstRender.current) {
+      isFirstRender.current = false;
+      return;
+    }
+    let cancelled = false;
     const options = hideMinorRoles ? { hideMinorRoles: true } : undefined;
+    void getData(urlPage, options).then((newData) => {
+      if (!cancelled) {
+        setData(newData);
+        setLoading(false);
+      }
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, [urlPage]);
 
-    const newData = await getData(page, options);
-    setData(newData);
+  // Event Handlers
+  function handleChange_pageination(
+    event: React.ChangeEvent<unknown>,
+    newPage: number,
+  ) {
+    // Prevent default link navigation (which would scroll to top)
+    event.preventDefault();
 
-    setLoading(false);
+    // Set loading state and update URL (the useEffect handles reloading)
+    setLoading(true);
+    const url = buildUrl(newPage);
+    router.push(url, { scroll: false });
+  }
+
+  function handleChange_minorRolesFilter(
+    event: React.ChangeEvent<HTMLInputElement>,
+  ) {
+    const newSetting = event.target.checked;
+    setHideMinorRoles(newSetting);
+    setLoading(true);
+    const options = newSetting ? { hideMinorRoles: true } : undefined;
+    void getData(urlPage, options).then((newData) => {
+      setData(newData);
+      setLoading(false);
+    });
   }
 
   // Rendering
@@ -252,7 +262,7 @@ export default function SketchGrid({
             count={data.totalPages}
             disabled={loading}
             onChange={handleChange_pageination}
-            page={page}
+            page={urlPage}
             renderItem={(item) => (
               <PaginationItem
                 component={Link}
