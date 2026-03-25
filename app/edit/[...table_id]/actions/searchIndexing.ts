@@ -1,6 +1,6 @@
 import ProcessEnv from "@/shared/ProcessEnv";
 import { ServiceResponse } from "@/shared/serviceResponse";
-import { google } from "googleapis";
+import { JWT } from "google-auth-library";
 import "server-only";
 
 const bingResponseCodes: Record<number, string> = {
@@ -46,7 +46,7 @@ export async function sendGoogleUpdate<T>(
   clientResponse.warnings ||= [];
 
   try {
-    const jwtClient = new google.auth.JWT({
+    const jwtClient = new JWT({
       email: process.env.GOOGLE_INDEX_SERVICE_EMAIL,
       key: process.env.GOOGLE_INDEX_SERVICE_KEY?.replace(/\\n/g, "\n"),
       scopes: ["https://www.googleapis.com/auth/indexing"],
