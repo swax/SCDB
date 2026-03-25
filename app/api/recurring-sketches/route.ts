@@ -1,5 +1,9 @@
 import { authenticateApiRequest, handleApiError } from "@/backend/api/apiAuth";
-import { buildEntityTableCms, resolveLookupSlugField, resolveRecurringSketchLookupSlug } from "@/backend/api/entityApiService";
+import {
+  buildEntityTableCms,
+  resolveLookupSlugField,
+  resolveRecurringSketchLookupSlug,
+} from "@/backend/api/entityApiService";
 import {
   isDiscoveryRequest,
   collectionDiscoveryResponse,

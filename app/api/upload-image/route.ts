@@ -31,8 +31,7 @@ export function GET() {
     _usage: {
       description:
         "After completing the 3-step upload, use the returned image_id to attach the image to a resource:",
-      sketch_preview_image:
-        "PUT /api/sketches/{id} with image_id in the body",
+      sketch_preview_image: "PUT /api/sketches/{id} with image_id in the body",
       cast_thumbnail:
         "PUT /api/sketches/{id} with cast array containing image_id on each cast entry",
       person_images:

@@ -1,7 +1,4 @@
-import {
-  authenticateApiRequest,
-  handleApiError,
-} from "@/backend/api/apiAuth";
+import { authenticateApiRequest, handleApiError } from "@/backend/api/apiAuth";
 import {
   isDiscoveryRequest,
   collectionDiscoveryResponse,

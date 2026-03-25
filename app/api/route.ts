@@ -6,7 +6,11 @@ export function GET() {
   return NextResponse.json({
     _links: [
       { rel: "self", href: `${API_PREFIX}/`, title: "API Discovery" },
-      { rel: "schemas", href: `${API_PREFIX}/schemas/`, title: "Schema Registry" },
+      {
+        rel: "schemas",
+        href: `${API_PREFIX}/schemas/`,
+        title: "Schema Registry",
+      },
       { rel: "shows", href: `${API_PREFIX}/shows`, title: "Shows" },
       { rel: "seasons", href: `${API_PREFIX}/seasons`, title: "Seasons" },
       { rel: "episodes", href: `${API_PREFIX}/episodes`, title: "Episodes" },
@@ -17,8 +21,16 @@ export function GET() {
         title: "Recurring Sketches",
       },
       { rel: "people", href: `${API_PREFIX}/people`, title: "People" },
-      { rel: "characters", href: `${API_PREFIX}/characters`, title: "Characters" },
-      { rel: "categories", href: `${API_PREFIX}/categories`, title: "Categories" },
+      {
+        rel: "characters",
+        href: `${API_PREFIX}/characters`,
+        title: "Characters",
+      },
+      {
+        rel: "categories",
+        href: `${API_PREFIX}/categories`,
+        title: "Categories",
+      },
       { rel: "tags", href: `${API_PREFIX}/tags`, title: "Tags" },
       { rel: "checklist", href: `${API_PREFIX}/checklist`, title: "Checklist" },
       {

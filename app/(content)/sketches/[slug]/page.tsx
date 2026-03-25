@@ -4,7 +4,6 @@ import {
   getSketchBySlug,
   getSketchList,
 } from "@/backend/content/sketchService";
-import { getStaticPageCount } from "@/shared/ProcessEnv";
 import staticUrl from "@/shared/cdnHost";
 import {
   buildPageMeta,
@@ -59,7 +58,7 @@ export const revalidate = 300; // 5 minutes
 export async function generateStaticParams() {
   const sketches = await getSketchList({
     page: 1,
-    pageSize: getStaticPageCount(),
+    pageSize: 100000,
   });
 
   return sketches.list.map((sketch) => ({

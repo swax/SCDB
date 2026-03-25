@@ -17,9 +17,8 @@ export const metadata: Metadata = {
 export default async function ChecklistPage(props: ListPageProps) {
   const searchParams = await parseSearchParams(props.searchParams);
 
-  const checklist = await getCachedList(
-    "checklist",
-    (params) => getChecklistList(params),
+  const checklist = await getCachedList("checklist", (params) =>
+    getChecklistList(params),
   )(searchParams);
 
   const rows = checklist.list.map((item) => ({

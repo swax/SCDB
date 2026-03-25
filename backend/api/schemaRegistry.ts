@@ -565,8 +565,7 @@ export const schemaRegistry: Record<string, object> = {
 
   ChecklistInput: {
     type: "object",
-    description:
-      "Request body for creating a checklist item (POST /checklist)",
+    description: "Request body for creating a checklist item (POST /checklist)",
     required: ["show_id", "sketch_title"],
     properties: {
       show_id: {
@@ -623,7 +622,13 @@ export const schemaRegistry: Record<string, object> = {
       "(2) POST the file directly to the S3 presigned URL using multipart/form-data with the returned fields, " +
       "(3) POST /upload-image/finish with the cdn_key to create the image record and get an image_id. " +
       "Then use the image_id when creating/updating sketches (image_id field), cast entries (image_id field), or person images.",
-    required: ["table_name", "file_name", "mime_type", "file_size", "file_hash"],
+    required: [
+      "table_name",
+      "file_name",
+      "mime_type",
+      "file_size",
+      "file_hash",
+    ],
     properties: {
       table_name: {
         type: "string",
@@ -641,14 +646,16 @@ export const schemaRegistry: Record<string, object> = {
       },
       file_hash: {
         type: "string",
-        description: "Short hash of the file content for deduplication (first 8 chars of SHA-256)",
+        description:
+          "Short hash of the file content for deduplication (first 8 chars of SHA-256)",
       },
     },
   },
 
   UploadImageBeginResponse: {
     type: "object",
-    description: "Response from step 1. Use presigned_post to upload directly to S3.",
+    description:
+      "Response from step 1. Use presigned_post to upload directly to S3.",
     properties: {
       success: { type: "boolean" },
       presigned_post: {
