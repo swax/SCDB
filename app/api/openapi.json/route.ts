@@ -68,6 +68,7 @@ function crudPaths(cfg: {
         operationId: `list${cfg.plural}`,
         summary: `List ${cfg.plural.toLowerCase()}`,
         tags: [cfg.tag],
+        security: [],
         parameters: paginationParams,
         responses: {
           "200": {
@@ -117,6 +118,7 @@ function crudPaths(cfg: {
         operationId: `get${cfg.singular}`,
         summary: `Get ${cfg.singular.toLowerCase()} details`,
         tags: [cfg.tag],
+        security: [],
         parameters: [idParam],
         responses: {
           "200": {
@@ -361,6 +363,7 @@ const spec = {
         operationId: "listChecklist",
         summary: "List checklist items",
         tags: ["Checklist"],
+        security: [],
         parameters: [
           ...paginationParams,
           {
@@ -423,6 +426,7 @@ const spec = {
         operationId: "getChecklistItem",
         summary: "Get checklist item details",
         tags: ["Checklist"],
+        security: [],
         parameters: [idParam],
         responses: {
           "200": {
@@ -495,6 +499,7 @@ const spec = {
           "Returns the 3-step image upload workflow actions and usage instructions " +
           "for attaching images to sketches, cast members, and people.",
         tags: ["Image Upload"],
+        security: [],
         responses: {
           "200": {
             description: "Upload workflow actions and usage",
@@ -591,6 +596,7 @@ const spec = {
           "Search for shows, people, tags, and other entities by name to get their IDs. " +
           "Supported tables: show, season, episode, person, character, tag, recurring_sketch, category.",
         tags: ["Lookup"],
+        security: [],
         parameters: [
           {
             name: "table",

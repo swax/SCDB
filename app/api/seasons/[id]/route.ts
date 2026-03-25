@@ -17,7 +17,6 @@ type RouteParams = { params: Promise<{ id: string }> };
 
 export async function GET(request: NextRequest, { params }: RouteParams) {
   try {
-    await authenticateApiRequest(request);
     const { id } = await params;
     const rowId = parseInt(id);
     if (isNaN(rowId)) throw new ApiError(400, "Invalid ID");

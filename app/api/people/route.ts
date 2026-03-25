@@ -14,8 +14,6 @@ import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(request: NextRequest) {
   try {
-    await authenticateApiRequest(request);
-
     if (isDiscoveryRequest(request)) {
       return collectionDiscoveryResponse({
         path: "people",

@@ -22,8 +22,6 @@ type RouteParams = { params: Promise<{ table: string }> };
 
 export async function GET(request: NextRequest, { params }: RouteParams) {
   try {
-    await authenticateApiRequest(request);
-
     const { table } = await params;
     const search = request.nextUrl.searchParams.get("search") || "";
 
