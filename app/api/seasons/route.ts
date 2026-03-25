@@ -1,9 +1,9 @@
 import { authenticateApiRequest, handleApiError } from "@/backend/api/apiAuth";
+import { buildEntityTableCms, resolveLookupSlugField, resolveSeasonLookupSlug } from "@/backend/api/entityApiService";
 import {
-  buildEntityTableCms,
-  resolveLookupSlugField,
-  resolveSeasonLookupSlug,
-} from "@/backend/api/entityApiService";
+  isDiscoveryRequest,
+  collectionDiscoveryResponse,
+} from "@/backend/api/hateoasDiscovery";
 import { getSeasonsList } from "@/backend/content/seasonService";
 import { writeFieldValues } from "@/backend/edit/editWriteService";
 import { getDefaultPageListSize } from "@/shared/ProcessEnv";
@@ -12,6 +12,16 @@ import { NextRequest, NextResponse } from "next/server";
 export async function GET(request: NextRequest) {
   try {
     await authenticateApiRequest(request);
+
+    if (isDiscoveryRequest(request)) {
+      return collectionDiscoveryResponse({
+        path: "seasons",
+        singular: "Season",
+        plural: "Seasons",
+        createSchema: "SeasonInput",
+      });
+    }
+
     const params = request.nextUrl.searchParams;
     const result = await getSeasonsList({
       search: params.get("search") || undefined,

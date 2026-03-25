@@ -1,9 +1,9 @@
 import { authenticateApiRequest, handleApiError } from "@/backend/api/apiAuth";
+import { buildEntityTableCms, resolveLookupSlugField, resolveRecurringSketchLookupSlug } from "@/backend/api/entityApiService";
 import {
-  buildEntityTableCms,
-  resolveLookupSlugField,
-  resolveRecurringSketchLookupSlug,
-} from "@/backend/api/entityApiService";
+  isDiscoveryRequest,
+  collectionDiscoveryResponse,
+} from "@/backend/api/hateoasDiscovery";
 import { getRecurringSketchList } from "@/backend/content/recurringSketch";
 import { writeFieldValues } from "@/backend/edit/editWriteService";
 import { getDefaultPageListSize } from "@/shared/ProcessEnv";
@@ -12,6 +12,16 @@ import { NextRequest, NextResponse } from "next/server";
 export async function GET(request: NextRequest) {
   try {
     await authenticateApiRequest(request);
+
+    if (isDiscoveryRequest(request)) {
+      return collectionDiscoveryResponse({
+        path: "recurring-sketches",
+        singular: "Recurring Sketch",
+        plural: "Recurring Sketches",
+        createSchema: "RecurringSketchInput",
+      });
+    }
+
     const params = request.nextUrl.searchParams;
     const result = await getRecurringSketchList({
       search: params.get("search") || undefined,

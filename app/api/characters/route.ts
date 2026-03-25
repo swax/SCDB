@@ -1,5 +1,9 @@
 import { authenticateApiRequest, handleApiError } from "@/backend/api/apiAuth";
 import { buildEntityTableCms } from "@/backend/api/entityApiService";
+import {
+  isDiscoveryRequest,
+  collectionDiscoveryResponse,
+} from "@/backend/api/hateoasDiscovery";
 import { getCharacterList } from "@/backend/content/characterService";
 import { writeFieldValues } from "@/backend/edit/editWriteService";
 import { getDefaultPageListSize } from "@/shared/ProcessEnv";
@@ -8,6 +12,16 @@ import { NextRequest, NextResponse } from "next/server";
 export async function GET(request: NextRequest) {
   try {
     await authenticateApiRequest(request);
+
+    if (isDiscoveryRequest(request)) {
+      return collectionDiscoveryResponse({
+        path: "characters",
+        singular: "Character",
+        plural: "Characters",
+        createSchema: "CharacterInput",
+      });
+    }
+
     const params = request.nextUrl.searchParams;
     const result = await getCharacterList({
       search: params.get("search") || undefined,

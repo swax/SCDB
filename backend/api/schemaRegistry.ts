@@ -1,5 +1,74 @@
 /** JSON Schema definitions for API request/response types, served individually on demand */
 export const schemaRegistry: Record<string, object> = {
+  PaginationParams: {
+    type: "object",
+    description:
+      "Query parameters for listing/searching resources. " +
+      "Pass these as URL query params (e.g. ?search=foo&page=1&pageSize=10).",
+    properties: {
+      search: {
+        type: "string",
+        description: "Search by name/title (case-insensitive)",
+      },
+      page: {
+        type: "integer",
+        default: 1,
+        description: "Page number (default: 1)",
+      },
+      pageSize: {
+        type: "integer",
+        default: 30,
+        description: "Results per page (default: 30)",
+      },
+      sortField: {
+        type: "string",
+        description: "Field to sort by",
+      },
+      sortDir: {
+        type: "string",
+        enum: ["asc", "desc"],
+        description: "Sort direction",
+      },
+    },
+  },
+
+  ChecklistPaginationParams: {
+    type: "object",
+    description:
+      "Query parameters for listing checklist items. " +
+      "Extends standard pagination with a status filter.",
+    properties: {
+      search: {
+        type: "string",
+        description: "Search by sketch title",
+      },
+      page: {
+        type: "integer",
+        default: 1,
+        description: "Page number (default: 1)",
+      },
+      pageSize: {
+        type: "integer",
+        default: 30,
+        description: "Results per page (default: 30)",
+      },
+      sortField: {
+        type: "string",
+        description: "Field to sort by",
+      },
+      sortDir: {
+        type: "string",
+        enum: ["asc", "desc"],
+        description: "Sort direction",
+      },
+      status: {
+        type: "string",
+        enum: ["Pending", "Added", "NotFound"],
+        description: "Filter by checklist item status",
+      },
+    },
+  },
+
   SketchInput: {
     type: "object",
     description: "Request body for creating a new sketch (POST /sketches)",

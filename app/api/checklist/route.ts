@@ -2,6 +2,10 @@ import {
   authenticateApiRequest,
   handleApiError,
 } from "@/backend/api/apiAuth";
+import {
+  isDiscoveryRequest,
+  collectionDiscoveryResponse,
+} from "@/backend/api/hateoasDiscovery";
 import { getChecklistList } from "@/backend/content/checklistService";
 import prisma from "@/database/prisma";
 import { getDefaultPageListSize } from "@/shared/ProcessEnv";
@@ -10,6 +14,17 @@ import { NextRequest, NextResponse } from "next/server";
 export async function GET(request: NextRequest) {
   try {
     await authenticateApiRequest(request);
+
+    if (isDiscoveryRequest(request)) {
+      return collectionDiscoveryResponse({
+        path: "checklist",
+        singular: "Checklist Item",
+        plural: "Checklist Items",
+        createSchema: "ChecklistInput",
+        listSchema: "ChecklistPaginationParams",
+      });
+    }
+
     const params = request.nextUrl.searchParams;
     const status = params.get("status") || undefined;
     const result = await getChecklistList(

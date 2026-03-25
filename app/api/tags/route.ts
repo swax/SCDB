@@ -1,9 +1,9 @@
 import { authenticateApiRequest, handleApiError } from "@/backend/api/apiAuth";
+import { buildEntityTableCms, resolveLookupSlugField, resolveTagLookupSlug } from "@/backend/api/entityApiService";
 import {
-  buildEntityTableCms,
-  resolveLookupSlugField,
-  resolveTagLookupSlug,
-} from "@/backend/api/entityApiService";
+  isDiscoveryRequest,
+  collectionDiscoveryResponse,
+} from "@/backend/api/hateoasDiscovery";
 import { getAllTagsList } from "@/backend/content/tagService";
 import { writeFieldValues } from "@/backend/edit/editWriteService";
 import { getDefaultPageListSize } from "@/shared/ProcessEnv";
@@ -12,6 +12,16 @@ import { NextRequest, NextResponse } from "next/server";
 export async function GET(request: NextRequest) {
   try {
     await authenticateApiRequest(request);
+
+    if (isDiscoveryRequest(request)) {
+      return collectionDiscoveryResponse({
+        path: "tags",
+        singular: "Tag",
+        plural: "Tags",
+        createSchema: "TagInput",
+      });
+    }
+
     const params = request.nextUrl.searchParams;
     const result = await getAllTagsList({
       search: params.get("search") || undefined,

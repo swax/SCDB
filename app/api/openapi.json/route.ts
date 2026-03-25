@@ -487,6 +487,22 @@ const spec = {
     },
 
     // Image Upload
+    "/upload-image": {
+      get: {
+        operationId: "uploadImageDiscovery",
+        summary: "Image upload workflow discovery",
+        description:
+          "Returns the 3-step image upload workflow actions and usage instructions " +
+          "for attaching images to sketches, cast members, and people.",
+        tags: ["Image Upload"],
+        responses: {
+          "200": {
+            description: "Upload workflow actions and usage",
+            content: { "application/json": { schema: { type: "object" } } },
+          },
+        },
+      },
+    },
     "/upload-image/begin": {
       post: {
         operationId: "uploadImageBegin",
