@@ -486,6 +486,86 @@ const spec = {
       },
     },
 
+    // Image Upload
+    "/upload-image/begin": {
+      post: {
+        operationId: "uploadImageBegin",
+        summary: "Begin image upload (step 1 of 3)",
+        description:
+          "Returns a presigned S3 URL for direct file upload. " +
+          "Workflow: (1) Call this endpoint with file metadata, " +
+          "(2) POST the file to the returned presigned URL using multipart/form-data, " +
+          "(3) Call /upload-image/finish with the aws_key to create the image record. " +
+          "Max file size: 5MB. Supported types: image/*.",
+        tags: ["Image Upload"],
+        requestBody: {
+          required: true,
+          content: {
+            "application/json": {
+              schema: {
+                $ref: "#/components/schemas/UploadImageBeginInput",
+              },
+            },
+          },
+        },
+        responses: {
+          "200": {
+            description: "Presigned S3 upload URL generated",
+            content: {
+              "application/json": {
+                schema: {
+                  $ref: "#/components/schemas/UploadImageBeginResponse",
+                },
+              },
+            },
+          },
+          "400": {
+            description: "Validation error (invalid mime type, file too large)",
+            content: { "application/json": { schema: errorRef } },
+          },
+        },
+      },
+    },
+    "/upload-image/finish": {
+      post: {
+        operationId: "uploadImageFinish",
+        summary: "Finish image upload (step 3 of 3)",
+        description:
+          "Creates the image database record after the file has been uploaded to S3. " +
+          "Returns image_id which can be used to associate the image with resources: " +
+          "sketch preview image (PUT /sketches/{id} with image_id), " +
+          "cast thumbnail (PUT /sketches/{id} with image_id in cast array entries), " +
+          "or person images (PUT /people/{id} with images array).",
+        tags: ["Image Upload"],
+        requestBody: {
+          required: true,
+          content: {
+            "application/json": {
+              schema: {
+                $ref: "#/components/schemas/UploadImageFinishInput",
+              },
+            },
+          },
+        },
+        responses: {
+          "200": {
+            description: "Image record created",
+            content: {
+              "application/json": {
+                schema: {
+                  $ref: "#/components/schemas/UploadImageFinishResponse",
+                },
+              },
+            },
+          },
+          "400": {
+            description: "Missing cdn_key",
+            content: { "application/json": { schema: errorRef } },
+          },
+        },
+      },
+    },
+
     // Lookup
     "/lookup/{table}": {
       get: {
@@ -559,6 +639,10 @@ const spec = {
         "Categories",
         "Tags",
       ],
+    },
+    {
+      name: "Media",
+      tags: ["Image Upload"],
     },
     {
       name: "Management",

@@ -52,6 +52,12 @@ export const schemaRegistry: Record<string, object> = {
         nullable: true,
         description: "Related external links",
       },
+      image_id: {
+        type: "integer",
+        nullable: true,
+        description:
+          "ID of the preview image. Upload via /upload-image/begin + /upload-image/finish first.",
+      },
       posted_on_socials: {
         type: "boolean",
         description: "Whether this has been posted on social media",
@@ -97,6 +103,12 @@ export const schemaRegistry: Record<string, object> = {
       synopsis: { type: "string", nullable: true },
       notes: { type: "string", nullable: true },
       link_urls: { type: "array", items: { type: "string" }, nullable: true },
+      image_id: {
+        type: "integer",
+        nullable: true,
+        description:
+          "ID of the preview image. Upload via /upload-image/begin + /upload-image/finish first.",
+      },
       posted_on_socials: { type: "boolean" },
       cast: {
         type: "array",
@@ -126,6 +138,12 @@ export const schemaRegistry: Record<string, object> = {
     description: "A cast member entry for a sketch",
     required: ["role"],
     properties: {
+      image_id: {
+        type: "integer",
+        nullable: true,
+        description:
+          "Thumbnail image ID for this cast member. Upload via /upload-image/begin + /upload-image/finish first.",
+      },
       character_name: {
         type: "string",
         nullable: true,
@@ -254,6 +272,12 @@ export const schemaRegistry: Record<string, object> = {
         nullable: true,
         description: "Related external links (e.g. Wikipedia, IMDb)",
       },
+      images: {
+        type: "array",
+        description:
+          "Images for this person. Upload each image via /upload-image/begin + /upload-image/finish first. See PersonImageInput schema.",
+        items: { $ref: "PersonImageInput" },
+      },
     },
   },
 
@@ -261,7 +285,8 @@ export const schemaRegistry: Record<string, object> = {
     type: "object",
     description:
       "Request body for updating a person (PUT /people/{id}). All fields optional. " +
-      "Only provided fields are updated.",
+      "Only provided fields are updated. For the images array, providing it replaces ALL " +
+      "existing images; omitting leaves them unchanged.",
     properties: {
       name: { type: "string" },
       description: { type: "string", nullable: true },
@@ -272,6 +297,11 @@ export const schemaRegistry: Record<string, object> = {
         type: "array",
         items: { type: "string" },
         nullable: true,
+      },
+      images: {
+        type: "array",
+        description: "Replaces all existing person images",
+        items: { $ref: "PersonImageInput" },
       },
     },
   },
@@ -513,6 +543,116 @@ export const schemaRegistry: Record<string, object> = {
     properties: {
       id: { type: "integer" },
       label: { type: "string" },
+    },
+  },
+
+  UploadImageBeginInput: {
+    type: "object",
+    description:
+      "Step 1 of the image upload workflow. " +
+      "To upload an image: (1) POST /upload-image/begin with file metadata to get a presigned S3 URL, " +
+      "(2) POST the file directly to the S3 presigned URL using multipart/form-data with the returned fields, " +
+      "(3) POST /upload-image/finish with the cdn_key to create the image record and get an image_id. " +
+      "Then use the image_id when creating/updating sketches (image_id field), cast entries (image_id field), or person images.",
+    required: ["table_name", "file_name", "mime_type", "file_size", "file_hash"],
+    properties: {
+      table_name: {
+        type: "string",
+        description:
+          "Target table for organizing the upload (e.g. sketch, sketch_cast, person_image)",
+      },
+      file_name: { type: "string", description: "Original file name" },
+      mime_type: {
+        type: "string",
+        description: "MIME type (must start with image/)",
+      },
+      file_size: {
+        type: "integer",
+        description: "File size in bytes (max 5MB)",
+      },
+      file_hash: {
+        type: "string",
+        description: "Short hash of the file content for deduplication (first 8 chars of SHA-256)",
+      },
+    },
+  },
+
+  UploadImageBeginResponse: {
+    type: "object",
+    description: "Response from step 1. Use presigned_post to upload directly to S3.",
+    properties: {
+      success: { type: "boolean" },
+      presigned_post: {
+        type: "object",
+        description: "Presigned POST data for S3 upload",
+        properties: {
+          url: {
+            type: "string",
+            description: "S3 endpoint URL to POST the file to",
+          },
+          fields: {
+            type: "object",
+            description:
+              "Form fields to include in the multipart/form-data POST to S3 (include all fields plus the file)",
+          },
+        },
+      },
+      aws_key: {
+        type: "string",
+        description:
+          "The CDN key for the uploaded file. Pass this as cdn_key to /upload-image/finish",
+      },
+      message: { type: "string" },
+    },
+  },
+
+  UploadImageFinishInput: {
+    type: "object",
+    description:
+      "Step 3 of the image upload workflow. Call this after uploading the file to S3 " +
+      "to create the image database record. Returns the image_id to use when associating " +
+      "the image with a resource.",
+    required: ["cdn_key"],
+    properties: {
+      cdn_key: {
+        type: "string",
+        description: "The aws_key returned from /upload-image/begin",
+      },
+    },
+  },
+
+  UploadImageFinishResponse: {
+    type: "object",
+    description:
+      "Response from step 3. Use the image_id to associate the image with resources " +
+      "(e.g. PUT /sketches/{id} with image_id, or include in cast/person image arrays).",
+    properties: {
+      success: { type: "boolean" },
+      image_id: {
+        type: "integer",
+        description:
+          "The ID of the created image record. Use this in sketch, cast, or person image updates.",
+      },
+      message: { type: "string" },
+    },
+  },
+
+  PersonImageInput: {
+    type: "object",
+    description:
+      "An image entry for a person. Upload the image first via /upload-image/begin + /upload-image/finish to get the image_id.",
+    required: ["image_id"],
+    properties: {
+      image_id: {
+        type: "integer",
+        description:
+          "ID of the image (from /upload-image/finish). Upload the image first.",
+      },
+      description: {
+        type: "string",
+        nullable: true,
+        description: "Optional description of the image",
+      },
     },
   },
 };

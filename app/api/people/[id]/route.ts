@@ -6,6 +6,7 @@ import {
 import {
   buildPersonTableCms,
   PersonInput,
+  preparePersonMappingReplacements,
 } from "@/backend/api/personApiService";
 import { getPerson } from "@/backend/content/personService";
 import { findAndBuildTableCms } from "@/backend/edit/editReadService";
@@ -55,6 +56,9 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
 
     const input: PersonInput = await request.json();
     const table = buildPersonTableCms(input, true);
+
+    // If images array is provided, replace all existing person_image rows
+    await preparePersonMappingReplacements(table, personId, input);
 
     const response = await writeFieldValues(user, table, personId);
 

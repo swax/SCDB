@@ -7,6 +7,7 @@ import {
 import { slugifyForUrl } from "@/shared/utilities";
 import { TableCms } from "../cms/cmsTypes";
 import { findAndBuildTableCms } from "../edit/editReadService";
+import { convertApiImageFields } from "./apiImageHelper";
 
 /** Flat JSON input for creating/updating a sketch via the API */
 export interface SketchInput {
@@ -15,6 +16,7 @@ export interface SketchInput {
   season_id?: number | null;
   episode_id?: number | null;
   recurring_sketch_id?: number | null;
+  image_id?: number | null;
   video_urls?: string[];
   teaser?: string | null;
   synopsis?: string | null;
@@ -28,6 +30,7 @@ export interface SketchInput {
 }
 
 export interface CastInput {
+  image_id?: number | null;
   character_name?: string | null;
   character_id?: number | null;
   person_id?: number | null;
@@ -187,6 +190,10 @@ export async function buildTableCmsFromInput(
       }
     }
   });
+
+  // Convert image fields with integer values to plain FK fields
+  // (API passes pre-existing image record IDs, not CDN keys)
+  convertApiImageFields(table);
 
   return table;
 }
