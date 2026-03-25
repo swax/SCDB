@@ -212,7 +212,7 @@ echo "=== Script Execution (read-only) ==="
 # ============================================================
 
 # YouTube video summary
-if output=$(cd "$SCDB_FOLDER" && node operations/youtube/video-summary.js "https://www.youtube.com/watch?v=jNQXAC9IVRw" 2>&1); then
+if output=$(cd "$SCDB_FOLDER" && node operations/youtube/video-summary.js "https://www.youtube.com/watch?v=jNQXAC9IVRw" --comments 50 2>&1); then
   pass "youtube/video-summary.js ran successfully"
 else
   fail "youtube/video-summary.js failed: $(echo "$output" | tail -1)"

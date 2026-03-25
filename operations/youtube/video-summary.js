@@ -1,21 +1,40 @@
 const { execSync } = require("child_process");
 const fs = require("fs");
 
-const videoUrl = process.argv[2];
-const numComments = process.argv[3] || 50;
+// Parse args
+const args = process.argv.slice(2);
+let videoUrl = null;
+let numComments = null;
+
+for (let i = 0; i < args.length; i++) {
+  if (args[i] === "--comments") {
+    numComments = parseInt(args[++i], 10);
+    if (isNaN(numComments) || numComments < 1) {
+      console.error("--comments requires a positive number");
+      process.exit(1);
+    }
+  } else if (!videoUrl) {
+    videoUrl = args[i];
+  }
+}
 
 if (!videoUrl) {
   console.error(
-    "Usage: node operations/youtube/video-summary.js <video_url> [num_comments]",
+    "Usage: node operations/youtube/video-summary.js <video_url> [--comments <num>]",
   );
   process.exit(1);
 }
 
-console.log(`Fetching ${numComments} comments from ${videoUrl}...`);
+console.log(`Fetching video info from ${videoUrl}...`);
 
 try {
-  // Run yt-dlp to download comments
-  const command = `yt-dlp --skip-download --write-comments --extractor-args "youtube:comment_sort=top;max_comments=${numComments}" "${videoUrl}"`;
+  // Run yt-dlp to download video info (and optionally comments)
+  let command = `yt-dlp --skip-download`;
+  if (numComments) {
+    console.log(`Including top ${numComments} comments...`);
+    command += ` --write-comments --extractor-args "youtube:comment_sort=top;max_comments=${numComments}"`;
+  }
+  command += ` "${videoUrl}"`;
   execSync(command, { stdio: "inherit" });
 
   // Find the most recently created info.json file
