@@ -1,7 +1,9 @@
+import { revalidateContent } from "@/app/contentBase";
 import prisma from "@/database/prisma";
 import { review_status_type } from "@/shared/enums";
 import { TableCms } from "../cms/cmsTypes";
 import { findAndBuildTableCms } from "../edit/editReadService";
+import { ApiError } from "./apiAuth";
 
 /**
  * Generic builder that creates a TableCms from a flat JSON input for any
@@ -68,6 +70,25 @@ export async function resolveLookupSlugField(
   const slug = await resolver();
   lookupSlugField.values = [slug];
   lookupSlugField.modified = [true];
+}
+
+/**
+ * Look up an entity's url_slug by ID and revalidate its cached page
+ * and associated list page.
+ */
+export async function revalidateEntityById(tableName: string, id: number) {
+  const dbTable = tableName.replace("-", "_");
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const row = await (prisma as any)[dbTable].findUnique({
+    where: { id },
+    select: { url_slug: true },
+  });
+
+  if (!row) {
+    throw new ApiError(404, `${tableName} with id ${id} not found`);
+  }
+
+  revalidateContent(tableName, row.url_slug);
 }
 
 // --- Lookup slug resolvers for entities with template-based slugs ---

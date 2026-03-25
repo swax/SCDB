@@ -32,6 +32,12 @@ export function GET() {
         href: `${API_PREFIX}/upload-image`,
         title: "Image upload workflow",
       },
+      {
+        rel: "revalidate",
+        href: `${API_PREFIX}/revalidate/{table}/{id}`,
+        title:
+          "Revalidate cached page for an entity (tables: shows, seasons, episodes, sketches, recurring-sketches, people, characters, categories, tags)",
+      },
     ],
   });
 }

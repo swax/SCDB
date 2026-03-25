@@ -64,6 +64,12 @@ export function collectionDiscoveryResponse(config: CollectionDiscoveryConfig) {
         method: "DELETE",
         title: `Delete a ${config.singular.toLowerCase()}`,
       },
+      {
+        rel: "revalidate",
+        href: `${API_PREFIX}/revalidate/${config.path}/{id}`,
+        method: "POST",
+        title: `Revalidate cached page for a ${config.singular.toLowerCase()}`,
+      },
     ],
   });
 }
