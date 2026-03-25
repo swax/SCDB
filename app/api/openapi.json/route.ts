@@ -355,6 +355,137 @@ const spec = {
       inputSchema: "TagInput",
     }),
 
+    // Checklist
+    "/checklist": {
+      get: {
+        operationId: "listChecklist",
+        summary: "List checklist items",
+        tags: ["Checklist"],
+        parameters: [
+          ...paginationParams,
+          {
+            name: "status",
+            in: "query",
+            description: "Filter by status",
+            schema: {
+              type: "string",
+              enum: ["Pending", "Added", "NotFound"],
+            },
+          },
+        ],
+        responses: {
+          "200": {
+            description: "Paginated list of checklist items",
+            content: {
+              "application/json": {
+                schema: {
+                  type: "object",
+                  properties: {
+                    checklist: { type: "array", items: { type: "object" } },
+                    total: { type: "integer" },
+                    page: { type: "integer" },
+                    pageSize: { type: "integer" },
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+      post: {
+        operationId: "createChecklistItem",
+        summary: "Create a new checklist item",
+        tags: ["Checklist"],
+        requestBody: {
+          required: true,
+          content: {
+            "application/json": {
+              schema: { $ref: "#/components/schemas/ChecklistInput" },
+            },
+          },
+        },
+        responses: {
+          "201": {
+            description: "Checklist item created",
+            content: {
+              "application/json": { schema: idSlugResponse },
+            },
+          },
+          "400": {
+            description: "Validation error",
+            content: { "application/json": { schema: errorRef } },
+          },
+        },
+      },
+    },
+    "/checklist/{id}": {
+      get: {
+        operationId: "getChecklistItem",
+        summary: "Get checklist item details",
+        tags: ["Checklist"],
+        parameters: [idParam],
+        responses: {
+          "200": {
+            description: "Checklist item details",
+            content: { "application/json": { schema: { type: "object" } } },
+          },
+          "404": {
+            description: "Checklist item not found",
+            content: { "application/json": { schema: errorRef } },
+          },
+        },
+      },
+      put: {
+        operationId: "updateChecklistItem",
+        summary: "Update a checklist item",
+        description: "Only include fields you want to change.",
+        tags: ["Checklist"],
+        parameters: [idParam],
+        requestBody: {
+          required: true,
+          content: {
+            "application/json": {
+              schema: { $ref: "#/components/schemas/ChecklistInput" },
+            },
+          },
+        },
+        responses: {
+          "200": {
+            description: "Checklist item updated",
+            content: {
+              "application/json": { schema: idSlugResponse },
+            },
+          },
+          "400": {
+            description: "Validation error",
+            content: { "application/json": { schema: errorRef } },
+          },
+          "404": {
+            description: "Checklist item not found",
+            content: { "application/json": { schema: errorRef } },
+          },
+        },
+      },
+      delete: {
+        operationId: "deleteChecklistItem",
+        summary: "Delete a checklist item",
+        tags: ["Checklist"],
+        parameters: [idParam],
+        responses: {
+          "200": {
+            description: "Checklist item deleted",
+            content: {
+              "application/json": { schema: successResponse },
+            },
+          },
+          "404": {
+            description: "Checklist item not found",
+            content: { "application/json": { schema: errorRef } },
+          },
+        },
+      },
+    },
+
     // Lookup
     "/lookup/{table}": {
       get: {
@@ -428,6 +559,10 @@ const spec = {
         "Categories",
         "Tags",
       ],
+    },
+    {
+      name: "Management",
+      tags: ["Checklist"],
     },
   ],
 };

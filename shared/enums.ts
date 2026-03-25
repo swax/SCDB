@@ -41,6 +41,12 @@ export enum credit_role_type {
   Other = "Other",
 }
 
+export enum checklist_status_type {
+  Pending = "Pending",
+  Added = "Added",
+  NotFound = "NotFound",
+}
+
 // Export all enums as a single object for dynamic access (similar to Prisma's $Enums)
 export const $Enums = {
   user_role_type,
@@ -49,4 +55,5 @@ export const $Enums = {
   gender_type,
   cast_role_type,
   credit_role_type,
+  checklist_status_type,
 };

@@ -83,6 +83,8 @@ model User {
   sketch_tags_modified        sketch_tag[]       @relation("SketchTagsModified")
   tags_created                tag[]              @relation("TagsCreated")
   tags_modified               tag[]              @relation("TagsModified")
+  checklists_created          checklist[]        @relation("ChecklistsCreated")
+  checklists_modified         checklist[]        @relation("ChecklistsModified")
   modified_by                 User?              @relation("UsersModified", fields: [modified_by_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
   user_modified               User[]             @relation("UsersModified")
 
@@ -151,6 +153,7 @@ model episode {
   modified_by_id String
   modified_at    DateTime           @default(now())
   link_urls      String[]
+  checklists     checklist[]
   created_by     User               @relation("EpisodesCreated", fields: [created_by_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
   modified_by    User               @relation("EpisodesModified", fields: [modified_by_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
   season         season             @relation(fields: [season_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
@@ -256,6 +259,7 @@ model season {
   modified_by_id String
   modified_at    DateTime           @default(now())
   link_urls      String[]
+  checklists     checklist[]
   episodes       episode[]
   created_by     User               @relation("SeasonsCreated", fields: [created_by_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
   modified_by    User               @relation("SeasonsModified", fields: [modified_by_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
@@ -279,6 +283,7 @@ model show {
   modified_by_id     String
   modified_at        DateTime           @default(now())
   link_urls          String[]
+  checklists         checklist[]
   recurring_sketches recurring_sketch[]
   seasons            season[]
   created_by         User               @relation("ShowsCreated", fields: [created_by_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
@@ -415,6 +420,7 @@ model sketch {
   recurring_sketch    recurring_sketch?  @relation(fields: [recurring_sketch_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
   season              season?            @relation(fields: [season_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
   show                show               @relation(fields: [show_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  checklists          checklist[]
   sketch_casts        sketch_cast[]
   sketch_credits      sketch_credit[]
   sketch_quotes       sketch_quote[]
@@ -525,4 +531,34 @@ enum review_status_type {
   NeedsReview
   Flagged
   Reviewed
+}
+
+enum checklist_status_type {
+  Pending
+  Added
+  NotFound
+}
+
+model checklist {
+  id             Int                   @id @default(autoincrement())
+  show_id        Int
+  season_id      Int?
+  episode_id     Int?
+  sketch_title   String                @db.VarChar(200)
+  status         checklist_status_type @default(Pending)
+  notes          String?
+  sketch_id      Int?
+  created_by_id  String
+  created_at     DateTime              @default(now())
+  modified_by_id String
+  modified_at    DateTime              @default(now())
+  show           show                  @relation(fields: [show_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  season         season?               @relation(fields: [season_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  episode        episode?              @relation(fields: [episode_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  sketch         sketch?               @relation(fields: [sketch_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  created_by     User                  @relation("ChecklistsCreated", fields: [created_by_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  modified_by    User                  @relation("ChecklistsModified", fields: [modified_by_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+
+  @@index([show_id])
+  @@index([status])
 }

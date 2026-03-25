@@ -464,6 +464,49 @@ export const schemaRegistry: Record<string, object> = {
     },
   },
 
+  ChecklistInput: {
+    type: "object",
+    description:
+      "Request body for creating a checklist item (POST /checklist)",
+    required: ["show_id", "sketch_title"],
+    properties: {
+      show_id: {
+        type: "integer",
+        description: "ID of the show. Use GET /lookup/show to find IDs.",
+      },
+      season_id: {
+        type: "integer",
+        nullable: true,
+        description: "ID of the season. Use GET /lookup/season to find IDs.",
+      },
+      episode_id: {
+        type: "integer",
+        nullable: true,
+        description: "ID of the episode. Use GET /lookup/episode to find IDs.",
+      },
+      sketch_title: {
+        type: "string",
+        description: "Title of the sketch to add",
+      },
+      status: {
+        type: "string",
+        enum: ["Pending", "Added", "NotFound"],
+        description: "Checklist item status (default: Pending)",
+      },
+      notes: {
+        type: "string",
+        nullable: true,
+        description: "Additional notes",
+      },
+      sketch_id: {
+        type: "integer",
+        nullable: true,
+        description:
+          "ID of the sketch if it was ultimately added to the database",
+      },
+    },
+  },
+
   LookupResult: {
     type: "object",
     description: "A lookup match returned by GET /lookup/{table}",

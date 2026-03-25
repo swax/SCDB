@@ -120,6 +120,18 @@ export function GET() {
         methods: ["GET", "PUT", "DELETE"],
       },
       {
+        rel: "checklist",
+        href: `${API_PREFIX}/checklist`,
+        title: "List/Create Checklist Items",
+        methods: ["GET", "POST"],
+      },
+      {
+        rel: "checklist-item",
+        href: `${API_PREFIX}/checklist/{id}`,
+        title: "Get/Update/Delete Checklist Item",
+        methods: ["GET", "PUT", "DELETE"],
+      },
+      {
         rel: "lookup",
         href: `${API_PREFIX}/lookup/{table}?search={term}`,
         title:
