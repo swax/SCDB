@@ -1,5 +1,6 @@
 "use client";
 
+import ApiIcon from "@mui/icons-material/Api";
 import SearchIcon from "@mui/icons-material/Search";
 import { Divider, LinearProgress, Stack, Tooltip } from "@mui/material";
 import AppBar from "@mui/material/AppBar";
@@ -199,6 +200,16 @@ function ResponsiveAppBar() {
         {/* Right side header icons */}
         <Stack direction="row" style={{ marginRight: 8 }}>
           <EditViewButton />
+          <Tooltip title="API Reference">
+            <IconButton
+              aria-label="API Reference"
+              component={MuiNextLink}
+              href="/api-reference"
+              color="inherit"
+            >
+              <ApiIcon />
+            </IconButton>
+          </Tooltip>
           <Tooltip title="Search The Sketch Comedy Database">
             <IconButton
               aria-label="Search The Sketch Comedy Database"
