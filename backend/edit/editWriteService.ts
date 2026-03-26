@@ -413,19 +413,50 @@ export async function deleteRow(
       : user_role_type.Moderator,
   );
 
-  // Perform the delete
-  await getPrismaModel(table.name).delete({
-    where: {
-      id: rowId,
-    },
-  });
+  const fkColumn = table.name + "_id";
 
-  await prisma.audit.create({
-    data: {
-      changed_by_id: user.id,
-      operation: operation_type.DELETE,
-      table_name: table.name,
-      row_id: rowId.toString(),
-    },
+  // Look up the master CMS definition to find the table's mapping fields
+  const masterTable = sketchDatabaseCms[table.name];
+
+  await prisma.$transaction(async (tx: TxClient) => {
+    // Delete CMS mapping table children
+    if (masterTable) {
+      for (const field of masterTable.fields) {
+        if (field.type === "mapping") {
+          await getPrismaModel(field.mappingTable.name, tx).deleteMany({
+            where: { [fkColumn]: rowId },
+          });
+        }
+      }
+    }
+
+    // Handle non-mapping child tables
+    for (const child of table.deleteChildren || []) {
+      if (child.action === "delete") {
+        await getPrismaModel(child.table, tx).deleteMany({
+          where: { [fkColumn]: rowId },
+        });
+      } else if (child.action === "nullify") {
+        await getPrismaModel(child.table, tx).updateMany({
+          where: { [fkColumn]: rowId },
+          data: { [fkColumn]: null },
+        });
+      }
+    }
+
+    // Delete the row
+    await getPrismaModel(table.name, tx).delete({
+      where: { id: rowId },
+    });
+
+    // Create audit record
+    await tx.audit.create({
+      data: {
+        changed_by_id: user.id,
+        operation: operation_type.DELETE,
+        table_name: table.name,
+        row_id: rowId.toString(),
+      },
+    });
   });
 }

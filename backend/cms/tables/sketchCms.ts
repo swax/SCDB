@@ -3,6 +3,10 @@ import { TableCms } from "../cmsTypes";
 const sketchCms: TableCms = {
   name: "sketch",
   label: "Sketch",
+  deleteChildren: [
+    { table: "sketch_rating", action: "delete" },
+    { table: "checklist", action: "nullify" },
+  ],
   title: [
     "${title} - ${episode.lookup_slug}",
     "${title} - ${season.lookup_slug}",

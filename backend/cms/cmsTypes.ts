@@ -110,6 +110,13 @@ export type FieldCms =
 export type FieldCmsValueType = NonNullable<FieldCms["values"]>[number];
 
 // TODO: Maybe rename to 'Row' would make more sense?
+export type DeleteChildAction = {
+  /** Name of the child table */
+  table: string;
+  /** "delete" removes child rows, "nullify" sets the FK to null */
+  action: "delete" | "nullify";
+};
+
 export type TableCms = {
   /** Name of the table in Postgres */
   name: string;
@@ -121,6 +128,8 @@ export type TableCms = {
   fields: FieldCms[];
   reviewStatus?: review_status_type;
   flagNote?: string | null;
+  /** Non-mapping child tables that need cleanup on delete. FK column is inferred as {parentTable}_id. */
+  deleteChildren?: DeleteChildAction[];
 };
 
 export type DatabaseCms = {

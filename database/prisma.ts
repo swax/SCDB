@@ -59,6 +59,7 @@ interface DynamicPrismaDelegate {
   update(args: Record<string, unknown>): Promise<DynamicRecord>;
   delete(args: Record<string, unknown>): Promise<DynamicRecord>;
   deleteMany(args: Record<string, unknown>): Promise<{ count: number }>;
+  updateMany(args: Record<string, unknown>): Promise<{ count: number }>;
   count(args?: Record<string, unknown>): Promise<number>;
 }
 
