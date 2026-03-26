@@ -62,7 +62,11 @@ interface DynamicPrismaDelegate {
   count(args?: Record<string, unknown>): Promise<number>;
 }
 
-export function getPrismaModel(tableName: string): DynamicPrismaDelegate {
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-explicit-any
-  return (prisma as any)[tableName] as DynamicPrismaDelegate;
+export function getPrismaModel(
+  tableName: string,
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  client: any = prisma,
+): DynamicPrismaDelegate {
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+  return client[tableName] as DynamicPrismaDelegate;
 }

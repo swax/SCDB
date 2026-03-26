@@ -14,6 +14,9 @@ import {
 } from "../cms/cmsTypes";
 import sketchDatabaseCms from "../cms/sketchDatabaseCms";
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+type TxClient = any;
+
 const allowedColumnsByTable: { [key: string]: string[] } = {};
 const allowedMappingsByTable: { [key: string]: string[] } = {};
 
@@ -62,26 +65,31 @@ export async function writeFieldValues(
   // Validation
   validateRequiredFields(table.fields, operation);
 
-  // Write the changes
-  const rowId = await writeFieldChanges(
-    user.id,
-    table.name,
-    id,
-    table.fields,
-    0,
-  );
+  // Write all changes in a transaction so partial failures roll back
+  const rowId = await prisma.$transaction(async (tx: TxClient) => {
+    const txRowId = await writeFieldChanges(
+      tx,
+      user.id,
+      table.name,
+      id,
+      table.fields,
+      0,
+    );
 
-  await writeMappingChanges(user.id, table, rowId);
+    await writeMappingChanges(tx, user.id, table, txRowId);
 
-  // Create audit record
-  await prisma.audit.create({
-    data: {
-      changed_by_id: user.id,
-      operation,
-      table_name: table.name,
-      row_id: rowId.toString(),
-      modified_fields: table.fields,
-    },
+    // Create audit record
+    await tx.audit.create({
+      data: {
+        changed_by_id: user.id,
+        operation,
+        table_name: table.name,
+        row_id: txRowId.toString(),
+        modified_fields: table.fields,
+      },
+    });
+
+    return txRowId;
   });
 
   return contentResponse({ rowId, newSlug });
@@ -203,6 +211,7 @@ function updateSlugs(table: TableCms) {
 }
 
 async function writeFieldChanges(
+  tx: TxClient,
   userid: string,
   tableName: string,
   rowId: number,
@@ -221,7 +230,7 @@ async function writeFieldChanges(
       }*/
     if (field.modified?.[index]) {
       if (field.type == "image") {
-        await writeImageField(field, index, userid, dataParams);
+        await writeImageField(tx, field, index, userid, dataParams);
       } else {
         dataParams[field.column!] = field.values![index];
       }
@@ -241,7 +250,7 @@ async function writeFieldChanges(
     dataParams["sequence"] = index;
   }
 
-  const model = getPrismaModel(tableName);
+  const model = getPrismaModel(tableName, tx);
 
   // Update row
   if (rowId && rowId >= 0) {
@@ -273,6 +282,7 @@ async function writeFieldChanges(
 }
 
 async function writeImageField(
+  tx: TxClient,
   field: ImageFieldCms,
   index: number,
   userid: string,
@@ -289,7 +299,7 @@ async function writeImageField(
     // Prisma updates either need to be all id based or navigation property based, can't mix
     // modified_by_id is id based, so we need to set the image by id as well, so create and get the id
 
-    const imageRecord = await prisma.image.create({
+    const imageRecord = await tx.image.create({
       data: {
         cdn_key: imageCdnkey,
         created_by_id: userid,
@@ -305,6 +315,7 @@ async function writeImageField(
 }
 
 async function writeMappingChanges(
+  tx: TxClient,
   userid: string,
   table: TableCms,
   id: number,
@@ -331,7 +342,7 @@ async function writeMappingChanges(
 
     for (const removedId of mappingTable.removeIds || []) {
       // Delete
-      await getPrismaModel(mappingTable.name).delete({
+      await getPrismaModel(mappingTable.name, tx).delete({
         where: {
           id: removedId,
           ...tableRelation,
@@ -348,6 +359,7 @@ async function writeMappingChanges(
         mappingTable.fields.some((field) => field.modified?.[index])
       ) {
         await writeFieldChanges(
+          tx,
           userid,
           mappingTable.name,
           mappingId,
