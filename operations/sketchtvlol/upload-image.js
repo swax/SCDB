@@ -31,17 +31,17 @@ function usage() {
   console.log("Options:");
   console.log("  --verbose    Show detailed progress information");
   console.log("");
-  console.log("Set your API token in .env.local as UPLOAD_API_TOKEN");
+  console.log("Set your API key in .env.local as API_KEY");
   process.exit(1);
 }
 
-// Function to get API token
+// Function to get API key
 function getToken() {
-  if (!process.env.UPLOAD_API_TOKEN) {
-    console.error("Error: UPLOAD_API_TOKEN not found in .env.local");
+  if (!process.env.API_KEY) {
+    console.error("Error: API_KEY not found in .env.local");
     process.exit(1);
   }
-  return process.env.UPLOAD_API_TOKEN;
+  return process.env.API_KEY;
 }
 
 // Function to calculate SHA-256 hash (first 8 characters)

@@ -1,4 +1,5 @@
 import { getLoggedInUser, validateRoleAtLeast } from "@/backend/actionHelper";
+import { authenticateApiRequest } from "@/backend/api/apiAuth";
 import ProcessEnv from "@/shared/ProcessEnv";
 import { S3Client } from "@aws-sdk/client-s3";
 import { createPresignedPost } from "@aws-sdk/s3-presigned-post";
@@ -16,17 +17,10 @@ export async function validateUploadAuth(
   request: NextRequest,
 ): Promise<AuthResult> {
   const authHeader = request.headers.get("authorization");
-  const isApiToken = authHeader?.startsWith("Bearer ");
 
-  if (isApiToken && authHeader) {
-    const token = authHeader.substring(7);
-    const expectedToken = process.env.UPLOAD_API_TOKEN;
-
-    if (!expectedToken || token !== expectedToken) {
-      throw new Error("Invalid API token");
-    }
-
-    return { isApiToken: true };
+  if (authHeader?.startsWith("Bearer ")) {
+    const user = await authenticateApiRequest(request);
+    return { isApiToken: true, userId: user.id };
   } else {
     const user = await getLoggedInUser();
     validateRoleAtLeast(user.role, user_role_type.Editor);

@@ -1,3 +1,4 @@
+import { handleApiError } from "@/backend/api/apiAuth";
 import { validateUploadAuth } from "@/backend/imageHelper";
 import prisma from "@/database/prisma";
 import { NextRequest, NextResponse } from "next/server";
@@ -42,11 +43,7 @@ export async function POST(request: NextRequest) {
       message: "Image record created successfully",
     });
   } catch (error) {
-    console.error("Upload finish API error:", error);
-    return NextResponse.json(
-      { error: error instanceof Error ? error.message : "Unknown error" },
-      { status: 500 },
-    );
+    return handleApiError(error);
   }
 }
 

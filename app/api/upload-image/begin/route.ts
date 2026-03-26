@@ -1,3 +1,4 @@
+import { handleApiError } from "@/backend/api/apiAuth";
 import {
   buildUploadKey,
   createPresignedUploadUrl,
@@ -60,10 +61,6 @@ export async function POST(request: NextRequest) {
       message: "Presigned URL generated successfully",
     });
   } catch (error) {
-    console.error("Upload begin API error:", error);
-    return NextResponse.json(
-      { error: error instanceof Error ? error.message : "Unknown error" },
-      { status: 500 },
-    );
+    return handleApiError(error);
   }
 }
