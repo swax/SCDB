@@ -24,8 +24,34 @@ export interface SketchInput {
   posted_on_socials?: boolean;
   cast?: CastInput[];
   credits?: CreditInput[];
-  quotes?: QuoteInput[];
-  tags?: TagInput[];
+  quotes?: (QuoteInput | string)[];
+  tags?: (TagInput | number)[];
+}
+
+/**
+ * Normalize shorthand forms in sketch input:
+ * - quotes: "text" -> {quote: "text"}
+ * - tags: 123 -> {tag_id: 123}
+ * - posted_on_socials: defaults to false if not provided
+ */
+export function normalizeSketchInput(input: SketchInput): SketchInput {
+  if (input.posted_on_socials === undefined) {
+    input.posted_on_socials = false;
+  }
+
+  if (input.quotes) {
+    input.quotes = input.quotes.map((q) =>
+      typeof q === "string" ? { quote: q } : q,
+    );
+  }
+
+  if (input.tags) {
+    input.tags = input.tags.map((t) =>
+      typeof t === "number" ? { tag_id: t } : t,
+    );
+  }
+
+  return input;
 }
 
 export interface CastInput {
@@ -169,27 +195,37 @@ export async function buildTableCmsFromInput(
     }
   });
 
-  setMappingField(table, "sketch_quote", input.quotes, (item, fields) => {
-    for (const field of fields) {
-      if (field.column === "quote") {
-        field.values ||= [];
-        (field.values as FieldCmsValueType[]).push(item.quote);
-        field.modified ||= [];
-        field.modified.push(true);
+  setMappingField(
+    table,
+    "sketch_quote",
+    input.quotes as QuoteInput[] | undefined,
+    (item, fields) => {
+      for (const field of fields) {
+        if (field.column === "quote") {
+          field.values ||= [];
+          (field.values as FieldCmsValueType[]).push(item.quote);
+          field.modified ||= [];
+          field.modified.push(true);
+        }
       }
-    }
-  });
+    },
+  );
 
-  setMappingField(table, "sketch_tag", input.tags, (item, fields) => {
-    for (const field of fields) {
-      if (field.column === "tag_id") {
-        field.values ||= [];
-        (field.values as FieldCmsValueType[]).push(item.tag_id);
-        field.modified ||= [];
-        field.modified.push(true);
+  setMappingField(
+    table,
+    "sketch_tag",
+    input.tags as TagInput[] | undefined,
+    (item, fields) => {
+      for (const field of fields) {
+        if (field.column === "tag_id") {
+          field.values ||= [];
+          (field.values as FieldCmsValueType[]).push(item.tag_id);
+          field.modified ||= [];
+          field.modified.push(true);
+        }
       }
-    }
-  });
+    },
+  );
 
   // Convert image fields with integer values to plain FK fields
   // (API passes pre-existing image record IDs, not CDN keys)

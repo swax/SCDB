@@ -278,7 +278,8 @@ export const schemaRegistry: Record<string, object> = {
       },
       posted_on_socials: {
         type: "boolean",
-        description: "Whether this has been posted on social media",
+        description:
+          "Whether this has been posted on social media (defaults to false)",
       },
       cast: {
         type: "array",
@@ -293,13 +294,15 @@ export const schemaRegistry: Record<string, object> = {
       },
       quotes: {
         type: "array",
-        description: "Memorable quotes from the sketch. See QuoteInput schema.",
-        items: { $ref: "QuoteInput" },
+        description:
+          'Memorable quotes. Accepts plain strings: ["quote1", "quote2"] or objects: [{"quote": "quote1"}]',
+        items: { oneOf: [{ type: "string" }, { $ref: "QuoteInput" }] },
       },
       tags: {
         type: "array",
-        description: "Tags for categorization. See TagInput schema.",
-        items: { $ref: "SketchTagInput" },
+        description:
+          "Tags for categorization. Accepts plain tag IDs: [123, 456] or objects: [{tag_id: 123}]",
+        items: { oneOf: [{ type: "integer" }, { $ref: "SketchTagInput" }] },
       },
     },
   },
@@ -340,13 +343,15 @@ export const schemaRegistry: Record<string, object> = {
       },
       quotes: {
         type: "array",
-        description: "Replaces all existing quote entries",
-        items: { $ref: "QuoteInput" },
+        description:
+          'Replaces all existing quotes. Accepts plain strings: ["quote1"] or objects: [{"quote": "quote1"}]',
+        items: { oneOf: [{ type: "string" }, { $ref: "QuoteInput" }] },
       },
       tags: {
         type: "array",
-        description: "Replaces all existing tag entries",
-        items: { $ref: "SketchTagInput" },
+        description:
+          "Replaces all existing tags. Accepts plain tag IDs: [123] or objects: [{tag_id: 123}]",
+        items: { oneOf: [{ type: "integer" }, { $ref: "SketchTagInput" }] },
       },
     },
   },

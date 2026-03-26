@@ -5,6 +5,7 @@ import {
 } from "@/backend/api/apiAuth";
 import {
   buildTableCmsFromInput,
+  normalizeSketchInput,
   prepareMappingReplacements,
   SketchInput,
 } from "@/backend/api/sketchApiService";
@@ -53,7 +54,7 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
       throw new ApiError(404, "Sketch not found");
     }
 
-    const input = (await request.json()) as SketchInput;
+    const input = normalizeSketchInput((await request.json()) as SketchInput);
     const table = await buildTableCmsFromInput(input, true);
 
     // If mapping arrays are provided, replace all existing rows
