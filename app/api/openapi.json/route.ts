@@ -587,6 +587,24 @@ const spec = {
       },
     },
 
+    // Management
+    "/refresh-search": {
+      post: {
+        operationId: "refreshSketchSearch",
+        summary: "Refresh sketch search index",
+        description:
+          "Rebuilds the full-text search index for sketches. " +
+          "Call this after bulk data changes to ensure search results are up to date.",
+        tags: ["Management"],
+        responses: {
+          "200": {
+            description: "Search index refreshed",
+            content: { "application/json": { schema: successResponse } },
+          },
+        },
+      },
+    },
+
     // Lookup
     "/lookup/{table}": {
       get: {
@@ -668,7 +686,7 @@ const spec = {
     },
     {
       name: "Management",
-      tags: ["Checklist"],
+      tags: ["Checklist", "Management"],
     },
   ],
 };

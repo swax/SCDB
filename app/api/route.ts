@@ -50,6 +50,11 @@ export function GET() {
         title:
           "Revalidate cached page for an entity (tables: shows, seasons, episodes, sketches, recurring-sketches, people, characters, categories, tags)",
       },
+      {
+        rel: "refresh-search",
+        href: `${API_PREFIX}/refresh-search`,
+        title: "Refresh the sketch full-text search index",
+      },
     ],
   });
 }
