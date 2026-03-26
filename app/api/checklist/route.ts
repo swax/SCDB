@@ -1,4 +1,5 @@
 import { authenticateApiRequest, handleApiError } from "@/backend/api/apiAuth";
+import { checklist_status_type } from "@/shared/enums";
 import {
   isDiscoveryRequest,
   collectionDiscoveryResponse,
@@ -66,7 +67,15 @@ export async function GET(request: NextRequest) {
 export async function POST(request: NextRequest) {
   try {
     const user = await authenticateApiRequest(request);
-    const input = await request.json();
+    const input = (await request.json()) as {
+      show_id?: number;
+      season_id?: number;
+      episode_id?: number;
+      sketch_title?: string;
+      status?: checklist_status_type;
+      notes?: string;
+      sketch_id?: number;
+    };
 
     if (!input.show_id) {
       return NextResponse.json(
@@ -87,7 +96,7 @@ export async function POST(request: NextRequest) {
         season_id: input.season_id ?? null,
         episode_id: input.episode_id ?? null,
         sketch_title: input.sketch_title,
-        status: input.status ?? "Pending",
+        status: input.status ?? checklist_status_type.Pending,
         notes: input.notes ?? null,
         sketch_id: input.sketch_id ?? null,
         created_by_id: user.id,

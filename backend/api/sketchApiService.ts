@@ -1,11 +1,10 @@
-import prisma from "@/database/prisma";
+import prisma, { getPrismaModel } from "@/database/prisma";
 import {
   cast_role_type,
   credit_role_type,
   review_status_type,
 } from "@/shared/enums";
-import { slugifyForUrl } from "@/shared/utilities";
-import { TableCms } from "../cms/cmsTypes";
+import { FieldCmsValueType, TableCms } from "../cms/cmsTypes";
 import { findAndBuildTableCms } from "../edit/editReadService";
 import { convertApiImageFields } from "./apiImageHelper";
 
@@ -129,7 +128,8 @@ export async function buildTableCmsFromInput(
     }
 
     if (key in input) {
-      field.values = [input[key] as any];
+      const values: FieldCmsValueType[] = [input[key] as FieldCmsValueType];
+      (field as { values: FieldCmsValueType[] }).values = values;
       field.modified = [true];
     }
   }
@@ -140,12 +140,12 @@ export async function buildTableCmsFromInput(
       const key = field.column as keyof CastInput;
       if (key && key in item) {
         field.values ||= [];
-        (field.values as any[]).push(item[key]);
+        (field.values as FieldCmsValueType[]).push(item[key] ?? null);
         field.modified ||= [];
         field.modified.push(true);
       } else {
         field.values ||= [];
-        (field.values as any[]).push(null);
+        (field.values as FieldCmsValueType[]).push(null);
         field.modified ||= [];
         field.modified.push(false);
       }
@@ -157,12 +157,12 @@ export async function buildTableCmsFromInput(
       const key = field.column as keyof CreditInput;
       if (key && key in item) {
         field.values ||= [];
-        (field.values as any[]).push(item[key]);
+        (field.values as FieldCmsValueType[]).push(item[key] ?? null);
         field.modified ||= [];
         field.modified.push(true);
       } else {
         field.values ||= [];
-        (field.values as any[]).push(null);
+        (field.values as FieldCmsValueType[]).push(null);
         field.modified ||= [];
         field.modified.push(false);
       }
@@ -173,7 +173,7 @@ export async function buildTableCmsFromInput(
     for (const field of fields) {
       if (field.column === "quote") {
         field.values ||= [];
-        (field.values as any[]).push(item.quote);
+        (field.values as FieldCmsValueType[]).push(item.quote);
         field.modified ||= [];
         field.modified.push(true);
       }
@@ -184,7 +184,7 @@ export async function buildTableCmsFromInput(
     for (const field of fields) {
       if (field.column === "tag_id") {
         field.values ||= [];
-        (field.values as any[]).push(item.tag_id);
+        (field.values as FieldCmsValueType[]).push(item.tag_id);
         field.modified ||= [];
         field.modified.push(true);
       }
@@ -241,8 +241,6 @@ export async function prepareMappingReplacements(
     { key: "tags", tableName: "sketch_tag", navProp: "sketch_tags" },
   ];
 
-  const dynamicPrisma = prisma as any;
-
   for (const config of mappingConfigs) {
     if (!(config.key in input)) continue;
 
@@ -253,13 +251,13 @@ export async function prepareMappingReplacements(
     if (!mappingField || mappingField.type !== "mapping") continue;
 
     // Get existing IDs to mark for removal
-    const existingRows = await dynamicPrisma[config.tableName].findMany({
+    const existingRows = await getPrismaModel(config.tableName).findMany({
       where: { sketch_id: sketchId },
       select: { id: true },
     });
 
     mappingField.mappingTable.removeIds = existingRows.map(
-      (r: { id: number }) => r.id,
+      (r) => r.id as number,
     );
   }
 }

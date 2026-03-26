@@ -114,7 +114,7 @@ export async function getChangelog({
   return { total, entries } satisfies GetChangelogResponse;
 }
 
-function getValueString(values?: any[], ids?: number[]) {
+function getValueString(values?: unknown[], ids?: number[]) {
   if (!values) {
     return "<none>";
   }
@@ -122,7 +122,7 @@ function getValueString(values?: any[], ids?: number[]) {
   const valueStrs: string[] = [];
 
   for (let i = 0; i < values.length; i++) {
-    const value = values[i];
+    const value: unknown = values[i];
     let valueStr = "";
 
     if (value === null) {

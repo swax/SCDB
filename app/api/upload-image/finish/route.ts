@@ -8,7 +8,7 @@ export async function POST(request: NextRequest) {
     await validateUploadAuth(request);
 
     // Parse request body
-    const body = await request.json();
+    const body = (await request.json()) as { cdn_key?: string };
     const { cdn_key } = body;
 
     if (!cdn_key) {

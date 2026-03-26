@@ -29,7 +29,7 @@ function convertImageFieldsInList(fields: FieldCms[]) {
 
     if (hasIntegerValues) {
       // Override type so writeFieldChanges sets it as a plain FK column
-      (field as any).type = "number";
+      (field as unknown as { type: string }).type = "number";
     }
   }
 }

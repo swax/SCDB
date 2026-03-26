@@ -39,11 +39,13 @@ export default function EnumField({
         <MenuItem value="none">
           <i>Select...</i>
         </MenuItem>
-        {Object.keys(($Enums as any)[field.enum]).map((value, i) => (
-          <MenuItem key={i} value={value}>
-            {value}
-          </MenuItem>
-        ))}
+        {Object.keys($Enums[field.enum as keyof typeof $Enums]).map(
+          (value, i) => (
+            <MenuItem key={i} value={value}>
+              {value}
+            </MenuItem>
+          ),
+        )}
       </Select>
     </FormControl>
   );

@@ -1,6 +1,6 @@
 import prisma from "@/database/prisma";
 import { gender_type, review_status_type } from "@/shared/enums";
-import { TableCms } from "../cms/cmsTypes";
+import { FieldCmsValueType, TableCms } from "../cms/cmsTypes";
 import { findAndBuildTableCms } from "../edit/editReadService";
 import { convertApiImageFields } from "./apiImageHelper";
 
@@ -35,14 +35,14 @@ export function buildPersonTableCms(
     const key = field.column as keyof PersonInput;
 
     if (key in input) {
-      let value = input[key] as any;
+      let value = input[key] as FieldCmsValueType;
 
       // Convert date strings to Date objects
       if (field.type === "date" && value) {
-        value = new Date(value);
+        value = new Date(value as string);
       }
 
-      field.values = [value];
+      (field as { values: FieldCmsValueType[] }).values = [value];
       field.modified = [true];
     }
   }
@@ -61,17 +61,19 @@ export function buildPersonTableCms(
         for (const field of mappingField.mappingTable.fields) {
           if (field.column === "image_id") {
             field.values ||= [];
-            (field.values as any[]).push(item.image_id);
+            (field.values as FieldCmsValueType[]).push(item.image_id);
             field.modified ||= [];
             field.modified.push(true);
           } else if (field.column === "description") {
             field.values ||= [];
-            (field.values as any[]).push(item.description ?? null);
+            (field.values as FieldCmsValueType[]).push(
+              item.description ?? null,
+            );
             field.modified ||= [];
             field.modified.push(true);
           } else {
             field.values ||= [];
-            (field.values as any[]).push(null);
+            (field.values as FieldCmsValueType[]).push(null);
             field.modified ||= [];
             field.modified.push(false);
           }

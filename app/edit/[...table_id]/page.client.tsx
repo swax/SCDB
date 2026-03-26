@@ -70,7 +70,7 @@ export default function EditClientPage({ table, id }: EditClientPageProps) {
   const [createdRowId, setCreatedRowId] = useState<number | null>(null);
 
   const [openWarningSnackbar, setOpenWarningSnackbar] = useState(false);
-  const [snackbarWarnings, setSnackbarWarnings] = useState<string[]>([]);
+  const [snackbarWarnings, _setSnackbarWarnings] = useState<string[]>([]);
 
   useBeforeUnload(
     () => changeState == "dirty",
@@ -305,7 +305,7 @@ export default function EditClientPage({ table, id }: EditClientPageProps) {
   }
 
   function getFieldForTemplate(index: number) {
-    const field: Record<string, any> = {};
+    const field: Record<string, unknown> = {};
 
     table.fields.forEach((f) => {
       if (f.column) {
@@ -315,8 +315,9 @@ export default function EditClientPage({ table, id }: EditClientPageProps) {
         if (!field[f.lookup.table]) {
           field[f.lookup.table] = {};
         }
-        field[f.lookup.table][f.lookup.labelColumn] =
-          f.lookup.labelValues?.[index];
+        (field[f.lookup.table] as Record<string, unknown>)[
+          f.lookup.labelColumn
+        ] = f.lookup.labelValues?.[index];
       }
     });
 

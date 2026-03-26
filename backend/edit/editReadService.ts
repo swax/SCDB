@@ -1,8 +1,8 @@
-import prisma from "@/database/prisma";
+import { getPrismaModel, DynamicRecord } from "@/database/prisma";
 import { getRoleRank } from "@/shared/roleUtils";
-import { user_role_type } from "@/shared/enums";
+import { review_status_type, user_role_type } from "@/shared/enums";
 import { notFound } from "next/navigation";
-import { FieldCms, TableCms } from "../cms/cmsTypes";
+import { FieldCms, FieldCmsValueType, TableCms } from "../cms/cmsTypes";
 import sketchDatabaseCms from "../cms/sketchDatabaseCms";
 
 export function findAndBuildTableCms(table: string) {
@@ -43,7 +43,7 @@ export async function setFieldValues(
   includeReviewStatus: boolean,
 ) {
   // Base select
-  const selectParams: any = {
+  const selectParams: Record<string, unknown> = {
     id: true,
     ...(includeReviewStatus && { review_status: true, flag_note: true }),
   };
@@ -51,9 +51,7 @@ export async function setFieldValues(
   addFieldsToSelect(table, selectParams);
 
   // Perform the select
-  const dynamicPrisma = prisma as any;
-
-  const dbResult = await dynamicPrisma[table.name].findUnique({
+  const dbResult = await getPrismaModel(table.name).findUnique({
     where: {
       id: id,
     },
@@ -68,15 +66,18 @@ export async function setFieldValues(
   mapDatabaseToCms(dbResult, table.fields);
 
   if (dbResult.review_status) {
-    table.reviewStatus = dbResult.review_status;
+    table.reviewStatus = dbResult.review_status as review_status_type;
   }
 
   if (dbResult.flag_note) {
-    table.flagNote = dbResult.flag_note;
+    table.flagNote = dbResult.flag_note as string;
   }
 }
 
-function addFieldsToSelect(table: Omit<TableCms, "title">, selectParams: any) {
+function addFieldsToSelect(
+  table: Omit<TableCms, "title">,
+  selectParams: Record<string, unknown>,
+) {
   // Add fields to the select
   table.fields.forEach((field) => {
     if (field.type === "mapping") {
@@ -114,21 +115,25 @@ function addFieldsToSelect(table: Omit<TableCms, "title">, selectParams: any) {
   });
 }
 
-function mapDatabaseToCms(dbResult: any, fields: FieldCms[]) {
+function mapDatabaseToCms(dbResult: DynamicRecord, fields: FieldCms[]) {
   Object.entries(dbResult).forEach(([dbKey, dbValue]) => {
     fields.forEach((field) => {
       if (field.type == "image") {
         if (field.navProp == dbKey) {
           field.values ||= [];
-          field.values.push((dbValue as any)?.cdn_key);
+          field.values.push(
+            (dbValue as DynamicRecord)?.cdn_key as Nullable<string>,
+          );
         }
       } else if (field.column == dbKey) {
-        field.values ||= [];
-        field.values.push(dbValue as any);
+        const values = (field.values ||= []) as FieldCmsValueType[];
+        values.push(dbValue as FieldCmsValueType);
       } else if (field.type == "lookup") {
         if (field.lookup.table === dbKey) {
           const lookupValue = dbValue
-            ? (dbValue as any)[field.lookup.labelColumn]
+            ? ((dbValue as DynamicRecord)[
+                field.lookup.labelColumn
+              ] as Nullable<string>)
             : null;
           field.lookup.labelValues ||= [];
           field.lookup.labelValues.push(lookupValue);
@@ -137,8 +142,8 @@ function mapDatabaseToCms(dbResult: any, fields: FieldCms[]) {
         if (field.mappingTable?.navProp === dbKey && Array.isArray(dbValue)) {
           const mappingFields = field.mappingTable.fields;
           field.mappingTable.ids ||= [];
-          dbValue.forEach((subResult) => {
-            field.mappingTable.ids?.push(subResult.id);
+          (dbValue as DynamicRecord[]).forEach((subResult) => {
+            field.mappingTable.ids?.push(subResult.id as number);
             mapDatabaseToCms(subResult, mappingFields);
           });
         }

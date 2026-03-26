@@ -9,7 +9,7 @@ import {
 } from "@/backend/edit/editWriteService";
 import ProcessEnv from "@/shared/ProcessEnv";
 import { getPluralTableName } from "@/shared/tableNames";
-import { sendBingUpdate, sendGoogleUpdate } from "./searchIndexing";
+import { sendBingUpdate } from "./searchIndexing";
 
 export default async function saveAction(table: TableCms, id: number) {
   return await catchServiceErrors(async () => {

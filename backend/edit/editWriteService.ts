@@ -1,4 +1,4 @@
-import prisma from "@/database/prisma";
+import prisma, { getPrismaModel } from "@/database/prisma";
 import { operation_type, user_role_type } from "@/shared/enums";
 import { contentResponse } from "@/shared/serviceResponse";
 import { slugifyForUrl } from "@/shared/utilities";
@@ -161,11 +161,9 @@ function removeUnmodifiedFields(table: TableCms) {
 
     // Null out unmodified fields
     mappingTable.fields.forEach((f) => {
-      f.values = <any>(
-        f.values?.map((value, i) =>
-          f.modified?.[i] || mappingTableIds[i] < 0 ? value : null,
-        )
-      );
+      f.values = f.values?.map((value, i) =>
+        f.modified?.[i] || mappingTableIds[i] < 0 ? value : null,
+      ) as typeof f.values;
     });
 
     // Remove mapping field if there are no changes
@@ -212,7 +210,7 @@ async function writeFieldChanges(
   index: number,
   mappingTableRelation?: object,
 ) {
-  const dataParams: any = {};
+  const dataParams: Record<string, unknown> = {};
 
   const columnFields = fields.filter((field) => field.column);
 
@@ -230,8 +228,6 @@ async function writeFieldChanges(
     }
   }
 
-  const dynamicPrisma = prisma as any;
-
   dataParams["modified_by_id"] = userid;
   dataParams["modified_at"] = new Date();
 
@@ -245,9 +241,11 @@ async function writeFieldChanges(
     dataParams["sequence"] = index;
   }
 
+  const model = getPrismaModel(tableName);
+
   // Update row
   if (rowId && rowId >= 0) {
-    await dynamicPrisma[tableName].update({
+    await model.update({
       where: {
         id: rowId,
         ...(mappingTableRelation ? mappingTableRelation : {}),
@@ -266,7 +264,7 @@ async function writeFieldChanges(
     dataParams["created_by_id"] = userid;
     dataParams["created_at"] = new Date();
 
-    const createdRow = await dynamicPrisma[tableName].create({
+    const createdRow = await model.create({
       data: dataParams,
     });
 
@@ -278,7 +276,7 @@ async function writeImageField(
   field: ImageFieldCms,
   index: number,
   userid: string,
-  dataParams: any,
+  dataParams: Record<string, unknown>,
 ) {
   if (!field.column || !field.navProp) {
     throw new Error("Image field missing column or navProp");
@@ -311,8 +309,6 @@ async function writeMappingChanges(
   table: TableCms,
   id: number,
 ) {
-  const dynamicPrisma = prisma as any;
-
   /** Protects from CRUD'ing rows not mapped to the row ID that the API call is updating */
   const tableRelation = {
     [table.name + "_id"]: id,
@@ -335,7 +331,7 @@ async function writeMappingChanges(
 
     for (const removedId of mappingTable.removeIds || []) {
       // Delete
-      await dynamicPrisma[mappingTable.name].delete({
+      await getPrismaModel(mappingTable.name).delete({
         where: {
           id: removedId,
           ...tableRelation,
@@ -371,9 +367,7 @@ export async function getSlugForId(table: TableCms, id: number) {
     throw new Error("Table does not have a slug field or it is not configured");
   }
 
-  const dynamicPrisma = prisma as any;
-
-  const row = await dynamicPrisma[table.name].findUnique({
+  const row = await getPrismaModel(table.name).findUnique({
     where: {
       id,
     },
@@ -390,10 +384,8 @@ export async function deleteRow(
   table: TableCms,
   rowId: number,
 ) {
-  const dynamicPrisma = prisma as any;
-
   // Allow the user that created the row to delete, otherwise it must be a mod
-  const row = await dynamicPrisma[table.name].findUnique({
+  const row = await getPrismaModel(table.name).findUnique({
     where: {
       id: rowId,
     },
@@ -404,13 +396,13 @@ export async function deleteRow(
 
   validateRoleAtLeast(
     user.role,
-    row.created_by_id == user.id
+    (row?.created_by_id as string) == user.id
       ? user_role_type.Editor
       : user_role_type.Moderator,
   );
 
   // Perform the delete
-  await dynamicPrisma[table.name].delete({
+  await getPrismaModel(table.name).delete({
     where: {
       id: rowId,
     },

@@ -1,8 +1,4 @@
-import {
-  authenticateApiRequest,
-  ApiError,
-  handleApiError,
-} from "@/backend/api/apiAuth";
+import { ApiError, handleApiError } from "@/backend/api/apiAuth";
 import lookupTermsInTable from "@/backend/edit/lookupService";
 import { NextRequest, NextResponse } from "next/server";
 

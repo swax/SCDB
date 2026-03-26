@@ -54,7 +54,7 @@ export async function POST(request: NextRequest) {
   try {
     const user = await authenticateApiRequest(request);
 
-    const input: SketchInput = await request.json();
+    const input = (await request.json()) as SketchInput;
 
     if (!input.title) {
       return NextResponse.json({ error: "title is required" }, { status: 400 });

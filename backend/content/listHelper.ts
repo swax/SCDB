@@ -10,10 +10,18 @@ export interface ListSearchParms {
   hiddenColumns?: string;
 }
 
+/** Return type for getBaseFindParams – keeps Prisma happy via type assertions downstream */
+export interface BaseFindParams {
+  where: Record<string, unknown> | undefined;
+  orderBy: Record<string, unknown> | undefined;
+  skip: number;
+  take: number;
+}
+
 export function getBaseFindParams(
   searchParams: ListSearchParms,
   searchFields?: string[],
-) {
+): BaseFindParams {
   const orderBy = getOrderParams(searchParams);
 
   const where = getWhereParams(searchParams, searchFields);
@@ -51,8 +59,8 @@ function getOrderParams({ sortField, sortDir }: ListSearchParms) {
 function getWhereParams(
   { filterField, filterValue, filterOp, search }: ListSearchParms,
   searchFields?: string[],
-) {
-  const conditions: any[] = [];
+): Record<string, unknown> | undefined {
+  const conditions: Record<string, unknown>[] = [];
 
   // Handle search across multiple fields
   if (search && searchFields && searchFields.length > 0) {

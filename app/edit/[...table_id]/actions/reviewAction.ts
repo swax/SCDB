@@ -6,7 +6,7 @@ import {
   validateRoleAtLeast,
 } from "@/backend/actionHelper";
 import { TableCms } from "@/backend/cms/cmsTypes";
-import prisma from "@/database/prisma";
+import { getPrismaModel } from "@/database/prisma";
 import { review_status_type, user_role_type } from "@/shared/enums";
 
 export async function updateReviewStatus(
@@ -25,10 +25,8 @@ export async function updateReviewStatus(
       throw new Error("Flag note is required when flagging an item");
     }
 
-    const dynamicPrisma = prisma as any;
-
     // Get the last modified by user
-    const row = await dynamicPrisma[table.name].findUnique({
+    const _row = await getPrismaModel(table.name).findUnique({
       where: {
         id: id,
       },
@@ -46,7 +44,7 @@ export async function updateReviewStatus(
     }*/
 
     // Make the change
-    await dynamicPrisma[table.name].update({
+    await getPrismaModel(table.name).update({
       where: {
         id: id,
       },

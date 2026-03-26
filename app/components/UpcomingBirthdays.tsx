@@ -11,7 +11,6 @@ import {
   Box,
   List,
   ListItem,
-  ListItemAvatar,
   Typography,
 } from "@mui/material";
 import Link from "next/link";

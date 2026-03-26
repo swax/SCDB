@@ -13,7 +13,13 @@ export async function POST(request: NextRequest) {
     const authResult = await validateUploadAuth(request);
 
     // Parse request body
-    const body = await request.json();
+    const body = (await request.json()) as {
+      table_name?: string;
+      file_name?: string;
+      mime_type?: string;
+      file_size?: number;
+      file_hash?: string;
+    };
     const { table_name, file_name, mime_type, file_size, file_hash } = body;
 
     if (!table_name || !file_name || !mime_type || !file_size || !file_hash) {

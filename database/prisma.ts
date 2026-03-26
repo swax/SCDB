@@ -43,3 +43,25 @@ if (ProcessEnv.NODE_ENV !== "production") {
 }
 
 export default prisma;
+
+/**
+ * Helper for dynamic Prisma model access by table name.
+ * Prisma doesn't support typed `prisma[tableName]` so this centralizes
+ * the type assertion in one place.
+ */
+export type DynamicRecord = Record<string, unknown>;
+
+interface DynamicPrismaDelegate {
+  findUnique(args: Record<string, unknown>): Promise<DynamicRecord | null>;
+  findMany(args: Record<string, unknown>): Promise<DynamicRecord[]>;
+  create(args: Record<string, unknown>): Promise<DynamicRecord>;
+  update(args: Record<string, unknown>): Promise<DynamicRecord>;
+  delete(args: Record<string, unknown>): Promise<DynamicRecord>;
+  deleteMany(args: Record<string, unknown>): Promise<{ count: number }>;
+  count(args?: Record<string, unknown>): Promise<number>;
+}
+
+export function getPrismaModel(tableName: string): DynamicPrismaDelegate {
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-explicit-any
+  return (prisma as any)[tableName] as DynamicPrismaDelegate;
+}

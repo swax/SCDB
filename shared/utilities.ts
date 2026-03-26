@@ -22,25 +22,32 @@ export function resolveTemplateVars<T>(
 
   let success = true;
 
-  const resolvedString = templateString.replace(pattern, (match, key) => {
-    const value = valueFromString(mappedVar, key);
-    if (!value) {
-      success = false;
-    }
-    return value;
-  });
+  const resolvedString = templateString.replace(
+    pattern,
+    (_match, key: string) => {
+      const value = valueFromString(mappedVar, key);
+      if (!value) {
+        success = false;
+      }
+      return value as string;
+    },
+  );
 
   return success ? resolvedString : null;
 }
 
-function valueFromString(obj: any, path: string, defaultValue?: string) {
+function valueFromString(
+  obj: Record<string, unknown>,
+  path: string,
+  defaultValue?: string,
+): unknown {
   if (!path) {
     return obj;
   }
   const keys = path.split(".");
-  let result = obj;
+  let result: unknown = obj;
   for (const key of keys) {
-    result = result?.[key];
+    result = (result as Record<string, unknown>)?.[key];
     if (result === undefined) {
       return defaultValue;
     }
@@ -94,9 +101,10 @@ export async function fileToShortHash(file: File) {
   return hashHex.substring(0, 8);
 }
 
-export function showAndLogError(error: any) {
-  console.error("showAndLogError: " + error);
-  alert(error.message || error);
+export function showAndLogError(error: unknown) {
+  console.error("showAndLogError: " + String(error));
+  const message = error instanceof Error ? error.message : String(error);
+  alert(message);
 }
 
 export function buildPageTitle(subtitle?: string) {

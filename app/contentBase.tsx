@@ -1,4 +1,4 @@
-import prisma from "@/database/prisma";
+import { getPrismaModel } from "@/database/prisma";
 import { getContentPath, getPluralTableName } from "@/shared/tableNames";
 import { revalidatePath, revalidateTag } from "next/cache";
 import { notFound, permanentRedirect } from "next/navigation";
@@ -56,8 +56,7 @@ export async function redirectByIdToSlugUrl(
   }
 
   const dbTable = table.replace("-", "_");
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const row = await (prisma as any)[dbTable].findUnique({
+  const row = await getPrismaModel(dbTable).findUnique({
     where: { id },
     select: { url_slug: true },
   });
@@ -66,7 +65,7 @@ export async function redirectByIdToSlugUrl(
     notFound();
   }
 
-  permanentRedirect(`/${plural}/${row.url_slug}`);
+  permanentRedirect(`/${plural}/${row.url_slug as string}`);
 }
 
 export function revalidateContent(table: string, slug?: string) {

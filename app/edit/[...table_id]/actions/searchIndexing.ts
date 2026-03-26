@@ -1,4 +1,3 @@
-import ProcessEnv from "@/shared/ProcessEnv";
 import { ServiceResponse } from "@/shared/serviceResponse";
 import { JWT } from "google-auth-library";
 import "server-only";
@@ -35,7 +34,7 @@ export async function sendBingUpdate<T>(
       );
     }
   } catch (e) {
-    clientResponse.warnings.push(`Bing update exception: ${e}`);
+    clientResponse.warnings.push(`Bing update exception: ${String(e)}`);
   }
 }
 
@@ -89,6 +88,6 @@ export async function sendGoogleUpdate<T>(
       );
     }
   } catch (e) {
-    clientResponse.warnings.push(`Google update exception: ${e}`);
+    clientResponse.warnings.push(`Google update exception: ${String(e)}`);
   }
 }

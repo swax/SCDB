@@ -52,7 +52,7 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
       throw new ApiError(404, "Person not found");
     }
 
-    const input: PersonInput = await request.json();
+    const input = (await request.json()) as PersonInput;
     const table = buildPersonTableCms(input, true);
 
     // If images array is provided, replace all existing person_image rows

@@ -46,7 +46,7 @@ export async function GET(request: NextRequest) {
 export async function POST(request: NextRequest) {
   try {
     const user = await authenticateApiRequest(request);
-    const input = await request.json();
+    const input = (await request.json()) as Record<string, unknown>;
     if (!input.name)
       return NextResponse.json({ error: "name is required" }, { status: 400 });
     const table = buildEntityTableCms("character", input, false);

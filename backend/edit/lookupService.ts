@@ -1,4 +1,4 @@
-import prisma from "@/database/prisma";
+import { getPrismaModel, DynamicRecord } from "@/database/prisma";
 import { contentResponse } from "@/shared/serviceResponse";
 import { FieldCms, LookupFieldCms } from "../cms/cmsTypes";
 import sketchDatabaseCms from "../cms/sketchDatabaseCms";
@@ -38,8 +38,6 @@ export default async function lookupTermsInTable(
     );
   }
 
-  const dynamicPrisma = prisma as any;
-
   const whereClauses = searchString.split(" ").map((term) => ({
     [lookupField.labelColumn]: {
       contains: term,
@@ -47,7 +45,7 @@ export default async function lookupTermsInTable(
     },
   }));
 
-  const results = await dynamicPrisma[lookupField.table].findMany({
+  const results = await getPrismaModel(lookupField.table).findMany({
     where: {
       AND: whereClauses,
     },
@@ -59,9 +57,9 @@ export default async function lookupTermsInTable(
 
   // Map results to LookupFieldOption
   const lookupResults: LookupFieldOption[] = (results || []).map(
-    (result: any) => ({
-      id: result.id,
-      label: result[lookupField.labelColumn],
+    (result: DynamicRecord) => ({
+      id: result.id as number,
+      label: result[lookupField.labelColumn] as string,
     }),
   );
 

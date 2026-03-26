@@ -48,6 +48,6 @@ export async function catchServiceErrors<T>(
 
     return response || emptyResponse();
   } catch (e) {
-    return errorResponse(`${e}`);
+    return errorResponse(String(e));
   }
 }

@@ -3,6 +3,7 @@ import {
   ApiError,
   handleApiError,
 } from "@/backend/api/apiAuth";
+import { checklist_status_type } from "@/shared/enums";
 import prisma from "@/database/prisma";
 import { NextRequest, NextResponse } from "next/server";
 
@@ -35,7 +36,15 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
     });
     if (!existing) throw new ApiError(404, "Checklist item not found");
 
-    const input = await request.json();
+    const input = (await request.json()) as {
+      show_id?: number;
+      season_id?: number;
+      episode_id?: number;
+      sketch_title?: string;
+      status?: checklist_status_type;
+      notes?: string;
+      sketch_id?: number;
+    };
 
     const item = await prisma.checklist.update({
       where: { id: rowId },

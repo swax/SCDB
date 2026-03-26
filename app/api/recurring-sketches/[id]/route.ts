@@ -36,7 +36,7 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
     if (isNaN(rowId)) throw new ApiError(400, "Invalid ID");
     const existing = await getRecurringSketch(rowId);
     if (!existing) throw new ApiError(404, "Recurring sketch not found");
-    const input = await request.json();
+    const input = (await request.json()) as Record<string, unknown>;
     const table = buildEntityTableCms("recurring_sketch", input, true);
     if (input.title || input.show_id) {
       const merged = {

@@ -36,7 +36,7 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
     if (isNaN(rowId)) throw new ApiError(400, "Invalid ID");
     const existing = await getSeason(rowId);
     if (!existing) throw new ApiError(404, "Season not found");
-    const input = await request.json();
+    const input = (await request.json()) as Record<string, unknown>;
     const table = buildEntityTableCms("season", input, true);
     // Resolve lookup_slug if key fields changed
     if (input.show_id || input.year || input.number) {

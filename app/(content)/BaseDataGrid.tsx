@@ -192,7 +192,8 @@ export default function BaseDataGrid<T>({
         filterOp: undefined,
       });
     } else {
-      const { field, value, operator } = filterModel.items[0];
+      const { field, operator } = filterModel.items[0];
+      const value: unknown = filterModel.items[0].value;
 
       // if value is a date set it to the just the date component of the iso string
       let cleanVal = undefined;
@@ -203,8 +204,10 @@ export default function BaseDataGrid<T>({
         cleanVal = undefined;
       } else if (value instanceof Date) {
         cleanVal = value.toISOString().split("T")[0];
+      } else if (typeof value === "string") {
+        cleanVal = value;
       } else {
-        cleanVal = `${value}`;
+        cleanVal = String(value as string | number);
       }
 
       navigateTo({

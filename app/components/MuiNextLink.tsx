@@ -16,16 +16,18 @@ type MuiLinkProps = Parameters<typeof MuiLink>[0] & {
  * Prefetch is false by default, this doesn't mean it's completely off, prefetch will still happen on hover, just not page load
  * (the docs say it prefetches on hover, but it doesn't look like that's happening in the release build)
  */
-const MuiNextLink = forwardRef((props: MuiLinkProps, ref: any) => {
-  return (
-    <MuiLink
-      component={NextLink}
-      prefetch={false}
-      ref={ref}
-      {...props}
-    ></MuiLink>
-  );
-});
+const MuiNextLink = forwardRef<HTMLAnchorElement, MuiLinkProps>(
+  (props, ref) => {
+    return (
+      <MuiLink
+        component={NextLink}
+        prefetch={false}
+        ref={ref}
+        {...props}
+      ></MuiLink>
+    );
+  },
+);
 
 MuiNextLink.displayName = "MuiNextLink";
 

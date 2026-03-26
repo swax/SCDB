@@ -36,7 +36,7 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
     if (isNaN(rowId)) throw new ApiError(400, "Invalid ID");
     const existing = await getEpisode(rowId);
     if (!existing) throw new ApiError(404, "Episode not found");
-    const input = await request.json();
+    const input = (await request.json()) as Record<string, unknown>;
     const table = buildEntityTableCms("episode", input, true);
     if (input.season_id || input.number !== undefined) {
       const merged = {

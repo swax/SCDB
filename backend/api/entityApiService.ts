@@ -1,7 +1,7 @@
 import { revalidateContent } from "@/app/contentBase";
-import prisma from "@/database/prisma";
+import prisma, { getPrismaModel } from "@/database/prisma";
 import { review_status_type } from "@/shared/enums";
-import { TableCms } from "../cms/cmsTypes";
+import { FieldCmsValueType, TableCms } from "../cms/cmsTypes";
 import { findAndBuildTableCms } from "../edit/editReadService";
 import { ApiError } from "./apiAuth";
 
@@ -26,13 +26,13 @@ export function buildEntityTableCms(
     const key = field.column;
 
     if (key in input) {
-      let value = input[key] as any;
+      let value = input[key] as FieldCmsValueType;
 
       if (field.type === "date" && value) {
-        value = new Date(value);
+        value = new Date(value as string);
       }
 
-      field.values = [value];
+      (field as { values: FieldCmsValueType[] }).values = [value];
       field.modified = [true];
     }
   }
@@ -78,8 +78,7 @@ export async function resolveLookupSlugField(
  */
 export async function revalidateEntityById(tableName: string, id: number) {
   const dbTable = tableName.replace("-", "_");
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const row = await (prisma as any)[dbTable].findUnique({
+  const row = await getPrismaModel(dbTable).findUnique({
     where: { id },
     select: { url_slug: true },
   });
@@ -88,7 +87,7 @@ export async function revalidateEntityById(tableName: string, id: number) {
     throw new ApiError(404, `${tableName} with id ${id} not found`);
   }
 
-  revalidateContent(tableName, row.url_slug);
+  revalidateContent(tableName, row.url_slug as string);
 }
 
 // --- Lookup slug resolvers for entities with template-based slugs ---

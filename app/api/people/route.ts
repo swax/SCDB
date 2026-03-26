@@ -53,7 +53,7 @@ export async function POST(request: NextRequest) {
   try {
     const user = await authenticateApiRequest(request);
 
-    const input: PersonInput = await request.json();
+    const input = (await request.json()) as PersonInput;
 
     if (!input.name) {
       return NextResponse.json({ error: "name is required" }, { status: 400 });

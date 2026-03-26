@@ -53,7 +53,7 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
       throw new ApiError(404, "Sketch not found");
     }
 
-    const input: SketchInput = await request.json();
+    const input = (await request.json()) as SketchInput;
     const table = await buildTableCmsFromInput(input, true);
 
     // If mapping arrays are provided, replace all existing rows
