@@ -591,10 +591,10 @@ export const schemaRegistry: Record<string, object> = {
         enum: ["Pending", "Added", "NotFound"],
         description: "Checklist item status (default: Pending)",
       },
-      notes: {
+      video_url: {
         type: "string",
         nullable: true,
-        description: "Additional notes",
+        description: "URL of the video for this sketch",
       },
       sketch_id: {
         type: "integer",

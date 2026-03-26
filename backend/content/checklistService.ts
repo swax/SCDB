@@ -20,7 +20,7 @@ export async function getChecklistList(
       id: true,
       sketch_title: true,
       status: true,
-      notes: true,
+      video_url: true,
       sketch_id: true,
       show: {
         select: {

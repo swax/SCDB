@@ -73,7 +73,7 @@ export async function POST(request: NextRequest) {
       episode_id?: number;
       sketch_title?: string;
       status?: checklist_status_type;
-      notes?: string;
+      video_url?: string;
       sketch_id?: number;
     };
 
@@ -97,7 +97,7 @@ export async function POST(request: NextRequest) {
         episode_id: input.episode_id ?? null,
         sketch_title: input.sketch_title,
         status: input.status ?? checklist_status_type.Pending,
-        notes: input.notes ?? null,
+        video_url: input.video_url ?? null,
         sketch_id: input.sketch_id ?? null,
         created_by_id: user.id,
         modified_by_id: user.id,

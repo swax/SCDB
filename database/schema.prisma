@@ -546,7 +546,7 @@ model checklist {
   episode_id     Int?
   sketch_title   String                @db.VarChar(200)
   status         checklist_status_type @default(Pending)
-  notes          String?
+  video_url      String?
   sketch_id      Int?
   created_by_id  String
   created_at     DateTime              @default(now())

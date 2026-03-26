@@ -25,7 +25,7 @@ export default async function ChecklistPage(props: ListPageProps) {
     id: item.id,
     sketch_title: item.sketch_title,
     status: item.status,
-    notes: item.notes,
+    video_url: item.video_url,
     sketch_id: item.sketch_id,
     show__title: item.show.title,
     season__year: item.season?.year,

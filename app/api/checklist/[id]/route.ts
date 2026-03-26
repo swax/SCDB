@@ -42,7 +42,7 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
       episode_id?: number;
       sketch_title?: string;
       status?: checklist_status_type;
-      notes?: string;
+      video_url?: string;
       sketch_id?: number;
     };
 
@@ -60,7 +60,7 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
           sketch_title: input.sketch_title,
         }),
         ...(input.status !== undefined && { status: input.status }),
-        ...(input.notes !== undefined && { notes: input.notes }),
+        ...(input.video_url !== undefined && { video_url: input.video_url }),
         ...(input.sketch_id !== undefined && {
           sketch_id: input.sketch_id,
         }),

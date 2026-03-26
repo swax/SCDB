@@ -10,7 +10,7 @@ interface ChecklistDataGridProps {
     id: number;
     sketch_title: string;
     status: string;
-    notes: string | null;
+    video_url: string | null;
     sketch_id: number | null;
     show__title: string;
     season__year: number | undefined;
@@ -51,7 +51,7 @@ export default function ChecklistDataGrid({
       valueOptions: Object.values(checklist_status_type),
       width: 120,
     },
-    { field: "notes", headerName: "Notes", flex: 1 },
+    { field: "video_url", headerName: "Video URL", flex: 1 },
     { field: "sketch_id", headerName: "Sketch ID", type: "number", width: 100 },
   ];
 
