@@ -46,7 +46,7 @@ export interface SketchFullInput {
   cast?: FullCastInput[];
   credits?: FullCreditInput[];
   quotes?: string[];
-  tags?: string[];
+  tags?: (string | number)[];
 }
 
 export interface FullCastInput {
@@ -76,12 +76,19 @@ export interface ResolvedSketchInput {
   creditItems: NonNullable<SketchInput["credits"]>;
 }
 
-/** Resolve a name to an ID via the lookup service */
-export async function resolveName(
+type ResolveResult =
+  | { ok: true; id: number }
+  | { ok: false; error: string };
+
+/**
+ * Try to resolve a name to an ID via the lookup service.
+ * Returns { ok: true, id } on success or { ok: false, error } on failure (does not throw).
+ */
+export async function tryResolveName(
   table: string,
   name: string,
   label: string,
-): Promise<number> {
+): Promise<ResolveResult> {
   const config = lookupConfigs[table];
   if (!config) throw new ApiError(500, `Unknown lookup table: ${table}`);
 
@@ -89,24 +96,38 @@ export async function resolveName(
   const matches = result.content || [];
 
   if (matches.length === 0) {
-    throw new InputValidationError(`${label} not found: "${name}"`);
+    return { ok: false, error: `${label} not found: "${name}"` };
   }
 
   // Prefer exact match (case-insensitive) if available
   const exact = matches.find(
     (m: { label: string }) => m.label.toLowerCase() === name.toLowerCase(),
   );
-  if (exact) return exact.id as number;
+  if (exact) return { ok: true, id: exact.id as number };
 
-  if (matches.length === 1) return matches[0].id as number;
+  if (matches.length === 1) return { ok: true, id: matches[0].id as number };
 
   const options = matches
     .slice(0, 5)
-    .map((m: { id: number; label: string }) => `${m.label} (id:${m.id})`)
+    .map(
+      (m: { id: number; label: string }) => `"${m.label}" (id:${m.id})`,
+    )
     .join(", ");
-  throw new InputValidationError(
-    `${label} "${name}" is ambiguous. Matches: ${options}. Use the standard /api/sketches endpoints with explicit IDs instead.`,
-  );
+  return {
+    ok: false,
+    error: `${label} "${name}" is ambiguous. Did you mean: ${options}? Use the exact name or pass the numeric id instead.`,
+  };
+}
+
+/** Resolve a name to an ID via the lookup service (throws on failure) */
+export async function resolveName(
+  table: string,
+  name: string,
+  label: string,
+): Promise<number> {
+  const result = await tryResolveName(table, name, label);
+  if (!result.ok) throw new InputValidationError(result.error);
+  return result.id;
 }
 
 /** Find or create a season, returning its ID */
@@ -205,21 +226,31 @@ export async function resolveFullInput(
     );
   }
 
-  // Resolve recurring sketch
+  // Resolve recurring sketch, tags, cast, and credits — collecting all errors
+  const errors: string[] = [];
+
   let recurringSketchId: number | undefined;
   if (input.recurring_sketch) {
-    recurringSketchId = await resolveName(
+    const result = await tryResolveName(
       "recurring_sketch",
       input.recurring_sketch,
       "Recurring sketch",
     );
+    if (result.ok) recurringSketchId = result.id;
+    else errors.push(result.error);
   }
 
-  // Resolve tags
+  // Resolve tags (accept strings for name lookup or numbers for direct IDs)
   const tagIds: number[] = [];
   if (input.tags) {
-    for (const tagName of input.tags) {
-      tagIds.push(await resolveName("tag", tagName, "Tag"));
+    for (const tagEntry of input.tags) {
+      if (typeof tagEntry === "number") {
+        tagIds.push(tagEntry);
+      } else {
+        const result = await tryResolveName("tag", tagEntry, "Tag");
+        if (result.ok) tagIds.push(result.id);
+        else errors.push(result.error);
+      }
     }
   }
 
@@ -229,19 +260,22 @@ export async function resolveFullInput(
   const castItems: NonNullable<SketchInput["cast"]> = [];
   if (input.cast) {
     for (const castEntry of input.cast) {
-      const personId = await resolveName(
+      const result = await tryResolveName(
         "person",
         castEntry.person,
         "Cast person",
       );
-
-      castItems.push({
-        person_id: personId,
-        character_name: castEntry.character_name || null,
-        role: castEntry.role as CastInput["role"],
-        minor_role: castEntry.minor_role ?? false,
-        image_id: castEntry.image_id ?? null,
-      });
+      if (result.ok) {
+        castItems.push({
+          person_id: result.id,
+          character_name: castEntry.character_name || null,
+          role: castEntry.role as CastInput["role"],
+          minor_role: castEntry.minor_role ?? false,
+          image_id: castEntry.image_id ?? null,
+        });
+      } else {
+        errors.push(result.error);
+      }
     }
   }
 
@@ -249,17 +283,25 @@ export async function resolveFullInput(
   const creditItems: NonNullable<SketchInput["credits"]> = [];
   if (input.credits) {
     for (const creditEntry of input.credits) {
-      const personId = await resolveName(
+      const result = await tryResolveName(
         "person",
         creditEntry.person,
         "Credit person",
       );
-      creditItems.push({
-        person_id: personId,
-        role: creditEntry.role as CreditInput["role"],
-        description: creditEntry.description || null,
-      });
+      if (result.ok) {
+        creditItems.push({
+          person_id: result.id,
+          role: creditEntry.role as CreditInput["role"],
+          description: creditEntry.description || null,
+        });
+      } else {
+        errors.push(result.error);
+      }
     }
+  }
+
+  if (errors.length > 0) {
+    throw new InputValidationError(errors.join("\n"));
   }
 
   // Build the SketchInput

@@ -936,9 +936,10 @@ export const schemaRegistry: Record<string, object> = {
       },
       tags: {
         type: "array",
-        items: { type: "string" },
+        items: { oneOf: [{ type: "string" }, { type: "integer" }] },
         description:
-          'Tag names (resolved by lookup). Example: ["Star Wars", "Undercover Boss"]',
+          'Tag names (resolved by lookup) or numeric tag IDs for disambiguation. ' +
+          'Example: ["Star Wars", "Undercover Boss", 1726]',
       },
     },
   },

@@ -71,7 +71,7 @@ export function GET() {
         },
       ],
       quotes: ["okay boomer", "Another memorable line"],
-      tags: ["Star Wars", "Undercover Boss", "Parody"],
+      tags: ["Star Wars", "Undercover Boss", "Parody", 1726],
     },
   });
 }
