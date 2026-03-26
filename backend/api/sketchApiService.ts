@@ -31,7 +31,9 @@ export interface SketchInput {
 const VALID_CAST_ROLES = new Set(Object.values(cast_role_type));
 
 function isValidCastRole(value: unknown): value is cast_role_type {
-  return typeof value === "string" && VALID_CAST_ROLES.has(value as cast_role_type);
+  return (
+    typeof value === "string" && VALID_CAST_ROLES.has(value as cast_role_type)
+  );
 }
 
 /**
@@ -75,11 +77,13 @@ export function normalizeSketchInput(input: SketchInput): SketchInput {
 
       // Validate role is a valid enum value
       if (!c.role) {
-        errors.push(`Cast row ${i + 1}: 'role' is required (one of: ${[...VALID_CAST_ROLES].join(", ")})`);
+        errors.push(
+          `Cast row ${i + 1}: 'role' is required (one of: ${[...VALID_CAST_ROLES].join(", ")})`,
+        );
       } else if (!isValidCastRole(c.role)) {
         errors.push(
           `Cast row ${i + 1}: invalid role "${c.role}". Must be one of: ${[...VALID_CAST_ROLES].join(", ")}. ` +
-          `Use 'character_name' for the character's name (e.g. "Kylo Ren"), and 'role' for the actor's role type (e.g. "Host").`,
+            `Use 'character_name' for the character's name (e.g. "Kylo Ren"), and 'role' for the actor's role type (e.g. "Host").`,
         );
       }
       return c;

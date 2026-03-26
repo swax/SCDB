@@ -25,6 +25,15 @@ export async function GET(request: NextRequest) {
         createSchema: "SketchInput",
         updateSchema: "SketchUpdateInput",
         listSchema: "SketchListParams",
+        extraLinks: [
+          {
+            rel: "create-update-full",
+            href: "/api/sketches/full",
+            title:
+              "RECOMMENDED — create or update a sketch using names instead of IDs. " +
+              "POST to create, PUT /{id} to update. GET for schema + example.",
+          },
+        ],
       });
     }
 

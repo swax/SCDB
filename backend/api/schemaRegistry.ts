@@ -1,3 +1,33 @@
+/** Recursively resolve $ref strings against the schema registry */
+export function resolveSchemaRefs(
+  obj: unknown,
+  seen = new Set<string>(),
+): unknown {
+  if (obj === null || typeof obj !== "object") return obj;
+
+  if (Array.isArray(obj))
+    return obj.map((item) => resolveSchemaRefs(item, seen));
+
+  const record = obj as Record<string, unknown>;
+
+  // Replace { $ref: "SchemaName" } with the referenced schema (inline)
+  if (typeof record.$ref === "string" && Object.keys(record).length === 1) {
+    const refName = record.$ref;
+    if (seen.has(refName)) return { type: "object", description: refName };
+    const referenced = schemaRegistry[refName];
+    if (referenced) {
+      seen.add(refName);
+      return resolveSchemaRefs(referenced, seen);
+    }
+  }
+
+  const resolved: Record<string, unknown> = {};
+  for (const [key, value] of Object.entries(record)) {
+    resolved[key] = resolveSchemaRefs(value, seen);
+  }
+  return resolved;
+}
+
 /** JSON Schema definitions for API request/response types, served individually on demand */
 export const schemaRegistry: Record<string, object> = {
   PaginationParams: {
@@ -501,7 +531,7 @@ export const schemaRegistry: Record<string, object> = {
       images: {
         type: "array",
         description:
-          "Images for this person. Upload each image via /upload-image/begin + /upload-image/finish first. See PersonImageInput schema.",
+          "Images for this person. Upload each image via POST /upload-image/direct first to get an image_id.",
         items: { $ref: "PersonImageInput" },
       },
     },
@@ -812,11 +842,10 @@ export const schemaRegistry: Record<string, object> = {
     },
   },
 
-
   PersonImageInput: {
     type: "object",
     description:
-      "An image entry for a person. Upload the image first via /upload-image/begin + /upload-image/finish to get the image_id.",
+      "An image entry for a person. Upload the image first via POST /upload-image/direct to get the image_id.",
     required: ["image_id"],
     properties: {
       image_id: {
@@ -828,6 +857,139 @@ export const schemaRegistry: Record<string, object> = {
         type: "string",
         nullable: true,
         description: "Optional description of the image",
+      },
+    },
+  },
+
+  SketchFullInput: {
+    type: "object",
+    description:
+      "All-in-one sketch creation. Accepts names instead of IDs — the server resolves shows, " +
+      "people, tags, and recurring sketches by name; finds or creates seasons and episodes; " +
+      "downloads and uploads images from URLs; creates the sketch; revalidates caches; and " +
+      "refreshes search. POST /api/sketches/full",
+    required: ["title", "show"],
+    properties: {
+      title: { type: "string", description: "Sketch title" },
+      show: {
+        type: "string",
+        description:
+          'Show name (resolved by lookup). Example: "Saturday Night Live"',
+      },
+      season_number: {
+        type: "integer",
+        description:
+          "Season number. Will find existing or create new (requires season_year to create).",
+      },
+      season_year: {
+        type: "integer",
+        description:
+          "Year the season aired. Required only when creating a new season.",
+      },
+      episode_number: {
+        type: "integer",
+        description:
+          "Episode number (requires season_number). Will find existing or create new.",
+      },
+      episode_air_date: {
+        type: "string",
+        format: "date",
+        description: "Air date (YYYY-MM-DD). Used when creating a new episode.",
+      },
+      recurring_sketch: {
+        type: "string",
+        description:
+          'Recurring sketch name (resolved by lookup). Example: "Star Wars Undercover Boss"',
+      },
+      video_urls: {
+        type: "array",
+        items: { type: "string" },
+        description: "Video URLs",
+      },
+      teaser: { type: "string", description: "Short teaser text" },
+      synopsis: { type: "string", description: "Full synopsis" },
+      notes: { type: "string", description: "Additional notes" },
+      link_urls: {
+        type: "array",
+        items: { type: "string" },
+        description: "Related external links",
+      },
+      image_id: {
+        type: "integer",
+        description:
+          "ID of the preview image. Upload via POST /upload-image/direct first.",
+      },
+      cast: {
+        type: "array",
+        description: "Cast members, using actor names instead of IDs.",
+        items: { $ref: "SketchFullCastInput" },
+      },
+      credits: {
+        type: "array",
+        description: "Credits, using person names instead of IDs.",
+        items: { $ref: "SketchFullCreditInput" },
+      },
+      quotes: {
+        type: "array",
+        items: { type: "string" },
+        description: "Memorable quotes (plain strings)",
+      },
+      tags: {
+        type: "array",
+        items: { type: "string" },
+        description:
+          'Tag names (resolved by lookup). Example: ["Star Wars", "Undercover Boss"]',
+      },
+    },
+  },
+
+  SketchFullCastInput: {
+    type: "object",
+    description:
+      'A cast member using actor name instead of ID. Example: {"person": "Adam Driver", "character_name": "Kylo Ren", "role": "Host"}',
+    required: ["person", "role"],
+    properties: {
+      person: {
+        type: "string",
+        description: 'Actor name (resolved by lookup). Example: "Adam Driver"',
+      },
+      character_name: {
+        type: "string",
+        description: 'Name of the character played. Example: "Kylo Ren"',
+      },
+      role: {
+        type: "string",
+        enum: ["Cast", "Guest", "Host", "Uncredited"],
+        description:
+          "Actor's role type in the production — NOT the character name.",
+      },
+      minor_role: { type: "boolean", description: "Minor/non-speaking role" },
+      image_id: {
+        type: "integer",
+        description:
+          "Headshot image ID. Upload via POST /upload-image/direct first.",
+      },
+    },
+  },
+
+  SketchFullCreditInput: {
+    type: "object",
+    description: "A credit entry using person name instead of ID.",
+    required: ["person", "role"],
+    properties: {
+      person: {
+        type: "string",
+        description: "Person name (resolved by lookup)",
+      },
+      role: {
+        type: "string",
+        enum: ["Writer", "Director", "Musician", "Other"],
+        description: "Credit role",
+      },
+      description: {
+        type: "string",
+        nullable: true,
+        description: "Additional description",
       },
     },
   },

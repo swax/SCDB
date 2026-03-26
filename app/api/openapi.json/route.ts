@@ -542,7 +542,8 @@ const spec = {
                     success: { type: "boolean" },
                     image_id: {
                       type: "integer",
-                      description: "Use this ID to attach the image to resources",
+                      description:
+                        "Use this ID to attach the image to resources",
                     },
                     cdn_key: { type: "string" },
                     message: { type: "string" },
@@ -552,7 +553,8 @@ const spec = {
             },
           },
           "400": {
-            description: "Validation error (invalid mime type, file too large, missing fields)",
+            description:
+              "Validation error (invalid mime type, file too large, missing fields)",
             content: { "application/json": { schema: errorRef } },
           },
         },
@@ -635,12 +637,134 @@ const spec = {
         },
       },
     },
+
+    // Sketches Full (all-in-one create/update)
+    "/sketches/full": {
+      get: {
+        operationId: "sketchFullDiscovery",
+        summary: "Schema + example for all-in-one sketch create/update",
+        description:
+          "Returns the SketchFullInput schema with $ref resolved inline, " +
+          "a complete example payload, and links to both POST (create) and PUT (update) actions.",
+        tags: ["Sketches Full"],
+        security: [],
+        responses: {
+          "200": {
+            description: "Schema, example, and actions",
+            content: { "application/json": { schema: { type: "object" } } },
+          },
+        },
+      },
+      post: {
+        operationId: "createSketchFull",
+        summary: "Create a sketch (all-in-one)",
+        description:
+          "RECOMMENDED for sketch creation. Accepts names instead of IDs — " +
+          "resolves shows, people, tags, and recurring sketches by name; " +
+          "finds or creates seasons and episodes; downloads and uploads images from URLs; " +
+          "creates the sketch transactionally; revalidates caches; and refreshes search. " +
+          "All in one call.",
+        tags: ["Sketches Full"],
+        requestBody: {
+          required: true,
+          content: {
+            "application/json": {
+              schema: { $ref: "#/components/schemas/SketchFullInput" },
+            },
+          },
+        },
+        responses: {
+          "201": {
+            description: "Sketch created with all resolved IDs",
+            content: {
+              "application/json": {
+                schema: {
+                  type: "object",
+                  properties: {
+                    id: { type: "integer" },
+                    url_slug: { type: "string" },
+                    resolved: {
+                      type: "object",
+                      description:
+                        "All IDs that were resolved or created during processing",
+                    },
+                    revalidated: {
+                      type: "array",
+                      items: { type: "string" },
+                      description: "Entities that were revalidated",
+                    },
+                    search_refreshed: { type: "boolean" },
+                  },
+                },
+              },
+            },
+          },
+          "400": {
+            description:
+              "Validation error (missing fields, name not found, ambiguous match)",
+            content: { "application/json": { schema: errorRef } },
+          },
+        },
+      },
+    },
+    "/sketches/full/{id}": {
+      put: {
+        operationId: "updateSketchFull",
+        summary: "Update a sketch (all-in-one)",
+        description:
+          "Update a sketch using names instead of IDs. Only provided fields are changed. " +
+          "For array fields (cast, tags, quotes), providing the array replaces all existing entries; " +
+          "omitting leaves them unchanged. " +
+          "Automatically revalidates caches and refreshes search.",
+        tags: ["Sketches Full"],
+        parameters: [idParam],
+        requestBody: {
+          required: true,
+          content: {
+            "application/json": {
+              schema: { $ref: "#/components/schemas/SketchFullInput" },
+            },
+          },
+        },
+        responses: {
+          "200": {
+            description: "Sketch updated with all resolved IDs",
+            content: {
+              "application/json": {
+                schema: {
+                  type: "object",
+                  properties: {
+                    id: { type: "integer" },
+                    url_slug: { type: "string" },
+                    resolved: { type: "object" },
+                    revalidated: {
+                      type: "array",
+                      items: { type: "string" },
+                    },
+                    search_refreshed: { type: "boolean" },
+                  },
+                },
+              },
+            },
+          },
+          "400": {
+            description: "Validation error",
+            content: { "application/json": { schema: errorRef } },
+          },
+          "404": {
+            description: "Sketch not found",
+            content: { "application/json": { schema: errorRef } },
+          },
+        },
+      },
+    },
   },
   "x-tagGroups": [
     { name: "Discovery", tags: ["Discovery", "Lookup"] },
     {
       name: "Content",
       tags: [
+        "Sketches Full",
         "Shows",
         "Seasons",
         "Episodes",

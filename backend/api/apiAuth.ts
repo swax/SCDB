@@ -108,8 +108,8 @@ export function handleApiError(error: unknown) {
 
   // Prisma unique constraint violation
   if (isPrismaUniqueConstraintError(error)) {
-    const fields = (error as { meta?: { target?: string[] } }).meta
-      ?.target ?? [];
+    const fields =
+      (error as { meta?: { target?: string[] } }).meta?.target ?? [];
     return NextResponse.json(
       {
         error: `A record with the same ${fields.join(", ")} already exists`,

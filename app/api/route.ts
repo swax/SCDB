@@ -9,13 +9,25 @@ export function GET() {
       {
         rel: "schemas",
         href: `${API_PREFIX}/schemas/`,
-        title:
-          "Schema Registry — individual schemas with $ref resolved inline",
+        title: "Schema Registry — individual schemas with $ref resolved inline",
       },
       { rel: "shows", href: `${API_PREFIX}/shows`, title: "Shows" },
       { rel: "seasons", href: `${API_PREFIX}/seasons`, title: "Seasons" },
       { rel: "episodes", href: `${API_PREFIX}/episodes`, title: "Episodes" },
-      { rel: "sketches", href: `${API_PREFIX}/sketches`, title: "Sketches" },
+      {
+        rel: "sketches",
+        href: `${API_PREFIX}/sketches`,
+        title:
+          "Sketches — list/read/delete. To CREATE or UPDATE, prefer /api/sketches/full instead.",
+      },
+      {
+        rel: "sketches-full",
+        href: `${API_PREFIX}/sketches/full`,
+        title:
+          "RECOMMENDED for sketch create/update. Uses names (not IDs) — resolves lookups, " +
+          "creates seasons/episodes, uploads images from URLs, revalidates, refreshes search. " +
+          "POST to create, PUT /{id} to update. GET for schema + example.",
+      },
       {
         rel: "recurring-sketches",
         href: `${API_PREFIX}/recurring-sketches`,
@@ -55,7 +67,12 @@ export function GET() {
         rel: "revalidate",
         href: `${API_PREFIX}/revalidate`,
         title:
-          "Revalidate cached pages — supports single and batch. Also subsumes refresh-search.",
+          "Revalidate cached pages — supports single and batch.",
+      },
+      {
+        rel: "refresh-search",
+        href: `${API_PREFIX}/refresh-search`,
+        title: "POST — Rebuild the sketch full-text search index.",
       },
     ],
   });

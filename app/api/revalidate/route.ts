@@ -53,7 +53,12 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const results: { table: string; id: number; success: boolean; error?: string }[] = [];
+    const results: {
+      table: string;
+      id: number;
+      success: boolean;
+      error?: string;
+    }[] = [];
 
     if (input.entities) {
       for (const entry of input.entities) {

@@ -10,6 +10,7 @@ interface CollectionDiscoveryConfig {
   createSchema: string;
   updateSchema?: string;
   listSchema?: string;
+  extraLinks?: { rel: string; href: string; title: string }[];
 }
 
 /**
@@ -71,5 +72,6 @@ export function collectionDiscoveryResponse(config: CollectionDiscoveryConfig) {
         title: `Revalidate cached page for a ${config.singular.toLowerCase()}`,
       },
     ],
+    ...(config.extraLinks?.length ? { _links: config.extraLinks } : {}),
   });
 }
