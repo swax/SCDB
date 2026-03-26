@@ -1,7 +1,7 @@
 import { getLoggedInUser, validateRoleAtLeast } from "@/backend/actionHelper";
 import { authenticateApiRequest } from "@/backend/api/apiAuth";
 import ProcessEnv from "@/shared/ProcessEnv";
-import { S3Client } from "@aws-sdk/client-s3";
+import { PutObjectCommand, S3Client } from "@aws-sdk/client-s3";
 import { createPresignedPost } from "@aws-sdk/s3-presigned-post";
 import { user_role_type } from "@/shared/enums";
 import { NextRequest } from "next/server";
@@ -83,4 +83,28 @@ export function buildUploadKey(
 
 export function getUserTag(authResult: AuthResult): string {
   return authResult.isApiToken ? "api001" : authResult.userId!.substring(0, 6);
+}
+
+export async function uploadToS3(
+  key: string,
+  body: Buffer,
+  mimeType: string,
+): Promise<void> {
+  const client = new S3Client({
+    region: ProcessEnv.NEXT_PUBLIC_AWS_REGION,
+  });
+
+  await client.send(
+    new PutObjectCommand({
+      Bucket: ProcessEnv.NEXT_PUBLIC_AWS_BUCKET,
+      Key: key,
+      Body: body,
+      ContentType: mimeType,
+    }),
+  );
+}
+
+export function computeShortHash(buffer: Buffer): string {
+  const { createHash } = require("crypto") as typeof import("crypto");
+  return createHash("sha256").update(buffer).digest("hex").substring(0, 8);
 }

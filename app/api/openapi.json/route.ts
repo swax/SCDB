@@ -508,79 +508,51 @@ const spec = {
         },
       },
     },
-    "/upload-image/begin": {
+    "/upload-image/direct": {
       post: {
-        operationId: "uploadImageBegin",
-        summary: "Begin image upload (step 1 of 3)",
+        operationId: "uploadImageDirect",
+        summary: "Upload image directly",
         description:
-          "Returns a presigned S3 URL for direct file upload. " +
-          "Workflow: (1) Call this endpoint with file metadata, " +
-          "(2) POST the file to the returned presigned URL using multipart/form-data, " +
-          "(3) Call /upload-image/finish with the aws_key to create the image record. " +
+          "Upload an image via multipart/form-data. The server handles S3 upload " +
+          "and database registration in one step, returning the image_id. " +
+          "Use the image_id to attach the image to resources: " +
+          "sketch preview image (PUT /sketches/{id} with image_id), " +
+          "cast thumbnail (PUT /sketches/{id} with image_id in cast array entries), " +
+          "or person images (PUT /people/{id} with images array). " +
           "Max file size: 5MB. Supported types: image/*.",
         tags: ["Image Upload"],
         requestBody: {
           required: true,
           content: {
-            "application/json": {
+            "multipart/form-data": {
               schema: {
-                $ref: "#/components/schemas/UploadImageBeginInput",
+                $ref: "#/components/schemas/UploadImageDirectInput",
               },
             },
           },
         },
         responses: {
           "200": {
-            description: "Presigned S3 upload URL generated",
+            description: "Image uploaded and registered",
             content: {
               "application/json": {
                 schema: {
-                  $ref: "#/components/schemas/UploadImageBeginResponse",
+                  type: "object",
+                  properties: {
+                    success: { type: "boolean" },
+                    image_id: {
+                      type: "integer",
+                      description: "Use this ID to attach the image to resources",
+                    },
+                    cdn_key: { type: "string" },
+                    message: { type: "string" },
+                  },
                 },
               },
             },
           },
           "400": {
-            description: "Validation error (invalid mime type, file too large)",
-            content: { "application/json": { schema: errorRef } },
-          },
-        },
-      },
-    },
-    "/upload-image/finish": {
-      post: {
-        operationId: "uploadImageFinish",
-        summary: "Finish image upload (step 3 of 3)",
-        description:
-          "Creates the image database record after the file has been uploaded to S3. " +
-          "Returns image_id which can be used to associate the image with resources: " +
-          "sketch preview image (PUT /sketches/{id} with image_id), " +
-          "cast thumbnail (PUT /sketches/{id} with image_id in cast array entries), " +
-          "or person images (PUT /people/{id} with images array).",
-        tags: ["Image Upload"],
-        requestBody: {
-          required: true,
-          content: {
-            "application/json": {
-              schema: {
-                $ref: "#/components/schemas/UploadImageFinishInput",
-              },
-            },
-          },
-        },
-        responses: {
-          "200": {
-            description: "Image record created",
-            content: {
-              "application/json": {
-                schema: {
-                  $ref: "#/components/schemas/UploadImageFinishResponse",
-                },
-              },
-            },
-          },
-          "400": {
-            description: "Missing cdn_key",
+            description: "Validation error (invalid mime type, file too large, missing fields)",
             content: { "application/json": { schema: errorRef } },
           },
         },
