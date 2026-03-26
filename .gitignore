@@ -38,4 +38,7 @@ next-env.d.ts
 
 database/backups
 database/generated
-.claude/
+
+.claude/*
+!.claude/commands/
+.claude/commands/.env.scdb
