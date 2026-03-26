@@ -358,7 +358,8 @@ export const schemaRegistry: Record<string, object> = {
 
   CastInput: {
     type: "object",
-    description: "A cast member entry for a sketch",
+    description:
+      'A cast member entry for a sketch. Example: {"person_id": 489, "character_name": "Kylo Ren", "role": "Host"}',
     required: ["role"],
     properties: {
       image_id: {
@@ -370,7 +371,8 @@ export const schemaRegistry: Record<string, object> = {
       character_name: {
         type: "string",
         nullable: true,
-        description: "Name of the character played",
+        description:
+          'Name of the character played (e.g. "Kylo Ren", "Stormtrooper"). This is NOT the actor\'s name.',
       },
       character_id: {
         type: "integer",
@@ -386,7 +388,8 @@ export const schemaRegistry: Record<string, object> = {
       role: {
         type: "string",
         enum: ["Cast", "Guest", "Host", "Uncredited"],
-        description: "Role type",
+        description:
+          'Actor\'s role type in the production — NOT the character name. Use "Host" for the episode host, "Cast" for regular/featured cast, "Guest" for guest appearances, "Uncredited" for uncredited roles.',
       },
       minor_role: {
         type: "boolean",

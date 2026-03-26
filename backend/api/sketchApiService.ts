@@ -28,11 +28,18 @@ export interface SketchInput {
   tags?: (TagInput | number)[];
 }
 
+const VALID_CAST_ROLES = new Set(Object.values(cast_role_type));
+
+function isValidCastRole(value: unknown): value is cast_role_type {
+  return typeof value === "string" && VALID_CAST_ROLES.has(value as cast_role_type);
+}
+
 /**
  * Normalize shorthand forms in sketch input:
  * - quotes: "text" -> {quote: "text"}
  * - tags: 123 -> {tag_id: 123}
  * - posted_on_socials: defaults to false if not provided
+ * - cast: accepts role_type/cast_type as aliases for role, auto-fixes swapped role/character_name
  */
 export function normalizeSketchInput(input: SketchInput): SketchInput {
   if (input.posted_on_socials === undefined) {
@@ -51,9 +58,49 @@ export function normalizeSketchInput(input: SketchInput): SketchInput {
     );
   }
 
+  if (input.cast) {
+    const errors: string[] = [];
+    input.cast = input.cast.map((c, i) => {
+      // Accept role_type or cast_type as aliases for role
+      const alias = c.role_type ?? c.cast_type;
+      if (alias && isValidCastRole(alias)) {
+        // If role holds what looks like a character name, move it
+        if (c.role && !isValidCastRole(c.role) && !c.character_name) {
+          c.character_name = c.role as string;
+        }
+        c.role = alias as cast_role_type;
+      }
+      delete c.role_type;
+      delete c.cast_type;
+
+      // Validate role is a valid enum value
+      if (!c.role) {
+        errors.push(`Cast row ${i + 1}: 'role' is required (one of: ${[...VALID_CAST_ROLES].join(", ")})`);
+      } else if (!isValidCastRole(c.role)) {
+        errors.push(
+          `Cast row ${i + 1}: invalid role "${c.role}". Must be one of: ${[...VALID_CAST_ROLES].join(", ")}. ` +
+          `Use 'character_name' for the character's name (e.g. "Kylo Ren"), and 'role' for the actor's role type (e.g. "Host").`,
+        );
+      }
+      return c;
+    });
+    if (errors.length > 0) {
+      throw new InputValidationError(errors.join("\n"));
+    }
+  }
+
   return input;
 }
 
+/** Thrown for input validation errors that should return 400 with a clear message */
+export class InputValidationError extends Error {
+  constructor(message: string) {
+    super(message);
+    this.name = "InputValidationError";
+  }
+}
+
+/** Raw cast input from API — may include aliases like role_type/cast_type */
 export interface CastInput {
   image_id?: number | null;
   character_name?: string | null;
@@ -61,6 +108,9 @@ export interface CastInput {
   person_id?: number | null;
   role: cast_role_type;
   minor_role?: boolean;
+  // Aliases accepted during normalization
+  role_type?: string;
+  cast_type?: string;
 }
 
 export interface CreditInput {

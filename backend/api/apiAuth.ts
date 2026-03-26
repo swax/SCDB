@@ -2,6 +2,7 @@ import prisma, { getPrismaModel } from "@/database/prisma";
 import { user_role_type } from "@/shared/enums";
 import { SessionUser } from "next-auth";
 import { NextRequest, NextResponse } from "next/server";
+import { InputValidationError } from "./sketchApiService";
 
 /**
  * Check if a record already exists by its unique constraint fields.
@@ -99,6 +100,10 @@ export function errorJson(status: number, message: string) {
 export function handleApiError(error: unknown) {
   if (error instanceof ApiError) {
     return errorJson(error.status, error.message);
+  }
+
+  if (error instanceof InputValidationError) {
+    return errorJson(400, error.message);
   }
 
   // Prisma unique constraint violation
