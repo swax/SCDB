@@ -9,7 +9,8 @@ export function GET() {
       {
         rel: "schemas",
         href: `${API_PREFIX}/schemas/`,
-        title: "Schema Registry",
+        title:
+          "Schema Registry — individual schemas with $ref resolved inline",
       },
       { rel: "shows", href: `${API_PREFIX}/shows`, title: "Shows" },
       { rel: "seasons", href: `${API_PREFIX}/seasons`, title: "Seasons" },
