@@ -20,6 +20,8 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
   try {
     const { table } = await params;
     const search = request.nextUrl.searchParams.get("search") || "";
+    const limitParam = request.nextUrl.searchParams.get("limit");
+    const limit = limitParam ? Math.max(1, Math.min(100, parseInt(limitParam) || 10)) : 10;
 
     const config = lookupConfigs[table];
     if (!config) {
@@ -33,7 +35,7 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
       throw new ApiError(400, "search query parameter is required");
     }
 
-    const response = await lookupTermsInTable(search, config);
+    const response = await lookupTermsInTable(search, config, limit);
 
     return NextResponse.json(response.content || []);
   } catch (error) {

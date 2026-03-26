@@ -27,6 +27,7 @@ function validateFieldWithLookup(
 export default async function lookupTermsInTable(
   searchString: string,
   lookupField: LookupFieldCms["lookup"],
+  limit?: number,
 ) {
   const allowedLookup = Object.keys(sketchDatabaseCms).some((table) =>
     validateFieldWithLookup(sketchDatabaseCms[table].fields, lookupField),
@@ -53,6 +54,7 @@ export default async function lookupTermsInTable(
       id: true,
       [lookupField.labelColumn]: true,
     },
+    take: limit,
   });
 
   // Map results to LookupFieldOption

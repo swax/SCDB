@@ -36,9 +36,9 @@ export function GET() {
       { rel: "checklist", href: `${API_PREFIX}/checklist`, title: "Checklist" },
       {
         rel: "lookup",
-        href: `${API_PREFIX}/lookup/{table}?search={term}`,
+        href: `${API_PREFIX}/lookup/{table}?search={term}&limit={n}`,
         title:
-          "Lookup entity IDs by name (tables: show, season, episode, person, character, tag, recurring_sketch, category)",
+          "Lookup entity IDs by name (tables: show, season, episode, person, character, tag, recurring_sketch, category). Limit defaults to 10, max 100.",
       },
       {
         rel: "upload-image",
