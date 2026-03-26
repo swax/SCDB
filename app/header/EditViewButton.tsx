@@ -4,6 +4,7 @@ import { IconButton, Tooltip } from "@mui/material";
 import { useSession } from "next-auth/react";
 import { usePathname } from "next/navigation";
 import { useSyncExternalStore } from "react";
+import { getSingularTableName } from "@/shared/tableNames";
 
 const noopSubscribe = () => () => {};
 
@@ -25,25 +26,11 @@ export default function EditViewButton() {
   const pathParts = pathname.split("/");
   const editMode = pathname.startsWith("/edit");
   const table = editMode ? pathParts[2] : pathParts[1];
+  const id = editMode ? pathParts[3] : pathParts[2];
 
-  // Should match tables in sketchDatabaseCms
-  const validTables = [
-    "character",
-    "episode",
-    "season",
-    "person",
-    "show",
-    "sketch",
-    "tag",
-    "category",
-    "recurring-sketch",
-  ];
-
-  if (!validTables.includes(table)) {
+  if (!getSingularTableName(table)) {
     return <></>;
   }
-
-  const id = editMode ? pathParts[3] : pathParts[2];
 
   if (editMode) {
     return (

@@ -20,6 +20,10 @@ export async function getTableCms(
   id: number,
   role?: user_role_type,
 ) {
+  // Support plural URL names (e.g. "sketches" -> "sketch")
+  const { getSingularTableName } = await import("@/shared/tableNames");
+  table = getSingularTableName(table) ?? table;
+
   // Replace - with _
   table = table.replace("-", "_");
 

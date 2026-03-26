@@ -1,8 +1,10 @@
+import { getPluralTableName } from "@/shared/tableNames";
+
 export function getEditUrl(table: string, id?: number) {
   // Replace _ with -
   table = table.replace("_", "-");
 
-  let url = `/edit/${table}`;
+  let url = `/edit/${getPluralTableName(table)}`;
 
   if (id) {
     url += `/${id}`;
