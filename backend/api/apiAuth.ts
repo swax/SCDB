@@ -1,7 +1,34 @@
-import prisma from "@/database/prisma";
+import prisma, { getPrismaModel } from "@/database/prisma";
 import { user_role_type } from "@/shared/enums";
 import { SessionUser } from "next-auth";
 import { NextRequest, NextResponse } from "next/server";
+
+/**
+ * Check if a record already exists by its unique constraint fields.
+ * Returns a 409 response with existing_id if found, or null to proceed.
+ */
+export async function conflictIfExists(
+  table: string,
+  uniqueWhere: Record<string, unknown>,
+  label: string,
+): Promise<NextResponse | null> {
+  const existing = await getPrismaModel(table).findFirst({
+    where: uniqueWhere,
+    select: { id: true, url_slug: true },
+  });
+
+  if (!existing) return null;
+
+  return NextResponse.json(
+    {
+      error: `${label} already exists`,
+      code: "CONFLICT",
+      existing_id: existing.id as number,
+      existing_url_slug: (existing.url_slug as string) || undefined,
+    },
+    { status: 409 },
+  );
+}
 
 /**
  * Validates the API key from the Authorization header and returns the
@@ -73,9 +100,33 @@ export function handleApiError(error: unknown) {
   if (error instanceof ApiError) {
     return errorJson(error.status, error.message);
   }
+
+  // Prisma unique constraint violation
+  if (isPrismaUniqueConstraintError(error)) {
+    const fields = (error as { meta?: { target?: string[] } }).meta
+      ?.target ?? [];
+    return NextResponse.json(
+      {
+        error: `A record with the same ${fields.join(", ")} already exists`,
+        code: "CONFLICT",
+        constraint_fields: fields,
+      },
+      { status: 409 },
+    );
+  }
+
   console.error("API error:", error);
   return errorJson(
     500,
     error instanceof Error ? error.message : "Internal server error",
+  );
+}
+
+function isPrismaUniqueConstraintError(error: unknown): boolean {
+  return (
+    typeof error === "object" &&
+    error !== null &&
+    "code" in error &&
+    (error as { code: string }).code === "P2002"
   );
 }

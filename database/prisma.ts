@@ -53,6 +53,7 @@ export type DynamicRecord = Record<string, unknown>;
 
 interface DynamicPrismaDelegate {
   findUnique(args: Record<string, unknown>): Promise<DynamicRecord | null>;
+  findFirst(args: Record<string, unknown>): Promise<DynamicRecord | null>;
   findMany(args: Record<string, unknown>): Promise<DynamicRecord[]>;
   create(args: Record<string, unknown>): Promise<DynamicRecord>;
   update(args: Record<string, unknown>): Promise<DynamicRecord>;

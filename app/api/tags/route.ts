@@ -1,4 +1,8 @@
-import { authenticateApiRequest, handleApiError } from "@/backend/api/apiAuth";
+import {
+  authenticateApiRequest,
+  conflictIfExists,
+  handleApiError,
+} from "@/backend/api/apiAuth";
 import {
   buildEntityTableCms,
   resolveLookupSlugField,
@@ -61,6 +65,12 @@ export async function POST(request: NextRequest) {
         { error: "category_id is required" },
         { status: 400 },
       );
+    const conflict = await conflictIfExists(
+      "tag",
+      { category_id: input.category_id, name: input.name },
+      "Tag",
+    );
+    if (conflict) return conflict;
     const table = buildEntityTableCms("tag", input, false);
     await resolveLookupSlugField(table, input, () =>
       resolveTagLookupSlug(input),

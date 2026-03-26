@@ -1,4 +1,8 @@
-import { authenticateApiRequest, handleApiError } from "@/backend/api/apiAuth";
+import {
+  authenticateApiRequest,
+  conflictIfExists,
+  handleApiError,
+} from "@/backend/api/apiAuth";
 import {
   buildEntityTableCms,
   resolveLookupSlugField,
@@ -61,6 +65,12 @@ export async function POST(request: NextRequest) {
         { error: "show_id is required" },
         { status: 400 },
       );
+    const conflict = await conflictIfExists(
+      "recurring_sketch",
+      { show_id: input.show_id, title: input.title },
+      "Recurring sketch",
+    );
+    if (conflict) return conflict;
     const table = buildEntityTableCms("recurring_sketch", input, false);
     await resolveLookupSlugField(table, input, () =>
       resolveRecurringSketchLookupSlug(input),

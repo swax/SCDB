@@ -1,4 +1,8 @@
-import { authenticateApiRequest, handleApiError } from "@/backend/api/apiAuth";
+import {
+  authenticateApiRequest,
+  conflictIfExists,
+  handleApiError,
+} from "@/backend/api/apiAuth";
 import {
   buildEntityTableCms,
   resolveLookupSlugField,
@@ -64,6 +68,12 @@ export async function POST(request: NextRequest) {
         { error: "number is required" },
         { status: 400 },
       );
+    const conflict = await conflictIfExists(
+      "episode",
+      { season_id: input.season_id, number: input.number },
+      "Episode",
+    );
+    if (conflict) return conflict;
     const table = buildEntityTableCms("episode", input, false);
     await resolveLookupSlugField(table, input, () =>
       resolveEpisodeLookupSlug(input),
