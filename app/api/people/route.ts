@@ -21,6 +21,16 @@ export async function GET(request: NextRequest) {
         plural: "People",
         createSchema: "PersonInput",
         updateSchema: "PersonUpdateInput",
+        extraLinks: [
+          {
+            rel: "add-images",
+            href: "/api/people/{id}/images",
+            title:
+              "POST — Append portrait images to a person. " +
+              'Body: {"image_id": 123} or [{image_id: 123}, ...]. ' +
+              "Upload images first via POST /upload-image/direct.",
+          },
+        ],
       });
     }
 
