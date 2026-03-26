@@ -41,6 +41,12 @@ export function GET() {
           "Lookup entity IDs by name (tables: show, season, episode, person, character, tag, recurring_sketch, category). Limit defaults to 10, max 100.",
       },
       {
+        rel: "lookup-batch",
+        href: `${API_PREFIX}/lookup/batch`,
+        title:
+          "POST — batch lookup across multiple tables/terms in one call. Body: {table: [terms]}. See BatchLookupInput schema.",
+      },
+      {
         rel: "upload-image",
         href: `${API_PREFIX}/upload-image`,
         title: "Image upload workflow",

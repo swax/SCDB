@@ -754,6 +754,25 @@ export const schemaRegistry: Record<string, object> = {
     },
   },
 
+  BatchLookupInput: {
+    type: "object",
+    description:
+      "POST /lookup/batch — look up multiple search terms across multiple tables in one call. " +
+      "Keys are table names, values are arrays of search terms. Returns results grouped by table and term. " +
+      "Max 20 terms per table. Example: " +
+      '{"person": ["Adam Driver", "Mikey Day"], "tag": ["Star Wars", "Kylo Ren"]}',
+    additionalProperties: {
+      type: "array",
+      items: { type: "string" },
+      description: "Search terms for this table",
+    },
+    example: {
+      person: ["Adam Driver", "Mikey Day"],
+      tag: ["Star Wars", "Undercover Boss"],
+      show: ["Saturday Night Live"],
+    },
+  },
+
   LookupResult: {
     type: "object",
     description: "A lookup match returned by GET /lookup/{table}",
