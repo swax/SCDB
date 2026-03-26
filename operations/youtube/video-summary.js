@@ -29,7 +29,7 @@ console.log(`Fetching video info from ${videoUrl}...`);
 
 try {
   // Run yt-dlp to download video info (and optionally comments)
-  let command = `yt-dlp --skip-download`;
+  let command = `yt-dlp --skip-download --write-info-json`;
   if (numComments) {
     console.log(`Including top ${numComments} comments...`);
     command += ` --write-comments --extractor-args "youtube:comment_sort=top;max_comments=${numComments}"`;
