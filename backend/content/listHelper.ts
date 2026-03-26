@@ -8,6 +8,23 @@ export interface ListSearchParms {
   filterOp?: string;
   search?: string;
   hiddenColumns?: string;
+  extraWhere?: Record<string, unknown>;
+}
+
+/** Extract integer query params for entity-specific filtering (e.g. show_id, number) */
+export function extractIntParams(
+  searchParams: URLSearchParams,
+  fields: string[],
+): Record<string, number> | undefined {
+  const result: Record<string, number> = {};
+  for (const field of fields) {
+    const val = searchParams.get(field);
+    if (val !== null) {
+      const num = parseInt(val);
+      if (!isNaN(num)) result[field] = num;
+    }
+  }
+  return Object.keys(result).length > 0 ? result : undefined;
 }
 
 /** Return type for getBaseFindParams – keeps Prisma happy via type assertions downstream */
@@ -57,7 +74,7 @@ function getOrderParams({ sortField, sortDir }: ListSearchParms) {
 }
 
 function getWhereParams(
-  { filterField, filterValue, filterOp, search }: ListSearchParms,
+  { filterField, filterValue, filterOp, search, extraWhere }: ListSearchParms,
   searchFields?: string[],
 ): Record<string, unknown> | undefined {
   const conditions: Record<string, unknown>[] = [];
@@ -165,6 +182,11 @@ function getWhereParams(
         [filterField]: filter,
       });
     }
+  }
+
+  // Handle extra where conditions (entity-specific filters like show_id, number)
+  if (extraWhere) {
+    conditions.push(extraWhere);
   }
 
   // Return combined conditions

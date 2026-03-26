@@ -10,7 +10,7 @@ import { ContentLink } from "@/app/components/ContentLink";
 export async function getEpisodesList(searchParams: ListSearchParms) {
   const baseFindParams = getBaseFindParams(searchParams);
 
-  const list = await prisma.season.findMany({
+  const list = await prisma.episode.findMany({
     ...baseFindParams,
     select: {
       id: true,

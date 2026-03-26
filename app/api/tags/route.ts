@@ -9,6 +9,7 @@ import {
   collectionDiscoveryResponse,
 } from "@/backend/api/hateoasDiscovery";
 import { getAllTagsList } from "@/backend/content/tagService";
+import { extractIntParams } from "@/backend/content/listHelper";
 import { writeFieldValues } from "@/backend/edit/editWriteService";
 import { getDefaultPageListSize } from "@/shared/ProcessEnv";
 import { NextRequest, NextResponse } from "next/server";
@@ -21,6 +22,7 @@ export async function GET(request: NextRequest) {
         singular: "Tag",
         plural: "Tags",
         createSchema: "TagInput",
+        listSchema: "TagListParams",
       });
     }
 
@@ -33,6 +35,7 @@ export async function GET(request: NextRequest) {
       ),
       sortField: params.get("sortField") || undefined,
       sortDir: (params.get("sortDir") as "asc" | "desc") || undefined,
+      extraWhere: extractIntParams(params, ["category_id"]),
     });
     return NextResponse.json({
       tags: result.list,

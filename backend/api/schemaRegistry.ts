@@ -32,6 +32,155 @@ export const schemaRegistry: Record<string, object> = {
     },
   },
 
+  SeasonListParams: {
+    type: "object",
+    description:
+      "Query parameters for listing seasons. Supports all standard pagination params " +
+      "plus entity-specific filters. Example: ?show_id=1&number=45",
+    properties: {
+      search: {
+        type: "string",
+        description: "Search by name/title (case-insensitive)",
+      },
+      show_id: {
+        type: "integer",
+        description: "Filter by show ID",
+      },
+      number: {
+        type: "integer",
+        description: "Filter by season number",
+      },
+      year: {
+        type: "integer",
+        description: "Filter by year",
+      },
+      page: { type: "integer", default: 1, description: "Page number" },
+      pageSize: {
+        type: "integer",
+        default: 30,
+        description: "Results per page",
+      },
+      sortField: { type: "string" },
+      sortDir: { type: "string", enum: ["asc", "desc"] },
+    },
+  },
+
+  EpisodeListParams: {
+    type: "object",
+    description:
+      "Query parameters for listing episodes. Supports all standard pagination params " +
+      "plus entity-specific filters. Example: ?season_id=28&number=11",
+    properties: {
+      search: {
+        type: "string",
+        description: "Search by name/title (case-insensitive)",
+      },
+      season_id: {
+        type: "integer",
+        description: "Filter by season ID",
+      },
+      number: {
+        type: "integer",
+        description: "Filter by episode number",
+      },
+      page: { type: "integer", default: 1, description: "Page number" },
+      pageSize: {
+        type: "integer",
+        default: 30,
+        description: "Results per page",
+      },
+      sortField: { type: "string" },
+      sortDir: { type: "string", enum: ["asc", "desc"] },
+    },
+  },
+
+  SketchListParams: {
+    type: "object",
+    description:
+      "Query parameters for listing sketches. Supports all standard pagination params " +
+      "plus entity-specific filters. Example: ?show_id=1&season_id=28",
+    properties: {
+      search: {
+        type: "string",
+        description: "Search by title (case-insensitive)",
+      },
+      show_id: {
+        type: "integer",
+        description: "Filter by show ID",
+      },
+      season_id: {
+        type: "integer",
+        description: "Filter by season ID",
+      },
+      episode_id: {
+        type: "integer",
+        description: "Filter by episode ID",
+      },
+      recurring_sketch_id: {
+        type: "integer",
+        description: "Filter by recurring sketch ID",
+      },
+      page: { type: "integer", default: 1, description: "Page number" },
+      pageSize: {
+        type: "integer",
+        default: 30,
+        description: "Results per page",
+      },
+      sortField: { type: "string" },
+      sortDir: { type: "string", enum: ["asc", "desc"] },
+    },
+  },
+
+  TagListParams: {
+    type: "object",
+    description:
+      "Query parameters for listing tags. Supports all standard pagination params " +
+      "plus entity-specific filters. Example: ?category_id=5",
+    properties: {
+      search: {
+        type: "string",
+        description: "Search by name (case-insensitive)",
+      },
+      category_id: {
+        type: "integer",
+        description: "Filter by category ID",
+      },
+      page: { type: "integer", default: 1, description: "Page number" },
+      pageSize: {
+        type: "integer",
+        default: 30,
+        description: "Results per page",
+      },
+      sortField: { type: "string" },
+      sortDir: { type: "string", enum: ["asc", "desc"] },
+    },
+  },
+
+  RecurringSketchListParams: {
+    type: "object",
+    description:
+      "Query parameters for listing recurring sketches. Supports all standard pagination params " +
+      "plus entity-specific filters. Example: ?show_id=1",
+    properties: {
+      search: {
+        type: "string",
+        description: "Search by title (case-insensitive)",
+      },
+      show_id: {
+        type: "integer",
+        description: "Filter by show ID",
+      },
+      page: { type: "integer", default: 1, description: "Page number" },
+      pageSize: {
+        type: "integer",
+        default: 30,
+        description: "Results per page",
+      },
+      sortField: { type: "string" },
+      sortDir: { type: "string", enum: ["asc", "desc"] },
+    },
+  },
+
   ChecklistPaginationParams: {
     type: "object",
     description:

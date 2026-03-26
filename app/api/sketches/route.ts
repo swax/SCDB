@@ -9,6 +9,7 @@ import {
   SketchInput,
 } from "@/backend/api/sketchApiService";
 import { getSketchList } from "@/backend/content/sketchService";
+import { extractIntParams } from "@/backend/content/listHelper";
 import { writeFieldValues } from "@/backend/edit/editWriteService";
 import { getDefaultPageListSize } from "@/shared/ProcessEnv";
 import { NextRequest, NextResponse } from "next/server";
@@ -22,6 +23,7 @@ export async function GET(request: NextRequest) {
         plural: "Sketches",
         createSchema: "SketchInput",
         updateSchema: "SketchUpdateInput",
+        listSchema: "SketchListParams",
       });
     }
 
@@ -35,6 +37,12 @@ export async function GET(request: NextRequest) {
       ),
       sortField: params.get("sortField") || undefined,
       sortDir: (params.get("sortDir") as "asc" | "desc") || undefined,
+      extraWhere: extractIntParams(params, [
+        "show_id",
+        "season_id",
+        "episode_id",
+        "recurring_sketch_id",
+      ]),
     });
 
     return NextResponse.json({

@@ -9,6 +9,7 @@ import {
   collectionDiscoveryResponse,
 } from "@/backend/api/hateoasDiscovery";
 import { getEpisodesList } from "@/backend/content/episodeService";
+import { extractIntParams } from "@/backend/content/listHelper";
 import { writeFieldValues } from "@/backend/edit/editWriteService";
 import { getDefaultPageListSize } from "@/shared/ProcessEnv";
 import { NextRequest, NextResponse } from "next/server";
@@ -21,6 +22,7 @@ export async function GET(request: NextRequest) {
         singular: "Episode",
         plural: "Episodes",
         createSchema: "EpisodeInput",
+        listSchema: "EpisodeListParams",
       });
     }
 
@@ -33,6 +35,7 @@ export async function GET(request: NextRequest) {
       ),
       sortField: params.get("sortField") || undefined,
       sortDir: (params.get("sortDir") as "asc" | "desc") || undefined,
+      extraWhere: extractIntParams(params, ["season_id", "number"]),
     });
     return NextResponse.json({
       episodes: result.list,
