@@ -53,14 +53,9 @@ export function GET() {
       },
       {
         rel: "revalidate",
-        href: `${API_PREFIX}/revalidate/{table}/{id}`,
+        href: `${API_PREFIX}/revalidate`,
         title:
-          "Revalidate cached page for an entity (tables: shows, seasons, episodes, sketches, recurring-sketches, people, characters, categories, tags)",
-      },
-      {
-        rel: "refresh-search",
-        href: `${API_PREFIX}/refresh-search`,
-        title: "Refresh the sketch full-text search index",
+          "Revalidate cached pages — supports single and batch. Also subsumes refresh-search.",
       },
     ],
   });

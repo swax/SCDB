@@ -831,4 +831,34 @@ export const schemaRegistry: Record<string, object> = {
       },
     },
   },
+
+  BatchRevalidateInput: {
+    type: "object",
+    description:
+      "Revalidate multiple entities and optionally refresh search in one call. " +
+      "POST /api/revalidate",
+    properties: {
+      entities: {
+        type: "array",
+        description:
+          "Entities to revalidate. Tables use plural names: shows, seasons, episodes, sketches, recurring-sketches, people, characters, categories, tags",
+        items: {
+          type: "object",
+          required: ["table", "id"],
+          properties: {
+            table: {
+              type: "string",
+              description: "Plural table name (e.g. sketches, people)",
+            },
+            id: { type: "integer", description: "Entity ID" },
+          },
+        },
+      },
+      refresh_search: {
+        type: "boolean",
+        description:
+          "If true, also refresh the full-text search index (default: false)",
+      },
+    },
+  },
 };
