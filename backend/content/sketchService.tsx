@@ -1,6 +1,153 @@
+import { ContentLink } from "@/app/components/ContentLink";
 import prisma from "@/database/prisma";
 import { contentResponse } from "@/shared/serviceResponse";
+import {
+  SKETCH_PAGE_SIZE,
+  SketchGridData,
+  selectSketch,
+} from "@/shared/sketchGridBase";
 import { ListSearchParms, getBaseFindParams } from "./listHelper";
+
+export async function getDistinctYears() {
+  const seasons = await prisma.season.findMany({
+    where: {
+      sketches: {
+        some: {},
+      },
+    },
+    select: {
+      year: true,
+    },
+    distinct: ["year"],
+    orderBy: { year: "desc" },
+  });
+
+  return seasons.map((s) => s.year);
+}
+
+export async function getYearList(searchParams: ListSearchParms) {
+  const seasons = await prisma.season.findMany({
+    where: {
+      sketches: {
+        some: {},
+      },
+    },
+    select: {
+      year: true,
+      _count: {
+        select: { sketches: true },
+      },
+    },
+  });
+
+  // Aggregate sketch counts across multiple seasons in the same year
+  const yearMap = new Map<number, number>();
+  for (const season of seasons) {
+    yearMap.set(
+      season.year,
+      (yearMap.get(season.year) || 0) + season._count.sketches,
+    );
+  }
+
+  let years = [...yearMap.entries()].map(([year, sketchCount]) => ({
+    id: year,
+    year,
+    sketchCount,
+  }));
+
+  // Search
+  if (searchParams.search) {
+    const s = searchParams.search;
+    years = years.filter((y) => y.year.toString().includes(s));
+  }
+
+  // Filter
+  if (searchParams.filterField && searchParams.filterValue && searchParams.filterOp) {
+    const { filterField, filterValue, filterOp } = searchParams;
+    const numVal = parseInt(filterValue);
+    if (!isNaN(numVal)) {
+      years = years.filter((y) => {
+        const val = filterField === "sketchCount" ? y.sketchCount : y.year;
+        switch (filterOp) {
+          case "=":
+            return val === numVal;
+          case "!=":
+            return val !== numVal;
+          case ">":
+            return val > numVal;
+          case ">=":
+            return val >= numVal;
+          case "<":
+            return val < numVal;
+          case "<=":
+            return val <= numVal;
+          default:
+            return true;
+        }
+      });
+    }
+  }
+
+  // Sort
+  if (searchParams.sortField && searchParams.sortDir) {
+    const { sortField, sortDir } = searchParams;
+    years.sort((a, b) => {
+      const aVal = sortField === "sketchCount" ? a.sketchCount : a.year;
+      const bVal = sortField === "sketchCount" ? b.sketchCount : b.year;
+      return sortDir === "asc" ? aVal - bVal : bVal - aVal;
+    });
+  } else {
+    years.sort((a, b) => b.year - a.year);
+  }
+
+  const count = years.length;
+  const { page, pageSize } = searchParams;
+  const list = years.slice((page - 1) * pageSize, (page - 1) * pageSize + pageSize);
+
+  return { list, count, dateGenerated: new Date() };
+}
+
+export async function getYearSketchGrid(
+  yearFilter: Record<string, unknown>,
+  page: number,
+): Promise<SketchGridData> {
+  const where = { season: yearFilter };
+
+  const dbResults = await prisma.sketch.findMany({
+    where,
+    select: {
+      ...selectSketch,
+    },
+    orderBy: {
+      site_rating: "desc",
+    },
+    skip: (page - 1) * SKETCH_PAGE_SIZE,
+    take: SKETCH_PAGE_SIZE,
+  });
+
+  const totalCount = await prisma.sketch.count({ where });
+
+  const sketches = dbResults.map((s) => ({
+    id: s.id,
+    url_slug: s.url_slug,
+    site_rating: s.site_rating,
+    titleString: s.title,
+    title: <ContentLink table="sketch" entry={s} />,
+    subtitle: (
+      <>
+        <ContentLink table="show" entry={s.show} /> ({s.season?.year})
+      </>
+    ),
+    image_cdnkey: s.image?.cdn_key,
+    video_urls: s.video_urls,
+  }));
+
+  return {
+    sketches,
+    totalCount,
+    totalPages: Math.ceil(totalCount / SKETCH_PAGE_SIZE),
+  };
+}
 
 export async function getSketchList(searchParams: ListSearchParms) {
   const baseFindParams = getBaseFindParams(searchParams, ["title"]);

@@ -2,6 +2,7 @@ import AccordionHeader from "@/app/components/AccordionHeader";
 import { ContentLink } from "@/app/components/ContentLink";
 import DescriptionPanel from "@/app/components/DescriptionPanel";
 import LinksPanel from "@/app/components/LinksPanel";
+import MuiNextLink from "@/app/components/MuiNextLink";
 import staticUrl from "@/shared/cdnHost";
 import { enumNameToDisplayName, toNiceDate } from "@/shared/utilities";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
@@ -55,13 +56,21 @@ export default function SketchPageBody({
           {!!sketch.season && (
             <>
               {" ("}
-              <ContentLink mui table="season" entry={sketch.season} />
-              {")"}
+              <MuiNextLink
+                href={`/years/${sketch.season.year}`}
+                underline="hover"
+              >
+                {sketch.season.year}
+              </MuiNextLink>
+              {") "}
+              <ContentLink mui table="season" entry={sketch.season}>
+                Season {sketch.season.number}
+              </ContentLink>
             </>
           )}
           {!!sketch.episode && (
             <>
-              {" Episode "}
+              {sketch.season ? ", " : " "}
               <ContentLink mui table="episode" entry={sketch.episode}>
                 <span
                   title={
@@ -70,7 +79,7 @@ export default function SketchPageBody({
                       : ""
                   }
                 >
-                  {sketch.episode.number}
+                  Episode {sketch.episode.number}
                 </span>
               </ContentLink>
             </>

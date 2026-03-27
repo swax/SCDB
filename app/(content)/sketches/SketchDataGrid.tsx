@@ -8,6 +8,7 @@ import BaseDataGrid from "../BaseDataGrid";
 import { Button } from "@mui/material";
 
 interface SketchDataGridProps {
+  basePath?: string;
   rows: {
     id: number;
     title: string;
@@ -22,6 +23,7 @@ interface SketchDataGridProps {
 }
 
 export default function SketchDataGrid({
+  basePath = "sketches",
   rows,
   searchParams,
   totalRowCount,
@@ -66,7 +68,7 @@ export default function SketchDataGrid({
 
   return (
     <BaseDataGrid
-      basePath="sketches"
+      basePath={basePath}
       columns={columns}
       columnVisibilityModel={{
         id: false,

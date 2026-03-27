@@ -40,6 +40,10 @@ const pages = [
     label: "Sketches",
     color: "#2ABFFF",
   },
+  {
+    label: "Years",
+    color: "#B44AFF",
+  },
 ];
 
 function ResponsiveAppBar() {
