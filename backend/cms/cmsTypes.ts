@@ -115,6 +115,8 @@ export type DeleteChildAction = {
   table: string;
   /** "delete" removes child rows, "nullify" sets the FK to null */
   action: "delete" | "nullify";
+  /** Grandchild tables to clean up before deleting/nullifying this child */
+  children?: DeleteChildAction[];
 };
 
 export type TableCms = {

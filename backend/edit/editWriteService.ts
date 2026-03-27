@@ -5,6 +5,7 @@ import { slugifyForUrl } from "@/shared/utilities";
 import { SessionUser } from "next-auth";
 import { validateRoleAtLeast } from "../actionHelper";
 import {
+  DeleteChildAction,
   FieldCms,
   ImageFieldCms,
   isFieldEmpty,
@@ -391,6 +392,43 @@ export async function getSlugForId(table: TableCms, id: number) {
   return row?.[slugField.column] as string | undefined;
 }
 
+async function deleteChildren(
+  tx: TxClient,
+  fkColumn: string,
+  rowId: number,
+  children: DeleteChildAction[],
+) {
+  for (const child of children) {
+    if (child.children?.length) {
+      // Find child row IDs so we can clean up grandchildren first
+      const childFkColumn = child.table + "_id";
+      const childRows = await getPrismaModel(child.table, tx).findMany({
+        where: { [fkColumn]: rowId },
+        select: { id: true },
+      });
+      for (const childRow of childRows) {
+        await deleteChildren(
+          tx,
+          childFkColumn,
+          childRow.id as number,
+          child.children,
+        );
+      }
+    }
+
+    if (child.action === "delete") {
+      await getPrismaModel(child.table, tx).deleteMany({
+        where: { [fkColumn]: rowId },
+      });
+    } else if (child.action === "nullify") {
+      await getPrismaModel(child.table, tx).updateMany({
+        where: { [fkColumn]: rowId },
+        data: { [fkColumn]: null },
+      });
+    }
+  }
+}
+
 export async function deleteRow(
   user: SessionUser,
   table: TableCms,
@@ -431,18 +469,7 @@ export async function deleteRow(
     }
 
     // Handle non-mapping child tables
-    for (const child of table.deleteChildren || []) {
-      if (child.action === "delete") {
-        await getPrismaModel(child.table, tx).deleteMany({
-          where: { [fkColumn]: rowId },
-        });
-      } else if (child.action === "nullify") {
-        await getPrismaModel(child.table, tx).updateMany({
-          where: { [fkColumn]: rowId },
-          data: { [fkColumn]: null },
-        });
-      }
-    }
+    await deleteChildren(tx, fkColumn, rowId, table.deleteChildren || []);
 
     // Delete the row
     await getPrismaModel(table.name, tx).delete({

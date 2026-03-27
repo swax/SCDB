@@ -4,6 +4,7 @@ const tagCms: TableCms = {
   name: "tag",
   label: "Tag",
   title: ["${name}"],
+  deleteChildren: [{ table: "sketch_tag", action: "delete" }],
   fields: [
     {
       label: "Name",

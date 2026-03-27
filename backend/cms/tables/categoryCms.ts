@@ -4,6 +4,13 @@ const categoryCms: TableCms = {
   name: "category",
   label: "Category",
   title: ["${name}"],
+  deleteChildren: [
+    {
+      table: "tag",
+      action: "delete",
+      children: [{ table: "sketch_tag", action: "delete" }],
+    },
+  ],
   fields: [
     {
       label: "Name",
