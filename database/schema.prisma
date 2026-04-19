@@ -531,6 +531,7 @@ enum review_status_type {
   NeedsReview
   Flagged
   Reviewed
+  Reprocessing
 }
 
 enum checklist_status_type {

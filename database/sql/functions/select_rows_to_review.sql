@@ -32,7 +32,7 @@ BEGIN
             SELECT %L AS table_name, x.id AS row_id, x.review_status, u.username as modified_by_username, x.modified_at 
             FROM %I x
             JOIN "user" u on u.id=x.modified_by_id
-            WHERE review_status != ''Reviewed''
+            WHERE review_status NOT IN (''Reviewed'', ''Reprocessing'')
             ORDER BY review_status DESC, modified_at ASC
             LIMIT %L
         ', tbl_name, tbl_name, row_count);

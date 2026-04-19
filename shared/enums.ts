@@ -13,6 +13,7 @@ export enum review_status_type {
   NeedsReview = "NeedsReview",
   Flagged = "Flagged",
   Reviewed = "Reviewed",
+  Reprocessing = "Reprocessing",
 }
 
 export enum operation_type {
