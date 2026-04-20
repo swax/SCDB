@@ -197,6 +197,8 @@ export async function getSketch(id: number) {
       notes: true,
       link_urls: true,
       site_rating: true,
+      review_status: true,
+      flag_note: true,
       image: {
         select: {
           cdn_key: true,

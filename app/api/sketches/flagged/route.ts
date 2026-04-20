@@ -19,6 +19,21 @@ export async function GET() {
     return NextResponse.json({
       sketches,
       total: sketches.length,
+      _links: [{ rel: "self", href: "/api/sketches/flagged" }],
+      _linkTemplates: [
+        {
+          rel: "sketch",
+          hrefTemplate: "/api/sketches/{id}",
+          title: "Sketch detail (includes review_status, flag_note, _actions)",
+        },
+        {
+          rel: "set-review-status",
+          hrefTemplate: "/api/sketches/{id}/review-status",
+          method: "PUT",
+          title:
+            "PUT to mark a flagged sketch as Reprocessing (body: {review_status: 'Reprocessing'}) or flip back to NeedsReview after rework.",
+        },
+      ],
     });
   } catch (error) {
     return handleApiError(error);

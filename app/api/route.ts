@@ -29,6 +29,12 @@ export function GET() {
           "POST to create, PUT /{id} to update. GET for schema + example.",
       },
       {
+        rel: "sketches-flagged",
+        href: `${API_PREFIX}/sketches/flagged`,
+        title:
+          "Sketches currently flagged for review. GET returns {sketches, total}; follow _linkTemplates to mark as Reprocessing.",
+      },
+      {
         rel: "recurring-sketches",
         href: `${API_PREFIX}/recurring-sketches`,
         title: "Recurring Sketches",

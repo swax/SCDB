@@ -31,7 +31,36 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
       throw new ApiError(404, "Sketch not found");
     }
 
-    return NextResponse.json(sketch);
+    return NextResponse.json({
+      ...sketch,
+      _links: [
+        { rel: "self", href: `/api/sketches/${sketchId}` },
+        { rel: "collection", href: "/api/sketches", title: "Sketches" },
+      ],
+      _actions: [
+        {
+          rel: "update",
+          href: `/api/sketches/full/${sketchId}`,
+          method: "PUT",
+          title:
+            "Update sketch (partial — only provided fields are changed). GET /api/sketches/full for schema + example.",
+        },
+        {
+          rel: "set-review-status",
+          href: `/api/sketches/${sketchId}/review-status`,
+          method: "PUT",
+          title:
+            "Set review_status. Values: NeedsReview, Flagged, Reviewed, Reprocessing. flag_note is required when setting Flagged.",
+          body: { review_status: "Reprocessing", flag_note: null },
+        },
+        {
+          rel: "delete",
+          href: `/api/sketches/${sketchId}`,
+          method: "DELETE",
+          title: "Delete sketch",
+        },
+      ],
+    });
   } catch (error) {
     return handleApiError(error);
   }
