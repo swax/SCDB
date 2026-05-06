@@ -4,16 +4,17 @@ import {
 } from "@/backend/api/schemaRegistry";
 import { authenticateApiRequest, handleApiError } from "@/backend/api/apiAuth";
 import { revalidateEntityById } from "@/backend/api/entityApiService";
+import { API_PREFIX } from "@/backend/api/hateoasHelpers";
 import {
   buildTableCmsFromInput,
   setReviewStatusForApiContent,
   InputValidationError,
 } from "@/backend/api/sketchApiService";
 import {
-  SketchFullInput,
   resolveFullInput,
   buildResolvedResponse,
 } from "@/backend/api/sketchFullService";
+import { SketchFullInputSchema } from "@/shared/schemas/sketchFull";
 import { syncSketchToChecklist } from "@/backend/content/checklistSync";
 import { writeFieldValues } from "@/backend/edit/editWriteService";
 import prisma from "@/database/prisma";
@@ -31,16 +32,18 @@ export function GET() {
     _actions: [
       {
         rel: "create",
-        href: "/api/sketches/full",
+        href: `${API_PREFIX}/sketches/full`,
         method: "POST",
         title: "Create a sketch (all-in-one)",
+        schema: `${API_PREFIX}/schemas/SketchFullInput`,
       },
       {
         rel: "update",
-        href: "/api/sketches/full/{id}",
+        href: `${API_PREFIX}/sketches/full/{id}`,
         method: "PUT",
         title:
           "Update a sketch (all-in-one) — only provided fields are changed",
+        schema: `${API_PREFIX}/schemas/SketchFullUpdateInput`,
       },
     ],
     schema,
@@ -79,15 +82,7 @@ export function GET() {
 export async function POST(request: NextRequest) {
   try {
     const user = await authenticateApiRequest(request);
-    const input = (await request.json()) as SketchFullInput;
-
-    // Validate required fields for creation
-    const errors: string[] = [];
-    if (!input.title) errors.push("title is required");
-    if (!input.show) errors.push("show is required");
-    if (errors.length > 0) {
-      throw new InputValidationError(errors.join("\n"));
-    }
+    const input = SketchFullInputSchema.parse(await request.json());
 
     const resolved = await resolveFullInput(user, input);
     const table = await buildTableCmsFromInput(resolved.sketchInput, false);

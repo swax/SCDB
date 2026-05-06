@@ -9,13 +9,13 @@ import {
   InputValidationError,
 } from "@/backend/api/sketchApiService";
 import {
-  SketchFullInput,
   resolveFullInput,
   buildResolvedResponse,
 } from "@/backend/api/sketchFullService";
 import { getSketch } from "@/backend/content/sketchService";
 import { writeFieldValues } from "@/backend/edit/editWriteService";
 import { revalidateSketchAndPeople } from "@/app/api/sketches/full/route";
+import { SketchFullUpdateInputSchema } from "@/shared/schemas/sketchFull";
 import { NextRequest, NextResponse } from "next/server";
 
 type RouteParams = { params: Promise<{ id: string }> };
@@ -36,7 +36,7 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
       throw new ApiError(404, "Sketch not found");
     }
 
-    const input = (await request.json()) as SketchFullInput;
+    const input = SketchFullUpdateInputSchema.parse(await request.json());
 
     // For updates, resolve names using the existing show_id as fallback
     const resolved = await resolveFullInput(user, input, existing.show.id);

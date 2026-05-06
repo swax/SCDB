@@ -6,11 +6,8 @@ import {
   resolveEpisodeLookupSlug,
 } from "@/backend/api/entityApiService";
 import { InputValidationError } from "@/backend/api/sketchApiService";
-import type {
-  CastInput,
-  CreditInput,
-  SketchUpdateInput,
-} from "@/shared/schemas/sketch";
+import type { SketchUpdateInput } from "@/shared/schemas/sketch";
+import type { SketchFullUpdateInput } from "@/shared/schemas/sketchFull";
 import lookupTermsInTable from "@/backend/edit/lookupService";
 import { writeFieldValues } from "@/backend/edit/editWriteService";
 import prisma from "@/database/prisma";
@@ -27,41 +24,6 @@ const lookupConfigs: Record<string, { table: string; labelColumn: string }> = {
     labelColumn: "lookup_slug",
   },
 };
-
-/** Input format accepted by both create and update full endpoints */
-export interface SketchFullInput {
-  title?: string;
-  show?: string;
-  season_number?: number;
-  season_year?: number;
-  episode_number?: number;
-  episode_air_date?: string;
-  recurring_sketch?: string;
-  video_urls?: string[];
-  teaser?: string;
-  synopsis?: string;
-  notes?: string;
-  link_urls?: string[];
-  image_id?: number;
-  cast?: FullCastInput[];
-  credits?: FullCreditInput[];
-  quotes?: string[];
-  tags?: (string | number)[];
-}
-
-export interface FullCastInput {
-  person: string;
-  character_name?: string;
-  role: string;
-  minor_role?: boolean;
-  image_id?: number;
-}
-
-export interface FullCreditInput {
-  person: string;
-  role: string;
-  description?: string;
-}
 
 /** Result of resolving all names/URLs in a SketchFullInput */
 export interface ResolvedSketchInput {
@@ -189,7 +151,7 @@ export async function findOrCreateEpisode(
  */
 export async function resolveFullInput(
   user: SessionUser,
-  input: SketchFullInput,
+  input: SketchFullUpdateInput,
   existingShowId?: number,
 ): Promise<ResolvedSketchInput> {
   // Resolve show
@@ -269,7 +231,7 @@ export async function resolveFullInput(
         castItems.push({
           person_id: result.id,
           character_name: castEntry.character_name || null,
-          role: castEntry.role as CastInput["role"],
+          role: castEntry.role,
           minor_role: castEntry.minor_role ?? false,
           image_id: castEntry.image_id ?? null,
         });
@@ -291,7 +253,7 @@ export async function resolveFullInput(
       if (result.ok) {
         creditItems.push({
           person_id: result.id,
-          role: creditEntry.role as CreditInput["role"],
+          role: creditEntry.role,
           description: creditEntry.description || null,
         });
       } else {

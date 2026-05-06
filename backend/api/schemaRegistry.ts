@@ -43,6 +43,12 @@ import {
   SketchTagInputSchema,
   SketchUpdateInputSchema,
 } from "@/shared/schemas/sketch";
+import {
+  SketchFullCastInputSchema,
+  SketchFullCreditInputSchema,
+  SketchFullInputSchema,
+  SketchFullUpdateInputSchema,
+} from "@/shared/schemas/sketchFull";
 
 /**
  * Map of Zod schemas registered with stable component names. Registered with
@@ -82,6 +88,10 @@ const ZOD_SCHEMAS: Record<string, z.ZodTypeAny> = {
   CreditInput: CreditInputSchema,
   QuoteInput: QuoteInputSchema,
   SketchTagInput: SketchTagInputSchema,
+  SketchFullInput: SketchFullInputSchema,
+  SketchFullUpdateInput: SketchFullUpdateInputSchema,
+  SketchFullCastInput: SketchFullCastInputSchema,
+  SketchFullCreditInput: SketchFullCreditInputSchema,
 };
 
 for (const [name, schema] of Object.entries(ZOD_SCHEMAS)) {
@@ -238,140 +248,6 @@ export const schemaRegistry: Record<string, object> = {
         type: "string",
         description:
           "Target table for organizing the upload (e.g. sketch, sketch_cast, person_image)",
-      },
-    },
-  },
-
-SketchFullInput: {
-    type: "object",
-    description:
-      "All-in-one sketch creation. Accepts names instead of IDs — the server resolves shows, " +
-      "people, tags, and recurring sketches by name; finds or creates seasons and episodes; " +
-      "downloads and uploads images from URLs; creates the sketch; revalidates caches; and " +
-      "refreshes search. POST /api/sketches/full",
-    required: ["title", "show"],
-    properties: {
-      title: { type: "string", description: "Sketch title" },
-      show: {
-        type: "string",
-        description:
-          'Show name (resolved by lookup). Example: "Saturday Night Live"',
-      },
-      season_number: {
-        type: "integer",
-        description:
-          "Season number. Will find existing or create new (requires season_year to create).",
-      },
-      season_year: {
-        type: "integer",
-        description:
-          "Year the season aired. Required only when creating a new season.",
-      },
-      episode_number: {
-        type: "integer",
-        description:
-          "Episode number (requires season_number). Will find existing or create new.",
-      },
-      episode_air_date: {
-        type: "string",
-        format: "date",
-        description: "Air date (YYYY-MM-DD). Used when creating a new episode.",
-      },
-      recurring_sketch: {
-        type: "string",
-        description:
-          'Recurring sketch name (resolved by lookup). Example: "Star Wars Undercover Boss"',
-      },
-      video_urls: {
-        type: "array",
-        items: { type: "string" },
-        description: "Video URLs",
-      },
-      teaser: { type: "string", description: "Short teaser text" },
-      synopsis: { type: "string", description: "Full synopsis" },
-      notes: { type: "string", description: "Additional notes" },
-      link_urls: {
-        type: "array",
-        items: { type: "string" },
-        description: "Related external links",
-      },
-      image_id: {
-        type: "integer",
-        description:
-          "ID of the preview image. Upload via POST /upload-image/direct first.",
-      },
-      cast: {
-        type: "array",
-        description: "Cast members, using actor names instead of IDs.",
-        items: { $ref: "SketchFullCastInput" },
-      },
-      credits: {
-        type: "array",
-        description: "Credits, using person names instead of IDs.",
-        items: { $ref: "SketchFullCreditInput" },
-      },
-      quotes: {
-        type: "array",
-        items: { type: "string" },
-        description: "Memorable quotes (plain strings)",
-      },
-      tags: {
-        type: "array",
-        items: { oneOf: [{ type: "string" }, { type: "integer" }] },
-        description:
-          'Tag names (resolved by lookup) or numeric tag IDs for disambiguation. ' +
-          'Example: ["Star Wars", "Undercover Boss", 1726]',
-      },
-    },
-  },
-
-  SketchFullCastInput: {
-    type: "object",
-    description:
-      'A cast member using actor name instead of ID. Example: {"person": "Adam Driver", "character_name": "Kylo Ren", "role": "Host"}',
-    required: ["person", "role"],
-    properties: {
-      person: {
-        type: "string",
-        description: 'Actor name (resolved by lookup). Example: "Adam Driver"',
-      },
-      character_name: {
-        type: "string",
-        description: 'Name of the character played. Example: "Kylo Ren"',
-      },
-      role: {
-        type: "string",
-        enum: ["Cast", "Guest", "Host", "Uncredited"],
-        description:
-          "Actor's role type in the production — NOT the character name.",
-      },
-      minor_role: { type: "boolean", description: "Minor/non-speaking role" },
-      image_id: {
-        type: "integer",
-        description:
-          "Headshot image ID. Upload via POST /upload-image/direct first.",
-      },
-    },
-  },
-
-  SketchFullCreditInput: {
-    type: "object",
-    description: "A credit entry using person name instead of ID.",
-    required: ["person", "role"],
-    properties: {
-      person: {
-        type: "string",
-        description: "Person name (resolved by lookup)",
-      },
-      role: {
-        type: "string",
-        enum: ["Writer", "Director", "Musician", "Other"],
-        description: "Credit role",
-      },
-      description: {
-        type: "string",
-        nullable: true,
-        description: "Additional description",
       },
     },
   },

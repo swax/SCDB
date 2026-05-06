@@ -811,7 +811,7 @@ const spec = {
           required: true,
           content: {
             "application/json": {
-              schema: { $ref: "#/components/schemas/SketchFullInput" },
+              schema: { $ref: "#/components/schemas/SketchFullUpdateInput" },
             },
           },
         },
