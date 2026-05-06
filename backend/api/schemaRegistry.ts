@@ -2,6 +2,8 @@ import { z } from "zod";
 import {
   ChecklistInputSchema,
   ChecklistUpdateSchema,
+  ChecklistBulkInputSchema,
+  ChecklistBulkResponseSchema,
   ChecklistBacksyncResponseSchema,
 } from "@/shared/schemas/checklist";
 
@@ -770,6 +772,10 @@ export const schemaRegistry: Record<string, object> = {
   ChecklistInput: jsonSchema(ChecklistInputSchema),
 
   ChecklistUpdateInput: jsonSchema(ChecklistUpdateSchema),
+
+  ChecklistBulkInput: jsonSchema(ChecklistBulkInputSchema),
+
+  ChecklistBulkResponse: jsonSchema(ChecklistBulkResponseSchema),
 
   ChecklistBacksyncResponse: jsonSchema(ChecklistBacksyncResponseSchema),
 

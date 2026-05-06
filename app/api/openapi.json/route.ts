@@ -421,6 +421,38 @@ const spec = {
         },
       },
     },
+    "/checklist/bulk": {
+      post: {
+        operationId: "bulkCreateChecklistItems",
+        summary: "Create up to 100 checklist items in one call",
+        description:
+          "Inserts an array of checklist items. Returns the inserted IDs in input order. " +
+          "Use this when a survey agent has discovered many sketches in one season.",
+        tags: ["Checklist"],
+        requestBody: {
+          required: true,
+          content: {
+            "application/json": {
+              schema: { $ref: "#/components/schemas/ChecklistBulkInput" },
+            },
+          },
+        },
+        responses: {
+          "201": {
+            description: "Checklist items created",
+            content: {
+              "application/json": {
+                schema: { $ref: "#/components/schemas/ChecklistBulkResponse" },
+              },
+            },
+          },
+          "400": {
+            description: "Validation error",
+            content: { "application/json": { schema: errorRef } },
+          },
+        },
+      },
+    },
     "/checklist/backsync": {
       post: {
         operationId: "backsyncChecklist",

@@ -19,6 +19,26 @@ export async function GET(request: NextRequest) {
         plural: "Checklist Items",
         createSchema: "ChecklistInput",
         listSchema: "ChecklistPaginationParams",
+        extraLinks: [
+          {
+            rel: "suggest",
+            href: "/api/checklist/suggest",
+            title:
+              "Survey agent entry point — returns one sparse {show_id, show_title, season_number} to research next.",
+          },
+          {
+            rel: "bulk-create",
+            href: "/api/checklist/bulk",
+            title:
+              "POST up to 100 checklist items in one call. Body: { items: ChecklistInput[] }.",
+          },
+          {
+            rel: "backsync",
+            href: "/api/checklist/backsync",
+            title:
+              "POST — reconcile checklist with sketches. Inserts missing rows, refreshes drifted ones.",
+          },
+        ],
       });
     }
 

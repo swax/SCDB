@@ -53,6 +53,12 @@ export function GET() {
       { rel: "tags", href: `${API_PREFIX}/tags`, title: "Tags" },
       { rel: "checklist", href: `${API_PREFIX}/checklist`, title: "Checklist" },
       {
+        rel: "checklist-suggest",
+        href: `${API_PREFIX}/checklist/suggest`,
+        title:
+          "Survey agent entry point — returns one sparse {show_id, show_title, season_number} to research next.",
+      },
+      {
         rel: "lookup",
         href: `${API_PREFIX}/lookup/{table}?search={term}&limit={n}`,
         title:

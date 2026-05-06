@@ -43,6 +43,25 @@ export const ChecklistUpdateSchema = ChecklistInputSchema.partial().describe(
     "All fields optional — only provided fields are updated.",
 );
 
+export const ChecklistBulkInputSchema = z
+  .object({
+    items: z
+      .array(ChecklistInputSchema)
+      .min(1)
+      .max(100)
+      .describe("Up to 100 checklist items to insert in one call."),
+  })
+  .describe("Request body for POST /checklist/bulk");
+
+export const ChecklistBulkResponseSchema = z
+  .object({
+    ids: z
+      .array(z.number().int())
+      .describe("IDs of the inserted rows, in input order."),
+    count: z.number().int().describe("Number of rows inserted."),
+  })
+  .describe("Response from POST /checklist/bulk");
+
 export const ChecklistBacksyncResponseSchema = z
   .object({
     inserted: z
@@ -64,6 +83,8 @@ export const ChecklistBacksyncResponseSchema = z
 
 export type ChecklistInput = z.infer<typeof ChecklistInputSchema>;
 export type ChecklistUpdate = z.infer<typeof ChecklistUpdateSchema>;
+export type ChecklistBulkInput = z.infer<typeof ChecklistBulkInputSchema>;
+export type ChecklistBulkResponse = z.infer<typeof ChecklistBulkResponseSchema>;
 export type ChecklistBacksyncResponse = z.infer<
   typeof ChecklistBacksyncResponseSchema
 >;
