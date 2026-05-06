@@ -1,3 +1,20 @@
+import { z } from "zod";
+import {
+  ChecklistInputSchema,
+  ChecklistUpdateSchema,
+  ChecklistBacksyncResponseSchema,
+} from "@/shared/schemas/checklist";
+
+/** Convert a Zod schema to JSON Schema (draft-7) for embedding in OpenAPI. */
+function jsonSchema(schema: z.ZodTypeAny): object {
+  const result = z.toJSONSchema(schema, { target: "draft-7" }) as Record<
+    string,
+    unknown
+  >;
+  delete result.$schema;
+  return result;
+}
+
 /** Recursively resolve $ref strings against the schema registry */
 export function resolveSchemaRefs(
   obj: unknown,
@@ -750,47 +767,11 @@ export const schemaRegistry: Record<string, object> = {
     },
   },
 
-  ChecklistInput: {
-    type: "object",
-    description: "Request body for creating a checklist item (POST /checklist)",
-    required: ["show_id", "sketch_title"],
-    properties: {
-      show_id: {
-        type: "integer",
-        description: "ID of the show. Use GET /lookup/show to find IDs.",
-      },
-      season_id: {
-        type: "integer",
-        nullable: true,
-        description: "ID of the season. Use GET /lookup/season to find IDs.",
-      },
-      episode_id: {
-        type: "integer",
-        nullable: true,
-        description: "ID of the episode. Use GET /lookup/episode to find IDs.",
-      },
-      sketch_title: {
-        type: "string",
-        description: "Title of the sketch to add",
-      },
-      status: {
-        type: "string",
-        enum: ["Pending", "Added", "NotFound"],
-        description: "Checklist item status (default: Pending)",
-      },
-      video_url: {
-        type: "string",
-        nullable: true,
-        description: "URL of the video for this sketch",
-      },
-      sketch_id: {
-        type: "integer",
-        nullable: true,
-        description:
-          "ID of the sketch if it was ultimately added to the database",
-      },
-    },
-  },
+  ChecklistInput: jsonSchema(ChecklistInputSchema),
+
+  ChecklistUpdateInput: jsonSchema(ChecklistUpdateSchema),
+
+  ChecklistBacksyncResponse: jsonSchema(ChecklistBacksyncResponseSchema),
 
   BatchLookupInput: {
     type: "object",

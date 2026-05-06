@@ -3,8 +3,8 @@ import {
   ApiError,
   handleApiError,
 } from "@/backend/api/apiAuth";
-import { checklist_status_type } from "@/shared/enums";
 import prisma from "@/database/prisma";
+import { ChecklistUpdateSchema } from "@/shared/schemas/checklist";
 import { NextRequest, NextResponse } from "next/server";
 
 type RouteParams = { params: Promise<{ id: string }> };
@@ -36,25 +36,17 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
     });
     if (!existing) throw new ApiError(404, "Checklist item not found");
 
-    const input = (await request.json()) as {
-      show_id?: number;
-      season_id?: number;
-      episode_id?: number;
-      sketch_title?: string;
-      status?: checklist_status_type;
-      video_url?: string;
-      sketch_id?: number;
-    };
+    const input = ChecklistUpdateSchema.parse(await request.json());
 
     const item = await prisma.checklist.update({
       where: { id: rowId },
       data: {
         ...(input.show_id !== undefined && { show_id: input.show_id }),
-        ...(input.season_id !== undefined && {
-          season_id: input.season_id,
+        ...(input.season_number !== undefined && {
+          season_number: input.season_number,
         }),
-        ...(input.episode_id !== undefined && {
-          episode_id: input.episode_id,
+        ...(input.episode_number !== undefined && {
+          episode_number: input.episode_number,
         }),
         ...(input.sketch_title !== undefined && {
           sketch_title: input.sketch_title,

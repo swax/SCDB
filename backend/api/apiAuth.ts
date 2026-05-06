@@ -2,6 +2,7 @@ import prisma, { getPrismaModel } from "@/database/prisma";
 import { user_role_type } from "@/shared/enums";
 import { SessionUser } from "next-auth";
 import { NextRequest, NextResponse } from "next/server";
+import { ZodError } from "zod";
 import { InputValidationError } from "./sketchApiService";
 
 /**
@@ -104,6 +105,19 @@ export function handleApiError(error: unknown) {
 
   if (error instanceof InputValidationError) {
     return errorJson(400, error.message);
+  }
+
+  if (error instanceof ZodError) {
+    return NextResponse.json(
+      {
+        error: "Validation failed",
+        issues: error.issues.map((i) => ({
+          path: i.path.join("."),
+          message: i.message,
+        })),
+      },
+      { status: 400 },
+    );
   }
 
   // Prisma unique constraint violation

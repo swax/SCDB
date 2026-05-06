@@ -28,8 +28,8 @@ export default async function ChecklistPage(props: ListPageProps) {
     video_url: item.video_url,
     sketch_id: item.sketch_id,
     show__title: item.show.title,
-    season__year: item.season?.year,
-    episode__number: item.episode?.number,
+    season_number: item.season_number ?? undefined,
+    episode_number: item.episode_number ?? undefined,
   }));
 
   return (

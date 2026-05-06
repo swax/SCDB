@@ -421,6 +421,63 @@ const spec = {
         },
       },
     },
+    "/checklist/backsync": {
+      post: {
+        operationId: "backsyncChecklist",
+        summary: "Reconcile checklist with sketches",
+        description:
+          "Inserts a checklist row (status=Added) for any sketch missing one, " +
+          "and updates rows whose linked sketch's title/season/episode have " +
+          "drifted. Use as a safety net — sketch creation auto-syncs.",
+        tags: ["Checklist"],
+        responses: {
+          "200": {
+            description: "Reconciliation counts",
+            content: {
+              "application/json": {
+                schema: {
+                  $ref: "#/components/schemas/ChecklistBacksyncResponse",
+                },
+              },
+            },
+          },
+        },
+      },
+    },
+    "/checklist/suggest": {
+      get: {
+        operationId: "suggestChecklistTarget",
+        summary: "Suggest a sparse show/season for the survey agent",
+        description:
+          "Returns one randomly selected (show, season) pair that has 5 or fewer " +
+          "checklist items, drawn from a hardcoded list of targeted shows. " +
+          "Used by the survey agent to pick what to research next. " +
+          "Returns 404 when no sparse seasons remain.",
+        tags: ["Checklist"],
+        security: [],
+        responses: {
+          "200": {
+            description: "A suggested show/season to populate",
+            content: {
+              "application/json": {
+                schema: {
+                  type: "object",
+                  properties: {
+                    show_id: { type: "integer" },
+                    show_title: { type: "string" },
+                    season_number: { type: "integer" },
+                  },
+                },
+              },
+            },
+          },
+          "404": {
+            description: "No sparse seasons remain across the targeted shows",
+            content: { "application/json": { schema: errorRef } },
+          },
+        },
+      },
+    },
     "/checklist/{id}": {
       get: {
         operationId: "getChecklistItem",
@@ -449,7 +506,7 @@ const spec = {
           required: true,
           content: {
             "application/json": {
-              schema: { $ref: "#/components/schemas/ChecklistInput" },
+              schema: { $ref: "#/components/schemas/ChecklistUpdateInput" },
             },
           },
         },

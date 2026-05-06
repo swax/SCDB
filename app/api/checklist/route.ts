@@ -7,6 +7,7 @@ import {
 import { getChecklistList } from "@/backend/content/checklistService";
 import prisma from "@/database/prisma";
 import { getDefaultPageListSize } from "@/shared/ProcessEnv";
+import { ChecklistInputSchema } from "@/shared/schemas/checklist";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(request: NextRequest) {
@@ -67,34 +68,13 @@ export async function GET(request: NextRequest) {
 export async function POST(request: NextRequest) {
   try {
     const user = await authenticateApiRequest(request);
-    const input = (await request.json()) as {
-      show_id?: number;
-      season_id?: number;
-      episode_id?: number;
-      sketch_title?: string;
-      status?: checklist_status_type;
-      video_url?: string;
-      sketch_id?: number;
-    };
-
-    if (!input.show_id) {
-      return NextResponse.json(
-        { error: "show_id is required" },
-        { status: 400 },
-      );
-    }
-    if (!input.sketch_title) {
-      return NextResponse.json(
-        { error: "sketch_title is required" },
-        { status: 400 },
-      );
-    }
+    const input = ChecklistInputSchema.parse(await request.json());
 
     const item = await prisma.checklist.create({
       data: {
         show_id: input.show_id,
-        season_id: input.season_id ?? null,
-        episode_id: input.episode_id ?? null,
+        season_number: input.season_number,
+        episode_number: input.episode_number ?? null,
         sketch_title: input.sketch_title,
         status: input.status ?? checklist_status_type.Pending,
         video_url: input.video_url ?? null,

@@ -22,19 +22,11 @@ export async function getChecklistList(
       status: true,
       video_url: true,
       sketch_id: true,
+      season_number: true,
+      episode_number: true,
       show: {
         select: {
           title: true,
-        },
-      },
-      season: {
-        select: {
-          year: true,
-        },
-      },
-      episode: {
-        select: {
-          number: true,
         },
       },
       created_at: true,

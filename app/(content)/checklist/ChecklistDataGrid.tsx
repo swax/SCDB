@@ -13,8 +13,8 @@ interface ChecklistDataGridProps {
     video_url: string | null;
     sketch_id: number | null;
     show__title: string;
-    season__year: number | undefined;
-    episode__number: number | undefined;
+    season_number: number | undefined;
+    episode_number: number | undefined;
   }[];
   searchParams: ListSearchParms;
   totalRowCount: number;
@@ -34,13 +34,12 @@ export default function ChecklistDataGrid({
     },
     { field: "show__title", headerName: "Show", type: "string" },
     {
-      field: "season__year",
-      headerName: "Year",
+      field: "season_number",
+      headerName: "Season",
       type: "number",
-      valueFormatter: (value?: number) => value?.toString(),
     },
     {
-      field: "episode__number",
+      field: "episode_number",
       headerName: "Episode",
       type: "number",
     },

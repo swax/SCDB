@@ -9,6 +9,7 @@ import {
   setReviewStatusForApiContent,
   SketchInput,
 } from "@/backend/api/sketchApiService";
+import { syncSketchToChecklist } from "@/backend/content/checklistSync";
 import { getSketchList } from "@/backend/content/sketchService";
 import { extractIntParams } from "@/backend/content/listHelper";
 import { writeFieldValues } from "@/backend/edit/editWriteService";
@@ -93,9 +94,12 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: response.error }, { status: 400 });
     }
 
+    const sketchId = response.content?.rowId;
+    if (sketchId) await syncSketchToChecklist(sketchId, user.id);
+
     return NextResponse.json(
       {
-        id: response.content?.rowId,
+        id: sketchId,
         url_slug: response.content?.newSlug,
       },
       { status: 201 },

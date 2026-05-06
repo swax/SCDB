@@ -15,6 +15,7 @@ import {
   resolveFullInput,
   buildResolvedResponse,
 } from "@/backend/api/sketchFullService";
+import { syncSketchToChecklist } from "@/backend/content/checklistSync";
 import { writeFieldValues } from "@/backend/edit/editWriteService";
 import prisma from "@/database/prisma";
 import { NextRequest, NextResponse } from "next/server";
@@ -108,6 +109,8 @@ export async function POST(request: NextRequest) {
 
     const sketchId = result.content!.rowId;
     const urlSlug = result.content!.newSlug;
+
+    await syncSketchToChecklist(sketchId, user.id);
 
     // Revalidate
     const revalidated = await revalidateSketchAndPeople(

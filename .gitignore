@@ -42,3 +42,4 @@ database/generated
 .claude/*
 !.claude/commands/
 .claude/commands/.env.scdb
+.codex
