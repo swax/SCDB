@@ -5,12 +5,12 @@ import {
 } from "@/backend/api/apiAuth";
 import {
   buildPersonTableCms,
-  PersonInput,
   preparePersonMappingReplacements,
 } from "@/backend/api/personApiService";
 import { getPerson } from "@/backend/content/personService";
 import { findAndBuildTableCms } from "@/backend/edit/editReadService";
 import { deleteRow, writeFieldValues } from "@/backend/edit/editWriteService";
+import { PersonUpdateInputSchema } from "@/shared/schemas/person";
 import { NextRequest, NextResponse } from "next/server";
 
 type RouteParams = { params: Promise<{ id: string }> };
@@ -52,7 +52,7 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
       throw new ApiError(404, "Person not found");
     }
 
-    const input = (await request.json()) as PersonInput;
+    const input = PersonUpdateInputSchema.parse(await request.json());
     const table = buildPersonTableCms(input, true);
 
     // If images array is provided, replace all existing person_image rows

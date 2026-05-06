@@ -11,6 +11,14 @@ interface CollectionDiscoveryConfig {
   updateSchema?: string;
   listSchema?: string;
   extraLinks?: { rel: string; href: string; title: string }[];
+  extraActions?: {
+    rel: string;
+    href: string;
+    method: string;
+    title: string;
+    /** Schema component name (e.g. "PersonImagesAppendInput"); resolved to /api/schemas/{name} */
+    schema?: string;
+  }[];
 }
 
 /**
@@ -29,6 +37,14 @@ export function isDiscoveryRequest(request: NextRequest): boolean {
 export function collectionDiscoveryResponse(config: CollectionDiscoveryConfig) {
   const updateSchema = config.updateSchema || config.createSchema;
   const listSchema = config.listSchema || "PaginationParams";
+
+  const extraActions = (config.extraActions ?? []).map((a) => ({
+    rel: a.rel,
+    href: a.href,
+    method: a.method,
+    title: a.title,
+    ...(a.schema ? { schema: `${SCHEMAS}/${a.schema}` } : {}),
+  }));
 
   return NextResponse.json({
     _actions: [
@@ -71,6 +87,7 @@ export function collectionDiscoveryResponse(config: CollectionDiscoveryConfig) {
         method: "POST",
         title: `Revalidate cached page for a ${config.singular.toLowerCase()}`,
       },
+      ...extraActions,
     ],
     ...(config.extraLinks?.length ? { _links: config.extraLinks } : {}),
   });

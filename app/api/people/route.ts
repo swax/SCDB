@@ -3,13 +3,11 @@ import {
   isDiscoveryRequest,
   collectionDiscoveryResponse,
 } from "@/backend/api/hateoasDiscovery";
-import {
-  buildPersonTableCms,
-  PersonInput,
-} from "@/backend/api/personApiService";
+import { buildPersonTableCms } from "@/backend/api/personApiService";
 import { getPersonList } from "@/backend/content/personService";
 import { writeFieldValues } from "@/backend/edit/editWriteService";
-import { getDefaultPageListSize } from "@/shared/ProcessEnv";
+import { PaginationParamsSchema } from "@/shared/schemas/listParams";
+import { PersonInputSchema } from "@/shared/schemas/person";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(request: NextRequest) {
@@ -21,38 +19,40 @@ export async function GET(request: NextRequest) {
         plural: "People",
         createSchema: "PersonInput",
         updateSchema: "PersonUpdateInput",
-        extraLinks: [
+        listSchema: "PaginationParams",
+        extraActions: [
           {
             rel: "add-images",
             href: "/api/people/{id}/images",
+            method: "POST",
             title:
-              "POST — Append portrait images to a person. " +
-              'Body: {"image_id": 123} or [{image_id: 123}, ...]. ' +
-              "Upload images first via POST /upload-image/direct.",
+              "Append portrait images to a person. Body accepts a single " +
+              "PersonImageInput or a non-empty array. Upload images first " +
+              "via POST /upload-image/direct.",
+            schema: "PersonImagesAppendInput",
           },
         ],
       });
     }
 
-    const params = request.nextUrl.searchParams;
+    const { search, page, pageSize, sortField, sortDir } =
+      PaginationParamsSchema.parse(
+        Object.fromEntries(request.nextUrl.searchParams),
+      );
 
     const result = await getPersonList({
-      search: params.get("search") || undefined,
-      page: parseInt(params.get("page") || "1"),
-      pageSize: parseInt(
-        params.get("pageSize") || String(getDefaultPageListSize()),
-      ),
-      sortField: params.get("sortField") || undefined,
-      sortDir: (params.get("sortDir") as "asc" | "desc") || undefined,
+      search,
+      page,
+      pageSize,
+      sortField,
+      sortDir,
     });
 
     return NextResponse.json({
       people: result.list,
       total: result.count,
-      page: parseInt(params.get("page") || "1"),
-      pageSize: parseInt(
-        params.get("pageSize") || String(getDefaultPageListSize()),
-      ),
+      page,
+      pageSize,
     });
   } catch (error) {
     return handleApiError(error);
@@ -63,17 +63,7 @@ export async function POST(request: NextRequest) {
   try {
     const user = await authenticateApiRequest(request);
 
-    const input = (await request.json()) as PersonInput;
-
-    if (!input.name) {
-      return NextResponse.json({ error: "name is required" }, { status: 400 });
-    }
-    if (!input.gender) {
-      return NextResponse.json(
-        { error: "gender is required (Male, Female, or Other)" },
-        { status: 400 },
-      );
-    }
+    const input = PersonInputSchema.parse(await request.json());
 
     const table = buildPersonTableCms(input, false);
 

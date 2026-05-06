@@ -1,26 +1,15 @@
 import prisma from "@/database/prisma";
-import { gender_type, review_status_type } from "@/shared/enums";
+import { review_status_type } from "@/shared/enums";
+import type {
+  PersonInput,
+  PersonUpdateInput,
+} from "@/shared/schemas/person";
 import { FieldCmsValueType, TableCms } from "../cms/cmsTypes";
 import { findAndBuildTableCms } from "../edit/editReadService";
 import { convertApiImageFields } from "./apiImageHelper";
 
-export interface PersonImageInput {
-  image_id: number;
-  description?: string | null;
-}
-
-export interface PersonInput {
-  name?: string;
-  description?: string | null;
-  gender?: gender_type;
-  birth_date?: string | null;
-  death_date?: string | null;
-  link_urls?: string[] | null;
-  images?: PersonImageInput[];
-}
-
 export function buildPersonTableCms(
-  input: PersonInput,
+  input: PersonInput | PersonUpdateInput,
   isUpdate: boolean,
 ): TableCms {
   const table = findAndBuildTableCms("person");
@@ -105,7 +94,7 @@ export function buildPersonTableCms(
 export async function preparePersonMappingReplacements(
   table: TableCms,
   personId: number,
-  input: PersonInput,
+  input: PersonInput | PersonUpdateInput,
 ) {
   if (!("images" in input)) return;
 

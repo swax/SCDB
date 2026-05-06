@@ -28,6 +28,12 @@ import {
   SketchListParamsSchema,
   TagListParamsSchema,
 } from "@/shared/schemas/listParams";
+import {
+  PersonImageInputSchema,
+  PersonImagesAppendInputSchema,
+  PersonInputSchema,
+  PersonUpdateInputSchema,
+} from "@/shared/schemas/person";
 import { ReviewStatusInputSchema } from "@/shared/schemas/sketch";
 
 /**
@@ -58,6 +64,10 @@ const ZOD_SCHEMAS: Record<string, z.ZodTypeAny> = {
   CharacterInput: CharacterInputSchema,
   CategoryInput: CategoryInputSchema,
   TagInput: TagInputSchema,
+  PersonInput: PersonInputSchema,
+  PersonUpdateInput: PersonUpdateInputSchema,
+  PersonImageInput: PersonImageInputSchema,
+  PersonImagesAppendInput: PersonImagesAppendInputSchema,
 };
 
 for (const [name, schema] of Object.entries(ZOD_SCHEMAS)) {
@@ -367,74 +377,6 @@ export const schemaRegistry: Record<string, object> = {
     },
   },
 
-  PersonInput: {
-    type: "object",
-    description: "Request body for creating a new person (POST /people)",
-    required: ["name", "gender"],
-    properties: {
-      name: { type: "string", description: "Full name" },
-      description: {
-        type: "string",
-        nullable: true,
-        description: "Bio or description",
-      },
-      gender: {
-        type: "string",
-        enum: ["Male", "Female", "Other"],
-        description: "Gender",
-      },
-      birth_date: {
-        type: "string",
-        format: "date",
-        nullable: true,
-        description: "Birthday (YYYY-MM-DD)",
-      },
-      death_date: {
-        type: "string",
-        format: "date",
-        nullable: true,
-        description: "Date of death (YYYY-MM-DD)",
-      },
-      link_urls: {
-        type: "array",
-        items: { type: "string" },
-        nullable: true,
-        description: "Related external links (e.g. Wikipedia, IMDb)",
-      },
-      images: {
-        type: "array",
-        description:
-          "Images for this person. Upload each image via POST /upload-image/direct first to get an image_id.",
-        items: { $ref: "PersonImageInput" },
-      },
-    },
-  },
-
-  PersonUpdateInput: {
-    type: "object",
-    description:
-      "Request body for updating a person (PUT /people/{id}). All fields optional. " +
-      "Only provided fields are updated. For the images array, providing it replaces ALL " +
-      "existing images; omitting leaves them unchanged.",
-    properties: {
-      name: { type: "string" },
-      description: { type: "string", nullable: true },
-      gender: { type: "string", enum: ["Male", "Female", "Other"] },
-      birth_date: { type: "string", format: "date", nullable: true },
-      death_date: { type: "string", format: "date", nullable: true },
-      link_urls: {
-        type: "array",
-        items: { type: "string" },
-        nullable: true,
-      },
-      images: {
-        type: "array",
-        description: "Replaces all existing person images",
-        items: { $ref: "PersonImageInput" },
-      },
-    },
-  },
-
   PersonListItem: {
     type: "object",
     description: "Person summary returned by GET /people",
@@ -509,26 +451,7 @@ export const schemaRegistry: Record<string, object> = {
     },
   },
 
-  PersonImageInput: {
-    type: "object",
-    description:
-      "An image entry for a person. Upload the image first via POST /upload-image/direct to get the image_id.",
-    required: ["image_id"],
-    properties: {
-      image_id: {
-        type: "integer",
-        description:
-          "ID of the image (from /upload-image/finish). Upload the image first.",
-      },
-      description: {
-        type: "string",
-        nullable: true,
-        description: "Optional description of the image",
-      },
-    },
-  },
-
-  SketchFullInput: {
+SketchFullInput: {
     type: "object",
     description:
       "All-in-one sketch creation. Accepts names instead of IDs — the server resolves shows, " +

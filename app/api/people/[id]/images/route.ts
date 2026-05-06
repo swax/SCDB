@@ -4,6 +4,7 @@ import {
   handleApiError,
 } from "@/backend/api/apiAuth";
 import prisma from "@/database/prisma";
+import { PersonImagesAppendInputSchema } from "@/shared/schemas/person";
 import { NextRequest, NextResponse } from "next/server";
 
 type RouteParams = { params: Promise<{ id: string }> };
@@ -27,18 +28,8 @@ export async function POST(request: NextRequest, { params }: RouteParams) {
       throw new ApiError(404, "Person not found");
     }
 
-    const body = await request.json();
-
-    // Accept single object or array
-    const items: { image_id: number; description?: string }[] = Array.isArray(
-      body,
-    )
-      ? body
-      : [body];
-
-    if (items.length === 0) {
-      throw new ApiError(400, "Provide at least one image_id");
-    }
+    const parsed = PersonImagesAppendInputSchema.parse(await request.json());
+    const items = Array.isArray(parsed) ? parsed : [parsed];
 
     // Get the current max sequence for this person
     const maxSeq = await prisma.person_image.aggregate({
@@ -50,10 +41,6 @@ export async function POST(request: NextRequest, { params }: RouteParams) {
     const created: { id: number; image_id: number }[] = [];
 
     for (const item of items) {
-      if (!item.image_id || typeof item.image_id !== "number") {
-        throw new ApiError(400, "Each item must have a numeric image_id");
-      }
-
       const record = await prisma.person_image.create({
         data: {
           person_id: personId,
