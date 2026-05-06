@@ -4,6 +4,12 @@ import {
   handleApiError,
 } from "@/backend/api/apiAuth";
 import {
+  ActionDef,
+  collectionLink,
+  resolveActions,
+  selfLink,
+} from "@/backend/api/hateoasHelpers";
+import {
   buildTableCmsFromInput,
   normalizeSketchInput,
   prepareMappingReplacements,
@@ -13,6 +19,42 @@ import { getSketch } from "@/backend/content/sketchService";
 import { findAndBuildTableCms } from "@/backend/edit/editReadService";
 import { deleteRow, writeFieldValues } from "@/backend/edit/editWriteService";
 import { NextRequest, NextResponse } from "next/server";
+
+type SketchActionCtx = { status: string };
+
+const SKETCH_ACTIONS: ActionDef<SketchActionCtx>[] = [
+  {
+    rel: "update",
+    href: "", // filled per-call (uses /api/sketches/full/{id}, different base)
+    method: "PUT",
+    title:
+      "Update sketch (partial — only provided fields are changed). GET /api/sketches/full for schema + example.",
+    schema: "SketchUpdateInput",
+  },
+  {
+    rel: "set-review-status",
+    path: "/review-status",
+    method: "PUT",
+    title:
+      "Set review_status. Values: NeedsReview, Flagged, Reviewed, Reprocessing. flag_note is required when setting Flagged.",
+    schema: "ReviewStatusInput",
+    body: { review_status: "Reprocessing", flag_note: null },
+  },
+  {
+    rel: "mark-reprocessing",
+    path: "/review-status",
+    method: "PUT",
+    title:
+      "Shortcut: mark this Flagged sketch as Reprocessing after rework.",
+    body: { review_status: "Reprocessing" },
+    statuses: ["Flagged"],
+  },
+  {
+    rel: "delete",
+    method: "DELETE",
+    title: "Delete sketch",
+  },
+];
 
 type RouteParams = { params: Promise<{ id: string }> };
 
@@ -31,35 +73,21 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
       throw new ApiError(404, "Sketch not found");
     }
 
+    const baseHref = `/api/sketches/${sketchId}`;
+    const actions = resolveActions<SketchActionCtx>(
+      SKETCH_ACTIONS.map((d) =>
+        d.rel === "update"
+          ? { ...d, href: `/api/sketches/full/${sketchId}` }
+          : d,
+      ),
+      baseHref,
+      { status: sketch.review_status },
+    );
+
     return NextResponse.json({
       ...sketch,
-      _links: [
-        { rel: "self", href: `/api/sketches/${sketchId}` },
-        { rel: "collection", href: "/api/sketches", title: "Sketches" },
-      ],
-      _actions: [
-        {
-          rel: "update",
-          href: `/api/sketches/full/${sketchId}`,
-          method: "PUT",
-          title:
-            "Update sketch (partial — only provided fields are changed). GET /api/sketches/full for schema + example.",
-        },
-        {
-          rel: "set-review-status",
-          href: `/api/sketches/${sketchId}/review-status`,
-          method: "PUT",
-          title:
-            "Set review_status. Values: NeedsReview, Flagged, Reviewed, Reprocessing. flag_note is required when setting Flagged.",
-          body: { review_status: "Reprocessing", flag_note: null },
-        },
-        {
-          rel: "delete",
-          href: `/api/sketches/${sketchId}`,
-          method: "DELETE",
-          title: "Delete sketch",
-        },
-      ],
+      _links: [selfLink(`/sketches/${sketchId}`), collectionLink("sketches", "Sketches")],
+      _actions: actions,
     });
   } catch (error) {
     return handleApiError(error);

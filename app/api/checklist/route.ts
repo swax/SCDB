@@ -4,10 +4,14 @@ import {
   isDiscoveryRequest,
   collectionDiscoveryResponse,
 } from "@/backend/api/hateoasDiscovery";
+import {
+  paginationLinks,
+  schemaLink,
+} from "@/backend/api/hateoasHelpers";
 import { getChecklistList } from "@/backend/content/checklistService";
 import prisma from "@/database/prisma";
-import { getDefaultPageListSize } from "@/shared/ProcessEnv";
 import { ChecklistInputSchema } from "@/shared/schemas/checklist";
+import { ChecklistPaginationParamsSchema } from "@/shared/schemas/listParams";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(request: NextRequest) {
@@ -42,36 +46,29 @@ export async function GET(request: NextRequest) {
       });
     }
 
-    const params = request.nextUrl.searchParams;
-    const status = params.get("status") || undefined;
+    const { search, page, pageSize, sortField, sortDir, status } =
+      ChecklistPaginationParamsSchema.parse(
+        Object.fromEntries(request.nextUrl.searchParams),
+      );
+
     const result = await getChecklistList(
-      {
-        search: params.get("search") || undefined,
-        page: parseInt(params.get("page") || "1"),
-        pageSize: parseInt(
-          params.get("pageSize") || String(getDefaultPageListSize()),
-        ),
-        sortField: params.get("sortField") || undefined,
-        sortDir: (params.get("sortDir") as "asc" | "desc") || undefined,
-      },
+      { search, page, pageSize, sortField, sortDir },
       status,
     );
-    const page = parseInt(params.get("page") || "1");
-    const pageSize = parseInt(
-      params.get("pageSize") || String(getDefaultPageListSize()),
-    );
+
     return NextResponse.json({
       checklist: result.list,
       total: result.count,
       page,
       pageSize,
       _links: [
-        { rel: "self", href: "/api/checklist" },
-        {
-          rel: "schema",
-          href: "/api/schemas/ChecklistInput",
-          title: "Schema for creating/updating checklist items",
-        },
+        ...paginationLinks("checklist", page, pageSize, result.count, {
+          status,
+          search,
+          sortField,
+          sortDir,
+        }),
+        schemaLink("ChecklistInput", "Schema for creating/updating checklist items"),
       ],
       _filters: {
         status: {

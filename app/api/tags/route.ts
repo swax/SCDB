@@ -13,9 +13,8 @@ import {
   collectionDiscoveryResponse,
 } from "@/backend/api/hateoasDiscovery";
 import { getAllTagsList } from "@/backend/content/tagService";
-import { extractIntParams } from "@/backend/content/listHelper";
 import { writeFieldValues } from "@/backend/edit/editWriteService";
-import { getDefaultPageListSize } from "@/shared/ProcessEnv";
+import { TagListParamsSchema } from "@/shared/schemas/listParams";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(request: NextRequest) {
@@ -30,24 +29,27 @@ export async function GET(request: NextRequest) {
       });
     }
 
-    const params = request.nextUrl.searchParams;
+    const { search, page, pageSize, sortField, sortDir, category_id } =
+      TagListParamsSchema.parse(
+        Object.fromEntries(request.nextUrl.searchParams),
+      );
+
+    const extraWhere: Record<string, number> = {};
+    if (category_id !== undefined) extraWhere.category_id = category_id;
+
     const result = await getAllTagsList({
-      search: params.get("search") || undefined,
-      page: parseInt(params.get("page") || "1"),
-      pageSize: parseInt(
-        params.get("pageSize") || String(getDefaultPageListSize()),
-      ),
-      sortField: params.get("sortField") || undefined,
-      sortDir: (params.get("sortDir") as "asc" | "desc") || undefined,
-      extraWhere: extractIntParams(params, ["category_id"]),
+      search,
+      page,
+      pageSize,
+      sortField,
+      sortDir,
+      extraWhere,
     });
     return NextResponse.json({
       tags: result.list,
       total: result.count,
-      page: parseInt(params.get("page") || "1"),
-      pageSize: parseInt(
-        params.get("pageSize") || String(getDefaultPageListSize()),
-      ),
+      page,
+      pageSize,
     });
   } catch (error) {
     return handleApiError(error);

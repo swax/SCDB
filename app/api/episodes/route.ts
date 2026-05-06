@@ -13,9 +13,8 @@ import {
   collectionDiscoveryResponse,
 } from "@/backend/api/hateoasDiscovery";
 import { getEpisodesList } from "@/backend/content/episodeService";
-import { extractIntParams } from "@/backend/content/listHelper";
 import { writeFieldValues } from "@/backend/edit/editWriteService";
-import { getDefaultPageListSize } from "@/shared/ProcessEnv";
+import { EpisodeListParamsSchema } from "@/shared/schemas/listParams";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(request: NextRequest) {
@@ -30,24 +29,28 @@ export async function GET(request: NextRequest) {
       });
     }
 
-    const params = request.nextUrl.searchParams;
+    const { search, page, pageSize, sortField, sortDir, season_id, number } =
+      EpisodeListParamsSchema.parse(
+        Object.fromEntries(request.nextUrl.searchParams),
+      );
+
+    const extraWhere: Record<string, number> = {};
+    if (season_id !== undefined) extraWhere.season_id = season_id;
+    if (number !== undefined) extraWhere.number = number;
+
     const result = await getEpisodesList({
-      search: params.get("search") || undefined,
-      page: parseInt(params.get("page") || "1"),
-      pageSize: parseInt(
-        params.get("pageSize") || String(getDefaultPageListSize()),
-      ),
-      sortField: params.get("sortField") || undefined,
-      sortDir: (params.get("sortDir") as "asc" | "desc") || undefined,
-      extraWhere: extractIntParams(params, ["season_id", "number"]),
+      search,
+      page,
+      pageSize,
+      sortField,
+      sortDir,
+      extraWhere,
     });
     return NextResponse.json({
       episodes: result.list,
       total: result.count,
-      page: parseInt(params.get("page") || "1"),
-      pageSize: parseInt(
-        params.get("pageSize") || String(getDefaultPageListSize()),
-      ),
+      page,
+      pageSize,
     });
   } catch (error) {
     return handleApiError(error);

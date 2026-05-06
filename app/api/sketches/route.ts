@@ -11,9 +11,8 @@ import {
 } from "@/backend/api/sketchApiService";
 import { syncSketchToChecklist } from "@/backend/content/checklistSync";
 import { getSketchList } from "@/backend/content/sketchService";
-import { extractIntParams } from "@/backend/content/listHelper";
 import { writeFieldValues } from "@/backend/edit/editWriteService";
-import { getDefaultPageListSize } from "@/shared/ProcessEnv";
+import { SketchListParamsSchema } from "@/shared/schemas/listParams";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(request: NextRequest) {
@@ -38,31 +37,41 @@ export async function GET(request: NextRequest) {
       });
     }
 
-    const params = request.nextUrl.searchParams;
+    const {
+      search,
+      page,
+      pageSize,
+      sortField,
+      sortDir,
+      show_id,
+      season_id,
+      episode_id,
+      recurring_sketch_id,
+    } = SketchListParamsSchema.parse(
+      Object.fromEntries(request.nextUrl.searchParams),
+    );
+
+    const extraWhere: Record<string, number> = {};
+    if (show_id !== undefined) extraWhere.show_id = show_id;
+    if (season_id !== undefined) extraWhere.season_id = season_id;
+    if (episode_id !== undefined) extraWhere.episode_id = episode_id;
+    if (recurring_sketch_id !== undefined)
+      extraWhere.recurring_sketch_id = recurring_sketch_id;
 
     const result = await getSketchList({
-      search: params.get("search") || undefined,
-      page: parseInt(params.get("page") || "1"),
-      pageSize: parseInt(
-        params.get("pageSize") || String(getDefaultPageListSize()),
-      ),
-      sortField: params.get("sortField") || undefined,
-      sortDir: (params.get("sortDir") as "asc" | "desc") || undefined,
-      extraWhere: extractIntParams(params, [
-        "show_id",
-        "season_id",
-        "episode_id",
-        "recurring_sketch_id",
-      ]),
+      search,
+      page,
+      pageSize,
+      sortField,
+      sortDir,
+      extraWhere,
     });
 
     return NextResponse.json({
       sketches: result.list,
       total: result.count,
-      page: parseInt(params.get("page") || "1"),
-      pageSize: parseInt(
-        params.get("pageSize") || String(getDefaultPageListSize()),
-      ),
+      page,
+      pageSize,
     });
   } catch (error) {
     return handleApiError(error);

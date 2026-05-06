@@ -11,22 +11,6 @@ export interface ListSearchParms {
   extraWhere?: Record<string, unknown>;
 }
 
-/** Extract integer query params for entity-specific filtering (e.g. show_id, number) */
-export function extractIntParams(
-  searchParams: URLSearchParams,
-  fields: string[],
-): Record<string, number> | undefined {
-  const result: Record<string, number> = {};
-  for (const field of fields) {
-    const val = searchParams.get(field);
-    if (val !== null) {
-      const num = parseInt(val);
-      if (!isNaN(num)) result[field] = num;
-    }
-  }
-  return Object.keys(result).length > 0 ? result : undefined;
-}
-
 /** Return type for getBaseFindParams – keeps Prisma happy via type assertions downstream */
 export interface BaseFindParams {
   where: Record<string, unknown> | undefined;

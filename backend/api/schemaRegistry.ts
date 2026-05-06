@@ -6,16 +6,68 @@ import {
   ChecklistBulkResponseSchema,
   ChecklistBacksyncResponseSchema,
 } from "@/shared/schemas/checklist";
+import {
+  HateoasActionSchema,
+  HateoasLinkSchema,
+} from "@/shared/schemas/hateoas";
+import {
+  ChecklistPaginationParamsSchema,
+  EpisodeListParamsSchema,
+  PaginationParamsSchema,
+  RecurringSketchListParamsSchema,
+  SeasonListParamsSchema,
+  SketchListParamsSchema,
+  TagListParamsSchema,
+} from "@/shared/schemas/listParams";
+import { ReviewStatusInputSchema } from "@/shared/schemas/sketch";
 
-/** Convert a Zod schema to JSON Schema (draft-7) for embedding in OpenAPI. */
-function jsonSchema(schema: z.ZodTypeAny): object {
-  const result = z.toJSONSchema(schema, { target: "draft-7" }) as Record<
-    string,
-    unknown
-  >;
-  delete result.$schema;
-  return result;
+/**
+ * Map of Zod schemas registered with stable component names. Registered with
+ * z.globalRegistry so cross-references between Zod schemas emit proper
+ * $ref pointers in the generated JSON Schema (instead of inlining).
+ */
+const ZOD_SCHEMAS: Record<string, z.ZodTypeAny> = {
+  ChecklistInput: ChecklistInputSchema,
+  ChecklistUpdateInput: ChecklistUpdateSchema,
+  ChecklistBulkInput: ChecklistBulkInputSchema,
+  ChecklistBulkResponse: ChecklistBulkResponseSchema,
+  ChecklistBacksyncResponse: ChecklistBacksyncResponseSchema,
+  HateoasLink: HateoasLinkSchema,
+  HateoasAction: HateoasActionSchema,
+  PaginationParams: PaginationParamsSchema,
+  SeasonListParams: SeasonListParamsSchema,
+  EpisodeListParams: EpisodeListParamsSchema,
+  SketchListParams: SketchListParamsSchema,
+  TagListParams: TagListParamsSchema,
+  RecurringSketchListParams: RecurringSketchListParamsSchema,
+  ChecklistPaginationParams: ChecklistPaginationParamsSchema,
+  ReviewStatusInput: ReviewStatusInputSchema,
+};
+
+for (const [name, schema] of Object.entries(ZOD_SCHEMAS)) {
+  z.globalRegistry.add(schema, { id: name });
 }
+
+/**
+ * Build OpenAPI-style JSON Schemas for every registered Zod schema, with
+ * cross-references rendered as $ref: "#/components/schemas/X".
+ */
+function buildZodSchemas(): Record<string, object> {
+  const out = z.toJSONSchema(z.globalRegistry, {
+    target: "draft-7",
+    uri: (id) => `#/components/schemas/${id}`,
+  }) as { schemas?: Record<string, Record<string, unknown>> };
+
+  const cleaned: Record<string, object> = {};
+  for (const [name, schema] of Object.entries(out.schemas ?? {})) {
+    delete schema.$schema;
+    delete schema.$id;
+    cleaned[name] = schema;
+  }
+  return cleaned;
+}
+
+const zodSchemas = buildZodSchemas();
 
 /** Recursively resolve $ref strings against the schema registry */
 export function resolveSchemaRefs(
@@ -29,9 +81,13 @@ export function resolveSchemaRefs(
 
   const record = obj as Record<string, unknown>;
 
-  // Replace { $ref: "SchemaName" } with the referenced schema (inline)
+  // Replace { $ref: "SchemaName" } or { $ref: "#/components/schemas/SchemaName" }
+  // with the referenced schema (inline)
   if (typeof record.$ref === "string" && Object.keys(record).length === 1) {
-    const refName = record.$ref;
+    const raw = record.$ref;
+    const refName = raw.startsWith("#/components/schemas/")
+      ? raw.slice("#/components/schemas/".length)
+      : raw;
     if (seen.has(refName)) return { type: "object", description: refName };
     const referenced = schemaRegistry[refName];
     if (referenced) {
@@ -49,224 +105,6 @@ export function resolveSchemaRefs(
 
 /** JSON Schema definitions for API request/response types, served individually on demand */
 export const schemaRegistry: Record<string, object> = {
-  PaginationParams: {
-    type: "object",
-    description:
-      "Query parameters for listing/searching resources. " +
-      "Pass these as URL query params (e.g. ?search=foo&page=1&pageSize=10).",
-    properties: {
-      search: {
-        type: "string",
-        description: "Search by name/title (case-insensitive)",
-      },
-      page: {
-        type: "integer",
-        default: 1,
-        description: "Page number (default: 1)",
-      },
-      pageSize: {
-        type: "integer",
-        default: 30,
-        description: "Results per page (default: 30)",
-      },
-      sortField: {
-        type: "string",
-        description: "Field to sort by",
-      },
-      sortDir: {
-        type: "string",
-        enum: ["asc", "desc"],
-        description: "Sort direction",
-      },
-    },
-  },
-
-  SeasonListParams: {
-    type: "object",
-    description:
-      "Query parameters for listing seasons. Supports all standard pagination params " +
-      "plus entity-specific filters. Example: ?show_id=1&number=45",
-    properties: {
-      search: {
-        type: "string",
-        description: "Search by name/title (case-insensitive)",
-      },
-      show_id: {
-        type: "integer",
-        description: "Filter by show ID",
-      },
-      number: {
-        type: "integer",
-        description: "Filter by season number",
-      },
-      year: {
-        type: "integer",
-        description: "Filter by year",
-      },
-      page: { type: "integer", default: 1, description: "Page number" },
-      pageSize: {
-        type: "integer",
-        default: 30,
-        description: "Results per page",
-      },
-      sortField: { type: "string" },
-      sortDir: { type: "string", enum: ["asc", "desc"] },
-    },
-  },
-
-  EpisodeListParams: {
-    type: "object",
-    description:
-      "Query parameters for listing episodes. Supports all standard pagination params " +
-      "plus entity-specific filters. Example: ?season_id=28&number=11",
-    properties: {
-      search: {
-        type: "string",
-        description: "Search by name/title (case-insensitive)",
-      },
-      season_id: {
-        type: "integer",
-        description: "Filter by season ID",
-      },
-      number: {
-        type: "integer",
-        description: "Filter by episode number",
-      },
-      page: { type: "integer", default: 1, description: "Page number" },
-      pageSize: {
-        type: "integer",
-        default: 30,
-        description: "Results per page",
-      },
-      sortField: { type: "string" },
-      sortDir: { type: "string", enum: ["asc", "desc"] },
-    },
-  },
-
-  SketchListParams: {
-    type: "object",
-    description:
-      "Query parameters for listing sketches. Supports all standard pagination params " +
-      "plus entity-specific filters. Example: ?show_id=1&season_id=28",
-    properties: {
-      search: {
-        type: "string",
-        description: "Search by title (case-insensitive)",
-      },
-      show_id: {
-        type: "integer",
-        description: "Filter by show ID",
-      },
-      season_id: {
-        type: "integer",
-        description: "Filter by season ID",
-      },
-      episode_id: {
-        type: "integer",
-        description: "Filter by episode ID",
-      },
-      recurring_sketch_id: {
-        type: "integer",
-        description: "Filter by recurring sketch ID",
-      },
-      page: { type: "integer", default: 1, description: "Page number" },
-      pageSize: {
-        type: "integer",
-        default: 30,
-        description: "Results per page",
-      },
-      sortField: { type: "string" },
-      sortDir: { type: "string", enum: ["asc", "desc"] },
-    },
-  },
-
-  TagListParams: {
-    type: "object",
-    description:
-      "Query parameters for listing tags. Supports all standard pagination params " +
-      "plus entity-specific filters. Example: ?category_id=5",
-    properties: {
-      search: {
-        type: "string",
-        description: "Search by name (case-insensitive)",
-      },
-      category_id: {
-        type: "integer",
-        description: "Filter by category ID",
-      },
-      page: { type: "integer", default: 1, description: "Page number" },
-      pageSize: {
-        type: "integer",
-        default: 30,
-        description: "Results per page",
-      },
-      sortField: { type: "string" },
-      sortDir: { type: "string", enum: ["asc", "desc"] },
-    },
-  },
-
-  RecurringSketchListParams: {
-    type: "object",
-    description:
-      "Query parameters for listing recurring sketches. Supports all standard pagination params " +
-      "plus entity-specific filters. Example: ?show_id=1",
-    properties: {
-      search: {
-        type: "string",
-        description: "Search by title (case-insensitive)",
-      },
-      show_id: {
-        type: "integer",
-        description: "Filter by show ID",
-      },
-      page: { type: "integer", default: 1, description: "Page number" },
-      pageSize: {
-        type: "integer",
-        default: 30,
-        description: "Results per page",
-      },
-      sortField: { type: "string" },
-      sortDir: { type: "string", enum: ["asc", "desc"] },
-    },
-  },
-
-  ChecklistPaginationParams: {
-    type: "object",
-    description:
-      "Query parameters for listing checklist items. " +
-      "Extends standard pagination with a status filter.",
-    properties: {
-      search: {
-        type: "string",
-        description: "Search by sketch title",
-      },
-      page: {
-        type: "integer",
-        default: 1,
-        description: "Page number (default: 1)",
-      },
-      pageSize: {
-        type: "integer",
-        default: 30,
-        description: "Results per page (default: 30)",
-      },
-      sortField: {
-        type: "string",
-        description: "Field to sort by",
-      },
-      sortDir: {
-        type: "string",
-        enum: ["asc", "desc"],
-        description: "Sort direction",
-      },
-      status: {
-        type: "string",
-        enum: ["Pending", "Added", "NotFound"],
-        description: "Filter by checklist item status",
-      },
-    },
-  },
-
   SketchInput: {
     type: "object",
     description: "Request body for creating a new sketch (POST /sketches)",
@@ -769,15 +607,7 @@ export const schemaRegistry: Record<string, object> = {
     },
   },
 
-  ChecklistInput: jsonSchema(ChecklistInputSchema),
-
-  ChecklistUpdateInput: jsonSchema(ChecklistUpdateSchema),
-
-  ChecklistBulkInput: jsonSchema(ChecklistBulkInputSchema),
-
-  ChecklistBulkResponse: jsonSchema(ChecklistBulkResponseSchema),
-
-  ChecklistBacksyncResponse: jsonSchema(ChecklistBacksyncResponseSchema),
+  ...zodSchemas,
 
   BatchLookupInput: {
     type: "object",
