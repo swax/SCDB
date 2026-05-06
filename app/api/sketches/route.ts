@@ -5,14 +5,16 @@ import {
 } from "@/backend/api/hateoasDiscovery";
 import {
   buildTableCmsFromInput,
-  normalizeSketchInput,
   setReviewStatusForApiContent,
-  SketchInput,
 } from "@/backend/api/sketchApiService";
 import { syncSketchToChecklist } from "@/backend/content/checklistSync";
 import { getSketchList } from "@/backend/content/sketchService";
 import { writeFieldValues } from "@/backend/edit/editWriteService";
 import { SketchListParamsSchema } from "@/shared/schemas/listParams";
+import {
+  normalizeSketchShorthand,
+  SketchInputSchema,
+} from "@/shared/schemas/sketch";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(request: NextRequest) {
@@ -82,18 +84,12 @@ export async function POST(request: NextRequest) {
   try {
     const user = await authenticateApiRequest(request);
 
-    const input = normalizeSketchInput((await request.json()) as SketchInput);
-
-    if (!input.title) {
-      return NextResponse.json({ error: "title is required" }, { status: 400 });
-    }
-    if (!input.show_id) {
-      return NextResponse.json(
-        { error: "show_id is required" },
-        { status: 400 },
-      );
-    }
-
+    const input = normalizeSketchShorthand(
+      SketchInputSchema.parse(await request.json()),
+    );
+    // Default for creates only — DB column has @default(false), but the CMS
+    // write pipeline expects an explicit value when the field is registered.
+    input.posted_on_socials ??= false;
     const table = await buildTableCmsFromInput(input, false);
     setReviewStatusForApiContent(table);
 

@@ -6,7 +6,6 @@ import { authenticateApiRequest, handleApiError } from "@/backend/api/apiAuth";
 import { revalidateEntityById } from "@/backend/api/entityApiService";
 import {
   buildTableCmsFromInput,
-  normalizeSketchInput,
   setReviewStatusForApiContent,
   InputValidationError,
 } from "@/backend/api/sketchApiService";
@@ -91,9 +90,7 @@ export async function POST(request: NextRequest) {
     }
 
     const resolved = await resolveFullInput(user, input);
-
-    const normalized = normalizeSketchInput(resolved.sketchInput);
-    const table = await buildTableCmsFromInput(normalized, false);
+    const table = await buildTableCmsFromInput(resolved.sketchInput, false);
     setReviewStatusForApiContent(table);
 
     // When no thumbnail provided, mark image_id as optional so validation passes

@@ -5,7 +5,6 @@ import {
 } from "@/backend/api/apiAuth";
 import {
   buildTableCmsFromInput,
-  normalizeSketchInput,
   prepareMappingReplacements,
   InputValidationError,
 } from "@/backend/api/sketchApiService";
@@ -41,9 +40,7 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
 
     // For updates, resolve names using the existing show_id as fallback
     const resolved = await resolveFullInput(user, input, existing.show.id);
-
-    const normalized = normalizeSketchInput(resolved.sketchInput);
-    const table = await buildTableCmsFromInput(normalized, true);
+    const table = await buildTableCmsFromInput(resolved.sketchInput, true);
 
     // If mapping arrays are provided, replace all existing rows
     await prepareMappingReplacements(table, sketchId, resolved.sketchInput);

@@ -5,12 +5,12 @@ import {
   resolveSeasonLookupSlug,
   resolveEpisodeLookupSlug,
 } from "@/backend/api/entityApiService";
-import {
-  InputValidationError,
-  SketchInput,
+import { InputValidationError } from "@/backend/api/sketchApiService";
+import type {
   CastInput,
   CreditInput,
-} from "@/backend/api/sketchApiService";
+  SketchUpdateInput,
+} from "@/shared/schemas/sketch";
 import lookupTermsInTable from "@/backend/edit/lookupService";
 import { writeFieldValues } from "@/backend/edit/editWriteService";
 import prisma from "@/database/prisma";
@@ -65,15 +65,15 @@ export interface FullCreditInput {
 
 /** Result of resolving all names/URLs in a SketchFullInput */
 export interface ResolvedSketchInput {
-  sketchInput: SketchInput;
+  sketchInput: SketchUpdateInput;
   showId: number;
   seasonId?: number;
   episodeId?: number;
   recurringSketchId?: number;
   thumbnailImageId?: number;
   tagIds: number[];
-  castItems: NonNullable<SketchInput["cast"]>;
-  creditItems: NonNullable<SketchInput["credits"]>;
+  castItems: NonNullable<SketchUpdateInput["cast"]>;
+  creditItems: NonNullable<SketchUpdateInput["credits"]>;
 }
 
 type ResolveResult =
@@ -257,7 +257,7 @@ export async function resolveFullInput(
   const thumbnailImageId = input.image_id;
 
   // Resolve cast
-  const castItems: NonNullable<SketchInput["cast"]> = [];
+  const castItems: NonNullable<SketchUpdateInput["cast"]> = [];
   if (input.cast) {
     for (const castEntry of input.cast) {
       const result = await tryResolveName(
@@ -280,7 +280,7 @@ export async function resolveFullInput(
   }
 
   // Resolve credits
-  const creditItems: NonNullable<SketchInput["credits"]> = [];
+  const creditItems: NonNullable<SketchUpdateInput["credits"]> = [];
   if (input.credits) {
     for (const creditEntry of input.credits) {
       const result = await tryResolveName(
@@ -305,7 +305,7 @@ export async function resolveFullInput(
   }
 
   // Build the SketchInput
-  const sketchInput: SketchInput = {};
+  const sketchInput: SketchUpdateInput = {};
 
   if (input.title !== undefined) sketchInput.title = input.title;
   if (input.show !== undefined) sketchInput.show_id = showId;
@@ -328,8 +328,10 @@ export async function resolveFullInput(
 
   if (castItems.length > 0) sketchInput.cast = castItems;
   if (creditItems.length > 0) sketchInput.credits = creditItems;
-  if (input.quotes !== undefined) sketchInput.quotes = input.quotes;
-  if (tagIds.length > 0) sketchInput.tags = tagIds;
+  if (input.quotes !== undefined)
+    sketchInput.quotes = input.quotes.map((q) => ({ quote: q }));
+  if (tagIds.length > 0)
+    sketchInput.tags = tagIds.map((id) => ({ tag_id: id }));
 
   return {
     sketchInput,

@@ -34,7 +34,15 @@ import {
   PersonInputSchema,
   PersonUpdateInputSchema,
 } from "@/shared/schemas/person";
-import { ReviewStatusInputSchema } from "@/shared/schemas/sketch";
+import {
+  CastInputSchema,
+  CreditInputSchema,
+  QuoteInputSchema,
+  ReviewStatusInputSchema,
+  SketchInputSchema,
+  SketchTagInputSchema,
+  SketchUpdateInputSchema,
+} from "@/shared/schemas/sketch";
 
 /**
  * Map of Zod schemas registered with stable component names. Registered with
@@ -68,6 +76,12 @@ const ZOD_SCHEMAS: Record<string, z.ZodTypeAny> = {
   PersonUpdateInput: PersonUpdateInputSchema,
   PersonImageInput: PersonImageInputSchema,
   PersonImagesAppendInput: PersonImagesAppendInputSchema,
+  SketchInput: SketchInputSchema,
+  SketchUpdateInput: SketchUpdateInputSchema,
+  CastInput: CastInputSchema,
+  CreditInput: CreditInputSchema,
+  QuoteInput: QuoteInputSchema,
+  SketchTagInput: SketchTagInputSchema,
 };
 
 for (const [name, schema] of Object.entries(ZOD_SCHEMAS)) {
@@ -131,229 +145,6 @@ export function resolveSchemaRefs(
 
 /** JSON Schema definitions for API request/response types, served individually on demand */
 export const schemaRegistry: Record<string, object> = {
-  SketchInput: {
-    type: "object",
-    description: "Request body for creating a new sketch (POST /sketches)",
-    required: ["title", "show_id"],
-    properties: {
-      title: { type: "string", description: "Sketch title" },
-      show_id: {
-        type: "integer",
-        description: "ID of the show. Use GET /lookup/show to find IDs.",
-      },
-      season_id: {
-        type: "integer",
-        nullable: true,
-        description: "ID of the season. Use GET /lookup/season to find IDs.",
-      },
-      episode_id: {
-        type: "integer",
-        nullable: true,
-        description: "ID of the episode. Use GET /lookup/episode to find IDs.",
-      },
-      recurring_sketch_id: {
-        type: "integer",
-        nullable: true,
-        description: "ID of the recurring sketch, if applicable.",
-      },
-      video_urls: {
-        type: "array",
-        items: { type: "string" },
-        description:
-          "Video URLs (YouTube, Vimeo, TikTok, Reddit, Facebook, Internet Archive)",
-      },
-      teaser: {
-        type: "string",
-        nullable: true,
-        description: "Short teaser text",
-      },
-      synopsis: {
-        type: "string",
-        nullable: true,
-        description: "Full synopsis of the sketch",
-      },
-      notes: {
-        type: "string",
-        nullable: true,
-        description: "Additional notes",
-      },
-      link_urls: {
-        type: "array",
-        items: { type: "string" },
-        nullable: true,
-        description: "Related external links",
-      },
-      image_id: {
-        type: "integer",
-        nullable: true,
-        description:
-          "ID of the preview image. Upload via /upload-image/begin + /upload-image/finish first.",
-      },
-      posted_on_socials: {
-        type: "boolean",
-        description:
-          "Whether this has been posted on social media (defaults to false)",
-      },
-      cast: {
-        type: "array",
-        description: "Cast members in the sketch. See CastInput schema.",
-        items: { $ref: "CastInput" },
-      },
-      credits: {
-        type: "array",
-        description:
-          "Credits (writers, directors, etc.). See CreditInput schema.",
-        items: { $ref: "CreditInput" },
-      },
-      quotes: {
-        type: "array",
-        description:
-          'Memorable quotes. Accepts plain strings: ["quote1", "quote2"] or objects: [{"quote": "quote1"}]',
-        items: { oneOf: [{ type: "string" }, { $ref: "QuoteInput" }] },
-      },
-      tags: {
-        type: "array",
-        description:
-          "Tags for categorization. Accepts plain tag IDs: [123, 456] or objects: [{tag_id: 123}]",
-        items: { oneOf: [{ type: "integer" }, { $ref: "SketchTagInput" }] },
-      },
-    },
-  },
-
-  SketchUpdateInput: {
-    type: "object",
-    description:
-      "Request body for updating a sketch (PUT /sketches/{id}). All fields optional. " +
-      "Only provided fields are updated. For array fields (cast, credits, quotes, tags), " +
-      "providing the array replaces ALL existing entries; omitting leaves them unchanged.",
-    properties: {
-      title: { type: "string" },
-      show_id: { type: "integer" },
-      season_id: { type: "integer", nullable: true },
-      episode_id: { type: "integer", nullable: true },
-      recurring_sketch_id: { type: "integer", nullable: true },
-      video_urls: { type: "array", items: { type: "string" } },
-      teaser: { type: "string", nullable: true },
-      synopsis: { type: "string", nullable: true },
-      notes: { type: "string", nullable: true },
-      link_urls: { type: "array", items: { type: "string" }, nullable: true },
-      image_id: {
-        type: "integer",
-        nullable: true,
-        description:
-          "ID of the preview image. Upload via /upload-image/begin + /upload-image/finish first.",
-      },
-      posted_on_socials: { type: "boolean" },
-      cast: {
-        type: "array",
-        description: "Replaces all existing cast entries",
-        items: { $ref: "CastInput" },
-      },
-      credits: {
-        type: "array",
-        description: "Replaces all existing credit entries",
-        items: { $ref: "CreditInput" },
-      },
-      quotes: {
-        type: "array",
-        description:
-          'Replaces all existing quotes. Accepts plain strings: ["quote1"] or objects: [{"quote": "quote1"}]',
-        items: { oneOf: [{ type: "string" }, { $ref: "QuoteInput" }] },
-      },
-      tags: {
-        type: "array",
-        description:
-          "Replaces all existing tags. Accepts plain tag IDs: [123] or objects: [{tag_id: 123}]",
-        items: { oneOf: [{ type: "integer" }, { $ref: "SketchTagInput" }] },
-      },
-    },
-  },
-
-  CastInput: {
-    type: "object",
-    description:
-      'A cast member entry for a sketch. Example: {"person_id": 489, "character_name": "Kylo Ren", "role": "Host"}',
-    required: ["role"],
-    properties: {
-      image_id: {
-        type: "integer",
-        nullable: true,
-        description:
-          "Thumbnail image ID for this cast member. Upload via /upload-image/begin + /upload-image/finish first.",
-      },
-      character_name: {
-        type: "string",
-        nullable: true,
-        description:
-          'Name of the character played (e.g. "Kylo Ren", "Stormtrooper"). This is NOT the actor\'s name.',
-      },
-      character_id: {
-        type: "integer",
-        nullable: true,
-        description:
-          "ID of existing character page (optional). Use GET /lookup/character to find IDs.",
-      },
-      person_id: {
-        type: "integer",
-        nullable: true,
-        description: "ID of the actor. Use GET /lookup/person to find IDs.",
-      },
-      role: {
-        type: "string",
-        enum: ["Cast", "Guest", "Host", "Uncredited"],
-        description:
-          'Actor\'s role type in the production — NOT the character name. Use "Host" for the episode host, "Cast" for regular/featured cast, "Guest" for guest appearances, "Uncredited" for uncredited roles.',
-      },
-      minor_role: {
-        type: "boolean",
-        description: "Whether this is a minor/non-speaking role",
-      },
-    },
-  },
-
-  CreditInput: {
-    type: "object",
-    description: "A credit entry (writer, director, etc.) for a sketch",
-    required: ["person_id", "role"],
-    properties: {
-      person_id: {
-        type: "integer",
-        description: "ID of the person. Use GET /lookup/person to find IDs.",
-      },
-      role: {
-        type: "string",
-        enum: ["Writer", "Director", "Musician", "Other"],
-        description: "Credit role",
-      },
-      description: {
-        type: "string",
-        nullable: true,
-        description: "Additional description for the credit",
-      },
-    },
-  },
-
-  QuoteInput: {
-    type: "object",
-    description: "A memorable quote from a sketch",
-    required: ["quote"],
-    properties: {
-      quote: { type: "string", description: "The quote text" },
-    },
-  },
-
-  SketchTagInput: {
-    type: "object",
-    description: "A tag entry for a sketch (references an existing tag by ID)",
-    required: ["tag_id"],
-    properties: {
-      tag_id: {
-        type: "integer",
-        description: "ID of the tag. Use GET /lookup/tag to find IDs.",
-      },
-    },
-  },
-
   SketchListItem: {
     type: "object",
     description: "Sketch summary returned by GET /sketches",

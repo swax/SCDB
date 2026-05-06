@@ -11,13 +11,15 @@ import {
 } from "@/backend/api/hateoasHelpers";
 import {
   buildTableCmsFromInput,
-  normalizeSketchInput,
   prepareMappingReplacements,
-  SketchInput,
 } from "@/backend/api/sketchApiService";
 import { getSketch } from "@/backend/content/sketchService";
 import { findAndBuildTableCms } from "@/backend/edit/editReadService";
 import { deleteRow, writeFieldValues } from "@/backend/edit/editWriteService";
+import {
+  normalizeSketchShorthand,
+  SketchUpdateInputSchema,
+} from "@/shared/schemas/sketch";
 import { NextRequest, NextResponse } from "next/server";
 
 type SketchActionCtx = { status: string };
@@ -111,7 +113,9 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
       throw new ApiError(404, "Sketch not found");
     }
 
-    const input = normalizeSketchInput((await request.json()) as SketchInput);
+    const input = normalizeSketchShorthand(
+      SketchUpdateInputSchema.parse(await request.json()),
+    );
     const table = await buildTableCmsFromInput(input, true);
 
     // If mapping arrays are provided, replace all existing rows
