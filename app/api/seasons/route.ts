@@ -14,6 +14,7 @@ import {
 } from "@/backend/api/hateoasDiscovery";
 import { getSeasonsList } from "@/backend/content/seasonService";
 import { writeFieldValues } from "@/backend/edit/editWriteService";
+import { SeasonInputSchema } from "@/shared/schemas/entities";
 import { SeasonListParamsSchema } from "@/shared/schemas/listParams";
 import { NextRequest, NextResponse } from "next/server";
 
@@ -61,19 +62,7 @@ export async function GET(request: NextRequest) {
 export async function POST(request: NextRequest) {
   try {
     const user = await authenticateApiRequest(request);
-    const input = (await request.json()) as Record<string, unknown>;
-    if (!input.show_id)
-      return NextResponse.json(
-        { error: "show_id is required" },
-        { status: 400 },
-      );
-    if (!input.year)
-      return NextResponse.json({ error: "year is required" }, { status: 400 });
-    if (!input.number)
-      return NextResponse.json(
-        { error: "number is required" },
-        { status: 400 },
-      );
+    const input = SeasonInputSchema.parse(await request.json());
     const conflict = await conflictIfExists(
       "season",
       { show_id: input.show_id, number: input.number },

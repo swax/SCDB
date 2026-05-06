@@ -70,7 +70,7 @@ export function normalizeSketchInput(input: SketchInput): SketchInput {
         if (c.role && !isValidCastRole(c.role) && !c.character_name) {
           c.character_name = c.role as string;
         }
-        c.role = alias as cast_role_type;
+        c.role = alias;
       }
       delete c.role_type;
       delete c.cast_type;

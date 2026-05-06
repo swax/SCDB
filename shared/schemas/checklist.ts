@@ -1,20 +1,18 @@
 import { z } from "zod";
+import { positiveId, positiveInt } from "./common";
 
 export const ChecklistInputSchema = z
   .object({
-    show_id: z
-      .number()
-      .int()
-      .describe("ID of the show. Use GET /lookup/show to find IDs."),
+    show_id: positiveId.describe(
+      "ID of the show. Use GET /lookup/show to find IDs.",
+    ),
     season_number: z
       .number()
       .int()
       .describe(
         "Season number within the show (1-based). Use -1 for sketches with no known season.",
       ),
-    episode_number: z
-      .number()
-      .int()
+    episode_number: positiveInt
       .nullish()
       .describe("Episode number within the season (1-based)."),
     sketch_title: z
@@ -30,9 +28,7 @@ export const ChecklistInputSchema = z
       .string()
       .nullish()
       .describe("URL of the video for this sketch"),
-    sketch_id: z
-      .number()
-      .int()
+    sketch_id: positiveId
       .nullish()
       .describe("ID of the sketch if it was ultimately added to the database"),
   })

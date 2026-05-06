@@ -14,6 +14,7 @@ import {
 } from "@/backend/api/hateoasDiscovery";
 import { getEpisodesList } from "@/backend/content/episodeService";
 import { writeFieldValues } from "@/backend/edit/editWriteService";
+import { EpisodeInputSchema } from "@/shared/schemas/entities";
 import { EpisodeListParamsSchema } from "@/shared/schemas/listParams";
 import { NextRequest, NextResponse } from "next/server";
 
@@ -60,17 +61,7 @@ export async function GET(request: NextRequest) {
 export async function POST(request: NextRequest) {
   try {
     const user = await authenticateApiRequest(request);
-    const input = (await request.json()) as Record<string, unknown>;
-    if (!input.season_id)
-      return NextResponse.json(
-        { error: "season_id is required" },
-        { status: 400 },
-      );
-    if (input.number === undefined)
-      return NextResponse.json(
-        { error: "number is required" },
-        { status: 400 },
-      );
+    const input = EpisodeInputSchema.parse(await request.json());
     const conflict = await conflictIfExists(
       "episode",
       { season_id: input.season_id, number: input.number },

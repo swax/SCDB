@@ -14,6 +14,7 @@ import {
 } from "@/backend/api/hateoasDiscovery";
 import { getAllTagsList } from "@/backend/content/tagService";
 import { writeFieldValues } from "@/backend/edit/editWriteService";
+import { TagInputSchema } from "@/shared/schemas/entities";
 import { TagListParamsSchema } from "@/shared/schemas/listParams";
 import { NextRequest, NextResponse } from "next/server";
 
@@ -59,14 +60,7 @@ export async function GET(request: NextRequest) {
 export async function POST(request: NextRequest) {
   try {
     const user = await authenticateApiRequest(request);
-    const input = (await request.json()) as Record<string, unknown>;
-    if (!input.name)
-      return NextResponse.json({ error: "name is required" }, { status: 400 });
-    if (!input.category_id)
-      return NextResponse.json(
-        { error: "category_id is required" },
-        { status: 400 },
-      );
+    const input = TagInputSchema.parse(await request.json());
     const conflict = await conflictIfExists(
       "tag",
       { category_id: input.category_id, name: input.name },

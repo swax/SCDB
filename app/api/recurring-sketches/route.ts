@@ -14,6 +14,7 @@ import {
 } from "@/backend/api/hateoasDiscovery";
 import { getRecurringSketchList } from "@/backend/content/recurringSketch";
 import { writeFieldValues } from "@/backend/edit/editWriteService";
+import { RecurringSketchInputSchema } from "@/shared/schemas/entities";
 import { RecurringSketchListParamsSchema } from "@/shared/schemas/listParams";
 import { NextRequest, NextResponse } from "next/server";
 
@@ -59,14 +60,7 @@ export async function GET(request: NextRequest) {
 export async function POST(request: NextRequest) {
   try {
     const user = await authenticateApiRequest(request);
-    const input = (await request.json()) as Record<string, unknown>;
-    if (!input.title)
-      return NextResponse.json({ error: "title is required" }, { status: 400 });
-    if (!input.show_id)
-      return NextResponse.json(
-        { error: "show_id is required" },
-        { status: 400 },
-      );
+    const input = RecurringSketchInputSchema.parse(await request.json());
     const conflict = await conflictIfExists(
       "recurring_sketch",
       { show_id: input.show_id, title: input.title },

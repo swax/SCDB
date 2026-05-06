@@ -103,9 +103,9 @@ export async function tryResolveName(
   const exact = matches.find(
     (m: { label: string }) => m.label.toLowerCase() === name.toLowerCase(),
   );
-  if (exact) return { ok: true, id: exact.id as number };
+  if (exact) return { ok: true, id: exact.id };
 
-  if (matches.length === 1) return { ok: true, id: matches[0].id as number };
+  if (matches.length === 1) return { ok: true, id: matches[0].id };
 
   const options = matches
     .slice(0, 5)

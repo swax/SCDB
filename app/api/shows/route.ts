@@ -6,7 +6,8 @@ import {
 } from "@/backend/api/hateoasDiscovery";
 import { getShowsList } from "@/backend/content/showService";
 import { writeFieldValues } from "@/backend/edit/editWriteService";
-import { getDefaultPageListSize } from "@/shared/ProcessEnv";
+import { ShowInputSchema } from "@/shared/schemas/entities";
+import { PaginationParamsSchema } from "@/shared/schemas/listParams";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(request: NextRequest) {
@@ -17,26 +18,27 @@ export async function GET(request: NextRequest) {
         singular: "Show",
         plural: "Shows",
         createSchema: "ShowInput",
+        listSchema: "PaginationParams",
       });
     }
 
-    const params = request.nextUrl.searchParams;
+    const { search, page, pageSize, sortField, sortDir } =
+      PaginationParamsSchema.parse(
+        Object.fromEntries(request.nextUrl.searchParams),
+      );
+
     const result = await getShowsList({
-      search: params.get("search") || undefined,
-      page: parseInt(params.get("page") || "1"),
-      pageSize: parseInt(
-        params.get("pageSize") || String(getDefaultPageListSize()),
-      ),
-      sortField: params.get("sortField") || undefined,
-      sortDir: (params.get("sortDir") as "asc" | "desc") || undefined,
+      search,
+      page,
+      pageSize,
+      sortField,
+      sortDir,
     });
     return NextResponse.json({
       shows: result.list,
       total: result.count,
-      page: parseInt(params.get("page") || "1"),
-      pageSize: parseInt(
-        params.get("pageSize") || String(getDefaultPageListSize()),
-      ),
+      page,
+      pageSize,
     });
   } catch (error) {
     return handleApiError(error);
@@ -46,10 +48,7 @@ export async function GET(request: NextRequest) {
 export async function POST(request: NextRequest) {
   try {
     const user = await authenticateApiRequest(request);
-    const input = (await request.json()) as Record<string, unknown>;
-    if (!input.title) {
-      return NextResponse.json({ error: "title is required" }, { status: 400 });
-    }
+    const input = ShowInputSchema.parse(await request.json());
     const table = buildEntityTableCms("show", input, false);
     const response = await writeFieldValues(user, table, 0);
     if (response.error) {
