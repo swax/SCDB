@@ -286,8 +286,6 @@ export async function resolveFullInput(
     sketchInput.link_urls = input.link_urls ?? [];
   if (thumbnailImageId) sketchInput.image_id = thumbnailImageId;
 
-  sketchInput.posted_on_socials = false;
-
   if (castItems.length > 0) sketchInput.cast = castItems;
   if (creditItems.length > 0) sketchInput.credits = creditItems;
   if (input.quotes !== undefined)

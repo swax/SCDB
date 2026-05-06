@@ -25,7 +25,7 @@ export function GET() {
         href: `${API_PREFIX}/sketches/full`,
         title:
           "RECOMMENDED for sketch create/update. Uses names (not IDs) — resolves lookups, " +
-          "creates seasons/episodes, uploads images from URLs, revalidates, refreshes search. " +
+          "creates seasons/episodes, assign images by ID, revalidates, refreshes search. " +
           "POST to create, PUT /{id} to update. GET for schema + example.",
       },
       {

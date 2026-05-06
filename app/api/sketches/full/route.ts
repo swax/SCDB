@@ -85,6 +85,10 @@ export async function POST(request: NextRequest) {
     const input = SketchFullInputSchema.parse(await request.json());
 
     const resolved = await resolveFullInput(user, input);
+    // Create-only default — DB has @default(false) but the CMS write pipeline
+    // requires an explicit value when the field is registered. Updates leave
+    // the existing value alone so a previously-posted sketch isn't un-marked.
+    resolved.sketchInput.posted_on_socials = false;
     const table = await buildTableCmsFromInput(resolved.sketchInput, false);
     setReviewStatusForApiContent(table);
 
