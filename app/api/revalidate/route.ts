@@ -1,10 +1,7 @@
-import {
-  authenticateApiRequest,
-  ApiError,
-  handleApiError,
-} from "@/backend/api/apiAuth";
+import { authenticateApiRequest, handleApiError } from "@/backend/api/apiAuth";
 import { revalidateEntityById } from "@/backend/api/entityApiService";
 import prisma from "@/database/prisma";
+import { BatchRevalidateInputSchema } from "@/shared/schemas/revalidate";
 import { getSingularTableName } from "@/shared/tableNames";
 import { NextRequest, NextResponse } from "next/server";
 
@@ -32,26 +29,13 @@ export function GET() {
   });
 }
 
-interface BatchEntry {
-  table: string;
-  id: number;
-}
-
 export async function POST(request: NextRequest) {
   try {
     await authenticateApiRequest(request);
 
-    const input = (await request.json()) as {
-      entities?: BatchEntry[];
-      refresh_search?: boolean;
-    };
-
-    if (!input.entities?.length && !input.refresh_search) {
-      throw new ApiError(
-        400,
-        "Provide at least one of: entities (array), refresh_search (boolean)",
-      );
-    }
+    const input = BatchRevalidateInputSchema.parse(await request.json());
+    const entities = "entities" in input ? input.entities : undefined;
+    const refreshSearch = input.refresh_search ?? false;
 
     const results: {
       table: string;
@@ -60,8 +44,8 @@ export async function POST(request: NextRequest) {
       error?: string;
     }[] = [];
 
-    if (input.entities) {
-      for (const entry of input.entities) {
+    if (entities) {
+      for (const entry of entities) {
         const table = getSingularTableName(entry.table);
         if (!table) {
           results.push({
@@ -86,14 +70,14 @@ export async function POST(request: NextRequest) {
       }
     }
 
-    if (input.refresh_search) {
+    if (refreshSearch) {
       await prisma.$executeRaw`SELECT refresh_sketch_search()`;
     }
 
     return NextResponse.json({
       success: true,
       revalidated: results,
-      search_refreshed: input.refresh_search ?? false,
+      search_refreshed: refreshSearch,
     });
   } catch (error) {
     return handleApiError(error);

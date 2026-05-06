@@ -49,6 +49,16 @@ import {
   SketchFullInputSchema,
   SketchFullUpdateInputSchema,
 } from "@/shared/schemas/sketchFull";
+import {
+  BatchLookupInputSchema,
+  LookupResultSchema,
+} from "@/shared/schemas/lookup";
+import { UploadImageDirectInputSchema } from "@/shared/schemas/uploadImage";
+import { BatchRevalidateInputSchema } from "@/shared/schemas/revalidate";
+import {
+  PersonListItemSchema,
+  SketchListItemSchema,
+} from "@/shared/schemas/listResponses";
 
 /**
  * Map of Zod schemas registered with stable component names. Registered with
@@ -92,10 +102,19 @@ const ZOD_SCHEMAS: Record<string, z.ZodTypeAny> = {
   SketchFullUpdateInput: SketchFullUpdateInputSchema,
   SketchFullCastInput: SketchFullCastInputSchema,
   SketchFullCreditInput: SketchFullCreditInputSchema,
+  BatchLookupInput: BatchLookupInputSchema,
+  LookupResult: LookupResultSchema,
+  UploadImageDirectInput: UploadImageDirectInputSchema,
+  BatchRevalidateInput: BatchRevalidateInputSchema,
+  SketchListItem: SketchListItemSchema,
+  PersonListItem: PersonListItemSchema,
 };
 
 for (const [name, schema] of Object.entries(ZOD_SCHEMAS)) {
-  z.globalRegistry.add(schema, { id: name });
+  // Forward .describe() / .meta() text from the schema into the registry entry
+  // so top-level descriptions and JSON-Schema-visible metadata (e.g.
+  // minProperties) survive z.toJSONSchema; without this they're dropped.
+  z.globalRegistry.add(schema, { id: name, ...(schema.meta() ?? {}) });
 }
 
 /**
@@ -153,132 +172,5 @@ export function resolveSchemaRefs(
   return resolved;
 }
 
-/** JSON Schema definitions for API request/response types, served individually on demand */
-export const schemaRegistry: Record<string, object> = {
-  SketchListItem: {
-    type: "object",
-    description: "Sketch summary returned by GET /sketches",
-    properties: {
-      id: { type: "integer" },
-      title: { type: "string" },
-      url_slug: { type: "string" },
-      site_rating: { type: "number", nullable: true },
-      posted_on_socials: { type: "boolean" },
-      review_status: {
-        type: "string",
-        enum: ["NeedsReview", "Flagged", "Reviewed"],
-      },
-      show: { type: "object", properties: { title: { type: "string" } } },
-      season: {
-        type: "object",
-        nullable: true,
-        properties: { year: { type: "integer" } },
-      },
-      created_at: { type: "string", format: "date-time" },
-    },
-  },
-
-  PersonListItem: {
-    type: "object",
-    description: "Person summary returned by GET /people",
-    properties: {
-      id: { type: "integer" },
-      name: { type: "string" },
-      url_slug: { type: "string" },
-      birth_date: { type: "string", format: "date", nullable: true },
-      death_date: { type: "string", format: "date", nullable: true },
-      age: { type: "integer", nullable: true },
-      _count: {
-        type: "object",
-        properties: {
-          sketch_casts: {
-            type: "integer",
-            description: "Number of sketches this person appears in",
-          },
-        },
-      },
-    },
-  },
-
-  ...zodSchemas,
-
-  BatchLookupInput: {
-    type: "object",
-    description:
-      "POST /lookup/batch — look up multiple search terms across multiple tables in one call. " +
-      "Keys are table names, values are arrays of search terms. Returns results grouped by table and term. " +
-      "Max 20 terms per table. Example: " +
-      '{"person": ["Adam Driver", "Mikey Day"], "tag": ["Star Wars", "Kylo Ren"]}',
-    additionalProperties: {
-      type: "array",
-      items: { type: "string" },
-      description: "Search terms for this table",
-    },
-    example: {
-      person: ["Adam Driver", "Mikey Day"],
-      tag: ["Star Wars", "Undercover Boss"],
-      show: ["Saturday Night Live"],
-    },
-  },
-
-  LookupResult: {
-    type: "object",
-    description: "A lookup match returned by GET /lookup/{table}",
-    properties: {
-      id: { type: "integer" },
-      label: { type: "string" },
-    },
-  },
-
-  UploadImageDirectInput: {
-    type: "object",
-    description:
-      "Direct image upload (recommended). POST multipart/form-data to /upload-image/direct " +
-      "with 'file' and 'table_name' fields. The server uploads to S3 and creates the image " +
-      "record in one step, returning the image_id. No need to compute file hashes or handle " +
-      "presigned URLs. Use the returned image_id in sketch, cast, or person image updates.",
-    required: ["file", "table_name"],
-    properties: {
-      file: {
-        type: "string",
-        format: "binary",
-        description: "The image file (multipart/form-data file field)",
-      },
-      table_name: {
-        type: "string",
-        description:
-          "Target table for organizing the upload (e.g. sketch, sketch_cast, person_image)",
-      },
-    },
-  },
-
-  BatchRevalidateInput: {
-    type: "object",
-    description:
-      "Revalidate multiple entities and optionally refresh search in one call. " +
-      "POST /api/revalidate",
-    properties: {
-      entities: {
-        type: "array",
-        description:
-          "Entities to revalidate. Tables use plural names: shows, seasons, episodes, sketches, recurring-sketches, people, characters, categories, tags",
-        items: {
-          type: "object",
-          required: ["table", "id"],
-          properties: {
-            table: {
-              type: "string",
-              description: "Plural table name (e.g. sketches, people)",
-            },
-            id: { type: "integer", description: "Entity ID" },
-          },
-        },
-      },
-      refresh_search: {
-        type: "boolean",
-        description:
-          "If true, also refresh the full-text search index (default: false)",
-      },
-    },
-  },
-};
+/** JSON Schema definitions for API request/response types, served individually on demand. */
+export const schemaRegistry: Record<string, object> = zodSchemas;
