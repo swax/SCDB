@@ -9,8 +9,7 @@ import { getDefaultPageListSize } from "@/shared/ProcessEnv";
 const optionalQueryInt = (description: string) =>
   z
     .preprocess(
-      (v) =>
-        v === "" || v === null || v === undefined ? undefined : v,
+      (v) => (v === "" || v === null || v === undefined ? undefined : v),
       z.coerce.number().int().optional(),
     )
     .describe(description);
@@ -21,7 +20,10 @@ const optionalQueryInt = (description: string) =>
  */
 export const PaginationParamsSchema = z
   .object({
-    search: z.string().optional().describe("Case-insensitive name/title search"),
+    search: z
+      .string()
+      .optional()
+      .describe("Case-insensitive name/title search"),
     page: z.coerce.number().int().min(1).default(1).describe("Page number"),
     pageSize: z.coerce
       .number()
@@ -41,9 +43,7 @@ export const SeasonListParamsSchema = PaginationParamsSchema.extend({
   show_id: optionalQueryInt("Filter by show ID"),
   number: optionalQueryInt("Filter by season number"),
   year: optionalQueryInt("Filter by year"),
-}).describe(
-  "Query parameters for GET /seasons. Example: ?show_id=1&number=45",
-);
+}).describe("Query parameters for GET /seasons. Example: ?show_id=1&number=45");
 
 export const EpisodeListParamsSchema = PaginationParamsSchema.extend({
   season_id: optionalQueryInt("Filter by season ID"),
@@ -55,10 +55,13 @@ export const EpisodeListParamsSchema = PaginationParamsSchema.extend({
 export const SketchListParamsSchema = PaginationParamsSchema.extend({
   show_id: optionalQueryInt("Filter by show ID"),
   season_id: optionalQueryInt("Filter by season ID"),
+  season_number: optionalQueryInt(
+    "Filter by season number. Alone matches that number across all shows; combine with show_id to scope to one show",
+  ),
   episode_id: optionalQueryInt("Filter by episode ID"),
   recurring_sketch_id: optionalQueryInt("Filter by recurring sketch ID"),
 }).describe(
-  "Query parameters for GET /sketches. Example: ?show_id=1&season_id=28",
+  "Query parameters for GET /sketches. Example: ?show_id=1&season_number=45",
 );
 
 export const TagListParamsSchema = PaginationParamsSchema.extend({
@@ -76,7 +79,11 @@ export const ChecklistPaginationParamsSchema = PaginationParamsSchema.extend({
     .enum(["Pending", "Added", "NotFound"])
     .optional()
     .describe("Filter by checklist item status"),
-}).describe("Query parameters for GET /checklist.");
+  show_id: optionalQueryInt("Filter by show ID"),
+  season_number: optionalQueryInt("Filter by season number"),
+}).describe(
+  "Query parameters for GET /checklist. Example: ?show_id=1&season_number=45&status=Pending",
+);
 
 export type PaginationParams = z.infer<typeof PaginationParamsSchema>;
 export type SeasonListParams = z.infer<typeof SeasonListParamsSchema>;

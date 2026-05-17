@@ -16,6 +16,8 @@ export async function getSeasonsList(searchParams: ListSearchParms) {
     select: {
       id: true,
       url_slug: true,
+      number: true,
+      year: true,
     },
   });
 

@@ -4,10 +4,7 @@ import {
   isDiscoveryRequest,
   collectionDiscoveryResponse,
 } from "@/backend/api/hateoasDiscovery";
-import {
-  paginationLinks,
-  schemaLink,
-} from "@/backend/api/hateoasHelpers";
+import { paginationLinks, schemaLink } from "@/backend/api/hateoasHelpers";
 import { getChecklistList } from "@/backend/content/checklistService";
 import prisma from "@/database/prisma";
 import { ChecklistInputSchema } from "@/shared/schemas/checklist";
@@ -46,13 +43,25 @@ export async function GET(request: NextRequest) {
       });
     }
 
-    const { search, page, pageSize, sortField, sortDir, status } =
-      ChecklistPaginationParamsSchema.parse(
-        Object.fromEntries(request.nextUrl.searchParams),
-      );
+    const {
+      search,
+      page,
+      pageSize,
+      sortField,
+      sortDir,
+      status,
+      show_id,
+      season_number,
+    } = ChecklistPaginationParamsSchema.parse(
+      Object.fromEntries(request.nextUrl.searchParams),
+    );
+
+    const extraWhere: Record<string, number> = {};
+    if (show_id !== undefined) extraWhere.show_id = show_id;
+    if (season_number !== undefined) extraWhere.season_number = season_number;
 
     const result = await getChecklistList(
-      { search, page, pageSize, sortField, sortDir },
+      { search, page, pageSize, sortField, sortDir, extraWhere },
       status,
     );
 
@@ -62,19 +71,27 @@ export async function GET(request: NextRequest) {
       page,
       pageSize,
       _links: [
+        schemaLink(
+          "ChecklistInput",
+          "Schema for creating/updating checklist items",
+        ),
         ...paginationLinks("checklist", page, pageSize, result.count, {
           status,
           search,
           sortField,
           sortDir,
+          show_id: show_id !== undefined ? String(show_id) : undefined,
+          season_number:
+            season_number !== undefined ? String(season_number) : undefined,
         }),
-        schemaLink("ChecklistInput", "Schema for creating/updating checklist items"),
       ],
       _filters: {
         status: {
           description: "Filter by checklist item status",
           values: ["Pending", "Added", "NotFound"],
         },
+        show_id: { description: "Filter by show ID" },
+        season_number: { description: "Filter by season number" },
       },
     });
   } catch (error) {

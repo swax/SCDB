@@ -47,15 +47,18 @@ export async function GET(request: NextRequest) {
       sortDir,
       show_id,
       season_id,
+      season_number,
       episode_id,
       recurring_sketch_id,
     } = SketchListParamsSchema.parse(
       Object.fromEntries(request.nextUrl.searchParams),
     );
 
-    const extraWhere: Record<string, number> = {};
+    const extraWhere: Record<string, unknown> = {};
     if (show_id !== undefined) extraWhere.show_id = show_id;
     if (season_id !== undefined) extraWhere.season_id = season_id;
+    else if (season_number !== undefined)
+      extraWhere.season = { number: season_number };
     if (episode_id !== undefined) extraWhere.episode_id = episode_id;
     if (recurring_sketch_id !== undefined)
       extraWhere.recurring_sketch_id = recurring_sketch_id;
