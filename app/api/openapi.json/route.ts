@@ -727,6 +727,98 @@ const spec = {
       },
     },
 
+    // Socials — social-posting workflow
+    "/socials/unposted": {
+      get: {
+        operationId: "listUnpostedSketches",
+        summary: "List reviewed sketches not yet posted on socials",
+        description:
+          "Returns a random sample of sketches with review_status 'Reviewed' and " +
+          "posted_on_socials false — the work queue for the social-posting agent. " +
+          "`total` is the full count still unposted; `sketches` is a random sample " +
+          "of up to `limit`. After sharing one, mark it via PUT /socials/{id}.",
+        tags: ["Socials"],
+        security: [],
+        parameters: [
+          {
+            name: "limit",
+            in: "query",
+            description: "Maximum sketches to return (default 30, max 100)",
+            schema: { type: "integer", default: 30 },
+          },
+        ],
+        responses: {
+          "200": {
+            description: "Random sample of unposted reviewed sketches",
+            content: {
+              "application/json": {
+                schema: {
+                  type: "object",
+                  properties: {
+                    sketches: { type: "array", items: { type: "object" } },
+                    total: { type: "integer" },
+                    limit: { type: "integer" },
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+    },
+    "/socials/{id}": {
+      put: {
+        operationId: "setSketchPostedOnSocials",
+        summary: "Mark a sketch posted/unposted on social media",
+        description:
+          "Sets the posted_on_socials flag on the sketch. Send " +
+          "{posted_on_socials: true} after sharing it so it drops out of " +
+          "GET /socials/unposted; send false to un-mark it.",
+        tags: ["Socials"],
+        parameters: [
+          {
+            name: "id",
+            in: "path",
+            required: true,
+            description: "Sketch ID (from GET /socials/unposted)",
+            schema: { type: "integer" },
+          },
+        ],
+        requestBody: {
+          required: true,
+          content: {
+            "application/json": {
+              schema: { $ref: "#/components/schemas/SocialPostInput" },
+            },
+          },
+        },
+        responses: {
+          "200": {
+            description: "Updated posting status",
+            content: {
+              "application/json": {
+                schema: {
+                  type: "object",
+                  properties: {
+                    id: { type: "integer" },
+                    posted_on_socials: { type: "boolean" },
+                  },
+                },
+              },
+            },
+          },
+          "400": {
+            description: "Validation error",
+            content: { "application/json": { schema: errorRef } },
+          },
+          "404": {
+            description: "Sketch not found",
+            content: { "application/json": { schema: errorRef } },
+          },
+        },
+      },
+    },
+
     // Sketches Full (all-in-one create/update)
     "/sketches/full": {
       get: {
@@ -871,7 +963,7 @@ const spec = {
     },
     {
       name: "Management",
-      tags: ["Checklist", "Management"],
+      tags: ["Checklist", "Socials", "Management"],
     },
   ],
 };

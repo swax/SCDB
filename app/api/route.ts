@@ -59,6 +59,13 @@ export function GET() {
           "Survey agent entry point — returns one sparse {show_id, show_title, season_number} to research next.",
       },
       {
+        rel: "socials-unposted",
+        href: `${API_PREFIX}/socials/unposted`,
+        title:
+          "Social-posting queue — a random sample of reviewed sketches not yet posted on " +
+          "social media. GET returns {sketches, total}; follow _linkTemplates to mark one posted.",
+      },
+      {
         rel: "lookup",
         href: `${API_PREFIX}/lookup/{table}?search={term}&limit={n}`,
         title:

@@ -27,6 +27,7 @@ import {
   SeasonListParamsSchema,
   SketchListParamsSchema,
   TagListParamsSchema,
+  UnpostedSketchesParamsSchema,
 } from "@/shared/schemas/listParams";
 import {
   PersonImageInputSchema,
@@ -42,6 +43,7 @@ import {
   SketchInputSchema,
   SketchTagInputSchema,
   SketchUpdateInputSchema,
+  SocialPostInputSchema,
 } from "@/shared/schemas/sketch";
 import {
   SketchFullCastInputSchema,
@@ -80,6 +82,7 @@ const ZOD_SCHEMAS: Record<string, z.ZodTypeAny> = {
   TagListParams: TagListParamsSchema,
   RecurringSketchListParams: RecurringSketchListParamsSchema,
   ChecklistPaginationParams: ChecklistPaginationParamsSchema,
+  UnpostedSketchesParams: UnpostedSketchesParamsSchema,
   ReviewStatusInput: ReviewStatusInputSchema,
   ShowInput: ShowInputSchema,
   SeasonInput: SeasonInputSchema,
@@ -94,6 +97,7 @@ const ZOD_SCHEMAS: Record<string, z.ZodTypeAny> = {
   PersonImagesAppendInput: PersonImagesAppendInputSchema,
   SketchInput: SketchInputSchema,
   SketchUpdateInput: SketchUpdateInputSchema,
+  SocialPostInput: SocialPostInputSchema,
   CastInput: CastInputSchema,
   CreditInput: CreditInputSchema,
   QuoteInput: QuoteInputSchema,

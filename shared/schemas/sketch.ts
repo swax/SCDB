@@ -36,6 +36,23 @@ export const ReviewStatusInputSchema = z
 
 export type ReviewStatusInput = z.infer<typeof ReviewStatusInputSchema>;
 
+/**
+ * Body for PUT /socials/{id} — the social-posting agent flips a sketch's
+ * posted_on_socials flag here after sharing it.
+ */
+export const SocialPostInputSchema = z
+  .object({
+    posted_on_socials: z
+      .boolean()
+      .describe(
+        "Whether the sketch has been posted on social media. " +
+          "Send true after posting it; send false to un-mark.",
+      ),
+  })
+  .describe("Request body for PUT /socials/{id}");
+
+export type SocialPostInput = z.infer<typeof SocialPostInputSchema>;
+
 // ---------------------------------------------------------------------------
 // Sketch create / update inputs and their nested children
 // ---------------------------------------------------------------------------

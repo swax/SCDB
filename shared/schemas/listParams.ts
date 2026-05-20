@@ -64,6 +64,22 @@ export const SketchListParamsSchema = PaginationParamsSchema.extend({
   "Query parameters for GET /sketches. Example: ?show_id=1&season_number=45",
 );
 
+/**
+ * GET /socials/unposted returns a *random* sample, so the only parameter
+ * is a result cap — pagination, sort, and search don't apply.
+ */
+export const UnpostedSketchesParamsSchema = z
+  .object({
+    limit: z.coerce
+      .number()
+      .int()
+      .min(1)
+      .max(100)
+      .default(30)
+      .describe("Maximum sketches to return (default 30, max 100)."),
+  })
+  .describe("Query parameters for GET /socials/unposted. Example: ?limit=20");
+
 export const TagListParamsSchema = PaginationParamsSchema.extend({
   category_id: optionalQueryInt("Filter by category ID"),
 }).describe("Query parameters for GET /tags. Example: ?category_id=5");
@@ -89,6 +105,9 @@ export type PaginationParams = z.infer<typeof PaginationParamsSchema>;
 export type SeasonListParams = z.infer<typeof SeasonListParamsSchema>;
 export type EpisodeListParams = z.infer<typeof EpisodeListParamsSchema>;
 export type SketchListParams = z.infer<typeof SketchListParamsSchema>;
+export type UnpostedSketchesParams = z.infer<
+  typeof UnpostedSketchesParamsSchema
+>;
 export type TagListParams = z.infer<typeof TagListParamsSchema>;
 export type RecurringSketchListParams = z.infer<
   typeof RecurringSketchListParamsSchema
