@@ -4,8 +4,12 @@ const https = require("https");
 const crypto = require("crypto");
 const { URL, URLSearchParams } = require("url");
 
-// Load environment variables from .env.local file
-require("dotenv").config({ path: ".env.local" });
+// Load environment variables from .env.local file if dotenv is available
+try {
+  require("dotenv").config({ path: ".env.local" });
+} catch {
+  // dotenv is optional; rely on environment variables already set
+}
 
 const TWITTER_CONSUMER_KEY =
   process.env.TWITTER_API_KEY ||

@@ -4,8 +4,12 @@ const https = require("https");
 const querystring = require("querystring");
 const { URLSearchParams } = require("url");
 
-// Load environment variables from .env.local file
-require("dotenv").config({ path: ".env.local" });
+// Load environment variables from .env.local file if dotenv is available
+try {
+  require("dotenv").config({ path: ".env.local" });
+} catch {
+  // dotenv is optional; rely on environment variables already set
+}
 
 const APP_ID = process.env.FACEBOOK_APP_ID;
 const APP_SECRET = process.env.FACEBOOK_APP_SECRET;
