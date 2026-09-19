@@ -159,69 +159,98 @@ export default function SketchPageBody({
                   margin: 0,
                 }}
               >
-                {combinedCastMembers.map((castMember, i) => (
-                  <ImageListItem key={i} aria-label={castMember.tooltip}>
-                    <ContentLink
-                      mui
-                      table={castMember.character ? "character" : "person"}
-                      entry={castMember.character || castMember.person}
-                    >
-                      <Image
-                        alt={castMember.tooltip}
-                        title={castMember.tooltip}
-                        style={{
-                          objectFit: "cover",
-                          objectPosition: "50% 0",
-                          borderRadius: 8,
-                        }}
-                        src={
-                          castMember.image?.cdn_key
-                            ? `${staticUrl}/${castMember.image?.cdn_key}`
-                            : "/images/sketch-cast-placeholder.png"
-                        }
-                        width={imgWidth}
-                        height={imgHeight}
-                      />
-                    </ContentLink>
-                    <ImageListItemBar
-                      title={
-                        <Box
-                          component="h3"
+                {combinedCastMembers.map((castMember, i) => {
+                  const image =
+                    castMember.image ??
+                    castMember.person?.person_images[0]?.image;
+                  const isProfilePhoto = !castMember.image && !!image;
+                  const imageDescription = isProfilePhoto
+                    ? `${castMember.person?.name} — profile photo`
+                    : castMember.tooltip;
+                  return (
+                    <ImageListItem key={i} aria-label={castMember.tooltip}>
+                      <ContentLink
+                        mui
+                        table={castMember.character ? "character" : "person"}
+                        entry={castMember.character || castMember.person}
+                      >
+                        <Image
+                          alt={imageDescription}
+                          title={imageDescription}
                           style={{
-                            fontSize: "16px",
-                            fontWeight: 400,
-                            margin: 0,
-                            overflow: "hidden",
-                            textOverflow: "ellipsis",
+                            objectFit: "cover",
+                            objectPosition: "50% 0",
+                            borderRadius: 8,
                           }}
-                          title={castMember.tooltip}
+                          src={
+                            image?.cdn_key
+                              ? `${staticUrl}/${image.cdn_key}`
+                              : "/images/sketch-cast-placeholder.png"
+                          }
+                          width={imgWidth}
+                          height={imgHeight}
+                        />
+                      </ContentLink>
+                      {isProfilePhoto && (
+                        <Box
+                          component="span"
+                          title="Actor profile photo"
+                          sx={{
+                            position: "absolute",
+                            top: 6,
+                            left: 6,
+                            px: 0.75,
+                            py: 0.25,
+                            borderRadius: 1,
+                            backgroundColor: "rgba(0, 0, 0, 0.8)",
+                            color: "white",
+                            fontSize: 11,
+                            pointerEvents: "none",
+                          }}
                         >
-                          {castMember.title}
+                          Profile photo
                         </Box>
-                      }
-                      subtitle={
-                        <h4 style={{ margin: 0, fontWeight: 400 }}>
-                          {!!castMember.person && (
-                            <>
-                              <ContentLink
-                                table="person"
-                                entry={castMember.person}
-                              />
-                              {" • "}
-                            </>
-                          )}
-                          {enumNameToDisplayName(castMember.role)}
-                        </h4>
-                      }
-                      sx={{
-                        width: imgWidth,
-                        "& .MuiImageListItemBar-subtitle": {
-                          whiteSpace: "wrap",
-                        },
-                      }}
-                    />
-                  </ImageListItem>
-                ))}
+                      )}
+                      <ImageListItemBar
+                        title={
+                          <Box
+                            component="h3"
+                            style={{
+                              fontSize: "16px",
+                              fontWeight: 400,
+                              margin: 0,
+                              overflow: "hidden",
+                              textOverflow: "ellipsis",
+                            }}
+                            title={castMember.tooltip}
+                          >
+                            {castMember.title}
+                          </Box>
+                        }
+                        subtitle={
+                          <h4 style={{ margin: 0, fontWeight: 400 }}>
+                            {!!castMember.person && (
+                              <>
+                                <ContentLink
+                                  table="person"
+                                  entry={castMember.person}
+                                />
+                                {" • "}
+                              </>
+                            )}
+                            {enumNameToDisplayName(castMember.role)}
+                          </h4>
+                        }
+                        sx={{
+                          width: imgWidth,
+                          "& .MuiImageListItemBar-subtitle": {
+                            whiteSpace: "wrap",
+                          },
+                        }}
+                      />
+                    </ImageListItem>
+                  );
+                })}
               </ImageList>
             </AccordionDetails>
           </Accordion>

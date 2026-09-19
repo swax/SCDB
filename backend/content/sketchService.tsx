@@ -287,6 +287,15 @@ export async function getSketch(id: number) {
               id: true,
               name: true,
               url_slug: true,
+              person_images: {
+                select: {
+                  image: {
+                    select: { cdn_key: true },
+                  },
+                },
+                orderBy: [{ sequence: "asc" }, { id: "asc" }],
+                take: 1,
+              },
             },
           },
           role: true,
