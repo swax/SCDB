@@ -23,10 +23,23 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
 
     const existing = await prisma.sketch.findUnique({
       where: { id: sketchId },
-      select: { id: true },
+      select: { id: true, review_status: true, flag_note: true },
     });
     if (!existing) {
       throw new ApiError(404, "Sketch not found");
+    }
+
+    // A repeated status check must not change attribution/timestamps or fire
+    // database audit triggers. An explicitly changed/cleared note is still an edit.
+    if (
+      existing.review_status === body.review_status &&
+      (!("flag_note" in body) ||
+        existing.flag_note === (body.flag_note ?? null))
+    ) {
+      return NextResponse.json({
+        id: sketchId,
+        review_status: existing.review_status,
+      });
     }
 
     await prisma.sketch.update({
