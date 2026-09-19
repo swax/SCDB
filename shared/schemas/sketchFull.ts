@@ -1,5 +1,6 @@
 import { z } from "zod";
 import { positiveId, positiveInt } from "./common";
+import { publicEditorialText } from "./editorialText";
 
 const CAST_ROLES = ["Cast", "Guest", "Host", "Uncredited"] as const;
 const CREDIT_ROLES = ["Writer", "Director", "Musician", "Other"] as const;
@@ -82,9 +83,15 @@ const SketchFullInputBase = z.object({
       'Recurring sketch name (resolved by lookup). Example: "Star Wars Undercover Boss"',
     ),
   video_urls: z.array(z.string()).optional().describe("Video URLs"),
-  teaser: z.string().optional().describe("Short teaser text"),
-  synopsis: z.string().optional().describe("Full synopsis"),
-  notes: z.string().optional().describe("Additional notes"),
+  teaser: publicEditorialText.optional().describe("Public short teaser text"),
+  synopsis: publicEditorialText
+    .optional()
+    .describe("Public synopsis of the sketch"),
+  notes: publicEditorialText
+    .optional()
+    .describe(
+      "Public editorial notes about the sketch; never internal workflow/audit notes",
+    ),
   link_urls: z.array(z.string()).optional().describe("Related external links"),
   image_id: positiveId
     .optional()

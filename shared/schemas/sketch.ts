@@ -1,5 +1,6 @@
 import { z } from "zod";
 import { positiveId } from "./common";
+import { publicEditorialText } from "./editorialText";
 
 const CAST_ROLES = ["Cast", "Guest", "Host", "Uncredited"] as const;
 const CREDIT_ROLES = ["Writer", "Director", "Musician", "Other"] as const;
@@ -153,9 +154,15 @@ const SketchInputBase = z.object({
     .describe(
       "Video URLs (YouTube, Vimeo, TikTok, Reddit, Facebook, Internet Archive)",
     ),
-  teaser: z.string().nullish().describe("Short teaser text"),
-  synopsis: z.string().nullish().describe("Full synopsis of the sketch"),
-  notes: z.string().nullish().describe("Additional notes"),
+  teaser: publicEditorialText.nullish().describe("Public short teaser text"),
+  synopsis: publicEditorialText
+    .nullish()
+    .describe("Public synopsis of the sketch"),
+  notes: publicEditorialText
+    .nullish()
+    .describe(
+      "Public editorial notes about the sketch; never internal workflow/audit notes",
+    ),
   link_urls: z.array(z.string()).nullish().describe("Related external links"),
   image_id: positiveId
     .nullish()
