@@ -5,6 +5,12 @@ const API_PREFIX = "/api";
 export function GET() {
   return NextResponse.json({
     _links: [
+      {
+        rel: "sketches-by-source",
+        href: "/api/sketches/by-source",
+        title:
+          "Exact source-video duplicate check (YouTube/Vimeo); use before creation",
+      },
       { rel: "self", href: `${API_PREFIX}/`, title: "API Discovery" },
       {
         rel: "schemas",
@@ -85,8 +91,7 @@ export function GET() {
       {
         rel: "revalidate",
         href: `${API_PREFIX}/revalidate`,
-        title:
-          "Revalidate cached pages — supports single and batch.",
+        title: "Revalidate cached pages — supports single and batch.",
       },
       {
         rel: "refresh-search",

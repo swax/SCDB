@@ -5,6 +5,7 @@
   "scripts": {
     "clean": "rimraf .next .turbo node_modules/.cache",
     "compile": "tsc",
+    "test": "vitest run",
     "dev": "next dev --turbo",
     "lint": "eslint . --fix",
     "prettier:write": "npx prettier --write .",
@@ -62,6 +63,7 @@
     "rimraf": "^6.1.3",
     "tsx": "^4.21.0",
     "typescript": "^5.9.3",
-    "typescript-eslint": "^8.57.2"
+    "typescript-eslint": "^8.57.2",
+    "vitest": "^4.1.11"
   }
 }

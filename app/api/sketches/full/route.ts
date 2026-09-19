@@ -19,6 +19,7 @@ import { syncSketchToChecklist } from "@/backend/content/checklistSync";
 import { writeFieldValues } from "@/backend/edit/editWriteService";
 import prisma from "@/database/prisma";
 import { NextRequest, NextResponse } from "next/server";
+import { withSourceGuard } from "@/backend/api/sketchSourceService";
 
 export function GET() {
   const schema = resolveSchemaRefs(schemaRegistry["SketchFullInput"]);
@@ -98,7 +99,11 @@ export async function POST(request: NextRequest) {
       if (imageField) imageField.optional = true;
     }
 
-    const result = await writeFieldValues(user, table, 0);
+    const result = await withSourceGuard(
+      input.video_urls ?? [],
+      input.allow_shared_source === true,
+      (tx) => writeFieldValues(user, table, 0, tx),
+    );
     if (result.error) {
       throw new InputValidationError(result.error);
     }

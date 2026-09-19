@@ -16,6 +16,7 @@ import {
   SketchInputSchema,
 } from "@/shared/schemas/sketch";
 import { NextRequest, NextResponse } from "next/server";
+import { withSourceGuard } from "@/backend/api/sketchSourceService";
 
 export async function GET(request: NextRequest) {
   try {
@@ -96,7 +97,11 @@ export async function POST(request: NextRequest) {
     const table = await buildTableCmsFromInput(input, false);
     setReviewStatusForApiContent(table);
 
-    const response = await writeFieldValues(user, table, 0);
+    const response = await withSourceGuard(
+      input.video_urls ?? [],
+      input.allow_shared_source === true,
+      (tx) => writeFieldValues(user, table, 0, tx),
+    );
 
     if (response.error) {
       return NextResponse.json({ error: response.error }, { status: 400 });

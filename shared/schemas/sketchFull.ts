@@ -32,25 +32,25 @@ export const SketchFullCastInputSchema = z
       ),
   })
   .describe(
-    'A cast member using actor name instead of ID. ' +
+    "A cast member using actor name instead of ID. " +
       'Example: {"person": "Adam Driver", "character_name": "Kylo Ren", "role": "Host"}',
   );
 
 export const SketchFullCreditInputSchema = z
   .object({
-    person: z
-      .string()
-      .min(1)
-      .describe("Person name (resolved by lookup)"),
+    person: z.string().min(1).describe("Person name (resolved by lookup)"),
     role: z.enum(CREDIT_ROLES).describe("Credit role"),
-    description: z
-      .string()
-      .optional()
-      .describe("Additional description"),
+    description: z.string().optional().describe("Additional description"),
   })
   .describe("A credit entry using person name instead of ID.");
 
 const SketchFullInputBase = z.object({
+  allow_shared_source: z
+    .boolean()
+    .optional()
+    .describe(
+      "Create only: explicitly permit a source video already used by another sketch, for intentional compilation/shared-video entries. Never use to bypass a retry duplicate.",
+    ),
   title: z.string().min(1).describe("Sketch title"),
   show: z
     .string()
@@ -63,7 +63,9 @@ const SketchFullInputBase = z.object({
     ),
   season_year: positiveInt
     .optional()
-    .describe("Year the season aired. Required only when creating a new season."),
+    .describe(
+      "Year the season aired. Required only when creating a new season.",
+    ),
   episode_number: positiveInt
     .optional()
     .describe(
@@ -83,10 +85,7 @@ const SketchFullInputBase = z.object({
   teaser: z.string().optional().describe("Short teaser text"),
   synopsis: z.string().optional().describe("Full synopsis"),
   notes: z.string().optional().describe("Additional notes"),
-  link_urls: z
-    .array(z.string())
-    .optional()
-    .describe("Related external links"),
+  link_urls: z.array(z.string()).optional().describe("Related external links"),
   image_id: positiveId
     .optional()
     .describe(
@@ -108,7 +107,7 @@ const SketchFullInputBase = z.object({
     .array(z.union([z.string().min(1), positiveId]))
     .optional()
     .describe(
-      'Tag names (resolved by lookup) or numeric tag IDs for disambiguation. ' +
+      "Tag names (resolved by lookup) or numeric tag IDs for disambiguation. " +
         'Example: ["Star Wars", "Undercover Boss", 1726]',
     ),
 });
@@ -119,11 +118,12 @@ export const SketchFullInputSchema = SketchFullInputBase.describe(
     "creates the sketch; revalidates caches; and refreshes search. POST /api/sketches/full",
 );
 
-export const SketchFullUpdateInputSchema = SketchFullInputBase.partial().describe(
-  "All-in-one sketch update. All fields optional — only provided fields are changed. " +
-    "For array fields (cast, credits, quotes, tags), providing the array replaces ALL existing " +
-    "entries; omitting leaves them unchanged. PUT /api/sketches/full/{id}",
-);
+export const SketchFullUpdateInputSchema =
+  SketchFullInputBase.partial().describe(
+    "All-in-one sketch update. All fields optional — only provided fields are changed. " +
+      "For array fields (cast, credits, quotes, tags), providing the array replaces ALL existing " +
+      "entries; omitting leaves them unchanged. PUT /api/sketches/full/{id}",
+  );
 
 export type SketchFullCastInput = z.infer<typeof SketchFullCastInputSchema>;
 export type SketchFullCreditInput = z.infer<typeof SketchFullCreditInputSchema>;

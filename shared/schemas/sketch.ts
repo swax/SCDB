@@ -97,7 +97,7 @@ export const CastInputSchema = z
     role: z
       .enum(CAST_ROLES)
       .describe(
-        'Actor\'s role type in the production — NOT the character name. ' +
+        "Actor's role type in the production — NOT the character name. " +
           'Use "Host" for the episode host, "Cast" for regular/featured cast, ' +
           '"Guest" for guest appearances, "Uncredited" for uncredited roles.',
       ),
@@ -107,7 +107,7 @@ export const CastInputSchema = z
       .describe("Whether this is a minor/non-speaking role"),
   })
   .describe(
-    'A cast member entry for a sketch. ' +
+    "A cast member entry for a sketch. " +
       'Example: {"person_id": 489, "character_name": "Kylo Ren", "role": "Host"}',
   );
 
@@ -128,6 +128,12 @@ const QuoteOrShorthandSchema = z.union([z.string().min(1), QuoteInputSchema]);
 const TagOrShorthandSchema = z.union([positiveId, SketchTagInputSchema]);
 
 const SketchInputBase = z.object({
+  allow_shared_source: z
+    .boolean()
+    .optional()
+    .describe(
+      "Create only: explicitly permit a source video already used by another sketch, for intentional compilation/shared-video entries. Never use to bypass a retry duplicate.",
+    ),
   title: z.string().min(1).describe("Sketch title"),
   show_id: positiveId.describe(
     "ID of the show. Use GET /lookup/show to find IDs.",
@@ -208,7 +214,10 @@ export type SketchInput = Omit<SketchInputRaw, "quotes" | "tags"> & {
   tags?: SketchTagInput[];
 };
 
-export type SketchUpdateInput = Omit<SketchUpdateInputRaw, "quotes" | "tags"> & {
+export type SketchUpdateInput = Omit<
+  SketchUpdateInputRaw,
+  "quotes" | "tags"
+> & {
   quotes?: QuoteInput[];
   tags?: SketchTagInput[];
 };

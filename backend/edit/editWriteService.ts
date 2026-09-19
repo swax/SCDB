@@ -43,6 +43,7 @@ export async function writeFieldValues(
   user: SessionUser,
   table: TableCms,
   id: number,
+  transaction?: TxClient,
 ) {
   validateRoleAtLeast(user.role, user_role_type.Editor);
 
@@ -67,7 +68,7 @@ export async function writeFieldValues(
   validateRequiredFields(table.fields, operation);
 
   // Write all changes in a transaction so partial failures roll back
-  const rowId = await prisma.$transaction(async (tx: TxClient) => {
+  const write = async (tx: TxClient) => {
     const txRowId = await writeFieldChanges(
       tx,
       user.id,
@@ -91,7 +92,10 @@ export async function writeFieldValues(
     });
 
     return txRowId;
-  });
+  };
+  const rowId = transaction
+    ? await write(transaction)
+    : await prisma.$transaction(write);
 
   return contentResponse({ rowId, newSlug });
 }
