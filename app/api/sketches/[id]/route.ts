@@ -31,7 +31,7 @@ const SKETCH_ACTIONS: ActionDef<SketchActionCtx>[] = [
     method: "PUT",
     title:
       "Update sketch (partial — only provided fields are changed). GET /api/sketches/full for schema + example.",
-    schema: "SketchUpdateInput",
+    schema: "SketchFullUpdateInput",
   },
   {
     rel: "set-review-status",
@@ -46,8 +46,7 @@ const SKETCH_ACTIONS: ActionDef<SketchActionCtx>[] = [
     rel: "mark-reprocessing",
     path: "/review-status",
     method: "PUT",
-    title:
-      "Shortcut: mark this Flagged sketch as Reprocessing after rework.",
+    title: "Shortcut: mark this Flagged sketch as Reprocessing after rework.",
     body: { review_status: "Reprocessing" },
     statuses: ["Flagged"],
   },
@@ -88,7 +87,10 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
 
     return NextResponse.json({
       ...sketch,
-      _links: [selfLink(`/sketches/${sketchId}`), collectionLink("sketches", "Sketches")],
+      _links: [
+        selfLink(`/sketches/${sketchId}`),
+        collectionLink("sketches", "Sketches"),
+      ],
       _actions: actions,
     });
   } catch (error) {
