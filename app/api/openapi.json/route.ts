@@ -1,40 +1,76 @@
-import { schemaRegistry } from "@/backend/api/schemaRegistry";
+import {
+  resolveSchemaRefs,
+  schemaRegistry,
+} from "@/backend/api/schemaRegistry";
 import { NextResponse } from "next/server";
 
 // --- Helpers to generate repetitive CRUD path definitions ---
 
-const paginationParams = [
-  {
-    name: "search",
+// Reuse the runtime query schemas so filters, bounds, and defaults stay in sync.
+function queryParameters(schemaName: string) {
+  const schema = resolveSchemaRefs(schemaRegistry[schemaName]) as {
+    properties: Record<string, { description?: string }>;
+  };
+  return Object.entries(schema.properties).map(([name, property]) => ({
+    name,
     in: "query",
-    description: "Search by name/title",
-    schema: { type: "string" },
+    required: false,
+    description: property.description,
+    schema: property,
+  }));
+}
+
+const collectionDescription =
+  "With no query parameters, returns HATEOAS discovery actions and schema links. " +
+  "Include at least one query parameter (for example ?page=1) to return a paginated list.";
+
+const discoverySchema = {
+  type: "object",
+  required: ["_actions"],
+  properties: {
+    _actions: {
+      type: "array",
+      items: { $ref: "#/components/schemas/HateoasAction" },
+    },
+    _links: {
+      type: "array",
+      items: { $ref: "#/components/schemas/HateoasLink" },
+    },
   },
-  {
-    name: "page",
-    in: "query",
-    description: "Page number (default: 1)",
-    schema: { type: "integer", default: 1 },
-  },
-  {
-    name: "pageSize",
-    in: "query",
-    description: "Results per page (default: 30)",
-    schema: { type: "integer", default: 30 },
-  },
-  {
-    name: "sortField",
-    in: "query",
-    description: "Field to sort by",
-    schema: { type: "string" },
-  },
-  {
-    name: "sortDir",
-    in: "query",
-    description: "Sort direction",
-    schema: { type: "string", enum: ["asc", "desc"] },
-  },
-];
+};
+
+function collectionResponse(listKey: string) {
+  return {
+    oneOf: [
+      discoverySchema,
+      {
+        type: "object",
+        required: [listKey, "total", "page", "pageSize"],
+        properties: {
+          [listKey]: { type: "array", items: { type: "object" } },
+          total: { type: "integer" },
+          page: { type: "integer" },
+          pageSize: { type: "integer" },
+        },
+      },
+    ],
+  };
+}
+
+function jsonResponse(description: string, schema: object) {
+  return { description, content: { "application/json": { schema } } };
+}
+
+function jsonBody(schemaName: string) {
+  return {
+    required: true,
+    content: {
+      "application/json": {
+        schema: { $ref: `#/components/schemas/${schemaName}` },
+      },
+    },
+  };
+}
 
 const idParam = {
   name: "id",
@@ -60,6 +96,7 @@ function crudPaths(cfg: {
   listKey: string;
   inputSchema: string;
   updateSchema?: string;
+  listSchema?: string;
 }) {
   const updateSchema = cfg.updateSchema || cfg.inputSchema;
   return {
@@ -67,23 +104,16 @@ function crudPaths(cfg: {
       get: {
         operationId: `list${cfg.plural}`,
         summary: `List ${cfg.plural.toLowerCase()}`,
+        description: collectionDescription,
         tags: [cfg.tag],
         security: [],
-        parameters: paginationParams,
+        parameters: queryParameters(cfg.listSchema ?? "PaginationParams"),
         responses: {
           "200": {
-            description: `Paginated list of ${cfg.plural.toLowerCase()}`,
+            description: `Discovery actions or paginated list of ${cfg.plural.toLowerCase()}`,
             content: {
               "application/json": {
-                schema: {
-                  type: "object",
-                  properties: {
-                    [cfg.listKey]: { type: "array", items: { type: "object" } },
-                    total: { type: "integer" },
-                    page: { type: "integer" },
-                    pageSize: { type: "integer" },
-                  },
-                },
+                schema: collectionResponse(cfg.listKey),
               },
             },
           },
@@ -188,7 +218,8 @@ const spec = {
     title: "Sketch Comedy Database API",
     description:
       "REST API for managing sketch comedy content on SketchTV.lol. " +
-      "Use the lookup endpoints to discover IDs for shows, people, tags, etc. before creating or updating sketches.",
+      "Use the lookup endpoints to discover IDs for shows, people, tags, etc. before creating or updating sketches. " +
+      collectionDescription,
     version: "1.0.0",
   },
   servers: [{ url: "/api" }],
@@ -297,6 +328,7 @@ const spec = {
       plural: "Seasons",
       listKey: "seasons",
       inputSchema: "SeasonInput",
+      listSchema: "SeasonListParams",
     }),
     ...crudPaths({
       path: "episodes",
@@ -305,6 +337,7 @@ const spec = {
       plural: "Episodes",
       listKey: "episodes",
       inputSchema: "EpisodeInput",
+      listSchema: "EpisodeListParams",
     }),
     ...crudPaths({
       path: "sketches",
@@ -314,6 +347,7 @@ const spec = {
       listKey: "sketches",
       inputSchema: "SketchInput",
       updateSchema: "SketchUpdateInput",
+      listSchema: "SketchListParams",
     }),
     ...crudPaths({
       path: "recurring-sketches",
@@ -322,6 +356,7 @@ const spec = {
       plural: "RecurringSketches",
       listKey: "recurring_sketches",
       inputSchema: "RecurringSketchInput",
+      listSchema: "RecurringSketchListParams",
     }),
     ...crudPaths({
       path: "people",
@@ -355,6 +390,7 @@ const spec = {
       plural: "Tags",
       listKey: "tags",
       inputSchema: "TagInput",
+      listSchema: "TagListParams",
     }),
 
     // Checklist
@@ -362,34 +398,17 @@ const spec = {
       get: {
         operationId: "listChecklist",
         summary: "List checklist items",
+        description: collectionDescription,
         tags: ["Checklist"],
         security: [],
-        parameters: [
-          ...paginationParams,
-          {
-            name: "status",
-            in: "query",
-            description: "Filter by status",
-            schema: {
-              type: "string",
-              enum: ["Pending", "Added", "NotFound"],
-            },
-          },
-        ],
+        parameters: queryParameters("ChecklistPaginationParams"),
         responses: {
           "200": {
-            description: "Paginated list of checklist items",
+            description:
+              "Discovery actions or paginated list of checklist items",
             content: {
               "application/json": {
-                schema: {
-                  type: "object",
-                  properties: {
-                    checklist: { type: "array", items: { type: "object" } },
-                    total: { type: "integer" },
-                    page: { type: "integer" },
-                    pageSize: { type: "integer" },
-                  },
-                },
+                schema: collectionResponse("checklist"),
               },
             },
           },
@@ -651,6 +670,87 @@ const spec = {
     },
 
     // Management
+    "/revalidate": {
+      get: {
+        operationId: "revalidateDiscovery",
+        summary: "Discover cache revalidation actions",
+        tags: ["Management"],
+        security: [],
+        responses: {
+          "200": jsonResponse(
+            "Batch and single-entity actions",
+            discoverySchema,
+          ),
+        },
+      },
+      post: {
+        operationId: "batchRevalidate",
+        summary: "Revalidate entities and optionally refresh search",
+        description:
+          "Provide a non-empty entities array or refresh_search: true. Entity failures are reported individually in revalidated; success indicates the batch completed.",
+        tags: ["Management"],
+        requestBody: jsonBody("BatchRevalidateInput"),
+        responses: {
+          "200": jsonResponse("Per-entity results and search refresh status", {
+            type: "object",
+            required: ["success", "revalidated", "search_refreshed"],
+            properties: {
+              success: { type: "boolean" },
+              search_refreshed: { type: "boolean" },
+              revalidated: {
+                type: "array",
+                items: {
+                  type: "object",
+                  required: ["table", "id", "success"],
+                  properties: {
+                    table: { type: "string" },
+                    id: { type: "integer" },
+                    success: { type: "boolean" },
+                    error: { type: "string" },
+                  },
+                },
+              },
+            },
+          }),
+          "400": jsonResponse("Validation error", errorRef),
+          "401": jsonResponse("Missing or invalid API key", errorRef),
+        },
+      },
+    },
+    "/revalidate/{table}/{id}": {
+      post: {
+        operationId: "revalidateEntity",
+        summary: "Revalidate a single entity's cached page",
+        tags: ["Management"],
+        parameters: [
+          {
+            name: "table",
+            in: "path",
+            required: true,
+            schema: {
+              type: "string",
+              enum: [
+                "shows",
+                "seasons",
+                "episodes",
+                "sketches",
+                "recurring-sketches",
+                "people",
+                "characters",
+                "categories",
+                "tags",
+              ],
+            },
+          },
+          idParam,
+        ],
+        responses: {
+          "200": jsonResponse("Entity revalidated", successResponse),
+          "400": jsonResponse("Invalid table or ID", errorRef),
+          "401": jsonResponse("Missing or invalid API key", errorRef),
+        },
+      },
+    },
     "/refresh-search": {
       post: {
         operationId: "refreshSketchSearch",
@@ -669,6 +769,30 @@ const spec = {
     },
 
     // Lookup
+    "/lookup/batch": {
+      post: {
+        operationId: "batchLookupValues",
+        summary: "Look up multiple terms across entity tables",
+        description:
+          "Read-only lookup; no API key required. Returns up to 5 matches per term, grouped by table and term. Accepts up to 20 terms per table.",
+        tags: ["Lookup"],
+        security: [],
+        requestBody: jsonBody("BatchLookupInput"),
+        responses: {
+          "200": jsonResponse("Matches grouped by table and search term", {
+            type: "object",
+            additionalProperties: {
+              type: "object",
+              additionalProperties: {
+                type: "array",
+                items: { $ref: "#/components/schemas/LookupResult" },
+              },
+            },
+          }),
+          "400": jsonResponse("Invalid table or search terms", errorRef),
+        },
+      },
+    },
     "/lookup/{table}": {
       get: {
         operationId: "lookupValues",
@@ -706,6 +830,12 @@ const spec = {
               "Search term (case-insensitive, supports multiple space-separated terms)",
             schema: { type: "string" },
           },
+          {
+            name: "limit",
+            in: "query",
+            description: "Maximum matches (clamped to 1–100; defaults to 10)",
+            schema: { type: "integer", default: 10, minimum: 1, maximum: 100 },
+          },
         ],
         responses: {
           "200": {
@@ -739,14 +869,7 @@ const spec = {
           "of up to `limit`. After sharing one, mark it via PUT /socials/{id}.",
         tags: ["Socials"],
         security: [],
-        parameters: [
-          {
-            name: "limit",
-            in: "query",
-            description: "Maximum sketches to return (default 30, max 100)",
-            schema: { type: "integer", default: 30 },
-          },
-        ],
+        parameters: queryParameters("UnpostedSketchesParams"),
         responses: {
           "200": {
             description: "Random sample of unposted reviewed sketches",
@@ -815,6 +938,134 @@ const spec = {
             description: "Sketch not found",
             content: { "application/json": { schema: errorRef } },
           },
+        },
+      },
+    },
+
+    // Sketch source lookup and review workflow
+    "/sketches/by-source": {
+      get: {
+        operationId: "findSketchesBySource",
+        summary: "Find sketches by exact YouTube or Vimeo source",
+        description:
+          "Without url, returns discovery instructions. With a supported video URL, matches source identities across all sketches, including those awaiting review. Use before creation to detect duplicates.",
+        tags: ["Sketches"],
+        security: [],
+        parameters: [
+          {
+            name: "url",
+            in: "query",
+            required: false,
+            description: "YouTube or Vimeo video URL",
+            schema: { type: "string" },
+          },
+        ],
+        responses: {
+          "200": jsonResponse(
+            "Discovery instructions or exact source matches",
+            {
+              oneOf: [
+                {
+                  type: "object",
+                  required: ["description", "_linkTemplates"],
+                  properties: {
+                    description: { type: "string" },
+                    _linkTemplates: {
+                      type: "array",
+                      items: { type: "object" },
+                    },
+                  },
+                },
+                {
+                  type: "object",
+                  required: ["source", "sketches", "total"],
+                  properties: {
+                    source: { type: "string" },
+                    total: { type: "integer" },
+                    sketches: {
+                      type: "array",
+                      items: {
+                        type: "object",
+                        properties: {
+                          id: { type: "integer" },
+                          title: { type: "string" },
+                          url_slug: { type: "string" },
+                          sources: { type: "array", items: { type: "string" } },
+                        },
+                      },
+                    },
+                    _linkTemplates: {
+                      type: "array",
+                      items: { type: "object" },
+                    },
+                  },
+                },
+              ],
+            },
+          ),
+          "400": jsonResponse("Unsupported or invalid source URL", errorRef),
+        },
+      },
+    },
+    "/sketches/flagged": {
+      get: {
+        operationId: "listFlaggedSketches",
+        summary: "List sketches flagged for review",
+        description:
+          "Returns all flagged sketches, oldest modification first, with link templates to sketch details and review-status updates.",
+        tags: ["Sketches"],
+        security: [],
+        responses: {
+          "200": jsonResponse("Flagged sketches and navigation links", {
+            type: "object",
+            required: ["sketches", "total"],
+            properties: {
+              sketches: {
+                type: "array",
+                items: {
+                  type: "object",
+                  properties: {
+                    id: { type: "integer" },
+                    title: { type: "string" },
+                    url_slug: { type: "string" },
+                    flag_note: { type: ["string", "null"] },
+                  },
+                },
+              },
+              total: { type: "integer" },
+              _links: {
+                type: "array",
+                items: { $ref: "#/components/schemas/HateoasLink" },
+              },
+              _linkTemplates: { type: "array", items: { type: "object" } },
+            },
+          }),
+        },
+      },
+    },
+    "/sketches/{id}/review-status": {
+      put: {
+        operationId: "setSketchReviewStatus",
+        summary: "Update a sketch's review status and optional flag note",
+        description:
+          "A flag_note is required when setting Flagged. Repeating an unchanged status and note leaves audit metadata untouched.",
+        tags: ["Sketches"],
+        parameters: [idParam],
+        requestBody: jsonBody("ReviewStatusInput"),
+        responses: {
+          "200": jsonResponse("Current review status", {
+            type: "object",
+            properties: {
+              id: { type: "integer" },
+              review_status: {
+                type: "string",
+                enum: ["NeedsReview", "Flagged", "Reviewed", "Reprocessing"],
+              },
+            },
+          }),
+          "400": jsonResponse("Invalid sketch ID or request body", errorRef),
+          "401": jsonResponse("Missing or invalid API key", errorRef),
+          "404": jsonResponse("Sketch not found", errorRef),
         },
       },
     },
