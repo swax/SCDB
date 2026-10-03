@@ -9,6 +9,7 @@ export const SketchListItemSchema = z
     url_slug: z.string(),
     site_rating: z.number().nullable(),
     posted_on_socials: z.boolean(),
+    google_indexing_requested_at: z.iso.datetime().nullable(),
     review_status: z.enum([
       "NeedsReview",
       "Flagged",

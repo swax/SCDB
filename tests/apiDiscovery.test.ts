@@ -90,6 +90,7 @@ test.each([
   ["/tags", "TagListParams"],
   ["/checklist", "ChecklistPaginationParams"],
   ["/socials/unposted", "UnpostedSketchesParams"],
+  ["/indexing/unrequested", "UnrequestedIndexingParams"],
 ])("%s documents its runtime filters and defaults", (path, schemaName) => {
   const runtime = resolveSchemaRefs(schemaRegistry[schemaName]) as JsonSchema;
   const params = spec.paths[path].get.parameters!;
@@ -169,6 +170,29 @@ test("sketch full-update action advertises the endpoint's actual request schema"
   expect(schemaRegistry["SketchFullUpdateInput"]).toBeDefined();
 });
 
+test("sketch indexing action matches the authenticated endpoint and registered schema", async () => {
+  const response = await getSketchDetail(
+    new NextRequest("http://localhost/api/sketches/1"),
+    {
+      params: Promise.resolve({ id: "1" }),
+    },
+  );
+  const body = (await response.json()) as { _actions: HateoasAction[] };
+  expect(
+    body._actions.find((item) => item.rel === "mark-indexing-requested"),
+  ).toMatchObject({
+    href: "/api/indexing/1",
+    method: "PUT",
+    schema: "/api/schemas/GoogleIndexingInput",
+    body: { google_indexing_requested: true },
+  });
+  expect(spec.paths["/indexing/{id}"].get.security).toEqual([]);
+  expect(
+    spec.paths["/indexing/{id}"].put.requestBody!.content["application/json"]
+      .schema.$ref,
+  ).toBe("#/components/schemas/GoogleIndexingInput");
+});
+
 test("batch lookup is documented as a public POST with grouped results", () => {
   const operation = spec.paths["/lookup/batch"].post;
   expect(operation.security).toEqual([]);
@@ -208,6 +232,7 @@ test("review and revalidation workflows document public discovery and authentica
   expect(spec.paths["/sketches/flagged"].get.security).toEqual([]);
   expect(spec.paths["/revalidate"].get.security).toEqual([]);
   for (const [path, method] of [
+    ["/indexing/{id}", "put"],
     ["/revalidate", "post"],
     ["/revalidate/{table}/{id}", "post"],
     ["/sketches/{id}/review-status", "put"],

@@ -1,5 +1,10 @@
 import { z } from "zod";
 import {
+  GoogleIndexingInputSchema,
+  GoogleIndexingStatusSchema,
+  UnrequestedIndexingParamsSchema,
+} from "@/shared/schemas/indexing";
+import {
   ChecklistInputSchema,
   ChecklistUpdateSchema,
   ChecklistBulkInputSchema,
@@ -98,6 +103,9 @@ const ZOD_SCHEMAS: Record<string, z.ZodTypeAny> = {
   SketchInput: SketchInputSchema,
   SketchUpdateInput: SketchUpdateInputSchema,
   SocialPostInput: SocialPostInputSchema,
+  GoogleIndexingInput: GoogleIndexingInputSchema,
+  GoogleIndexingStatus: GoogleIndexingStatusSchema,
+  UnrequestedIndexingParams: UnrequestedIndexingParamsSchema,
   CastInput: CastInputSchema,
   CreditInput: CreditInputSchema,
   QuoteInput: QuoteInputSchema,

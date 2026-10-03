@@ -389,41 +389,42 @@ model sketch_quote {
 }
 
 model sketch {
-  id                  Int                @id @default(autoincrement())
-  title               String             @db.VarChar(100)
-  url_slug            String             @unique @db.VarChar(100)
-  lookup_slug         String             @unique @db.VarChar(100)
-  video_urls          String[]
-  show_id             Int
-  season_id           Int?
-  episode_id          Int?
-  recurring_sketch_id Int?
-  review_status       review_status_type @default(NeedsReview)
-  flag_note           String?
-  created_by_id       String
-  created_at          DateTime           @default(now())
-  modified_by_id      String
-  modified_at         DateTime           @default(now())
-  image_id            Int?
-  site_rating         Float?
-  link_urls           String[]
-  notes               String?
-  posted_on_socials   Boolean            @default(false)
-  synopsis            String?
-  teaser              String?
-  created_by          User               @relation("SketchesCreated", fields: [created_by_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  episode             episode?           @relation(fields: [episode_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  image               image?             @relation(fields: [image_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  modified_by         User               @relation("SketchesModified", fields: [modified_by_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  recurring_sketch    recurring_sketch?  @relation(fields: [recurring_sketch_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  season              season?            @relation(fields: [season_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  show                show               @relation(fields: [show_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  checklists          checklist[]
-  sketch_casts        sketch_cast[]
-  sketch_credits      sketch_credit[]
-  sketch_quotes       sketch_quote[]
-  user_ratings        sketch_rating[]
-  sketch_tags         sketch_tag[]
+  id                           Int                @id @default(autoincrement())
+  title                        String             @db.VarChar(100)
+  url_slug                     String             @unique @db.VarChar(100)
+  lookup_slug                  String             @unique @db.VarChar(100)
+  video_urls                   String[]
+  show_id                      Int
+  season_id                    Int?
+  episode_id                   Int?
+  recurring_sketch_id          Int?
+  review_status                review_status_type @default(NeedsReview)
+  flag_note                    String?
+  created_by_id                String
+  created_at                   DateTime           @default(now())
+  modified_by_id               String
+  modified_at                  DateTime           @default(now())
+  image_id                     Int?
+  site_rating                  Float?
+  link_urls                    String[]
+  notes                        String?
+  posted_on_socials            Boolean            @default(false)
+  google_indexing_requested_at DateTime?
+  synopsis                     String?
+  teaser                       String?
+  created_by                   User               @relation("SketchesCreated", fields: [created_by_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  episode                      episode?           @relation(fields: [episode_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  image                        image?             @relation(fields: [image_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  modified_by                  User               @relation("SketchesModified", fields: [modified_by_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  recurring_sketch             recurring_sketch?  @relation(fields: [recurring_sketch_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  season                       season?            @relation(fields: [season_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  show                         show               @relation(fields: [show_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  checklists                   checklist[]
+  sketch_casts                 sketch_cast[]
+  sketch_credits               sketch_credit[]
+  sketch_quotes                sketch_quote[]
+  user_ratings                 sketch_rating[]
+  sketch_tags                  sketch_tag[]
 
   @@index([review_status])
   @@index([show_id])

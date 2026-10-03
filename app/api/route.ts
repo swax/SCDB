@@ -65,6 +65,13 @@ export function GET() {
           "Survey agent entry point — returns one sparse {show_id, show_title, season_number} to research next.",
       },
       {
+        rel: "indexing-unrequested",
+        href: `${API_PREFIX}/indexing/unrequested`,
+        title:
+          "Google indexing request queue — newest non-flagged sketches without a recorded request. " +
+          "Follow _linkTemplates to mark a confirmed Search Console request. This does not submit to Google.",
+      },
+      {
         rel: "socials-unposted",
         href: `${API_PREFIX}/socials/unposted`,
         title:

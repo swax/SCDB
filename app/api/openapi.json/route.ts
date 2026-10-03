@@ -857,6 +857,83 @@ const spec = {
       },
     },
 
+    // Google indexing request tracking (the browser performs the actual submission).
+    "/indexing/unrequested": {
+      get: {
+        operationId: "listUnrequestedIndexingSketches",
+        summary: "List sketches without a recorded Google indexing request",
+        description:
+          "Returns up to limit non-flagged sketches, newest first (created_at then id). " +
+          "All review statuses except Flagged are eligible. total counts the whole queue. " +
+          "A missing record does not prove a page is absent from Google. Request indexing in Search Console, " +
+          "then record its success through PUT /indexing/{id}.",
+        tags: ["Indexing"],
+        security: [],
+        parameters: queryParameters("UnrequestedIndexingParams"),
+        responses: {
+          "200": jsonResponse("Sketches awaiting a recorded indexing request", {
+            type: "object",
+            required: ["sketches", "total", "limit"],
+            properties: {
+              sketches: {
+                type: "array",
+                items: {
+                  type: "object",
+                  required: ["id", "title", "url_slug", "url"],
+                  properties: {
+                    id: { type: "integer" },
+                    title: { type: "string" },
+                    url_slug: { type: "string" },
+                    url: { type: "string", format: "uri" },
+                  },
+                },
+              },
+              total: { type: "integer" },
+              limit: { type: "integer" },
+            },
+          }),
+          "400": jsonResponse("Invalid limit", errorRef),
+        },
+      },
+    },
+    "/indexing/{id}": {
+      get: {
+        operationId: "getSketchGoogleIndexingRequest",
+        summary: "Read a sketch's recorded Google indexing request",
+        tags: ["Indexing"],
+        security: [],
+        parameters: [idParam],
+        responses: {
+          "200": jsonResponse(
+            "Recorded request; not Google's indexing status",
+            { $ref: "#/components/schemas/GoogleIndexingStatus" },
+          ),
+          "400": jsonResponse("Invalid sketch ID", errorRef),
+          "404": jsonResponse("Sketch not found", errorRef),
+        },
+      },
+      put: {
+        operationId: "setSketchGoogleIndexingRequest",
+        summary: "Record or clear a confirmed Google indexing request",
+        description:
+          "Send {google_indexing_requested: true} only after Google Search Console confirms " +
+          "'Indexing requested'. Stores the server time of recording in google_indexing_requested_at. " +
+          "Repeated true calls preserve the original timestamp. Send false to clear an incorrect mark. " +
+          "This endpoint does not submit to Google and does not confirm that the URL is indexed.",
+        tags: ["Indexing"],
+        parameters: [idParam],
+        requestBody: jsonBody("GoogleIndexingInput"),
+        responses: {
+          "200": jsonResponse("Recorded request status", {
+            $ref: "#/components/schemas/GoogleIndexingStatus",
+          }),
+          "400": jsonResponse("Invalid sketch ID or body", errorRef),
+          "401": jsonResponse("Missing or invalid API key", errorRef),
+          "404": jsonResponse("Sketch not found", errorRef),
+        },
+      },
+    },
+
     // Socials — social-posting workflow
     "/socials/unposted": {
       get: {

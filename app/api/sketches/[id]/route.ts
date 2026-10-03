@@ -34,6 +34,15 @@ const SKETCH_ACTIONS: ActionDef<SketchActionCtx>[] = [
     schema: "SketchFullUpdateInput",
   },
   {
+    rel: "mark-indexing-requested",
+    href: "", // filled per-call
+    method: "PUT",
+    title:
+      "Record a confirmed Google Search Console indexing request; does not submit or confirm indexing.",
+    schema: "GoogleIndexingInput",
+    body: { google_indexing_requested: true },
+  },
+  {
     rel: "set-review-status",
     path: "/review-status",
     method: "PUT",
@@ -79,7 +88,9 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
       SKETCH_ACTIONS.map((d) =>
         d.rel === "update"
           ? { ...d, href: `/api/sketches/full/${sketchId}` }
-          : d,
+          : d.rel === "mark-indexing-requested"
+            ? { ...d, href: `/api/indexing/${sketchId}` }
+            : d,
       ),
       baseHref,
       { status: sketch.review_status },

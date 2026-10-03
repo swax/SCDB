@@ -160,6 +160,7 @@ export async function getSketchList(searchParams: ListSearchParms) {
       url_slug: true,
       site_rating: true,
       posted_on_socials: true,
+      google_indexing_requested_at: true,
       review_status: true,
       show: {
         select: {
@@ -199,6 +200,7 @@ export async function getSketch(id: number) {
       site_rating: true,
       review_status: true,
       flag_note: true,
+      google_indexing_requested_at: true,
       image: {
         select: {
           cdn_key: true,
