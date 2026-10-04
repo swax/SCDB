@@ -10,7 +10,7 @@ import type { SketchUpdateInput } from "@/shared/schemas/sketch";
 import type { SketchFullUpdateInput } from "@/shared/schemas/sketchFull";
 import lookupTermsInTable from "@/backend/edit/lookupService";
 import { writeFieldValues } from "@/backend/edit/editWriteService";
-import prisma from "@/database/prisma";
+import prisma, { getPrismaModel } from "@/database/prisma";
 import { SessionUser } from "next-auth";
 
 /** Lookup configs matching the ones in the batch lookup route */
@@ -53,6 +53,15 @@ export async function tryResolveName(
   const config = lookupConfigs[table];
   if (!config) throw new ApiError(500, `Unknown lookup table: ${table}`);
 
+  // Check for an exact (case-insensitive) match first: the fuzzy lookup below returns only a few
+  // "contains" matches in no particular order, so a short exact name can be crowded out.
+  const exact = await getPrismaModel(config.table).findMany({
+    where: { [config.labelColumn]: { equals: name, mode: "insensitive" } },
+    select: { id: true },
+    take: 2,
+  });
+  if (exact.length === 1) return { ok: true, id: exact[0].id as number };
+
   const result = await lookupTermsInTable(name, config, 5);
   const matches = result.content || [];
 
@@ -60,13 +69,9 @@ export async function tryResolveName(
     return { ok: false, error: `${label} not found: "${name}"` };
   }
 
-  // Prefer exact match (case-insensitive) if available
-  const exact = matches.find(
-    (m: { label: string }) => m.label.toLowerCase() === name.toLowerCase(),
-  );
-  if (exact) return { ok: true, id: exact.id };
-
-  if (matches.length === 1) return { ok: true, id: matches[0].id };
+  // Character pages must match exactly; a lone fuzzy match ("Kathie" → "Kathie Lee Gifford") is a different character.
+  if (matches.length === 1 && table !== "character")
+    return { ok: true, id: matches[0].id };
 
   const options = matches
     .slice(0, 5)
