@@ -18,6 +18,7 @@ const lookupConfigs: Record<string, { table: string; labelColumn: string }> = {
   show: { table: "show", labelColumn: "title" },
   season: { table: "season", labelColumn: "lookup_slug" },
   person: { table: "person", labelColumn: "name" },
+  character: { table: "character", labelColumn: "name" },
   tag: { table: "tag", labelColumn: "lookup_slug" },
   recurring_sketch: {
     table: "recurring_sketch",
@@ -38,9 +39,7 @@ export interface ResolvedSketchInput {
   creditItems: NonNullable<SketchUpdateInput["credits"]>;
 }
 
-type ResolveResult =
-  | { ok: true; id: number }
-  | { ok: false; error: string };
+type ResolveResult = { ok: true; id: number } | { ok: false; error: string };
 
 /**
  * Try to resolve a name to an ID via the lookup service.
@@ -71,9 +70,7 @@ export async function tryResolveName(
 
   const options = matches
     .slice(0, 5)
-    .map(
-      (m: { id: number; label: string }) => `"${m.label}" (id:${m.id})`,
-    )
+    .map((m: { id: number; label: string }) => `"${m.label}" (id:${m.id})`)
     .join(", ");
   return {
     ok: false,
@@ -227,10 +224,21 @@ export async function resolveFullInput(
         castEntry.person,
         "Cast person",
       );
+      let characterId: number | null = null;
+      if (castEntry.character) {
+        const character = await tryResolveName(
+          "character",
+          castEntry.character,
+          "Cast character",
+        );
+        if (character.ok) characterId = character.id;
+        else errors.push(character.error);
+      }
       if (result.ok) {
         castItems.push({
           person_id: result.id,
           character_name: castEntry.character_name || null,
+          character_id: characterId,
           role: castEntry.role,
           minor_role: castEntry.minor_role ?? false,
           image_id: castEntry.image_id ?? null,
@@ -317,6 +325,7 @@ export function buildResolvedResponse(resolved: ResolvedSketchInput) {
     tag_ids: resolved.tagIds,
     cast: resolved.castItems.map((c) => ({
       person_id: c.person_id,
+      character_id: c.character_id,
       image_id: c.image_id,
     })),
   };

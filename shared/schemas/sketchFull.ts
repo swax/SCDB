@@ -15,6 +15,15 @@ export const SketchFullCastInputSchema = z
       .string()
       .optional()
       .describe('Name of the character played. Example: "Kylo Ren"'),
+    character: z
+      .string()
+      .min(1)
+      .optional()
+      .describe(
+        "Existing character page to link (resolved by lookup), such as an impression " +
+          'of a real person or a named recurring character. Example: "Sean Connery". ' +
+          "Create missing pages with POST /characters first.",
+      ),
     role: z
       .enum(CAST_ROLES)
       .describe(
@@ -34,7 +43,7 @@ export const SketchFullCastInputSchema = z
   })
   .describe(
     "A cast member using actor name instead of ID. " +
-      'Example: {"person": "Adam Driver", "character_name": "Kylo Ren", "role": "Host"}',
+      'Example: {"person": "Dana Carvey", "character_name": "Casey Kasem", "character": "Casey Kasem", "role": "Cast"}',
   );
 
 export const SketchFullCreditInputSchema = z
