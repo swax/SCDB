@@ -301,8 +301,10 @@ export async function getSketch(id: number) {
             },
           },
           role: true,
+          minor_role: true,
           image: {
             select: {
+              id: true,
               cdn_key: true,
             },
           },
